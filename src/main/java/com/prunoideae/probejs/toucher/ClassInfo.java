@@ -1,5 +1,8 @@
 package com.prunoideae.probejs.toucher;
 
+import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.RemapForJS;
+
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -77,6 +80,9 @@ public final class ClassInfo {
         }
 
         public String getName() {
+            if (method.getAnnotation(RemapForJS.class) != null) {
+                return method.getAnnotation(RemapForJS.class).value();
+            }
             return this.method.getName();
         }
 
@@ -198,7 +204,7 @@ public final class ClassInfo {
     public List<ConstructorInfo> getConstructors() {
         return Arrays
             .stream(this.clazz.getConstructors())
-            .map(ConstructorInfo::new)
+            .filter(field -> field.getAnnotation(HideFromJS.class) == null).map(ConstructorInfo::new)
             .collect(Collectors.toList());
     }
 
