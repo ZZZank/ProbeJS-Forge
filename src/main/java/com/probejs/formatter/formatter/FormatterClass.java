@@ -220,19 +220,14 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             if (internal) {
                 String indnt = PUtil.indent(indent + stepIndent);
                 formatted.add(indnt + "/**");
-                formatted.add(
-                    indnt +
-                    " * Internal constructor, this means that it's not valid and you will get an error if you use it."
-                );
+                formatted.add(indnt + " * Internal constructor, not callable unless via `java()`.");
                 formatted.add(indnt + " */");
-                formatted.add(indnt + "protected constructor();");
-            } else {
-                classInfo
-                    .getConstructorInfo()
-                    .stream()
-                    .map(FormatterConstructor::new)
-                    .forEach(f -> formatted.addAll(f.format(indent + stepIndent, stepIndent)));
             }
+            classInfo
+                .getConstructorInfo()
+                .stream()
+                .map(FormatterConstructor::new)
+                .forEach(f -> formatted.addAll(f.format(indent + stepIndent, stepIndent)));
         }
         // additions
         fieldAdditions.forEach(fieldDoc -> formatted.addAll(fieldDoc.format(indent + stepIndent, stepIndent))
