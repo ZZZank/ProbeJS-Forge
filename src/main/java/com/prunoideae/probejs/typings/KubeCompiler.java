@@ -87,10 +87,10 @@ public class KubeCompiler {
                 members.forEach((resourceLocation, tagMembers) -> {
                     String[] rl = resourceLocation.split(":");
                     rl[1] = rl[1].replace("/", "_");
-                    byMods.computeIfAbsent(rl[0], key -> new ArrayList<>()).add(String.format("%s:%s", rl[1], new Gson().toJson(tagMembers)));
+                    byMods.computeIfAbsent(rl[0], key -> new ArrayList<>()).add(String.format("'%s':%s", rl[1], new Gson().toJson(tagMembers)));
                 });
-                List<String> modsString = byMods.entrySet().stream().map(entry -> String.format("%s:{%s}", entry.getKey(), String.join(",\n", entry.getValue()))).collect(Collectors.toList());
-                types.add(String.format("%s:{%s}", type, String.join(",\n", modsString)));
+                List<String> modsString = byMods.entrySet().stream().map(entry -> String.format("'%s':{%s}", entry.getKey(), String.join(",\n", entry.getValue()))).collect(Collectors.toList());
+                types.add(String.format("'%s':{%s}", type, String.join(",\n", modsString)));
             });
             writer.write("// priority: 1000\n");
             writer.write(String.format("const tags = {%s}", String.join(",\n", types)));
