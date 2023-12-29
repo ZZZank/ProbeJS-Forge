@@ -9,19 +9,19 @@ import java.util.Objects;
 
 public final class WrappedEventHandler implements IEventHandler {
     private final String event;
-    private final IEventHandler inner;
+    private final IEventHandler handler;
 
     public static Map<String, Class<? extends EventJS>> capturedEvents = new HashMap<>();
 
     @Override
     public void onEvent(EventJS eventJS) {
         capturedEvents.put(this.event, eventJS.getClass());
-        this.inner.onEvent(eventJS);
+        this.handler.onEvent(eventJS);
     }
 
     public WrappedEventHandler(String event, IEventHandler inner) {
         this.event = event;
-        this.inner = inner;
+        this.handler = inner;
     }
 
     public String event() {
@@ -29,7 +29,7 @@ public final class WrappedEventHandler implements IEventHandler {
     }
 
     public IEventHandler inner() {
-        return inner;
+        return handler;
     }
 
     @Override
@@ -40,18 +40,18 @@ public final class WrappedEventHandler implements IEventHandler {
             return false;
         WrappedEventHandler that = (WrappedEventHandler) obj;
         return Objects.equals(this.event, that.event) &&
-                Objects.equals(this.inner, that.inner);
+                Objects.equals(this.handler, that.handler);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(event, inner);
+        return Objects.hash(event, handler);
     }
 
     @Override
     public String toString() {
         return "WrappedEventHandler[" +
                 "event=" + event + ", " +
-                "inner=" + inner + ']';
+                "inner=" + handler + ']';
     }
 }
