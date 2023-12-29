@@ -18,6 +18,7 @@ loom {
 
     forge {
         mixinConfigs = [
+            "probejs.mixins.json"
         ]
 
         dataGen {
