@@ -51,7 +51,8 @@ public class KubeCompiler {
                     JsonArray prefixes = new JsonArray();
                     prefixes.add(String.format("@%s.%s", mod, type));
                     modMembersJson.add("prefix", prefixes);
-                    modMembersJson.addProperty("body", String.format("\"%s:${1|%s|}\"", mod, String.join(",", modMembers)));
+                    modMembersJson.addProperty("body",
+                            String.format("\"%s:${1|%s|}\"", mod, String.join(",", modMembers)));
                     resultJson.add(String.format("%s_%s", type, mod), modMembersJson);
                 });
             }
@@ -71,7 +72,8 @@ public class KubeCompiler {
                     JsonArray prefixes = new JsonArray();
                     prefixes.add(String.format("@%s.tags.%s", mod, type));
                     modMembersJson.add("prefix", prefixes);
-                    modMembersJson.addProperty("body", String.format("\"#%s:${1|%s|}\"", mod, String.join(",", modMembers)));
+                    modMembersJson.addProperty("body",
+                            String.format("\"#%s:${1|%s|}\"", mod, String.join(",", modMembers)));
                     resultJson.add(String.format("%s_tag_%s", type, mod), modMembersJson);
                 });
             }
@@ -87,9 +89,12 @@ public class KubeCompiler {
                 members.forEach((resourceLocation, tagMembers) -> {
                     String[] rl = resourceLocation.split(":");
                     rl[1] = rl[1].replace("/", "_");
-                    byMods.computeIfAbsent(rl[0], key -> new ArrayList<>()).add(String.format("'%s':%s", rl[1], new Gson().toJson(tagMembers)));
+                    byMods.computeIfAbsent(rl[0], key -> new ArrayList<>())
+                            .add(String.format("'%s':%s", rl[1], new Gson().toJson(tagMembers)));
                 });
-                List<String> modsString = byMods.entrySet().stream().map(entry -> String.format("'%s':{%s}", entry.getKey(), String.join(",\n", entry.getValue()))).collect(Collectors.toList());
+                List<String> modsString = byMods.entrySet().stream()
+                        .map(entry -> String.format("'%s':{%s}", entry.getKey(), String.join(",\n", entry.getValue())))
+                        .collect(Collectors.toList());
                 types.add(String.format("'%s':{%s}", type, String.join(",\n", modsString)));
             });
             writer.write("// priority: 1000\n");

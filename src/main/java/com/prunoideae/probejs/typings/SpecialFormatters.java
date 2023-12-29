@@ -32,8 +32,8 @@ public class SpecialFormatters {
                 return TSGlobalClassFormatter.resolvedClassName.get(typeInfo.getTypeClass().getName());
             List<String> formatted = s.stream().map(TSGlobalClassFormatter::serializeType).collect(Collectors.toList());
             return String.format("(%s) => %s", IntStream.range(0, formatted.size())
-                            .mapToObj(index -> String.format("arg%d: %s", index, formatted.get(index)))
-                            .collect(Collectors.joining(", ")),
+                    .mapToObj(index -> String.format("arg%d: %s", index, formatted.get(index)))
+                    .collect(Collectors.joining(", ")),
                     returnType);
         };
     }
@@ -45,24 +45,27 @@ public class SpecialFormatters {
                 return TSGlobalClassFormatter.resolvedClassName.get(typeInfo.getType().getTypeName());
             List<String> formatted = s.stream().map(TSGlobalClassFormatter::serializeType).collect(Collectors.toList());
             return String.format("(%s) => %s", IntStream.range(0, formatted.size() - 1)
-                            .mapToObj(index -> String.format("arg%d: %s", index, formatted.get(index)))
-                            .collect(Collectors.joining(", ")),
+                    .mapToObj(index -> String.format("arg%d: %s", index, formatted.get(index)))
+                    .collect(Collectors.joining(", ")),
                     formatted.get(formatted.size() - 1));
         };
     }
 
     private static String formatMapKV(Object obj) {
-        //Only Map<string, Object> is allowed
-        //Others are discarded, if there are others
+        // Only Map<string, Object> is allowed
+        // Others are discarded, if there are others
         Map<?, ?> map = (Map<?, ?>) obj;
         if (map.keySet().stream().allMatch(o -> o instanceof String || o instanceof Number)) {
             return String.format("{%s}", map.entrySet()
                     .stream()
                     .map(entry -> {
                         if (TSGlobalClassFormatter.FieldFormatter.formatValue(entry.getValue()) != null) {
-                            return String.format("%s: %s", new Gson().toJson(entry.getKey()), TSGlobalClassFormatter.FieldFormatter.formatValue(entry.getValue()));
+                            return String.format("%s: %s", new Gson().toJson(entry.getKey()),
+                                    TSGlobalClassFormatter.FieldFormatter.formatValue(entry.getValue()));
                         }
-                        return String.format("%s: %s", new Gson().toJson(entry.getKey()), new TSGlobalClassFormatter.TypeFormatter(new ClassInfo.TypeInfo(entry.getValue().getClass(), entry.getValue().getClass())).format());
+                        return String.format("%s: %s", new Gson().toJson(entry.getKey()),
+                                new TSGlobalClassFormatter.TypeFormatter(new ClassInfo.TypeInfo(
+                                        entry.getValue().getClass(), entry.getValue().getClass())).format());
                     })
                     .collect(Collectors.joining(", ")));
         } else {
@@ -76,7 +79,8 @@ public class SpecialFormatters {
     }
 
     public static void init() {
-        TSGlobalClassFormatter.specialClassFormatter.put(RecipeEventJS.class, TSDummyClassFormatter.RecipeEventJSFormatter.class);
+        TSGlobalClassFormatter.specialClassFormatter.put(RecipeEventJS.class,
+                TSDummyClassFormatter.RecipeEventJSFormatter.class);
         putTypeFormatter(BiConsumer.class, generateTypedFunction(2, "void"));
         putTypeFormatter(BiFunction.class, generateParamFunction(3));
         putTypeFormatter(BiPredicate.class, generateTypedFunction(2, "boolean"));

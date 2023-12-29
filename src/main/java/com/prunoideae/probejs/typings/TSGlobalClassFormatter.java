@@ -53,7 +53,9 @@ public class TSGlobalClassFormatter {
             return "any";
         }
         if (type instanceof ParameterizedType) {
-            return serializeType(((ParameterizedType) type).getRawType()) + String.format("<%s>", Arrays.stream(((ParameterizedType) type).getActualTypeArguments()).map(TSGlobalClassFormatter::serializeType).collect(Collectors.joining(", ")));
+            return serializeType(((ParameterizedType) type).getRawType())
+                    + String.format("<%s>", Arrays.stream(((ParameterizedType) type).getActualTypeArguments())
+                            .map(TSGlobalClassFormatter::serializeType).collect(Collectors.joining(", ")));
         }
         if (type instanceof GenericArrayType) {
             return serializeType(((GenericArrayType) type).getGenericComponentType()) + "[]";
@@ -70,7 +72,8 @@ public class TSGlobalClassFormatter {
         String name = clzPath[clzPath.length - 1];
         if (name.contains("/"))
             name = name.split("/")[0];
-        return resolvedClassName.getOrDefault(type.getTypeName(), "Unknown." + name) + String.join("", Collections.nCopies(depth, "[]"));
+        return resolvedClassName.getOrDefault(type.getTypeName(), "Unknown." + name)
+                + String.join("", Collections.nCopies(depth, "[]"));
     }
 
     public static class TypeFormatter implements ITSFormatter {
@@ -86,11 +89,12 @@ public class TSGlobalClassFormatter {
             String resolvedType = specialTypeFormatter.containsKey(clazz)
                     ? specialTypeFormatter.get(clazz).apply(this.typeInfo)
                     : serializeType(this.typeInfo.getType());
-            //Ensure to resolve type since TS does not allow non-parameterized types.
+            // Ensure to resolve type since TS does not allow non-parameterized types.
             if (this.typeInfo.getType() instanceof Class<?>) {
                 Class<?> type = (Class<?>) this.typeInfo.getType();
                 if (type.getTypeParameters().length != 0)
-                    resolvedType += String.format("<%s>", String.join(",", Collections.nCopies(type.getTypeParameters().length, "unknown")));
+                    resolvedType += String.format("<%s>",
+                            String.join(",", Collections.nCopies(type.getTypeParameters().length, "unknown")));
             }
             return resolvedType;
         }
@@ -103,7 +107,8 @@ public class TSGlobalClassFormatter {
 
         @Override
         public String format() {
-            return String.format("%s: %s", NameGuard.getSafeName(((ClassInfo.ParamInfo) this.typeInfo).getName()), super.format());
+            return String.format("%s: %s", NameGuard.getSafeName(((ClassInfo.ParamInfo) this.typeInfo).getName()),
+                    super.format());
         }
     }
 
@@ -190,8 +195,8 @@ public class TSGlobalClassFormatter {
         private Predicate<String> namePredicate;
         private final boolean useSpecialFormatters;
 
-
-        public ClassFormatter(ClassInfo classInfo, Integer indentation, Integer stepIndentation, Predicate<String> namePredicate, boolean useSpecialFormatters) {
+        public ClassFormatter(ClassInfo classInfo, Integer indentation, Integer stepIndentation,
+                Predicate<String> namePredicate, boolean useSpecialFormatters) {
             this.classInfo = classInfo;
             this.indentation = indentation;
             this.stepIndentation = stepIndentation;
@@ -199,7 +204,8 @@ public class TSGlobalClassFormatter {
             this.useSpecialFormatters = useSpecialFormatters;
         }
 
-        public ClassFormatter(ClassInfo classInfo, Integer indentation, Integer stepIndentation, Predicate<String> namePredicate) {
+        public ClassFormatter(ClassInfo classInfo, Integer indentation, Integer stepIndentation,
+                Predicate<String> namePredicate) {
             this(classInfo, indentation, stepIndentation, namePredicate, true);
         }
 
@@ -229,18 +235,23 @@ public class TSGlobalClassFormatter {
         protected List<String> compileMethods() {
             int linesIdent = this.indentation + stepIndentation;
             List<String> innerLines = new ArrayList<>();
-            /* TODO: add support for beans
+            /*
+             * TODO: add support for beans
              * Criteria: tranfsorm .get?() methods to .? fields.
              * If an field of same name exist, ignore it.
-             * .get() beans will be readonly, having a .set() will remove the readonly statement.
-             * Only having a .set() will NOT make this write-only as TS does not have such a thing.
-             * */
+             * .get() beans will be readonly, having a .set() will remove the readonly
+             * statement.
+             * Only having a .set() will NOT make this write-only as TS does not have such a
+             * thing.
+             */
 
             Set<ClassInfo.MethodInfo> beaned = new HashSet<>();
-            Set<String> existedNames = classInfo.getFields().stream().map(ClassInfo.FieldInfo::getName).collect(Collectors.toSet());
-            existedNames.addAll(classInfo.getMethods().stream().map(ClassInfo.MethodInfo::getName).collect(Collectors.toSet()));
+            Set<String> existedNames = classInfo.getFields().stream().map(ClassInfo.FieldInfo::getName)
+                    .collect(Collectors.toSet());
+            existedNames.addAll(
+                    classInfo.getMethods().stream().map(ClassInfo.MethodInfo::getName).collect(Collectors.toSet()));
 
-            //Add class getters/setters to beaned
+            // Add class getters/setters to beaned
             classInfo.getMethods()
                     .stream()
                     .filter(methodInfo -> !(methodInfo.getName().equals("get")))
@@ -259,11 +270,11 @@ public class TSGlobalClassFormatter {
                     .filter(methodInfo -> !existedNames.contains(getCamelCase(methodInfo.getName().substring(3))))
                     .forEach(beaned::add);
 
-            //Iterate through getter/setters, generate beans.
+            // Iterate through getter/setters, generate beans.
             Set<String> beanedNames = new HashSet<>();
             HashMap<String, ClassInfo.MethodInfo> cachedGetterNames = new HashMap<>();
             beaned.forEach(methodInfo -> {
-                //TODO: Make it more convenient, although idk how
+                // TODO: Make it more convenient, although idk how
                 if (classInfo.getClazz() == RecipeEventJS.class) {
                     if (methodInfo.getName().equals("getRecipes"))
                         return;
@@ -281,7 +292,8 @@ public class TSGlobalClassFormatter {
                     if (type instanceof Class<?>) {
                         Class<?> clazz = (Class<?>) type;
                         if (clazz.getTypeParameters().length != 0)
-                            resolved += String.format("<%s>", String.join(",", Collections.nCopies(clazz.getTypeParameters().length, "unknown")));
+                            resolved += String.format("<%s>",
+                                    String.join(",", Collections.nCopies(clazz.getTypeParameters().length, "unknown")));
                     }
                     String formatted = String.format("%s: %s;", beanName, resolved);
                     if (methodInfo.isStatic())
@@ -304,13 +316,13 @@ public class TSGlobalClassFormatter {
                     .filter(methodInfo -> !beanedNames.contains(getCamelCase(methodInfo.getName().substring(2))))
                     .forEach(methodInfo -> {
                         beaned.add(methodInfo);
-                        String formatted = String.format("%s: boolean;", getCamelCase(methodInfo.getName().substring(2)));
+                        String formatted = String.format("%s: boolean;",
+                                getCamelCase(methodInfo.getName().substring(2)));
                         if (methodInfo.isStatic())
                             formatted = "static " + formatted;
                         formatted = "readonly " + formatted;
                         innerLines.add(String.join("", Collections.nCopies(linesIdent, " ")) + formatted);
                     });
-
 
             cachedGetterNames.forEach((k, v) -> {
                 Type type = v.getReturnTypeInfo().getType();
@@ -318,7 +330,8 @@ public class TSGlobalClassFormatter {
                 if (type instanceof Class<?>) {
                     Class<?> clazz = (Class<?>) type;
                     if (clazz.getTypeParameters().length != 0)
-                        resolved += String.format("<%s>", String.join(",", Collections.nCopies(clazz.getTypeParameters().length, "any")));
+                        resolved += String.format("<%s>",
+                                String.join(",", Collections.nCopies(clazz.getTypeParameters().length, "any")));
 
                 }
 
@@ -328,7 +341,8 @@ public class TSGlobalClassFormatter {
                         if (value != null)
                             resolved = value + " & " + resolved;
                     } catch (Exception e) {
-                        ProbeJS.LOGGER.warn(String.format("Unable to get static value of bean %s, falling back to type.", k));
+                        ProbeJS.LOGGER
+                                .warn(String.format("Unable to get static value of bean %s, falling back to type.", k));
                     }
                 }
                 String formatted = String.format("%s: %s;", k, resolved);
@@ -342,7 +356,8 @@ public class TSGlobalClassFormatter {
                     .stream()
                     .filter(methodInfo -> this.namePredicate.test(methodInfo.getName()))
                     .filter(methodInfo -> !beaned.contains(methodInfo))
-                    .forEach(methodInfo -> innerLines.add(String.join("", Collections.nCopies(linesIdent, " ")) + new MethodFormatter(methodInfo).format()));
+                    .forEach(methodInfo -> innerLines.add(String.join("", Collections.nCopies(linesIdent, " "))
+                            + new MethodFormatter(methodInfo).format()));
             return innerLines;
         }
 
@@ -353,20 +368,24 @@ public class TSGlobalClassFormatter {
                     .stream()
                     .filter(fieldInfo -> !usedMethod.contains(fieldInfo.getName()))
                     .filter(fieldInfo -> this.namePredicate.test(fieldInfo.getName()))
-                    .forEach(fieldInfo -> innerLines.add(String.join("", Collections.nCopies(linesIdent, " ")) + new FieldFormatter(fieldInfo).format()));
+                    .forEach(fieldInfo -> innerLines.add(String.join("", Collections.nCopies(linesIdent, " "))
+                            + new FieldFormatter(fieldInfo).format()));
             return innerLines;
         }
 
         protected List<String> compileConstructors() {
             int linesIdent = this.indentation + stepIndentation;
             List<String> innerLines = new ArrayList<>();
-            classInfo.getConstructors().forEach(constructorInfo -> innerLines.add(String.join("", Collections.nCopies(linesIdent, " ")) + new ConstructorFormatter(constructorInfo).format()));
+            classInfo.getConstructors()
+                    .forEach(constructorInfo -> innerLines.add(String.join("", Collections.nCopies(linesIdent, " "))
+                            + new ConstructorFormatter(constructorInfo).format()));
             return innerLines;
         }
 
         @Override
         public String format() {
-            //Turn to special class formatters if there is one, for patching special classes.
+            // Turn to special class formatters if there is one, for patching special
+            // classes.
             if (this.useSpecialFormatters && specialClassFormatter.containsKey(this.classInfo.getClazz())) {
                 try {
                     return specialClassFormatter
@@ -374,41 +393,45 @@ public class TSGlobalClassFormatter {
                             .getDeclaredConstructor(ClassInfo.class, Integer.class, Integer.class, Predicate.class)
                             .newInstance(this.classInfo, this.indentation, this.stepIndentation, this.namePredicate)
                             .format();
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException
+                        | NoSuchMethodException e) {
                     e.printStackTrace();
                 }
             }
 
             List<String> innerLines = new ArrayList<>();
 
-            //Compile the first line of class declaration
+            // Compile the first line of class declaration
             String[] classPath = resolvedClassName.get(this.classInfo.getClazz().getName()).split("\\.");
             String firstLine = String.format("%s%s %s%s ",
                     String.join("", Collections.nCopies(this.indentation, " ")),
                     this.classInfo.getClazz().isInterface() ? "interface" : "class",
                     classPath[classPath.length - 1],
                     (this.classInfo.getClazz().getTypeParameters().length != 0
-                            ? "<" + Arrays.stream(this.classInfo.getClazz().getTypeParameters()).map(Type::getTypeName).collect(Collectors.joining(", ")) + ">"
+                            ? "<" + Arrays.stream(this.classInfo.getClazz().getTypeParameters()).map(Type::getTypeName)
+                                    .collect(Collectors.joining(", ")) + ">"
                             : ""));
             if (classInfo.getSuperTypes().size() != 0) {
-                firstLine += String.format("extends %s", classInfo.getSuperTypes().stream().map(TSGlobalClassFormatter::serializeType).collect(Collectors.joining(", ")));
+                firstLine += String.format("extends %s", classInfo.getSuperTypes().stream()
+                        .map(TSGlobalClassFormatter::serializeType).collect(Collectors.joining(", ")));
             }
             innerLines.add(firstLine + "{");
 
-            //Compile methods, fields and constructors
-            //Method names overrides field names if conflict
+            // Compile methods, fields and constructors
+            // Method names overrides field names if conflict
 
-            //Compile methods
-            Set<String> usedMethod = this.classInfo.getMethods().stream().map(ClassInfo.MethodInfo::getName).filter(this.namePredicate).collect(Collectors.toSet());
+            // Compile methods
+            Set<String> usedMethod = this.classInfo.getMethods().stream().map(ClassInfo.MethodInfo::getName)
+                    .filter(this.namePredicate).collect(Collectors.toSet());
             innerLines.addAll(this.compileMethods());
 
-            //Compile fields
+            // Compile fields
             innerLines.addAll(this.compileFields(usedMethod));
 
-            //Compile constructors
+            // Compile constructors
             innerLines.addAll(this.compileConstructors());
 
-            //Add the bracket
+            // Add the bracket
             innerLines.add(String.join("", Collections.nCopies(this.indentation, " ")) + "}\n");
             return String.join("\n", innerLines);
         }
@@ -421,7 +444,8 @@ public class TSGlobalClassFormatter {
         private final int indentation;
         private final boolean export;
 
-        public NamespaceFormatter(String classPath, List<ClassFormatter> classInfos, int stepIndentation, int indentation, boolean export) {
+        public NamespaceFormatter(String classPath, List<ClassFormatter> classInfos, int stepIndentation,
+                int indentation, boolean export) {
             this.classPath = classPath;
             this.classInfos = classInfos;
             this.stepIndentation = stepIndentation;
@@ -435,7 +459,8 @@ public class TSGlobalClassFormatter {
                     classFormatter -> classFormatter
                             .setIdent(this.indentation + this.stepIndentation)
                             .setStepIndentation(this.stepIndentation));
-            return (export ? "declare " : "") + String.format("namespace %s {\n%s}\n", this.classPath, this.classInfos.stream().map(ClassFormatter::format).collect(Collectors.joining("")));
+            return (export ? "declare " : "") + String.format("namespace %s {\n%s}\n", this.classPath,
+                    this.classInfos.stream().map(ClassFormatter::format).collect(Collectors.joining("")));
         }
     }
 }

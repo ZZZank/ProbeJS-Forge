@@ -1,7 +1,5 @@
 package com.prunoideae.probejs.toucher;
 
-import com.google.common.collect.Lists;
-
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,7 +34,8 @@ public final class ClassInfo {
 
         public List<Type> getTypeArguments() {
             if (this.type instanceof ParameterizedType) {
-                return Arrays.stream(((ParameterizedType) this.type).getActualTypeArguments()).collect(Collectors.toList());
+                return Arrays.stream(((ParameterizedType) this.type).getActualTypeArguments())
+                        .collect(Collectors.toList());
             }
             return new ArrayList<>();
         }
@@ -99,8 +98,10 @@ public final class ClassInfo {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             MethodInfo that = (MethodInfo) o;
             return method.equals(that.method);
         }
@@ -184,8 +185,10 @@ public final class ClassInfo {
 
     public List<MethodInfo> getMethods(boolean allowSuper) {
         Set<Method> superMethod = new HashSet<>();
-        this.getSuperClass().forEach(cls -> superMethod.addAll(Arrays.stream(cls.getMethods()).collect(Collectors.toList())));
-        return Arrays.stream(this.clazz.getMethods()).filter(method -> allowSuper || !superMethod.contains(method)).map(MethodInfo::new).collect(Collectors.toList());
+        this.getSuperClass()
+                .forEach(cls -> superMethod.addAll(Arrays.stream(cls.getMethods()).collect(Collectors.toList())));
+        return Arrays.stream(this.clazz.getMethods()).filter(method -> allowSuper || !superMethod.contains(method))
+                .map(MethodInfo::new).collect(Collectors.toList());
     }
 
     public List<ConstructorInfo> getConstructors() {
@@ -198,8 +201,10 @@ public final class ClassInfo {
 
     public List<FieldInfo> getFields(boolean allowSuper) {
         Set<Field> superField = new HashSet<>();
-        this.getSuperClass().forEach(cls -> superField.addAll(Arrays.stream(cls.getFields()).collect(Collectors.toList())));
-        return Arrays.stream(this.clazz.getFields()).filter(field -> allowSuper || !superField.contains(field)).map(FieldInfo::new).collect(Collectors.toList());
+        this.getSuperClass()
+                .forEach(cls -> superField.addAll(Arrays.stream(cls.getFields()).collect(Collectors.toList())));
+        return Arrays.stream(this.clazz.getFields()).filter(field -> allowSuper || !superField.contains(field))
+                .map(FieldInfo::new).collect(Collectors.toList());
     }
 
     public List<Class<?>> getSuperClass() {

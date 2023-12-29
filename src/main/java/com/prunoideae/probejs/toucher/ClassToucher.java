@@ -27,7 +27,8 @@ public class ClassToucher {
         this(baseClass, true, true, true, true);
     }
 
-    public ClassToucher(Class<?> baseClass, boolean dumpSuper, boolean dumpFields, boolean dumpMethods, boolean dumpConstructors) {
+    public ClassToucher(Class<?> baseClass, boolean dumpSuper, boolean dumpFields, boolean dumpMethods,
+            boolean dumpConstructors) {
         this.baseClass = baseClass;
         this.dumpConstructors = dumpConstructors;
         this.dumpSuper = dumpSuper;
@@ -61,20 +62,23 @@ public class ClassToucher {
         if (info instanceof WildcardType) {
             List<Type> bounds = Arrays.stream(((WildcardType) info).getLowerBounds()).collect(Collectors.toList());
             bounds.addAll(Arrays.stream(((WildcardType) info).getUpperBounds()).collect(Collectors.toList()));
-            return bounds.stream().map(ClassToucher::touchType).flatMap(Collection::stream).collect(Collectors.toList());
+            return bounds.stream().map(ClassToucher::touchType).flatMap(Collection::stream)
+                    .collect(Collectors.toList());
         }
         if (info instanceof GenericArrayType)
             return touchType(((GenericArrayType) info).getGenericComponentType());
         if (info instanceof ParameterizedType) {
             List<Type> types = new ArrayList<>();
             types.add(((ParameterizedType) info).getRawType());
-            types.addAll(Arrays.stream(((ParameterizedType) info).getActualTypeArguments()).collect(Collectors.toList()));
+            types.addAll(
+                    Arrays.stream(((ParameterizedType) info).getActualTypeArguments()).collect(Collectors.toList()));
             return types.stream().map(ClassToucher::touchType).flatMap(Collection::stream).collect(Collectors.toList());
         }
         if (info instanceof Class) {
             return Lists.newArrayList((Class<?>) info);
         }
-        throw new UnsupportedOperationException(String.format("Unknown type! %s (%s)", info.getTypeName(), info.getClass()));
+        throw new UnsupportedOperationException(
+                String.format("Unknown type! %s (%s)", info.getTypeName(), info.getClass()));
     }
 
     public Set<Class<?>> touchClass() {
@@ -93,7 +97,8 @@ public class ClassToucher {
                 touched.addAll(touchType(methodInfo.getReturnTypeInfo().getType()));
             });
         if (this.dumpConstructors)
-            baseInfo.getConstructors().forEach(constructorInfo -> constructorInfo.getParamsInfo().forEach(paramInfo -> touched.addAll(touchType(paramInfo.getType()))));
+            baseInfo.getConstructors().forEach(constructorInfo -> constructorInfo.getParamsInfo()
+                    .forEach(paramInfo -> touched.addAll(touchType(paramInfo.getType()))));
 
         return touched
                 .stream()

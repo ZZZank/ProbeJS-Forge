@@ -33,15 +33,17 @@ public class ProbeCompiler {
             String fullName = clazz.getName();
             String[] paths = fullName.split("\\.");
             String resolvedName = exportedClasses.contains(clazz) ? "" : "Internal.";
-            resolvedName += usedNames.contains(resolvedName + paths[paths.length - 1]) ? NameGuard.compileClasspath(paths) : paths[paths.length - 1];
+            resolvedName += usedNames.contains(resolvedName + paths[paths.length - 1])
+                    ? NameGuard.compileClasspath(paths)
+                    : paths[paths.length - 1];
             usedNames.add(resolvedName);
             TSGlobalClassFormatter.resolvedClassName.put(clazz.getName(), resolvedName);
         }
     }
 
-    public static Set<Class<?>> compileGlobal(Path outFile, Map<ResourceLocation, RecipeTypeJS> typeMap, DummyBindingEvent bindingEvent, Set<Class<?>> cachedClasses) {
+    public static Set<Class<?>> compileGlobal(Path outFile, Map<ResourceLocation, RecipeTypeJS> typeMap,
+            DummyBindingEvent bindingEvent, Set<Class<?>> cachedClasses) {
         Set<Class<?>> touchableClasses = new HashSet<>(bindingEvent.getClassDumpMap().values());
-
 
         bindingEvent.getClassDumpMap().forEach((k, v) -> {
             TSGlobalClassFormatter.resolvedClassName.put(v.getName(), k);
@@ -49,8 +51,10 @@ public class ProbeCompiler {
         });
 
         touchableClasses.addAll(cachedClasses);
-        touchableClasses.addAll(typeMap.values().stream().map(recipeTypeJS -> recipeTypeJS.factory.get().getClass()).collect(Collectors.toList()));
-        touchableClasses.addAll(bindingEvent.getConstantDumpMap().values().stream().map(Object::getClass).collect(Collectors.toList()));
+        touchableClasses.addAll(typeMap.values().stream().map(recipeTypeJS -> recipeTypeJS.factory.get().getClass())
+                .collect(Collectors.toList()));
+        touchableClasses.addAll(
+                bindingEvent.getConstantDumpMap().values().stream().map(Object::getClass).collect(Collectors.toList()));
         touchableClasses.addAll(WrappedEventHandler.capturedEvents.values());
 
         ProbeJS.LOGGER.info("Querying all classes accessible...");
@@ -68,7 +72,9 @@ public class ProbeCompiler {
                     .filter(clazz -> !Primitives.allWrapperTypes().contains(clazz))
                     .forEach(clazz -> {
                         ClassInfo info = new ClassInfo(clazz);
-                        TSGlobalClassFormatter.ClassFormatter formatter = new TSGlobalClassFormatter.ClassFormatter(info, 0, 4, s -> !Pattern.matches("^func_[\\d_]+_._$$", s) && !Pattern.matches("^field_[\\d_]+_._$", s));
+                        TSGlobalClassFormatter.ClassFormatter formatter = new TSGlobalClassFormatter.ClassFormatter(
+                                info, 0, 4, s -> !Pattern.matches("^func_[\\d_]+_._$$", s)
+                                        && !Pattern.matches("^field_[\\d_]+_._$", s));
                         if (TSGlobalClassFormatter.resolvedClassName.get(clazz.getName()).contains(".")) {
                             String fullName = TSGlobalClassFormatter.resolvedClassName.get(clazz.getName());
                             String[] paths = fullName.split("\\.");
@@ -78,7 +84,9 @@ public class ProbeCompiler {
                             try {
                                 writer.write("declare " + formatter.format());
                                 if (info.getClazz().isInterface())
-                                    writer.write(String.format("declare const %s: %s;\n", TSGlobalClassFormatter.resolvedClassName.get(clazz.getName()), TSGlobalClassFormatter.resolvedClassName.get(clazz.getName())));
+                                    writer.write(String.format("declare const %s: %s;\n",
+                                            TSGlobalClassFormatter.resolvedClassName.get(clazz.getName()),
+                                            TSGlobalClassFormatter.resolvedClassName.get(clazz.getName())));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -90,14 +98,20 @@ public class ProbeCompiler {
             typeMap.forEach((k, v) -> {
                 String namespace = k.getNamespace();
                 namespace = namespace.substring(0, 1).toUpperCase(Locale.ROOT) + namespace.substring(1);
-                recipeMethodClassPlaceholder.computeIfAbsent(namespace, s -> new ArrayList<>()).add(new Pair<>(k.getPath(), new TSGlobalClassFormatter.TypeFormatter(new ClassInfo.TypeInfo(v.factory.get().getClass(), v.factory.get().getClass()))));
-                recipeHolderFields.add(new Pair<>(k.getNamespace(), String.format("stub.probejs.recipes.%s", namespace)));
+                recipeMethodClassPlaceholder.computeIfAbsent(namespace, s -> new ArrayList<>())
+                        .add(new Pair<>(k.getPath(), new TSGlobalClassFormatter.TypeFormatter(
+                                new ClassInfo.TypeInfo(v.factory.get().getClass(), v.factory.get().getClass()))));
+                recipeHolderFields
+                        .add(new Pair<>(k.getNamespace(), String.format("stub.probejs.recipes.%s", namespace)));
             });
 
             List<TSGlobalClassFormatter.ClassFormatter> dummyRecipeClasses = new ArrayList<>();
-            recipeMethodClassPlaceholder.forEach((k, v) -> dummyRecipeClasses.add(new TSDummyClassFormatter.DummyMethodClassFormatter(k, v)));
+            recipeMethodClassPlaceholder.forEach(
+                    (k, v) -> dummyRecipeClasses.add(new TSDummyClassFormatter.DummyMethodClassFormatter(k, v)));
             namespacedClasses.put("stub.probejs.recipes", dummyRecipeClasses);
-            namespacedClasses.put("stub.probejs", Lists.newArrayList(new TSDummyClassFormatter.DummyFieldClassFormatter("RecipeHolder", new ArrayList<>(recipeHolderFields))));
+            namespacedClasses.put("stub.probejs",
+                    Lists.newArrayList(new TSDummyClassFormatter.DummyFieldClassFormatter("RecipeHolder",
+                            new ArrayList<>(recipeHolderFields))));
 
             namespacedClasses.forEach((k, v) -> {
 
@@ -123,13 +137,14 @@ public class ProbeCompiler {
             writer.write("/// <reference path=\"./globals.d.ts\" />\n");
             cachedEvents.putAll(WrappedEventHandler.capturedEvents);
             cachedEvents.forEach((capture, event) -> {
-                        try {
-                            writer.write(String.format("declare function onEvent(name: \"%s\", handler: (event: %s) => void);\n", capture, TSGlobalClassFormatter.resolvedClassName.get(event.getName())));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-            );
+                try {
+                    writer.write(
+                            String.format("declare function onEvent(name: \"%s\", handler: (event: %s) => void);\n",
+                                    capture, TSGlobalClassFormatter.resolvedClassName.get(event.getName())));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -144,15 +159,16 @@ public class ProbeCompiler {
                         try {
 
                             if (TSGlobalClassFormatter.transformValue(value) != null) {
-                                writer.write(String.format("declare const %s: %s;\n", name, TSGlobalClassFormatter.transformValue(value)));
+                                writer.write(String.format("declare const %s: %s;\n", name,
+                                        TSGlobalClassFormatter.transformValue(value)));
                                 return;
                             }
-                            writer.write(String.format("declare const %s: %s;\n", name, TSGlobalClassFormatter.resolvedClassName.get(value.getClass().getName())));
+                            writer.write(String.format("declare const %s: %s;\n", name,
+                                    TSGlobalClassFormatter.resolvedClassName.get(value.getClass().getName())));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
-            );
+                    });
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -167,7 +183,8 @@ public class ProbeCompiler {
                     .filter(clazz -> ServerScriptManager.instance.scriptManager.isClassAllowed(clazz.getName()))
                     .forEach(clazz -> {
                         try {
-                            writer.write(String.format("declare function java(name: \"%s\"): typeof %s;\n", clazz.getName(), TSGlobalClassFormatter.resolvedClassName.get(clazz.getName())));
+                            writer.write(String.format("declare function java(name: \"%s\"): typeof %s;\n",
+                                    clazz.getName(), TSGlobalClassFormatter.resolvedClassName.get(clazz.getName())));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -218,14 +235,16 @@ public class ProbeCompiler {
                         if (EventJS.class.isAssignableFrom(clazz))
                             cachedEvents.put((String) k, (Class<? extends EventJS>) clazz);
                     } catch (ClassNotFoundException e) {
-                        ProbeJS.LOGGER.warn(String.format("Class %s was in the cache, but disappeared in packages now.", v));
+                        ProbeJS.LOGGER
+                                .warn(String.format("Class %s was in the cache, but disappeared in packages now.", v));
                     }
                 }
             });
         }
 
         Set<Class<?>> cachedClasses = new HashSet<>(cachedEvents.values());
-        Set<Class<?>> touchedClasses = compileGlobal(typingDir.resolve("globals.d.ts"), typeMap, bindingEvent, cachedClasses);
+        Set<Class<?>> touchedClasses = compileGlobal(typingDir.resolve("globals.d.ts"), typeMap, bindingEvent,
+                cachedClasses);
         compileEvent(typingDir.resolve("events.d.ts"), cachedEvents);
         compileConstants(typingDir.resolve("constants.d.ts"), bindingEvent);
         compileJava(typingDir.resolve("java.d.ts"), touchedClasses);
