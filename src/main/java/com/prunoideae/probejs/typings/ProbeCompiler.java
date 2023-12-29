@@ -122,11 +122,9 @@ public class ProbeCompiler {
         try (BufferedWriter writer = Files.newBufferedWriter(outFile)) {
             writer.write("/// <reference path=\"./globals.d.ts\" />\n");
             cachedEvents.putAll(WrappedEventHandler.capturedEvents);
-            cachedEvents.forEach(
-                    (capture, event) -> {
+            cachedEvents.forEach((capture, event) -> {
                         try {
                             writer.write(String.format("declare function onEvent(name: \"%s\", handler: (event: %s) => void);\n", capture, TSGlobalClassFormatter.resolvedClassName.get(event.getName())));
-                            writer.write(String.format("declare function captureEvent(name: \"%s\", handler: (event: %s) => void);\n", capture, TSGlobalClassFormatter.resolvedClassName.get(event.getName())));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
