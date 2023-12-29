@@ -12,7 +12,7 @@ public final class WrappedEventHandler implements IEventHandler {
     private final String event;
     private final IEventHandler inner;
 
-    WrappedEventHandler(String event, IEventHandler inner) {
+    public WrappedEventHandler(String event, IEventHandler inner) {
         this.event = event;
         this.inner = inner;
     }
