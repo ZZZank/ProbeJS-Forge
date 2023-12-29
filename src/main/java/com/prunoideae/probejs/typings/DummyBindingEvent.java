@@ -3,10 +3,10 @@ package com.prunoideae.probejs.typings;
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.BaseFunction;
-
 import java.util.HashMap;
 
 public class DummyBindingEvent extends BindingsEvent {
+
     private final HashMap<String, Object> constantDumpMap = new HashMap<>();
     private final HashMap<String, Class<?>> classDumpMap = new HashMap<>();
     private final HashMap<String, BaseFunction> functionDump = new HashMap<>();

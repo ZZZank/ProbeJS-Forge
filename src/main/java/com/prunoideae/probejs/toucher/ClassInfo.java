@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public final class ClassInfo {
+
     private final Class<?> clazz;
 
     public ClassInfo(Class<?> clazz) {
@@ -16,6 +17,7 @@ public final class ClassInfo {
     }
 
     public static class TypeInfo {
+
         private final Type type;
         private final Class<?> classType;
 
@@ -34,22 +36,21 @@ public final class ClassInfo {
 
         public List<Type> getTypeArguments() {
             if (this.type instanceof ParameterizedType) {
-                return Arrays.stream(((ParameterizedType) this.type).getActualTypeArguments())
-                        .collect(Collectors.toList());
+                return Arrays
+                    .stream(((ParameterizedType) this.type).getActualTypeArguments())
+                    .collect(Collectors.toList());
             }
             return new ArrayList<>();
         }
 
         @Override
         public String toString() {
-            return "TypeInfo[" +
-                    "type=" + type + ", " +
-                    "classType=" + classType + ']';
+            return "TypeInfo[" + "type=" + type + ", " + "classType=" + classType + ']';
         }
-
     }
 
     public static class ParamInfo extends TypeInfo {
+
         private final Parameter parameter;
 
         public ParamInfo(Parameter parameter) {
@@ -63,13 +64,12 @@ public final class ClassInfo {
 
         @Override
         public String toString() {
-            return "ParamInfo[" +
-                    "parameter=" + parameter + ']';
+            return "ParamInfo[" + "parameter=" + parameter + ']';
         }
-
     }
 
     public static class MethodInfo {
+
         private final Method method;
 
         public MethodInfo(Method method) {
@@ -85,7 +85,10 @@ public final class ClassInfo {
         }
 
         public List<ParamInfo> getParamsInfo() {
-            return Arrays.stream(this.method.getParameters()).map(ParamInfo::new).collect(Collectors.toList());
+            return Arrays
+                .stream(this.method.getParameters())
+                .map(ParamInfo::new)
+                .collect(Collectors.toList());
         }
 
         public Method getMethod() {
@@ -98,10 +101,8 @@ public final class ClassInfo {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (o == null || getClass() != o.getClass())
-                return false;
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
             MethodInfo that = (MethodInfo) o;
             return method.equals(that.method);
         }
@@ -113,13 +114,12 @@ public final class ClassInfo {
 
         @Override
         public String toString() {
-            return "MethodInfo[" +
-                    "method=" + method + ']';
+            return "MethodInfo[" + "method=" + method + ']';
         }
-
     }
 
     public static class ConstructorInfo {
+
         private final Constructor<?> constructor;
 
         public ConstructorInfo(Constructor<?> constructor) {
@@ -127,18 +127,20 @@ public final class ClassInfo {
         }
 
         public List<ParamInfo> getParamsInfo() {
-            return Arrays.stream(this.constructor.getParameters()).map(ParamInfo::new).collect(Collectors.toList());
+            return Arrays
+                .stream(this.constructor.getParameters())
+                .map(ParamInfo::new)
+                .collect(Collectors.toList());
         }
 
         @Override
         public String toString() {
-            return "ConstructorInfo[" +
-                    "constructor=" + constructor + ']';
+            return "ConstructorInfo[" + "constructor=" + constructor + ']';
         }
-
     }
 
     public static class FieldInfo {
+
         private final Field field;
 
         public FieldInfo(Field field) {
@@ -162,8 +164,9 @@ public final class ClassInfo {
         }
 
         public Object getStaticValue() {
-            if (!this.isStatic())
-                throw new UnsupportedOperationException("Can not access default value of non-static fields");
+            if (!this.isStatic()) throw new UnsupportedOperationException(
+                "Can not access default value of non-static fields"
+            );
             try {
                 return this.field.get(null);
             } catch (IllegalAccessException e) {
@@ -173,10 +176,8 @@ public final class ClassInfo {
 
         @Override
         public String toString() {
-            return "FieldInfo[" +
-                    "field=" + field + ']';
+            return "FieldInfo[" + "field=" + field + ']';
         }
-
     }
 
     public List<MethodInfo> getMethods() {
@@ -186,13 +187,19 @@ public final class ClassInfo {
     public List<MethodInfo> getMethods(boolean allowSuper) {
         Set<Method> superMethod = new HashSet<>();
         this.getSuperClass()
-                .forEach(cls -> superMethod.addAll(Arrays.stream(cls.getMethods()).collect(Collectors.toList())));
-        return Arrays.stream(this.clazz.getMethods()).filter(method -> allowSuper || !superMethod.contains(method))
-                .map(MethodInfo::new).collect(Collectors.toList());
+            .forEach(cls -> superMethod.addAll(Arrays.stream(cls.getMethods()).collect(Collectors.toList())));
+        return Arrays
+            .stream(this.clazz.getMethods())
+            .filter(method -> allowSuper || !superMethod.contains(method))
+            .map(MethodInfo::new)
+            .collect(Collectors.toList());
     }
 
     public List<ConstructorInfo> getConstructors() {
-        return Arrays.stream(this.clazz.getConstructors()).map(ConstructorInfo::new).collect(Collectors.toList());
+        return Arrays
+            .stream(this.clazz.getConstructors())
+            .map(ConstructorInfo::new)
+            .collect(Collectors.toList());
     }
 
     public List<FieldInfo> getFields() {
@@ -202,15 +209,17 @@ public final class ClassInfo {
     public List<FieldInfo> getFields(boolean allowSuper) {
         Set<Field> superField = new HashSet<>();
         this.getSuperClass()
-                .forEach(cls -> superField.addAll(Arrays.stream(cls.getFields()).collect(Collectors.toList())));
-        return Arrays.stream(this.clazz.getFields()).filter(field -> allowSuper || !superField.contains(field))
-                .map(FieldInfo::new).collect(Collectors.toList());
+            .forEach(cls -> superField.addAll(Arrays.stream(cls.getFields()).collect(Collectors.toList())));
+        return Arrays
+            .stream(this.clazz.getFields())
+            .filter(field -> allowSuper || !superField.contains(field))
+            .map(FieldInfo::new)
+            .collect(Collectors.toList());
     }
 
     public List<Class<?>> getSuperClass() {
         List<Class<?>> classes = new ArrayList<>();
-        if (!this.clazz.isInterface())
-            classes.add(clazz.getSuperclass());
+        if (!this.clazz.isInterface()) classes.add(clazz.getSuperclass());
         classes.addAll(Arrays.stream(clazz.getInterfaces()).collect(Collectors.toList()));
         classes.removeIf(Objects::isNull);
         return classes;
@@ -218,8 +227,9 @@ public final class ClassInfo {
 
     public List<Type> getSuperTypes() {
         List<Type> types = new ArrayList<>();
-        if (!this.clazz.isInterface() && this.clazz.getSuperclass() != Object.class)
-            types.add(this.clazz.getGenericSuperclass());
+        if (!this.clazz.isInterface() && this.clazz.getSuperclass() != Object.class) types.add(
+            this.clazz.getGenericSuperclass()
+        );
         types.addAll(Arrays.stream(this.clazz.getGenericInterfaces()).collect(Collectors.toList()));
         types.removeIf(Objects::isNull);
         return types;
@@ -227,8 +237,6 @@ public final class ClassInfo {
 
     @Override
     public String toString() {
-        return "ClassInfo[" +
-                "clazz=" + clazz + ']';
+        return "ClassInfo[" + "clazz=" + clazz + ']';
     }
-
 }

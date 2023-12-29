@@ -2,12 +2,12 @@ package com.prunoideae.probejs.plugin;
 
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.event.IEventHandler;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public final class WrappedEventHandler implements IEventHandler {
+
     private final String event;
     private final IEventHandler handler;
 
@@ -34,13 +34,10 @@ public final class WrappedEventHandler implements IEventHandler {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if (obj == null || obj.getClass() != this.getClass())
-            return false;
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
         WrappedEventHandler that = (WrappedEventHandler) obj;
-        return Objects.equals(this.event, that.event) &&
-                Objects.equals(this.handler, that.handler);
+        return Objects.equals(this.event, that.event) && Objects.equals(this.handler, that.handler);
     }
 
     @Override
@@ -50,8 +47,6 @@ public final class WrappedEventHandler implements IEventHandler {
 
     @Override
     public String toString() {
-        return "WrappedEventHandler[" +
-                "event=" + event + ", " +
-                "inner=" + handler + ']';
+        return "WrappedEventHandler[" + "event=" + event + ", " + "inner=" + handler + ']';
     }
 }

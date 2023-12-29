@@ -10,10 +10,12 @@ import org.apache.logging.log4j.Logger;
  */
 @Mod("probejs")
 public class ProbeJS {
+
     public static final Logger LOGGER = LogManager.getLogger("probejs");
 
     public ProbeJS() {
-        CommandRegistrationEvent.EVENT.register(((dispatcher, selection) -> ProbeCommands.register(dispatcher)));
+        CommandRegistrationEvent.EVENT.register(
+            ((dispatcher, selection) -> ProbeCommands.register(dispatcher))
+        );
     }
-
 }

@@ -10,8 +10,9 @@ public class ProbePlugin extends KubeJSPlugin {
     private static Object onWrappedEvent(BindingsEvent event, Object[] args) {
         for (Object o : ListJS.orSelf(args[0])) {
             String eventStr = String.valueOf(o);
-            event.type.manager.get().events.listen(eventStr,
-                    new WrappedEventHandler(eventStr, (IEventHandler) args[1]));
+            event.type.manager
+                .get()
+                .events.listen(eventStr, new WrappedEventHandler(eventStr, (IEventHandler) args[1]));
         }
         return null;
     }

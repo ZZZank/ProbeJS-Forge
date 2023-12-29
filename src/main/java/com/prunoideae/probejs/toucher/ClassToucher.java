@@ -2,12 +2,12 @@ package com.prunoideae.probejs.toucher;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Primitives;
-
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassToucher {
+
     private final Class<?> baseClass;
     private boolean dumpSuper;
     private boolean dumpMethods;
@@ -15,11 +15,9 @@ public class ClassToucher {
     private boolean dumpConstructors;
 
     private static Class<?> getClassOrComponent(Class<?> clazz) {
-        if (clazz == null)
-            return null;
+        if (clazz == null) return null;
 
-        while (clazz.isArray())
-            clazz = clazz.getComponentType();
+        while (clazz.isArray()) clazz = clazz.getComponentType();
         return clazz;
     }
 
@@ -27,8 +25,13 @@ public class ClassToucher {
         this(baseClass, true, true, true, true);
     }
 
-    public ClassToucher(Class<?> baseClass, boolean dumpSuper, boolean dumpFields, boolean dumpMethods,
-            boolean dumpConstructors) {
+    public ClassToucher(
+        Class<?> baseClass,
+        boolean dumpSuper,
+        boolean dumpFields,
+        boolean dumpMethods,
+        boolean dumpConstructors
+    ) {
         this.baseClass = baseClass;
         this.dumpConstructors = dumpConstructors;
         this.dumpSuper = dumpSuper;
@@ -57,28 +60,41 @@ public class ClassToucher {
     }
 
     private static List<Class<?>> touchType(Type info) {
-        if (info instanceof TypeVariable)
-            return new ArrayList<>();
+        if (info instanceof TypeVariable) return new ArrayList<>();
         if (info instanceof WildcardType) {
-            List<Type> bounds = Arrays.stream(((WildcardType) info).getLowerBounds()).collect(Collectors.toList());
+            List<Type> bounds = Arrays
+                .stream(((WildcardType) info).getLowerBounds())
+                .collect(Collectors.toList());
             bounds.addAll(Arrays.stream(((WildcardType) info).getUpperBounds()).collect(Collectors.toList()));
-            return bounds.stream().map(ClassToucher::touchType).flatMap(Collection::stream)
-                    .collect(Collectors.toList());
+            return bounds
+                .stream()
+                .map(ClassToucher::touchType)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
         }
-        if (info instanceof GenericArrayType)
-            return touchType(((GenericArrayType) info).getGenericComponentType());
+        if (info instanceof GenericArrayType) return touchType(
+            ((GenericArrayType) info).getGenericComponentType()
+        );
         if (info instanceof ParameterizedType) {
             List<Type> types = new ArrayList<>();
             types.add(((ParameterizedType) info).getRawType());
             types.addAll(
-                    Arrays.stream(((ParameterizedType) info).getActualTypeArguments()).collect(Collectors.toList()));
-            return types.stream().map(ClassToucher::touchType).flatMap(Collection::stream).collect(Collectors.toList());
+                Arrays
+                    .stream(((ParameterizedType) info).getActualTypeArguments())
+                    .collect(Collectors.toList())
+            );
+            return types
+                .stream()
+                .map(ClassToucher::touchType)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
         }
         if (info instanceof Class) {
             return Lists.newArrayList((Class<?>) info);
         }
         throw new UnsupportedOperationException(
-                String.format("Unknown type! %s (%s)", info.getTypeName(), info.getClass()));
+            String.format("Unknown type! %s (%s)", info.getTypeName(), info.getClass())
+        );
     }
 
     public Set<Class<?>> touchClass() {
@@ -89,23 +105,36 @@ public class ClassToucher {
             baseInfo.getSuperTypes().forEach(type -> touched.addAll(touchType(type)));
         }
 
-        if (this.dumpFields)
-            baseInfo.getFields().forEach(fieldInfo -> touched.addAll(touchType(fieldInfo.getTypeInfo().getType())));
-        if (this.dumpMethods)
-            baseInfo.getMethods().forEach(methodInfo -> {
-                methodInfo.getParamsInfo().forEach(paramInfo -> touched.addAll(touchType(paramInfo.getType())));
-                touched.addAll(touchType(methodInfo.getReturnTypeInfo().getType()));
-            });
-        if (this.dumpConstructors)
-            baseInfo.getConstructors().forEach(constructorInfo -> constructorInfo.getParamsInfo()
-                    .forEach(paramInfo -> touched.addAll(touchType(paramInfo.getType()))));
-
+        if (this.dumpFields) {
+            baseInfo
+                .getFields()
+                .forEach(fieldInfo -> touched.addAll(touchType(fieldInfo.getTypeInfo().getType())));
+        }
+        if (this.dumpMethods) {
+            baseInfo
+                .getMethods()
+                .forEach(methodInfo -> {
+                    methodInfo
+                        .getParamsInfo()
+                        .forEach(paramInfo -> touched.addAll(touchType(paramInfo.getType())));
+                    touched.addAll(touchType(methodInfo.getReturnTypeInfo().getType()));
+                });
+        }
+        if (this.dumpConstructors) {
+            baseInfo
+                .getConstructors()
+                .forEach(constructorInfo ->
+                    constructorInfo
+                        .getParamsInfo()
+                        .forEach(paramInfo -> touched.addAll(touchType(paramInfo.getType())))
+                );
+        }
         return touched
-                .stream()
-                .filter(Objects::nonNull)
-                .map(ClassToucher::getClassOrComponent)
-                .filter(clazz -> !Primitives.allPrimitiveTypes().contains(clazz))
-                .collect(Collectors.toSet());
+            .stream()
+            .filter(Objects::nonNull)
+            .map(ClassToucher::getClassOrComponent)
+            .filter(clazz -> !Primitives.allPrimitiveTypes().contains(clazz))
+            .collect(Collectors.toSet());
     }
 
     public Set<Class<?>> touchClassRecursive() {
@@ -113,13 +142,15 @@ public class ClassToucher {
         Set<Class<?>> currentTouched = this.touchClass();
         while (!currentTouched.isEmpty()) {
             Set<Class<?>> nextTouched = new HashSet<>();
-            currentTouched.forEach(
-                    clazz -> new ClassToucher(clazz)
-                            .touchClass()
-                            .stream()
-                            .map(ClassToucher::getClassOrComponent)
-                            .forEach(nextTouched::add));
-            currentTouched = nextTouched.stream().filter(clazz -> !touched.contains(clazz)).collect(Collectors.toSet());
+            currentTouched.forEach(clazz ->
+                new ClassToucher(clazz)
+                    .touchClass()
+                    .stream()
+                    .map(ClassToucher::getClassOrComponent)
+                    .forEach(nextTouched::add)
+            );
+            currentTouched =
+                nextTouched.stream().filter(clazz -> !touched.contains(clazz)).collect(Collectors.toSet());
             touched.addAll(currentTouched);
         }
         return touched;
