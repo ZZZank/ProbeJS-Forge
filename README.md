@@ -27,10 +27,9 @@ Auto-completion, type-hinting for most of the functions and classes:
 
 1. Run the game, and use the `/probejs dump` commmand **only** after the events of interest are fired, then dump and
    regenerate typings as before.
-2. Reload your IDE if your IDE doesn't know about the changes of typings, you will see the `onEvent` and `captureEvent`
-   with correct typings now.
-3. If you want to remove the mod, don't forget to replace all `captureEvent` back to `onEvent`.
-4. v1.4 allows dumped events to be persisted between dumps, no matter actually they're fired or not in current dump, if
+2. Reload your IDE if your IDE doesn't know about the changes of typings, you will see those `onEvent` with correct
+   typings now.
+3. v1.4 allows dumped events to be persisted between dumps, no matter actually they're fired or not in current dump, if
    an event is missing (mostly from the removal of mods), cached events will be automatically removed too. If you want
    to clear the cache manually, use `/probejs clear_cache`.
 
