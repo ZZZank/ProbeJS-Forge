@@ -25,15 +25,12 @@ Auto-completion, type-hinting for most of the functions and classes:
 
 ## 3. Event Dump
 
-1. Replace all `onEvent` in your scripts to `captureEvent`, this is a event capturer implemented in ProbeJS functioning
-   identical to the original, but with a little bit extra function - it will report to ProbeJS when the event is fired,
-   so we can get into data of events.
-2. Run the game, and use the `/probejs dump` commmand **only** after the events of interest are fired, then dump and
+1. Run the game, and use the `/probejs dump` commmand **only** after the events of interest are fired, then dump and
    regenerate typings as before.
-3. Reload your IDE if your IDE doesn't know about the changes of typings, you will see the `onEvent` and `captureEvent`
+2. Reload your IDE if your IDE doesn't know about the changes of typings, you will see the `onEvent` and `captureEvent`
    with correct typings now.
-4. If you want to remove the mod, don't forget to replace all `captureEvent` back to `onEvent`.
-5. v1.4 allows dumped events to be persisted between dumps, no matter actually they're fired or not in current dump, if
+3. If you want to remove the mod, don't forget to replace all `captureEvent` back to `onEvent`.
+4. v1.4 allows dumped events to be persisted between dumps, no matter actually they're fired or not in current dump, if
    an event is missing (mostly from the removal of mods), cached events will be automatically removed too. If you want
    to clear the cache manually, use `/probejs clear_cache`.
 
