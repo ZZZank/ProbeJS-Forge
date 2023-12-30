@@ -3,6 +3,7 @@ package com.prunoideae.probejs.typings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.prunoideae.probejs.ProbeConfig;
 import dev.latvian.kubejs.KubeJSPaths;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -130,8 +131,10 @@ public class KubeCompiler {
         writer.write(gson.toJson(kubeDump.toSnippet()));
         writer.flush();
         // client & server & startup
-        kubeDump.writeDumpTags(KubeJSPaths.SERVER_SCRIPTS.resolve("dumps.js"));
-        kubeDump.writeDumpTags(KubeJSPaths.STARTUP_SCRIPTS.resolve("dumps.js"));
-        kubeDump.writeDumpTags(KubeJSPaths.CLIENT_SCRIPTS.resolve("dumps.js"));
+        if (ProbeConfig.dumpExport) {
+            kubeDump.writeDumpTags(KubeJSPaths.SERVER_SCRIPTS.resolve("dumps.js"));
+            kubeDump.writeDumpTags(KubeJSPaths.STARTUP_SCRIPTS.resolve("dumps.js"));
+            kubeDump.writeDumpTags(KubeJSPaths.CLIENT_SCRIPTS.resolve("dumps.js"));
+        }
     }
 }
