@@ -38,14 +38,12 @@ public class KubeCompiler {
             for (Map.Entry<String, List<String>> entry : this.registries.entrySet()) {
                 String type = entry.getKey();
                 List<String> members = entry.getValue();
+
                 Map<String, List<String>> byModMembers = new HashMap<>();
                 members
                     .stream()
-                    .map(rl -> rl.split(":"))
-                    .forEach(rl -> {
-                        if (!byModMembers.containsKey(rl[0])) byModMembers.put(rl[0], new ArrayList<>());
-                        byModMembers.get(rl[0]).add(rl[1]);
-                    });
+                    .map(rl -> rl.split(":", 2))
+                    .forEach(rl -> byModMembers.computeIfAbsent(rl[0], __ -> new ArrayList<>()).add(rl[1]));
                 byModMembers.forEach((mod, modMembers) -> {
                     JsonObject modMembersJson = new JsonObject();
                     JsonArray prefixes = new JsonArray();
@@ -63,14 +61,12 @@ public class KubeCompiler {
             for (Map.Entry<String, Map<String, List<String>>> entry : this.tags.entrySet()) {
                 String type = entry.getKey();
                 List<String> members = new ArrayList<>(entry.getValue().keySet());
+
                 Map<String, List<String>> byModMembers = new HashMap<>();
                 members
                     .stream()
                     .map(rl -> rl.split(":"))
-                    .forEach(rl -> {
-                        if (!byModMembers.containsKey(rl[0])) byModMembers.put(rl[0], new ArrayList<>());
-                        byModMembers.get(rl[0]).add(rl[1]);
-                    });
+                    .forEach(rl -> byModMembers.computeIfAbsent(rl[0], __ -> new ArrayList<>()).add(rl[1]));
                 byModMembers.forEach((mod, modMembers) -> {
                     JsonObject modMembersJson = new JsonObject();
                     JsonArray prefixes = new JsonArray();
@@ -93,7 +89,7 @@ public class KubeCompiler {
             this.tags.forEach((type, members) -> {
                     Map<String, List<String>> byMods = new HashMap<>();
                     members.forEach((resourceLocation, tagMembers) -> {
-                        String[] rl = resourceLocation.split(":");
+                        String[] rl = resourceLocation.split(":", 2);
                         rl[1] = rl[1].replace("/", "_");
                         byMods
                             .computeIfAbsent(rl[0], key -> new ArrayList<>())
@@ -116,23 +112,26 @@ public class KubeCompiler {
 
     public static void fromKubeDump() throws IOException {
         Path kubePath = KubeJSPaths.EXPORTED.resolve("kubejs-server-export.json");
-        if (kubePath.toFile().canRead()) {
-            Path codePath = KubeJSPaths.DIRECTORY.resolve(".vscode");
-            if (Files.notExists(codePath)) {
-                Files.createDirectories(codePath);
-            }
-            Path codeFile = codePath.resolve("probe.code-snippets");
-
-            Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(kubePath);
-            KubeDump kubeDump = gson.fromJson(reader, KubeDump.class);
-            BufferedWriter writer = Files.newBufferedWriter(codeFile);
-            writer.write(gson.toJson(kubeDump.toSnippet()));
-            writer.flush();
-
-            kubeDump.writeDumpTags(KubeJSPaths.SERVER_SCRIPTS.resolve("dumps.js"));
-            kubeDump.writeDumpTags(KubeJSPaths.STARTUP_SCRIPTS.resolve("dumps.js"));
-            kubeDump.writeDumpTags(KubeJSPaths.CLIENT_SCRIPTS.resolve("dumps.js"));
+        if (!kubePath.toFile().canRead()) {
+            throw new IOException("Unable to read 'kubejs-server-export.json'");
         }
+
+        Path codePath = KubeJSPaths.DIRECTORY.resolve(".vscode");
+        if (Files.notExists(codePath)) {
+            Files.createDirectories(codePath);
+        }
+        Path codeFile = codePath.resolve("probe.code-snippets");
+
+        Gson gson = new Gson();
+        Reader reader = Files.newBufferedReader(kubePath);
+        KubeDump kubeDump = gson.fromJson(reader, KubeDump.class);
+        // code-snippets
+        BufferedWriter writer = Files.newBufferedWriter(codeFile);
+        writer.write(gson.toJson(kubeDump.toSnippet()));
+        writer.flush();
+        // client & server & startup
+        kubeDump.writeDumpTags(KubeJSPaths.SERVER_SCRIPTS.resolve("dumps.js"));
+        kubeDump.writeDumpTags(KubeJSPaths.STARTUP_SCRIPTS.resolve("dumps.js"));
+        kubeDump.writeDumpTags(KubeJSPaths.CLIENT_SCRIPTS.resolve("dumps.js"));
     }
 }

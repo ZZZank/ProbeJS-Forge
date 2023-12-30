@@ -26,11 +26,22 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ProbeCompiler {
 
+    static final Path JSCONFIG_PATH = KubeJSPaths.DIRECTORY.resolve("jsconfig.json");
+    static final Path ROOT_DIR = KubeJSPaths.DIRECTORY.resolve("kubetypings");
+    static final Path GLOBALS_PATH = ROOT_DIR.resolve("globals.d.ts");
+    static final Path EVENT_PATH = ROOT_DIR.resolve("events.d.ts");
+    static final Path CONSTANTS_PATH = ROOT_DIR.resolve("constants.d.ts");
+    static final Path JAVA_PATH = ROOT_DIR.resolve("java.d.ts");
+    static final Path INDEX_PATH = ROOT_DIR.resolve("index.d.ts");
+    static final Path CACHED_EVENT_PATH = KubeJSPaths.EXPORTED.resolve("cachedEvents.json");
+
     private static void resolveClassname(Set<Class<?>> globalClasses, Set<Class<?>> exportedClasses) {
         Set<String> usedNames = new HashSet<>();
         for (Class<?> clazz : globalClasses) {
-            if (TSGlobalClassFormatter.resolvedClassName.containsKey(clazz.getName())) continue;
             String fullName = clazz.getName();
+            if (TSGlobalClassFormatter.resolvedClassName.containsKey(fullName)) {
+                continue;
+            }
             String[] paths = fullName.split("\\.");
             String resolvedName = exportedClasses.contains(clazz) ? "" : "Internal.";
             resolvedName +=
@@ -38,7 +49,7 @@ public class ProbeCompiler {
                     ? NameGuard.compileClasspath(paths)
                     : paths[paths.length - 1];
             usedNames.add(resolvedName);
-            TSGlobalClassFormatter.resolvedClassName.put(clazz.getName(), resolvedName);
+            TSGlobalClassFormatter.resolvedClassName.put(fullName, resolvedName);
         }
     }
 
@@ -171,9 +182,9 @@ public class ProbeCompiler {
         return globalClasses;
     }
 
-    public static void compileEvent(Path outFile, Map<String, Class<? extends EventJS>> cachedEvents) {
+    public static void compileEvent(Path targetFile, Map<String, Class<? extends EventJS>> cachedEvents) {
         ProbeJS.LOGGER.info("Compiling captured events...");
-        try (BufferedWriter writer = Files.newBufferedWriter(outFile)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(targetFile)) {
             writer.write("/// <reference path=\"./globals.d.ts\" />\n");
             cachedEvents.putAll(WrappedEventHandler.capturedEvents);
             cachedEvents.forEach((capture, event) -> {
@@ -194,9 +205,9 @@ public class ProbeCompiler {
         }
     }
 
-    public static void compileConstants(Path outFile, DummyBindingEvent bindingEvent) {
+    public static void compileConstants(Path targetFile, DummyBindingEvent bindingEvent) {
         ProbeJS.LOGGER.info("Compiling constants definitions...");
-        try (BufferedWriter writer = Files.newBufferedWriter(outFile)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(targetFile)) {
             writer.write("/// <reference path=\"./globals.d.ts\" />\n");
             bindingEvent
                 .getConstantDumpMap()
@@ -228,9 +239,9 @@ public class ProbeCompiler {
         }
     }
 
-    public static void compileJava(Path outFile, Set<Class<?>> classes) {
+    public static void compileJava(Path targetFile, Set<Class<?>> classes) {
         ProbeJS.LOGGER.info("Compiling java() definitions...");
-        try (BufferedWriter writer = Files.newBufferedWriter(outFile)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(targetFile)) {
             writer.write("/// <reference path=\"./globals.d.ts\" />\n");
             classes
                 .stream()
@@ -254,8 +265,8 @@ public class ProbeCompiler {
         }
     }
 
-    public static void compileIndex(Path outFile) {
-        try (BufferedWriter writer = Files.newBufferedWriter(outFile)) {
+    public static void compileIndex(Path targetFile) {
+        try (BufferedWriter writer = Files.newBufferedWriter(targetFile)) {
             writer.write("/// <reference path=\"./globals.d.ts\" />\n");
             writer.write("/// <reference path=\"./events.d.ts\" />\n");
             writer.write("/// <reference path=\"./constants.d.ts\" />\n");
@@ -265,8 +276,8 @@ public class ProbeCompiler {
         }
     }
 
-    public static void compileJSConfig(Path outFile) {
-        try (BufferedWriter writer = Files.newBufferedWriter(outFile)) {
+    public static void compileJSConfig(Path targetFile) {
+        try (BufferedWriter writer = Files.newBufferedWriter(targetFile)) {
             writer.write(
                 "{\"compilerOptions\": {\"lib\": [\"ES5\", \"ES2015\"],\"typeRoots\": [\"kubetypings\"]}}"
             );
@@ -275,9 +286,35 @@ public class ProbeCompiler {
         }
     }
 
+    public static Map<String, Class<? extends EventJS>> fetchCachedEvents(Path targetFile)
+        throws IOException {
+        Map<String, Class<? extends EventJS>> cachedEvents = new HashMap<>();
+        if (!Files.exists(targetFile)) {
+            return cachedEvents;
+        }
+        Map<?, ?> cachedMap = new Gson().fromJson(Files.newBufferedReader(targetFile), Map.class);
+        cachedMap.forEach((k, v) -> {
+            if (k instanceof String && v instanceof String) {
+                try {
+                    Class<?> clazz = Class.forName((String) v);
+                    if (EventJS.class.isAssignableFrom(clazz)) cachedEvents.put(
+                        (String) k,
+                        (Class<? extends EventJS>) clazz
+                    );
+                } catch (ClassNotFoundException e) {
+                    ProbeJS.LOGGER.warn(
+                        String.format("Class %s was in the cache, but disappeared in packages now.", v)
+                    );
+                }
+            }
+        });
+        return cachedEvents;
+    }
+
     public static void compileDeclarations() throws IOException {
-        Path typingDir = KubeJSPaths.DIRECTORY.resolve("kubetypings");
-        if (Files.notExists(typingDir)) Files.createDirectories(typingDir);
+        if (Files.notExists(ROOT_DIR)) {
+            Files.createDirectories(ROOT_DIR);
+        }
         DummyBindingEvent bindingEvent = new DummyBindingEvent(ServerScriptManager.instance.scriptManager);
         Map<ResourceLocation, RecipeTypeJS> typeMap = new HashMap<>();
         RegisterRecipeHandlersEvent recipeEvent = new RegisterRecipeHandlersEvent(typeMap);
@@ -285,39 +322,16 @@ public class ProbeCompiler {
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
 
-        Map<String, Class<? extends EventJS>> cachedEvents = new HashMap<>();
-        Path cachedEventPath = KubeJSPaths.EXPORTED.resolve("cachedEvents.json");
-        if (Files.exists(cachedEventPath)) {
-            Map<?, ?> cachedMap = new Gson().fromJson(Files.newBufferedReader(cachedEventPath), Map.class);
-            cachedMap.forEach((k, v) -> {
-                if (k instanceof String && v instanceof String) {
-                    try {
-                        Class<?> clazz = Class.forName((String) v);
-                        if (EventJS.class.isAssignableFrom(clazz)) cachedEvents.put(
-                            (String) k,
-                            (Class<? extends EventJS>) clazz
-                        );
-                    } catch (ClassNotFoundException e) {
-                        ProbeJS.LOGGER.warn(
-                            String.format("Class %s was in the cache, but disappeared in packages now.", v)
-                        );
-                    }
-                }
-            });
-        }
-
+        Map<String, Class<? extends EventJS>> cachedEvents = fetchCachedEvents(CACHED_EVENT_PATH);
         Set<Class<?>> cachedClasses = new HashSet<>(cachedEvents.values());
-        Set<Class<?>> touchedClasses = compileGlobal(
-            typingDir.resolve("globals.d.ts"),
-            typeMap,
-            bindingEvent,
-            cachedClasses
-        );
-        compileEvent(typingDir.resolve("events.d.ts"), cachedEvents);
-        compileConstants(typingDir.resolve("constants.d.ts"), bindingEvent);
-        compileJava(typingDir.resolve("java.d.ts"), touchedClasses);
-        compileIndex(typingDir.resolve("index.d.ts"));
-        try (BufferedWriter writer = Files.newBufferedWriter(cachedEventPath)) {
+        //definition
+        Set<Class<?>> touchedClasses = compileGlobal(GLOBALS_PATH, typeMap, bindingEvent, cachedClasses);
+        compileEvent(EVENT_PATH, cachedEvents);
+        compileConstants(CONSTANTS_PATH, bindingEvent);
+        compileJava(JAVA_PATH, touchedClasses);
+        compileIndex(INDEX_PATH);
+        //put cached event
+        try (BufferedWriter writer = Files.newBufferedWriter(CACHED_EVENT_PATH)) {
             Map<String, String> eventsCache = new HashMap<>();
             cachedEvents.forEach((k, v) -> eventsCache.put(k, v.getName()));
             new Gson().toJson(eventsCache, writer);
@@ -325,9 +339,10 @@ public class ProbeCompiler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (Files.notExists(KubeJSPaths.DIRECTORY.resolve("jsconfig.json"))) compileJSConfig(
-            KubeJSPaths.DIRECTORY.resolve("jsconfig.json")
-        );
+        //jsconfig
+        if (Files.notExists(JSCONFIG_PATH)) {
+            compileJSConfig(JSCONFIG_PATH);
+        }
         ProbeJS.LOGGER.info("All done!");
     }
 }

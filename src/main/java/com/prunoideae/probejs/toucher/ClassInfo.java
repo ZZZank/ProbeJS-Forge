@@ -45,7 +45,7 @@ public final class ClassInfo {
 
         @Override
         public String toString() {
-            return "TypeInfo[" + "type=" + type + ", " + "classType=" + classType + ']';
+            return "TypeInfo[type=" + type + ", classType=" + classType + ']';
         }
     }
 
@@ -164,9 +164,9 @@ public final class ClassInfo {
         }
 
         public Object getStaticValue() {
-            if (!this.isStatic()) throw new UnsupportedOperationException(
-                "Can not access default value of non-static fields"
-            );
+            if (!this.isStatic()) {
+                throw new UnsupportedOperationException("Can not access default value of non-static fields");
+            }
             try {
                 return this.field.get(null);
             } catch (IllegalAccessException e) {

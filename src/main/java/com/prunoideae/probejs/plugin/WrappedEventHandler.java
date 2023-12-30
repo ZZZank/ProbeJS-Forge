@@ -8,24 +8,24 @@ import java.util.Objects;
 
 public final class WrappedEventHandler implements IEventHandler {
 
-    private final String event;
+    private final String eventName;
     private final IEventHandler handler;
 
     public static Map<String, Class<? extends EventJS>> capturedEvents = new HashMap<>();
 
     @Override
     public void onEvent(EventJS eventJS) {
-        capturedEvents.put(this.event, eventJS.getClass());
+        capturedEvents.put(this.eventName, eventJS.getClass());
         this.handler.onEvent(eventJS);
     }
 
     public WrappedEventHandler(String event, IEventHandler inner) {
-        this.event = event;
+        this.eventName = event;
         this.handler = inner;
     }
 
     public String event() {
-        return event;
+        return eventName;
     }
 
     public IEventHandler inner() {
@@ -34,19 +34,23 @@ public final class WrappedEventHandler implements IEventHandler {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
         WrappedEventHandler that = (WrappedEventHandler) obj;
-        return Objects.equals(this.event, that.event) && Objects.equals(this.handler, that.handler);
+        return Objects.equals(this.eventName, that.eventName) && Objects.equals(this.handler, that.handler);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(event, handler);
+        return Objects.hash(eventName, handler);
     }
 
     @Override
     public String toString() {
-        return "WrappedEventHandler[" + "event=" + event + ", " + "inner=" + handler + ']';
+        return "WrappedEventHandler[event=" + eventName + ", inner=" + handler + ']';
     }
 }

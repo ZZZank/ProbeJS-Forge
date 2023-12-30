@@ -148,7 +148,9 @@ public class TSGlobalClassFormatter {
                     .collect(Collectors.joining(", ")),
                 new TypeFormatter(this.methodInfo.getReturnTypeInfo()).format()
             );
-            if (this.methodInfo.isStatic()) formatted = "static " + formatted;
+            if (this.methodInfo.isStatic()) {
+                formatted = "static " + formatted;
+            }
             return formatted;
         }
     }
@@ -196,7 +198,7 @@ public class TSGlobalClassFormatter {
 
         @Override
         public String format() {
-            return String.format(
+            String formatted = String.format(
                 "constructor(%s);",
                 this.constructorInfo.getParamsInfo()
                     .stream()
@@ -204,6 +206,7 @@ public class TSGlobalClassFormatter {
                     .map(ParameterFormater::format)
                     .collect(Collectors.joining(", "))
             );
+            return formatted;
         }
     }
 
