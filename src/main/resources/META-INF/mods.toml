@@ -7,7 +7,7 @@ license = "GNU LGPLv3"
 modId = "probejs"
 version = "${version}"
 displayName = "ProbeJS"
-authors = "Prunoideae"
+authors = "Prunoideae & ZZZank"
 description = '''
 KubeJS data dumper
 '''
@@ -16,6 +16,6 @@ license = "GNU LGPLv3"
 [[dependencies.probejs]]
 modId = "kubejs"
 mandatory = true
-versionRange = "[1605.3.13-build.49,)"
+versionRange = "[1605.3.19-build.299,)"
 ordering = "AFTER"
 side = "BOTH"
