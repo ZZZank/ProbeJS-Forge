@@ -19,7 +19,7 @@ public class OnForgeEventMixin {
         CallbackInfoReturnable<Object> callback
     ) {
         if (
-            objects.length >= 2 && objects[0] instanceof CharSequence
+            objects.length > 1 && objects[0] instanceof CharSequence
             // && !ProbeConfig.INSTANCE.disabled
         ) {
             try {
