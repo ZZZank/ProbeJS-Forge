@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.mojang.datafixers.util.Pair;
 import com.probejs.ProbeJS;
 import com.probejs.plugin.WrappedEventHandler;
+import com.probejs.plugin.WrappedForgeEventHandler;
 import com.probejs.toucher.ClassInfo;
 import com.probejs.toucher.ClassToucher;
 import dev.latvian.kubejs.KubeJSPaths;
@@ -186,12 +187,28 @@ public class ProbeCompiler {
         ProbeJS.LOGGER.info("Compiling captured events...");
         try (BufferedWriter writer = Files.newBufferedWriter(targetFile)) {
             writer.write("/// <reference path=\"./globals.d.ts\" />\n");
+            // KubeJS Event
             cachedEvents.putAll(WrappedEventHandler.capturedEvents);
             cachedEvents.forEach((capture, event) -> {
                 try {
                     writer.write(
                         String.format(
                             "declare function onEvent(name: \"%s\", handler: (event: %s) => void);\n",
+                            capture,
+                            TSGlobalClassFormatter.resolvedClassName.get(event.getName())
+                        )
+                    );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            // Forge Event
+            // TODO: cache
+            WrappedForgeEventHandler.capturedEvents.forEach((capture, event) -> {
+                try {
+                    writer.write(
+                        String.format(
+                            "declare function onForgeEvent(name: \"%s\", handler: (event: %s) => void);\n",
                             capture,
                             TSGlobalClassFormatter.resolvedClassName.get(event.getName())
                         )
