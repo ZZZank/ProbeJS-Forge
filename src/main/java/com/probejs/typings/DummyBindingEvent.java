@@ -1,4 +1,4 @@
-package com.prunoideae.probejs.typings;
+package com.probejs.typings;
 
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptManager;

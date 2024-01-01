@@ -1,4 +1,4 @@
-package com.prunoideae.probejs;
+package com.probejs;
 
 public class ProbeConfig {
 

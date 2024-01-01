@@ -1,8 +1,8 @@
-package com.prunoideae.probejs.typings;
+package com.probejs.typings;
 
 import com.mojang.datafixers.util.Pair;
-import com.prunoideae.probejs.ProbeJS;
-import com.prunoideae.probejs.toucher.ClassInfo;
+import com.probejs.ProbeJS;
+import com.probejs.toucher.ClassInfo;
 import dev.latvian.kubejs.recipe.RecipeEventJS;
 //
 import java.lang.reflect.*;

@@ -1,4 +1,4 @@
-package com.prunoideae.probejs.toucher;
+package com.probejs.toucher;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapForJS;

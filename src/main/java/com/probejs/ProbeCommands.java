@@ -1,13 +1,13 @@
-package com.prunoideae.probejs;
+package com.probejs;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import com.prunoideae.probejs.typings.KubeCompiler;
-import com.prunoideae.probejs.typings.ProbeCompiler;
-import com.prunoideae.probejs.typings.SpecialFormatters;
+import com.probejs.typings.KubeCompiler;
+import com.probejs.typings.ProbeCompiler;
+import com.probejs.typings.SpecialFormatters;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.server.ServerSettings;
 import java.nio.file.Files;

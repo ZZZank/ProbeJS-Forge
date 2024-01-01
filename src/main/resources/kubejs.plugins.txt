@@ -1,1 +1,1 @@
-com.prunoideae.probejs.plugin.ProbePlugin
+com.probejs.plugin.ProbePlugin

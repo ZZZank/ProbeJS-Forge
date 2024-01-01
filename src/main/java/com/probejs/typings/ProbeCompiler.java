@@ -1,13 +1,13 @@
-package com.prunoideae.probejs.typings;
+package com.probejs.typings;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Primitives;
 import com.google.gson.Gson;
 import com.mojang.datafixers.util.Pair;
-import com.prunoideae.probejs.ProbeJS;
-import com.prunoideae.probejs.plugin.WrappedEventHandler;
-import com.prunoideae.probejs.toucher.ClassInfo;
-import com.prunoideae.probejs.toucher.ClassToucher;
+import com.probejs.ProbeJS;
+import com.probejs.plugin.WrappedEventHandler;
+import com.probejs.toucher.ClassInfo;
+import com.probejs.toucher.ClassToucher;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;

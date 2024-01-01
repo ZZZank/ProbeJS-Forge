@@ -1,9 +1,9 @@
-package com.prunoideae.probejs.typings;
+package com.probejs.typings;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.prunoideae.probejs.ProbeConfig;
+import com.probejs.ProbeConfig;
 import dev.latvian.kubejs.KubeJSPaths;
 import java.io.BufferedWriter;
 import java.io.IOException;

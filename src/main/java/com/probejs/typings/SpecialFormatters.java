@@ -1,7 +1,7 @@
-package com.prunoideae.probejs.typings;
+package com.probejs.typings;
 
 import com.google.gson.Gson;
-import com.prunoideae.probejs.toucher.ClassInfo;
+import com.probejs.toucher.ClassInfo;
 import dev.latvian.kubejs.recipe.RecipeEventJS;
 //
 import java.lang.reflect.Type;

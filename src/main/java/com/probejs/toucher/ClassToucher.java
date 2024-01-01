@@ -1,4 +1,4 @@
-package com.prunoideae.probejs.toucher;
+package com.probejs.toucher;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Primitives;

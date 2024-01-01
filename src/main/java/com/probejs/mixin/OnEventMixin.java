@@ -1,6 +1,6 @@
-package com.prunoideae.probejs.mixin;
+package com.probejs.mixin;
 
-import com.prunoideae.probejs.plugin.WrappedEventHandler;
+import com.probejs.plugin.WrappedEventHandler;
 import dev.latvian.kubejs.event.EventsJS;
 import dev.latvian.kubejs.event.IEventHandler;
 import org.spongepowered.asm.mixin.Mixin;

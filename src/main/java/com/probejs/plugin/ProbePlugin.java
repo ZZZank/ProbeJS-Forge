@@ -1,4 +1,4 @@
-package com.prunoideae.probejs.plugin;
+package com.probejs.plugin;
 
 import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.event.IEventHandler;

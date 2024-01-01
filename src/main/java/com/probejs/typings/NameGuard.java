@@ -1,4 +1,4 @@
-package com.prunoideae.probejs.typings;
+package com.probejs.typings;
 
 import java.util.Arrays;
 import java.util.HashSet;

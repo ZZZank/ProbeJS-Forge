@@ -1,4 +1,4 @@
-package com.prunoideae.probejs;
+package com.probejs;
 
 import me.shedaniel.architectury.event.events.CommandRegistrationEvent;
 import net.minecraftforge.fml.common.Mod;

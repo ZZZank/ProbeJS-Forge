@@ -1,7 +1,7 @@
-package com.prunoideae.probejs.typings;
+package com.probejs.typings;
 
 import com.mojang.datafixers.util.Pair;
-import com.prunoideae.probejs.toucher.ClassInfo;
+import com.probejs.toucher.ClassInfo;
 //
 import java.util.ArrayList;
 import java.util.Collections;
