@@ -1,5 +1,6 @@
 package com.probejs.mixin;
 
+import com.probejs.ProbeConfig;
 import com.probejs.ProbeJS;
 import com.probejs.plugin.WrappedForgeEventHandler;
 import dev.latvian.kubejs.forge.BuiltinKubeJSForgePlugin;
@@ -18,10 +19,7 @@ public class OnForgeEventMixin {
         Object[] objects,
         CallbackInfoReturnable<Object> callback
     ) {
-        if (
-            objects.length > 1 && objects[0] instanceof CharSequence
-            // && !ProbeConfig.INSTANCE.disabled
-        ) {
+        if (objects.length > 1 && objects[0] instanceof CharSequence && !ProbeConfig.INSTANCE.disabled) {
             try {
                 Class<?> forName = Class.forName(objects[0].toString());
                 WrappedForgeEventHandler.capturedEvents.put(objects[0].toString(), forName);

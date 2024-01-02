@@ -3,7 +3,6 @@ package com.probejs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.latvian.kubejs.KubeJSPaths;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +10,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 public class ProbeConfig {
+
     public static ProbeConfig INSTANCE = new ProbeConfig();
     private static final Path CONFIG = KubeJSPaths.CONFIG.resolve("probejs.json");
     public boolean dumpExport = true;
@@ -19,7 +19,6 @@ public class ProbeConfig {
     public boolean vanillaOrder = true;
     public boolean exportClassNames = false;
     public boolean autoExport = true;
-
 
     private static <E> E fetchPropertyOrDefault(Object key, Map<?, ?> values, E defaultValue) {
         Object v = values.get(key);
