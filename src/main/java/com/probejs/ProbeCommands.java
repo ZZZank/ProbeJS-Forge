@@ -26,7 +26,7 @@ import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.level.storage.WorldData;
 
 public class ProbeCommands {
-
+// TODO: try if removing this can fix command
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
             Commands
@@ -202,9 +202,9 @@ public class ProbeCommands {
         ServerSettings.dataExport = new JsonObject();
         source.sendSuccess(new TextComponent("Reloading server and exporting data..."), false);
 
-        MinecraftServer minecraftServer = source.getServer();
-        PackRepository packRepository = minecraftServer.getPackRepository();
-        WorldData worldData = minecraftServer.getWorldData();
+        MinecraftServer server = source.getServer();
+        PackRepository packRepository = server.getPackRepository();
+        WorldData worldData = server.getWorldData();
         Collection<String> collection = packRepository.getSelectedIds();
         packRepository.reload();
         Collection<String> collection2 = Lists.newArrayList(collection);
