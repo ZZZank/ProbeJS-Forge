@@ -1,6 +1,5 @@
 package com.probejs.document.parser.processor;
 
-import com.probejs.ProbeJS;
 import com.probejs.document.parser.handler.AbstractStackedMachine;
 
 public class Document extends AbstractStackedMachine<String> {

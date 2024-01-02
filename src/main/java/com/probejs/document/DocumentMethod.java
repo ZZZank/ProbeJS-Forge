@@ -1,7 +1,6 @@
 package com.probejs.document;
 
 import com.google.common.collect.Sets;
-import com.mojang.realmsclient.client.Request.Put;
 import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IType;
 import com.probejs.document.type.Resolver;

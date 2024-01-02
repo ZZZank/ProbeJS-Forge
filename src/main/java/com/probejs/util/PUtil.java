@@ -1,7 +1,5 @@
 package com.probejs.util;
 
-import java.util.function.Supplier;
-
 public class PUtil {
 
     public static <T> T tryOrDefault(TrySupplier<T> toEval, T defaultValue) {

@@ -4,7 +4,6 @@ import com.probejs.document.comment.AbstractComment;
 import com.probejs.document.comment.CommentHandler;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

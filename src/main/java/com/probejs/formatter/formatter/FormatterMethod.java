@@ -7,7 +7,6 @@ import com.probejs.document.Manager;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentReturns;
 import com.probejs.document.type.IType;
-import com.probejs.document.type.TypeNamed;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.MethodInfo;
 import com.probejs.info.type.ITypeInfo;

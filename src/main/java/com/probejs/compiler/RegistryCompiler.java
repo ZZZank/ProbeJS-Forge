@@ -1,22 +1,20 @@
 package com.probejs.compiler;
 
-import com.google.gson.Gson;
-import com.probejs.ProbePaths;
-import com.probejs.formatter.formatter.FormatterClass;
-import com.probejs.formatter.formatter.FormatterNamespace;
-import com.probejs.formatter.formatter.IFormatter;
-import com.probejs.info.type.TypeInfoClass;
-import com.probejs.util.PUtil;
+// import com.google.gson.Gson;
+// import com.probejs.ProbePaths;
+// import com.probejs.formatter.formatter.FormatterClass;
+// import com.probejs.formatter.formatter.FormatterNamespace;
+// import com.probejs.formatter.formatter.IFormatter;
+// import com.probejs.info.type.TypeInfoClass;
+// import com.probejs.util.PUtil;
 
-import dev.latvian.kubejs.KubeJSRegistries;
-// import dev.latvian.kubejs.RegistryObjectBuilderTypes;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.stream.Collectors;
+// import java.io.BufferedWriter;
+// import java.io.IOException;
+// import java.nio.file.Files;
+// import java.util.*;
+// import java.util.stream.Collectors;
 
-//TODO: RegistryCompiler
+//TODO: import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes
 public class RegistryCompiler {
 
     /*
