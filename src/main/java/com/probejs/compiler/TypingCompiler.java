@@ -195,7 +195,7 @@ public class TypingCompiler {
                 )
             );
         }
-        RegistryCompiler.compileEventRegistries(writer);
+        // RegistryCompiler.compileEventRegistries(writer);
         writer.flush();
     }
 
@@ -263,12 +263,12 @@ public class TypingCompiler {
         Map<String, Class<?>> cachedForgeEvents = readCachedEvents("cachedForgeEvents.json");
         Set<Class<?>> cachedClasses = new HashSet<>(cachedEvents.values());
         cachedClasses.addAll(cachedForgeEvents.values());
-        cachedClasses.addAll(RegistryCompiler.getRegistryClasses());
+        // cachedClasses.addAll(RegistryCompiler.getRegistryClasses());
         Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
         globalClasses.removeIf(c -> ClassResolver.skipped.contains(c));
         SpecialTypes.processFunctionalInterfaces(globalClasses);
         compileGlobal(bindingEvent, globalClasses);
-        RegistryCompiler.compileRegistries();
+        // RegistryCompiler.compileRegistries();
         compileEvents(cachedEvents, cachedForgeEvents);
         compileConstants(bindingEvent);
         compileJava(globalClasses);
