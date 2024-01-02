@@ -42,15 +42,102 @@ public class ProbeCommands {
                 .then(
                     Commands
                         .literal("config")
-                        // .then(
-                        //     Commands
-                        //         .literal("bean_method")
-                        //         .executes(context -> beaningToggleCommandHandler(context))
-                        // )
                         .then(
                             Commands
-                                .literal("dump_export")
-                                .executes(context -> dumpToggleCommandHandler(context))
+                                .literal("toggle_bean")
+                                .executes(context -> {
+                                    ProbeConfig.INSTANCE.dumpMethod = !ProbeConfig.INSTANCE.dumpMethod;
+                                    ProbeConfig.INSTANCE.save();
+                                    return sendSuccess(
+                                        context,
+                                        String.format(
+                                            "Keep method while beaning set to: %s",
+                                            ProbeConfig.INSTANCE.dumpMethod
+                                        ),
+                                        false
+                                    );
+                                })
+                        )
+                        .then(
+                            Commands
+                                .literal("toggle_mixin")
+                                .executes(context -> {
+                                    ProbeConfig.INSTANCE.disabled = !ProbeConfig.INSTANCE.disabled;
+                                    ProbeConfig.INSTANCE.save();
+                                    return sendSuccess(
+                                        context,
+                                        String.format(
+                                            "OnEvent mixin wrapper set to: %s. Changes will be applied next time you start the game",
+                                            ProbeConfig.INSTANCE.disabled ? "disabled" : "enabled"
+                                        ),
+                                        false
+                                    );
+                                })
+                        )
+                        .then(
+                            Commands
+                                .literal("toggle_snippet_order")
+                                .executes(context -> {
+                                    ProbeConfig.INSTANCE.vanillaOrder = !ProbeConfig.INSTANCE.vanillaOrder;
+                                    ProbeConfig.INSTANCE.save();
+                                    return sendSuccess(
+                                        context,
+                                        String.format(
+                                            "In snippets, which will appear first: %s",
+                                            ProbeConfig.INSTANCE.vanillaOrder ? "mod_id" : "member_type"
+                                        ),
+                                        false
+                                    );
+                                })
+                        )
+                        .then(
+                            Commands
+                                .literal("toggle_classname_snippets")
+                                .executes(context -> {
+                                    ProbeConfig.INSTANCE.exportClassNames =
+                                        !ProbeConfig.INSTANCE.exportClassNames;
+                                    ProbeConfig.INSTANCE.save();
+                                    return sendSuccess(
+                                        context,
+                                        String.format(
+                                            "Export class name as snippets set to: %s",
+                                            ProbeConfig.INSTANCE.exportClassNames
+                                        ),
+                                        false
+                                    );
+                                })
+                        )
+                        .then(
+                            Commands
+                                .literal("toggle_server_dump")
+                                .executes(context -> {
+                                    ProbeConfig.INSTANCE.dumpExport = !ProbeConfig.INSTANCE.dumpExport;
+                                    ProbeConfig.INSTANCE.save();
+                                    return sendSuccess(
+                                        context,
+                                        String.format(
+                                            "Create dump.json set to: %s",
+                                            ProbeConfig.INSTANCE.dumpExport
+                                        ),
+                                        false
+                                    );
+                                })
+                        )
+                        .then(
+                            Commands
+                                .literal("toggle_autoexport")
+                                .executes(context -> {
+                                    ProbeConfig.INSTANCE.autoExport = !ProbeConfig.INSTANCE.autoExport;
+                                    ProbeConfig.INSTANCE.save();
+                                    return sendSuccess(
+                                        context,
+                                        String.format(
+                                            "Auto-export for KubeJS set to: %s",
+                                            ProbeConfig.INSTANCE.autoExport
+                                        ),
+                                        false
+                                    );
+                                })
                         )
                 )
         );
@@ -74,16 +161,13 @@ public class ProbeCommands {
     private static int clearCacheCommandHandler(CommandContext<CommandSourceStack> context) {
         Path path = KubeJSPaths.EXPORTED.resolve("cachedEvents.json");
         if (!Files.exists(path)) {
-            context.getSource().sendSuccess(new TextComponent("No cached files to be cleared."), false);
-            return Command.SINGLE_SUCCESS;
+            return sendSuccess(context, "No cached files to be cleared.", false);
         }
         boolean deleted = path.toFile().delete();
-        if (deleted) {
-            sendSuccess(context, "Cache files removed.", false);
-        } else {
-            sendSuccess(context, "Failed to remove cache files.", false);
+        if (!deleted) {
+            return sendSuccess(context, "Failed to remove cache files.", false);
         }
-        return Command.SINGLE_SUCCESS;
+        return sendSuccess(context, "Cache files removed.", false);
     }
 
     private static int dumpCommandHandler(CommandContext<CommandSourceStack> context) {
@@ -103,8 +187,7 @@ public class ProbeCommands {
                     )
                 );
         }
-        sendSuccess(context, "ProbeJS typing generation finished.", false);
-        return Command.SINGLE_SUCCESS;
+        return sendSuccess(context, "ProbeJS typing generation finished.", false);
     }
 
     private static void export(CommandSourceStack source) {

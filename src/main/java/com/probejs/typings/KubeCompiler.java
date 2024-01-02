@@ -131,7 +131,7 @@ public class KubeCompiler {
         writer.write(gson.toJson(kubeDump.toSnippet()));
         writer.flush();
         // client & server & startup
-        if (ProbeConfig.dumpExport) {
+        if (ProbeConfig.INSTANCE.dumpExport) {
             kubeDump.writeDumpTags(KubeJSPaths.SERVER_SCRIPTS.resolve("dumps.js"));
             kubeDump.writeDumpTags(KubeJSPaths.STARTUP_SCRIPTS.resolve("dumps.js"));
             kubeDump.writeDumpTags(KubeJSPaths.CLIENT_SCRIPTS.resolve("dumps.js"));
