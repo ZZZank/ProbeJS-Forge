@@ -5,9 +5,13 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import com.probejs.typings.KubeCompiler;
-import com.probejs.typings.ProbeCompiler;
-import com.probejs.typings.SpecialFormatters;
+import com.probejs.compiler.SnippetCompiler;
+import com.probejs.compiler.TypingCompiler;
+import com.probejs.document.Manager;
+import com.probejs.document.comment.CommentHandler;
+import com.probejs.document.parser.processor.DocumentProviderHandler;
+import com.probejs.formatter.ClassResolver;
+import com.probejs.formatter.NameResolver;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.server.ServerSettings;
 import java.nio.file.Files;
@@ -31,13 +35,46 @@ public class ProbeCommands {
                     Commands
                         .literal("dump")
                         .requires(source -> source.getServer().isSingleplayer() || source.hasPermission(2))
-                        .executes(context -> dumpCommandHandler(context))
+                        .executes(context -> {
+                            try {
+                                if (ProbeConfig.INSTANCE.autoExport) {
+                                    export(context.getSource());
+                                }
+                                SnippetCompiler.compile();
+                                DocumentProviderHandler.init();
+                                CommentHandler.init();
+                                Manager.init();
+                                ClassResolver.init();
+                                NameResolver.init();
+                                TypingCompiler.compile();
+                                if (ProbeConfig.INSTANCE.exportClassNames) {
+                                    SnippetCompiler.compileClassNames();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                return sendSuccess(
+                                    context,
+                                    "Uncaught exception happened in wrapper, please report to the Github issue with complete latest.log."
+                                );
+                            }
+                            return sendSuccess(context, "ProbeJS typing generation finished.");
+                        })
                 )
                 .then(
                     Commands
                         .literal("clear_cache")
                         .requires(source -> source.getServer().isSingleplayer() || source.hasPermission(2))
-                        .executes(context -> clearCacheCommandHandler(context))
+                        .executes(context -> {
+                            Path path = KubeJSPaths.EXPORTED.resolve("cachedEvents.json");
+                            if (!Files.exists(path)) {
+                                return sendSuccess(context, "No cached files to be cleared.");
+                            }
+                            boolean deleted = path.toFile().delete();
+                            if (!deleted) {
+                                return sendSuccess(context, "Failed to remove cache files.");
+                            }
+                            return sendSuccess(context, "Cache files removed.");
+                        })
                 )
                 .then(
                     Commands
@@ -53,8 +90,7 @@ public class ProbeCommands {
                                         String.format(
                                             "Keep method while beaning set to: %s",
                                             ProbeConfig.INSTANCE.dumpMethod
-                                        ),
-                                        false
+                                        )
                                     );
                                 })
                         )
@@ -69,8 +105,7 @@ public class ProbeCommands {
                                         String.format(
                                             "OnEvent mixin wrapper set to: %s. Changes will be applied next time you start the game",
                                             ProbeConfig.INSTANCE.disabled ? "disabled" : "enabled"
-                                        ),
-                                        false
+                                        )
                                     );
                                 })
                         )
@@ -85,8 +120,7 @@ public class ProbeCommands {
                                         String.format(
                                             "In snippets, which will appear first: %s",
                                             ProbeConfig.INSTANCE.vanillaOrder ? "mod_id" : "member_type"
-                                        ),
-                                        false
+                                        )
                                     );
                                 })
                         )
@@ -102,8 +136,7 @@ public class ProbeCommands {
                                         String.format(
                                             "Export class name as snippets set to: %s",
                                             ProbeConfig.INSTANCE.exportClassNames
-                                        ),
-                                        false
+                                        )
                                     );
                                 })
                         )
@@ -118,8 +151,7 @@ public class ProbeCommands {
                                         String.format(
                                             "Create dump.json set to: %s",
                                             ProbeConfig.INSTANCE.dumpExport
-                                        ),
-                                        false
+                                        )
                                     );
                                 })
                         )
@@ -134,8 +166,7 @@ public class ProbeCommands {
                                         String.format(
                                             "Auto-export for KubeJS set to: %s",
                                             ProbeConfig.INSTANCE.autoExport
-                                        ),
-                                        false
+                                        )
                                     );
                                 })
                         )
@@ -158,36 +189,8 @@ public class ProbeCommands {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int clearCacheCommandHandler(CommandContext<CommandSourceStack> context) {
-        Path path = KubeJSPaths.EXPORTED.resolve("cachedEvents.json");
-        if (!Files.exists(path)) {
-            return sendSuccess(context, "No cached files to be cleared.", false);
-        }
-        boolean deleted = path.toFile().delete();
-        if (!deleted) {
-            return sendSuccess(context, "Failed to remove cache files.", false);
-        }
-        return sendSuccess(context, "Cache files removed.", false);
-    }
-
-    private static int dumpCommandHandler(CommandContext<CommandSourceStack> context) {
-        try {
-            export(context.getSource());
-            KubeCompiler.fromKubeDump();
-            sendSuccess(context, "KubeJS registry snippets generated.", false);
-            SpecialFormatters.init();
-            ProbeCompiler.compileDeclarations();
-        } catch (Exception e) {
-            e.printStackTrace();
-            context
-                .getSource()
-                .sendFailure(
-                    new TextComponent(
-                        "Uncaught exception happened in wrapper, please report to Github with complete latest.log."
-                    )
-                );
-        }
-        return sendSuccess(context, "ProbeJS typing generation finished.", false);
+    private static int sendSuccess(CommandContext<CommandSourceStack> context, String message) {
+        return sendSuccess(context, message, false);
     }
 
     private static void export(CommandSourceStack source) {
