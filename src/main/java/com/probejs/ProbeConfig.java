@@ -26,9 +26,10 @@ public class ProbeConfig {
     }
 
     private ProbeConfig() {
-        if (Files.exists(CONFIG)) {
+        Path cfg = KubeJSPaths.CONFIG.resolve("probejs.json");
+        if (Files.exists(cfg)) {
             try {
-                Map<?, ?> obj = new Gson().fromJson(Files.newBufferedReader(CONFIG), Map.class);
+                Map<?, ?> obj = new Gson().fromJson(Files.newBufferedReader(cfg), Map.class);
                 dumpMethod = fetchPropertyOrDefault("dumpMethod", obj, true);
                 disabled = fetchPropertyOrDefault("disabled", obj, false);
                 vanillaOrder = fetchPropertyOrDefault("vanillaOrder", obj, true);
