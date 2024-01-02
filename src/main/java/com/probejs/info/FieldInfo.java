@@ -4,14 +4,8 @@ import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.util.PUtil;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import dev.latvian.mods.rhino.util.RemapForJS;
-
-import javax.swing.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Objects;
-import java.util.function.Consumer;
 
 public class FieldInfo {
     private final String name;
