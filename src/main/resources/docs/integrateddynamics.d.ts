@@ -19,11 +19,11 @@ class IntegratedDynamicsRecipes {
      * 
      * @param output The outputs, **NOTE:** The first item in output must not have a chance. 
      */
-    squeezer(outputs: dev.latvian.mods.kubejs.item.ItemStackJS[], input: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.mod.IDSqueezerRecipeJS;
+    squeezer(outputs: dev.latvian.kubejs.item.ItemStackJS[], input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.mod.IDSqueezerRecipeJS;
     /**
      * Adds a recipe of Mechanical Squeezer.
      * 
      * @param output The outputs, **NOTE:** The first item in output must not have a chance. 
      */
-    mechanical_squeezer(outputs: dev.latvian.mods.kubejs.item.ItemStackJS[], input: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.mod.IDSqueezerRecipeJS;
+    mechanical_squeezer(outputs: dev.latvian.kubejs.item.ItemStackJS[], input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.mod.IDSqueezerRecipeJS;
 }

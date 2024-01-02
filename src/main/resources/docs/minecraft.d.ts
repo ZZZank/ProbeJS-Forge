@@ -1,5 +1,5 @@
 /**
-* @target dev.latvian.mods.kubejs.item.ItemStackJS
+* @target dev.latvian.kubejs.item.ItemStackJS
 * @assign string
 * @assign object
 */
@@ -7,17 +7,17 @@ class ItemStackJS {
 }
 
 /**
- * @target dev.latvian.mods.kubejs.item.ingredient.IngredientJS
+ * @target dev.latvian.kubejs.item.ingredient.IngredientJS
  * @assign string
  * @assign object
- * @assign dev.latvian.mods.kubejs.item.ItemStackJS
+ * @assign dev.latvian.kubejs.item.ItemStackJS
  */
 class IngredientJS {
 
 }
 
 /**
-* @target dev.latvian.mods.kubejs.recipe.RecipeEventJS
+* @target dev.latvian.kubejs.recipe.RecipeEventJS
 */
 class RecipeEventJS {
     /**
@@ -30,77 +30,77 @@ class RecipeEventJS {
     /**
      * @hidden
      */
-    campfireCooking: dev.latvian.mods.kubejs.recipe.RecipeFunction;
+    campfireCooking: dev.latvian.kubejs.recipe.RecipeFunction;
     /**
      * @hidden
      */
-    smithing: dev.latvian.mods.kubejs.recipe.RecipeFunction;
+    smithing: dev.latvian.kubejs.recipe.RecipeFunction;
     /**
      * @hidden
      */
-    stonecutting: dev.latvian.mods.kubejs.recipe.RecipeFunction;
+    stonecutting: dev.latvian.kubejs.recipe.RecipeFunction;
     /**
      * @hidden
      */
-    shaped: dev.latvian.mods.kubejs.recipe.RecipeFunction;
+    shaped: dev.latvian.kubejs.recipe.RecipeFunction;
     /**
      * @hidden
      */
-    smoking: dev.latvian.mods.kubejs.recipe.RecipeFunction;
+    smoking: dev.latvian.kubejs.recipe.RecipeFunction;
     /**
      * @hidden
      */
-    shapeless: dev.latvian.mods.kubejs.recipe.RecipeFunction;
+    shapeless: dev.latvian.kubejs.recipe.RecipeFunction;
     /**
      * @hidden
      */
-    smelting: dev.latvian.mods.kubejs.recipe.RecipeFunction;
+    smelting: dev.latvian.kubejs.recipe.RecipeFunction;
     /**
      * @hidden
      */
-    blasting: dev.latvian.mods.kubejs.recipe.RecipeFunction;
+    blasting: dev.latvian.kubejs.recipe.RecipeFunction;
 
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Furnaces.
      */
-    smelting(output: dev.latvian.mods.kubejs.item.ItemStackJS, input: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.CookingRecipeJS;
+    smelting(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Smokers.
      */
-    smoking(output: dev.latvian.mods.kubejs.item.ItemStackJS, input: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.CookingRecipeJS;
+    smoking(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Blast Furnaces.
      */
-    blasting(output: dev.latvian.mods.kubejs.item.ItemStackJS, input: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.CookingRecipeJS;
+    blasting(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
 
     /**
      * Adds a shaped crafting recipe.
      */
-    shaped(output: dev.latvian.mods.kubejs.item.ItemStackJS, pattern: string[], items: java.util.Map<string, dev.latvian.mods.kubejs.item.ingredient.IngredientJS>): dev.latvian.mods.kubejs.recipe.minecraft.ShapedRecipeJS;
+    shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: java.util.Map<string, dev.latvian.kubejs.item.ingredient.IngredientJS>): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
     /**
      * Adds a shapeless crafting recipe.
      */
-    shapeless(output: dev.latvian.mods.kubejs.item.ItemStackJS, inputs: dev.latvian.mods.kubejs.item.ingredient.IngredientJS[]): dev.latvian.mods.kubejs.recipe.minecraft.ShapelessRecipeJS;
+    shapeless(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS[]): dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Camefire.
      */
-    campfireCooking(output: dev.latvian.mods.kubejs.item.ItemStackJS, input: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.CookingRecipeJS;
+    campfireCooking(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a stonecutting recipe.
      */
-    stonecutting(output: dev.latvian.mods.kubejs.item.ItemStackJS, inputs: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.StonecuttingRecipeJS;
+    stonecutting(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.StonecuttingRecipeJS;
     /**
      * Adds a smithing recipe.
      */
-    smithing(output: dev.latvian.mods.kubejs.item.ItemStackJS, base: dev.latvian.mods.kubejs.item.ingredient.IngredientJS, addition: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.SmithingRecipeJS;
+    smithing(output: dev.latvian.kubejs.item.ItemStackJS, base: dev.latvian.kubejs.item.ingredient.IngredientJS, addition: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.SmithingRecipeJS;
 
 }
 
@@ -119,40 +119,40 @@ class MinecraftRecipes {
      * 
      * This is used by Furnaces.
      */
-    smelting(output: dev.latvian.mods.kubejs.item.ItemStackJS, input: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.CookingRecipeJS;
+    smelting(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Smokers.
      */
-    smoking(output: dev.latvian.mods.kubejs.item.ItemStackJS, input: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.CookingRecipeJS;
+    smoking(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Blast Furnaces.
      */
-    blasting(output: dev.latvian.mods.kubejs.item.ItemStackJS, input: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.CookingRecipeJS;
+    blasting(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
 
     /**
      * Adds a shaped crafting recipe.
      */
-    crafting_shaped(output: dev.latvian.mods.kubejs.item.ItemStackJS, pattern: string[], items: java.util.Map<string, dev.latvian.mods.kubejs.item.ingredient.IngredientJS>): dev.latvian.mods.kubejs.recipe.minecraft.ShapedRecipeJS;
+    crafting_shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: java.util.Map<string, dev.latvian.kubejs.item.ingredient.IngredientJS>): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
     /**
      * Adds a shapeless crafting recipe.
      */
-    crafting_shapeless(output: dev.latvian.mods.kubejs.item.ItemStackJS, inputs: dev.latvian.mods.kubejs.item.ingredient.IngredientJS[]): dev.latvian.mods.kubejs.recipe.minecraft.ShapelessRecipeJS;
+    crafting_shapeless(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS[]): dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Camefire.
      */
-    camefire_cooking(output: dev.latvian.mods.kubejs.item.ItemStackJS, input: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.CookingRecipeJS;
+    camefire_cooking(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a stonecutting recipe.
      */
-    stonecutting(output: dev.latvian.mods.kubejs.item.ItemStackJS, inputs: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.StonecuttingRecipeJS;
+    stonecutting(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.StonecuttingRecipeJS;
     /**
      * Adds a smithing recipe.
      */
-    smithing(output: dev.latvian.mods.kubejs.item.ItemStackJS, base: dev.latvian.mods.kubejs.item.ingredient.IngredientJS, addition: dev.latvian.mods.kubejs.item.ingredient.IngredientJS): dev.latvian.mods.kubejs.recipe.minecraft.SmithingRecipeJS;
+    smithing(output: dev.latvian.kubejs.item.ItemStackJS, base: dev.latvian.kubejs.item.ingredient.IngredientJS, addition: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.SmithingRecipeJS;
 }
