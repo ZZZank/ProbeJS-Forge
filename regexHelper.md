@@ -8,10 +8,10 @@ String.format("$1", $2)
 ->
 PUtil.indent($1)
 
-com.probejs
+com.prunoideae.probejs
 ->
 com.probejs
 
-dev.latvian.kubejs
+dev.latvian.mods.kubejs
 ->
 dev.latvian.kubejs
