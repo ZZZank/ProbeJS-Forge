@@ -56,27 +56,18 @@ public class ProbeCommands {
         );
     }
 
-    private static void sendSuccess(
+    /**
+     * @param context The command context, usually avaliable in Command.executes() callback
+     * @param message The message you want to send
+     * @param wantToInformAdmin
+     * @return Will always be `Command.SINGLE_SUCCESS`
+     */
+    private static int sendSuccess(
         CommandContext<CommandSourceStack> context,
         String message,
         boolean wantToInformAdmin
     ) {
         context.getSource().sendSuccess(new TextComponent(message), wantToInformAdmin);
-    }
-
-    private static int beaningToggleCommandHandler(CommandContext<CommandSourceStack> context) {
-        ProbeConfig.dumpMethod = !ProbeConfig.dumpMethod;
-        sendSuccess(
-            context,
-            String.format("Keep method while beaning set to: %s", ProbeConfig.dumpMethod),
-            false
-        );
-        return Command.SINGLE_SUCCESS;
-    }
-
-    private static int dumpToggleCommandHandler(CommandContext<CommandSourceStack> context) {
-        ProbeConfig.dumpExport = !ProbeConfig.dumpExport;
-        sendSuccess(context, String.format("Create dump.js set to: %s", ProbeConfig.dumpExport), false);
         return Command.SINGLE_SUCCESS;
     }
 
