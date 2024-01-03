@@ -25,12 +25,4 @@ public class TypeNamed implements IType {
             return typeName;
         return resolved.getFullName();
     }
-
-    @Override
-    public Set<String> getAssignableNames() {
-        Set<String> assignableNames = new HashSet<>();
-        assignableNames.add(getTypeName());
-        Manager.typesAssignable.getOrDefault(getRawTypeName(), new ArrayList<>()).stream().map(IType::getTypeName).forEach(assignableNames::add);
-        return assignableNames;
-    }
 }

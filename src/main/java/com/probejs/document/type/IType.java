@@ -2,9 +2,12 @@ package com.probejs.document.type;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 public interface IType {
     String getTypeName();
 
-    Set<String> getAssignableNames();
+    default String getTransformedName(BiFunction<IType, String, String> transformer) {
+        return transformer.apply(this, getTypeName());
+    }
 }

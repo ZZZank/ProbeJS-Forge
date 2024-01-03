@@ -4,6 +4,8 @@ import com.google.common.collect.Sets;
 import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IType;
 import com.probejs.document.type.Resolver;
+import com.probejs.document.type.TypeNamed;
+import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.MethodInfo;
 import com.probejs.util.PUtil;
@@ -29,29 +31,41 @@ public class DocumentMethod
         return sb.toString();
     }
 
-    private static Set<String> getParamSet(DocumentParam param) {
-        String paramBody = param.name + ": %s";
-        return param.type
-            .getAssignableNames()
-            .stream()
-            .map(str -> String.format(paramBody, str))
-            .collect(Collectors.toSet());
-    }
-
     @Override
     public List<String> format(Integer indent, Integer stepIndent) {
         List<String> formatted = new ArrayList<>();
         if (comment != null) formatted.addAll(comment.format(indent, stepIndent));
         String methodBody = getMethodBody();
-        List<Set<String>> paramSet = getParams()
-            .stream()
-            .map(DocumentMethod::getParamSet)
-            .collect(Collectors.toList());
-        for (List<String> paramsFormatted : Sets.cartesianProduct(paramSet)) {
-            formatted.add(
-                PUtil.indent(indent) + String.format(methodBody, String.join(", ", paramsFormatted))
-            );
-        }
+        formatted.add(
+            PUtil.indent(indent) +
+            String.format(
+                methodBody,
+                getParams()
+                    .stream()
+                    .map(documentParam ->
+                        String.format(
+                            "%s: %s",
+                            documentParam.getName(),
+                            documentParam
+                                .getType()
+                                .getTransformedName((t, s) -> {
+                                    if (!(t instanceof TypeNamed)) {
+                                        return s;
+                                    }
+                                    TypeNamed named = (TypeNamed) t;
+                                    if (
+                                        NameResolver.resolvedNames.containsKey(named.getRawTypeName()) &&
+                                        !NameResolver.resolvedPrimitives.contains((named.getRawTypeName()))
+                                    ) {
+                                        return s + "_";
+                                    }
+                                    return s;
+                                })
+                        )
+                    )
+                    .collect(Collectors.joining(", "))
+            )
+        );
         return formatted;
     }
 

@@ -3,6 +3,7 @@ package com.probejs.document.type;
 import com.google.common.collect.Sets;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class TypeParameterized implements IType {
@@ -33,21 +34,7 @@ public class TypeParameterized implements IType {
     }
 
     @Override
-    public Set<String> getAssignableNames() {
-        Set<String> baseType = rawType.getAssignableNames();
-        List<Set<String>> paramTypes = getParamTypes()
-            .stream()
-            .map(IType::getAssignableNames)
-            .collect(Collectors.toList());
-        Set<String> paramProducts = Sets
-            .cartesianProduct(paramTypes)
-            .stream()
-            .map(l -> String.join(", ", l))
-            .collect(Collectors.toSet());
-        return Sets
-            .cartesianProduct(baseType, paramProducts)
-            .stream()
-            .map(l -> String.format("%s<%s>", l.get(0), l.get(1)))
-            .collect(Collectors.toSet());
+    public String getTransformedName(BiFunction<IType, String, String> transformer) {
+        return transformer.apply(this, String.format("%s<%s>",rawType.getTransformedName(transformer), paramTypes.stream().map(t -> t.getTransformedName(transformer)).collect(Collectors.joining(", "))));
     }
 }

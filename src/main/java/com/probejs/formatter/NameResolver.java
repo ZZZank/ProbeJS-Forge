@@ -2,13 +2,14 @@ package com.probejs.formatter;
 
 import com.google.gson.Gson;
 import com.probejs.info.type.ITypeInfo;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class NameResolver {
+
     public static class ResolvedName {
+
         public static final ResolvedName UNRESOLVED = new ResolvedName(Arrays.asList("any"));
         private final List<String> names;
 
@@ -43,9 +44,7 @@ public class NameResolver {
 
         @Override
         public String toString() {
-            return "ResolvedName{" +
-                    "names=" + names +
-                    '}';
+            return "ResolvedName{" + "names=" + names + '}';
         }
     }
 
@@ -53,6 +52,7 @@ public class NameResolver {
     public static final HashMap<Class<?>, Function<ITypeInfo, String>> specialTypeFormatters = new HashMap<>();
     public static final HashMap<Class<?>, Function<Object, String>> specialValueFormatters = new HashMap<>();
     public static final Set<String> keywords = new HashSet<>();
+    public static final Set<String> resolvedPrimitives = new HashSet<>();
 
     public static void putResolvedName(String className, String resolvedName) {
         // TODO: check if Arrays.asList works
@@ -60,8 +60,7 @@ public class NameResolver {
     }
 
     public static void putResolvedName(String className, ResolvedName resolvedName) {
-        if (!resolvedNames.containsKey(className))
-            resolvedNames.put(className, resolvedName);
+        if (!resolvedNames.containsKey(className)) resolvedNames.put(className, resolvedName);
     }
 
     public static void putResolvedName(Class<?> className, ResolvedName resolvedName) {
@@ -85,18 +84,20 @@ public class NameResolver {
     }
 
     public static void putValueFormatter(Function<Object, String> transformer, Class<?>... classes) {
-        for (Class<?> clazz : classes)
+        for (Class<?> clazz : classes) {
             specialValueFormatters.put(clazz, transformer);
+        }
     }
 
     public static String formatValue(Object object) {
-        if (object == null)
+        if (object == null) {
             return null;
-        if (specialValueFormatters.containsKey(object.getClass()))
+        }
+        if (specialValueFormatters.containsKey(object.getClass())) {
             return specialValueFormatters.get(object.getClass()).apply(object);
+        }
         for (Map.Entry<Class<?>, Function<Object, String>> entry : specialValueFormatters.entrySet()) {
-            if (entry.getKey().isAssignableFrom(object.getClass()))
-                return entry.getValue().apply(object);
+            if (entry.getKey().isAssignableFrom(object.getClass())) return entry.getValue().apply(object);
         }
         return null;
     }
@@ -106,9 +107,9 @@ public class NameResolver {
         for (Class<?> clazz : classes) {
             ResolvedName resolved = new ResolvedName(Arrays.asList(clazz.getName().split("\\.")));
             ResolvedName internal = new ResolvedName(Arrays.asList("Internal", resolved.getLastName()));
-            if (usedNames.contains(internal))
+            if (usedNames.contains(internal)) {
                 putResolvedName(clazz.getName(), resolved);
-            else {
+            } else {
                 putResolvedName(clazz.getName(), internal);
                 usedNames.add(internal);
             }
@@ -123,40 +124,59 @@ public class NameResolver {
         return keywords.contains(kw) ? kw + "_" : kw;
     }
 
+    public static void putResolvedPrimitive(Class<?> clazz, String resolvedName) {
+        putResolvedName(clazz, resolvedName);
+        resolvedPrimitives.add(clazz.getName());
+    }
+
     public static void init() {
-        putResolvedName(Object.class, "object");
-        putResolvedName(String.class, "string");
-        putResolvedName(Character.class, "string");
-        putResolvedName(Character.TYPE, "string");
+        putResolvedPrimitive(Object.class, "object");
+        putResolvedPrimitive(String.class, "string");
+        putResolvedPrimitive(Character.class, "string");
+        putResolvedPrimitive(Character.TYPE, "string");
 
-        putResolvedName(Void.class, "void");
-        putResolvedName(Void.TYPE, "void");
+        putResolvedPrimitive(Void.class, "void");
+        putResolvedPrimitive(Void.TYPE, "void");
 
-        putResolvedName(Long.class, "number");
-        putResolvedName(Long.TYPE, "number");
-        putResolvedName(Integer.class, "number");
-        putResolvedName(Integer.TYPE, "number");
-        putResolvedName(Short.class, "number");
-        putResolvedName(Short.TYPE, "number");
-        putResolvedName(Byte.class, "number");
-        putResolvedName(Byte.TYPE, "number");
+        putResolvedPrimitive(Long.class, "number");
+        putResolvedPrimitive(Long.TYPE, "number");
+        putResolvedPrimitive(Integer.class, "number");
+        putResolvedPrimitive(Integer.TYPE, "number");
+        putResolvedPrimitive(Short.class, "number");
+        putResolvedPrimitive(Short.TYPE, "number");
+        putResolvedPrimitive(Byte.class, "number");
+        putResolvedPrimitive(Byte.TYPE, "number");
 
-        putResolvedName(Double.class, "number");
-        putResolvedName(Double.TYPE, "number");
-        putResolvedName(Float.class, "number");
-        putResolvedName(Float.TYPE, "number");
+        putResolvedPrimitive(Double.class, "number");
+        putResolvedPrimitive(Double.TYPE, "number");
+        putResolvedPrimitive(Float.class, "number");
+        putResolvedPrimitive(Float.TYPE, "number");
 
-        putResolvedName(Boolean.class, "boolean");
-        putResolvedName(Boolean.TYPE, "boolean");
+        putResolvedPrimitive(Boolean.class, "boolean");
+        putResolvedPrimitive(Boolean.TYPE, "boolean");
 
         Gson gson = new Gson();
 
-        putValueFormatter(gson::toJson,
-                String.class, Character.class, Character.TYPE,
-                Long.class, Long.TYPE, Integer.class, Integer.TYPE,
-                Short.class, Short.TYPE, Byte.class, Byte.TYPE,
-                Double.class, Double.TYPE, Float.class, Float.TYPE,
-                Boolean.class, Boolean.TYPE);
+        putValueFormatter(
+            gson::toJson,
+            String.class,
+            Character.class,
+            Character.TYPE,
+            Long.class,
+            Long.TYPE,
+            Integer.class,
+            Integer.TYPE,
+            Short.class,
+            Short.TYPE,
+            Byte.class,
+            Byte.TYPE,
+            Double.class,
+            Double.TYPE,
+            Float.class,
+            Float.TYPE,
+            Boolean.class,
+            Boolean.TYPE
+        );
 
         addKeyword("function");
         addKeyword("debugger");

@@ -119,7 +119,7 @@ public class TypingCompiler {
             FormatterClass formatter = new FormatterClass(ClassInfo.getOrCache(clazz));
             Manager.classDocuments
                 .getOrDefault(clazz.getName(), new ArrayList<>())
-                .forEach(formatter::setDocument);
+                .forEach(formatter::addDocument);
 
             NameResolver.ResolvedName name = NameResolver.getResolvedName(clazz.getName());
             if (name.getNamespace().isEmpty()) {

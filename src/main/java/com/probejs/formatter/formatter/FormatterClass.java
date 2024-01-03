@@ -5,18 +5,21 @@ import com.probejs.document.DocumentClass;
 import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
+import com.probejs.document.Manager;
 import com.probejs.document.comment.special.CommentHidden;
+import com.probejs.document.type.IType;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoClass;
+import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.util.PUtil;
 import java.lang.reflect.TypeVariable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FormatterClass extends DocumentedFormatter<DocumentClass> implements IFormatter {
+public class FormatterClass extends DocumentReceiver<DocumentClass> implements IFormatter {
 
     private final ClassInfo classInfo;
     private final Map<String, FormatterField> fieldFormatters = new HashMap<>();
@@ -52,6 +55,16 @@ public class FormatterClass extends DocumentedFormatter<DocumentClass> implement
             formatted.addAll(comment.format(indent, stepIndent));
         }
 
+        List<String> assignableTypes = Manager.typesAssignable
+            .getOrDefault(classInfo.getClazzRaw().getName(), new ArrayList<>())
+            .stream()
+            .map(IType::getTypeName)
+            .collect(Collectors.toList());
+
+        if (classInfo.isEnum()) {
+            //TODO: add special processing for KubeJS
+        }
+
         // First line
         List<String> firstLine = new ArrayList<>();
 
@@ -76,7 +89,9 @@ public class FormatterClass extends DocumentedFormatter<DocumentClass> implement
         if (classInfo.getSuperClass() != null) {
             firstLine.add("extends");
             firstLine.add(
-                formatTypeParameterized(new TypeInfoClass(classInfo.getSuperClass().getClazzRaw()))
+                formatTypeParameterized(
+                    InfoTypeResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
+                )
             );
         }
         if (!classInfo.getInterfaces().isEmpty()) {
@@ -110,8 +125,9 @@ public class FormatterClass extends DocumentedFormatter<DocumentClass> implement
                         )
                     )
                     .forEach(mf -> {
-                        if (classInfo.isInterface() && mf.getMethodInfo().isStatic() && internal) return;
-                        mf.setInterface(classInfo.isInterface());
+                        if (classInfo.isInterface() && mf.getMethodInfo().isStatic() && internal) {
+                            return;
+                        }
                         formatted.addAll(mf.format(indent + stepIndent, stepIndent));
                     })
             );
@@ -184,17 +200,44 @@ public class FormatterClass extends DocumentedFormatter<DocumentClass> implement
         );
 
         formatted.add(PUtil.indent(indent) + "}");
+        //type conversion
+        String underName = NameResolver.getResolvedName(classInfo.getName()).getLastName() + "_";
+        String origName = NameResolver.getResolvedName(classInfo.getName()).getLastName();
+        if (NameResolver.specialTypeFormatters.containsKey(classInfo.getClazzRaw())) assignableTypes.add(
+            new FormatterType(
+                new TypeInfoParameterized(
+                    new TypeInfoClass(classInfo.getClazzRaw()),
+                    classInfo.getParameters()
+                )
+            )
+                .format(0, 0)
+        );
+        List<ITypeInfo> params = classInfo.getParameters();
+        if (params.size() > 0) {
+            String paramString = String.format(
+                "<%s>",
+                params.stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", "))
+            );
+            underName += paramString;
+            origName += paramString;
+        }
+
+        assignableTypes.add(origName);
+        formatted.add(
+            PUtil.indent(indent) +
+            String.format("type %s = %s;", underName, String.join(" | ", assignableTypes))
+        );
         return formatted;
     }
 
     @Override
-    public void setDocument(DocumentClass document) {
-        super.setDocument(document);
+    public void addDocument(DocumentClass document) {
+        super.addDocument(document);
         document
             .getFields()
             .forEach(documentField -> {
                 if (fieldFormatters.containsKey(documentField.getName())) {
-                    fieldFormatters.get(documentField.getName()).setDocument(documentField);
+                    fieldFormatters.get(documentField.getName()).addDocument(documentField);
                 } else {
                     fieldAdditions.add(documentField);
                 }
@@ -208,7 +251,7 @@ public class FormatterClass extends DocumentedFormatter<DocumentClass> implement
                         .get(documentMethod.getName())
                         .forEach(formatterMethod -> {
                             if (documentMethod.testMethod(formatterMethod.getMethodInfo())) {
-                                formatterMethod.setDocument(documentMethod);
+                                formatterMethod.addDocument(documentMethod);
                             }
                         });
                 } else {
