@@ -50,7 +50,7 @@ public class Resolver {
             return typeEquals(((TypeArray) docType).getComponent(), array.getBaseType());
         }
         if (docType instanceof TypeParameterized && param instanceof TypeInfoParameterized) {
-            TypeInfoParameterized parameterized = (TypeInfoParameterized) docType;
+            TypeInfoParameterized parameterized = (TypeInfoParameterized) param;
             List<ITypeInfo> paramInfo = parameterized.getParamTypes();
             List<IType> paramDoc = ((TypeParameterized) docType).getParamTypes();
             if (paramDoc.size() != paramInfo.size()) {
