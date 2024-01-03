@@ -26,7 +26,7 @@ import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.level.storage.WorldData;
 
 public class ProbeCommands {
-// TODO: try if removing this can fix command
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
             Commands
@@ -52,7 +52,7 @@ public class ProbeCommands {
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                return sendSuccess(
+                                sendSuccess(
                                     context,
                                     "Uncaught exception happened in wrapper, please report to the Github issue with complete latest.log."
                                 );
@@ -189,6 +189,11 @@ public class ProbeCommands {
         return Command.SINGLE_SUCCESS;
     }
 
+    /**
+     * @param context The command context, usually avaliable in Command.executes() callback
+     * @param message The message you want to send
+     * @return Will always be `Command.SINGLE_SUCCESS`
+     */
     private static int sendSuccess(CommandContext<CommandSourceStack> context, String message) {
         return sendSuccess(context, message, false);
     }
