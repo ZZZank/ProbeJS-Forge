@@ -49,70 +49,60 @@ public class Manager {
         for (Mod mod : Platform.getMods()) {
             Path filePath = mod.getFilePath();
             if (
-                Files.isRegularFile(filePath) &&
+                // doc appearently should be readable regular file
+                !Files.isRegularFile(filePath) ||
                 (
-                    filePath.getFileName().toString().endsWith(".jar") ||
-                    filePath.getFileName().toString().endsWith(".zip")
+                    // let's assume docs are only inside jar/zip
+                    !filePath.getFileName().toString().endsWith(".jar") &&
+                    !filePath.getFileName().toString().endsWith(".zip")
                 )
             ) {
-                ZipFile file = new ZipFile(filePath.toFile());
-                ZipEntry entry = file.getEntry("probejs.documents.txt");
-                if (entry != null) {
-                    ProbeJS.LOGGER.info(String.format("Found documents list from %s", mod.getName()));
-                    InputStream stream = file.getInputStream(entry);
-                    BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(new BufferedInputStream(stream), StandardCharsets.UTF_8)
-                    );
-                    List<String> list = reader.lines().collect(Collectors.toList());
-                    for (String subEntry : list) {
-                        if (subEntry.startsWith("!")) {
-                            subEntry = subEntry.substring(1);
-                            int i = subEntry.indexOf(" ");
-                            if (i != -1) {
-                                if (!Platform.isModLoaded(subEntry.substring(0, i))) {
-                                    continue;
-                                }
-                                subEntry = subEntry.substring(i + 1);
-                            }
-                            ZipEntry docEntry = file.getEntry(subEntry);
-                            if (docEntry != null) {
-                                ProbeJS.LOGGER.info(
-                                    String.format("Loading document inside jar - %s", subEntry)
-                                );
-                                InputStream docStream = file.getInputStream(docEntry);
-                                BufferedReader docReader = new BufferedReader(
-                                    new InputStreamReader(
-                                        new BufferedInputStream(docStream),
-                                        StandardCharsets.UTF_8
-                                    )
-                                );
-                                docReader.lines().forEach(rawTSDoc::add);
-                            } else {
-                                ProbeJS.LOGGER.warn(
-                                    String.format("Document from file is not found - %s", subEntry)
-                                );
-                            }
-                        } else {
-                            ZipEntry docEntry = file.getEntry(subEntry);
-                            if (docEntry != null) {
-                                ProbeJS.LOGGER.info(
-                                    String.format("Loading document inside jar - %s", subEntry)
-                                );
-                                InputStream docStream = file.getInputStream(docEntry);
-                                BufferedReader docReader = new BufferedReader(
-                                    new InputStreamReader(
-                                        new BufferedInputStream(docStream),
-                                        StandardCharsets.UTF_8
-                                    )
-                                );
-                                docReader.lines().forEach(document::step);
-                            } else {
-                                ProbeJS.LOGGER.warn(
-                                    String.format("Document from file is not found - %s", subEntry)
-                                );
-                            }
+                continue;
+            }
+            ZipFile file = new ZipFile(filePath.toFile());
+            ZipEntry entry = file.getEntry("probejs.documents.txt");
+            if (entry == null) {
+                continue;
+            }
+            ProbeJS.LOGGER.info(String.format("Found documents list from %s", mod.getName()));
+            InputStream stream = file.getInputStream(entry);
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new BufferedInputStream(stream), StandardCharsets.UTF_8)
+            );
+            List<String> list = reader.lines().collect(Collectors.toList());
+            for (String subEntry : list) {
+                if (subEntry.startsWith("!")) {
+                    subEntry = subEntry.substring(1);
+                    int i = subEntry.indexOf(" ");
+                    if (i != -1) {
+                        if (!Platform.isModLoaded(subEntry.substring(0, i))) {
+                            continue;
                         }
+                        subEntry = subEntry.substring(i + 1);
                     }
+                    ZipEntry docEntry = file.getEntry(subEntry);
+                    if (docEntry != null) {
+                        ProbeJS.LOGGER.info(String.format("Loading document inside jar - %s", subEntry));
+                        InputStream docStream = file.getInputStream(docEntry);
+                        BufferedReader docReader = new BufferedReader(
+                            new InputStreamReader(new BufferedInputStream(docStream), StandardCharsets.UTF_8)
+                        );
+                        docReader.lines().forEach(rawTSDoc::add);
+                    } else {
+                        ProbeJS.LOGGER.warn(String.format("Document from file is not found - %s", subEntry));
+                    }
+                } else {
+                    ZipEntry docEntry = file.getEntry(subEntry);
+                    if (docEntry == null) {
+                        ProbeJS.LOGGER.warn(String.format("Document from file is not found - %s", subEntry));
+                        continue;
+                    }
+                    ProbeJS.LOGGER.info(String.format("Loading document inside jar - %s", subEntry));
+                    InputStream docStream = file.getInputStream(docEntry);
+                    BufferedReader docReader = new BufferedReader(
+                        new InputStreamReader(new BufferedInputStream(docStream), StandardCharsets.UTF_8)
+                    );
+                    docReader.lines().forEach(document::step);
                 }
             }
         }
@@ -161,9 +151,10 @@ public class Manager {
             }
 
             if (doc instanceof DocumentType) {
-                if (CommentUtil.isLoaded(((DocumentType) doc).getComment())) typeDocuments.add(
-                    (DocumentType) doc
-                );
+                DocumentType typeDoc = (DocumentType) doc;
+                if (CommentUtil.isLoaded(typeDoc.getComment())) {
+                    typeDocuments.add(typeDoc);
+                }
             }
         }
     }

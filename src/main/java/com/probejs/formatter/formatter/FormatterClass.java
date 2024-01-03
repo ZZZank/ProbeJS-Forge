@@ -193,21 +193,27 @@ public class FormatterClass extends DocumentedFormatter<DocumentClass> implement
         document
             .getFields()
             .forEach(documentField -> {
-                if (fieldFormatters.containsKey(documentField.getName())) fieldFormatters
-                    .get(documentField.getName())
-                    .setDocument(documentField); else fieldAdditions.add(documentField);
+                if (fieldFormatters.containsKey(documentField.getName())) {
+                    fieldFormatters.get(documentField.getName()).setDocument(documentField);
+                } else {
+                    fieldAdditions.add(documentField);
+                }
             });
 
         document
             .getMethods()
             .forEach(documentMethod -> {
-                if (methodFormatters.containsKey(documentMethod.getName())) methodFormatters
-                    .get(documentMethod.getName())
-                    .forEach(formatterMethod -> {
-                        if (
-                            documentMethod.testMethod(formatterMethod.getMethodInfo())
-                        ) formatterMethod.setDocument(documentMethod);
-                    }); else methodAdditions.add(documentMethod);
+                if (methodFormatters.containsKey(documentMethod.getName())) {
+                    methodFormatters
+                        .get(documentMethod.getName())
+                        .forEach(formatterMethod -> {
+                            if (documentMethod.testMethod(formatterMethod.getMethodInfo())) {
+                                formatterMethod.setDocument(documentMethod);
+                            }
+                        });
+                } else {
+                    methodAdditions.add(documentMethod);
+                }
             });
     }
 
