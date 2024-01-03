@@ -37,9 +37,11 @@ public class Manager {
                 return;
             }
             BufferedReader reader = Files.newBufferedReader(f.toPath());
-            if (!f.getName().startsWith("!")) reader.lines().forEach(document::step); else reader
-                .lines()
-                .forEach(rawTSDoc::add);
+            if (!f.getName().startsWith("!")) {
+                reader.lines().forEach(document::step);
+            } else {
+                reader.lines().forEach(rawTSDoc::add);
+            }
         }
     }
 

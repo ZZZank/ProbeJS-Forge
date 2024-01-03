@@ -5,7 +5,6 @@ import com.probejs.document.comment.CommentHandler;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +29,7 @@ public class DocumentComment implements IDecorative, IFormatter {
     }
 
     public List<AbstractComment> getSpecialCommentsList() {
-        return Arrays.asList(
-            abstractComments.values().stream().flatMap(Collection::stream).toArray(AbstractComment[]::new)
-        );
+        return abstractComments.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     public <T> List<T> getSpecialComments(Class<? extends T> clazz) {

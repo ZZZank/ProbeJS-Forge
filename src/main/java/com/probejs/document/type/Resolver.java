@@ -53,7 +53,9 @@ public class Resolver {
             TypeInfoParameterized parameterized = (TypeInfoParameterized) docType;
             List<ITypeInfo> paramInfo = parameterized.getParamTypes();
             List<IType> paramDoc = ((TypeParameterized) docType).getParamTypes();
-            if (paramDoc.size() != paramInfo.size()) return false;
+            if (paramDoc.size() != paramInfo.size()) {
+                return false;
+            }
             for (int i = 0; i < paramDoc.size(); i++) {
                 if (!typeEquals(paramDoc.get(i), paramInfo.get(i))) return false;
             }

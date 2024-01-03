@@ -124,9 +124,9 @@ public class DocumentMethod
     }
 
     public boolean testMethod(MethodInfo methodInfo) {
-        if (methodInfo.isStatic() != isStatic) return false;
-
-        if (!Objects.equals(methodInfo.getName(), name)) return false;
+        if (methodInfo.isStatic() != isStatic || !Objects.equals(methodInfo.getName(), name)) {
+            return false;
+        }
 
         Map<String, MethodInfo.ParamInfo> params = new HashMap<>();
         Map<String, DocumentParam> docParams = new HashMap<>();
