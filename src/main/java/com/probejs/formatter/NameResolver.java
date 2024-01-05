@@ -13,11 +13,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
@@ -245,7 +247,8 @@ public class NameResolver {
         SpecialTypes.assignRegistry(Item.class, Registry.ITEM_REGISTRY);
         SpecialTypes.assignRegistry(SoundEvent.class, Registry.SOUND_EVENT_REGISTRY);
         SpecialTypes.assignRegistry(Fluid.class, Registry.FLUID_REGISTRY);
-  
+        SpecialTypes.assignRegistry(RecipeSerializer.class, ((ResourceKey<Registry<RecipeSerializer>>) ((Object) Registry.RECIPE_SERIALIZER_REGISTRY)));
+
         // putTypeGuard(true, Class.class, ClassWrapper.class);
         putTypeGuard(true, Class.class);
         putTypeGuard(false, IngredientJS.class);
