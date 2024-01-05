@@ -14,6 +14,8 @@ import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
 import dev.latvian.mods.rhino.NativeObject;
 import dev.latvian.mods.rhino.Scriptable;
+import dev.latvian.mods.rhino.ScriptableObject;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -134,8 +136,16 @@ public class SpecialTypes {
 
     public static String formatScriptable(Object obj) {
         List<String> values = new ArrayList<>();
-        if (obj instanceof NativeObject) {
-            NativeObject scriptable = (NativeObject) obj;
+        if (obj instanceof ScriptableObject) {
+            ScriptableObject scriptable = (NativeObject) obj;
+            Scriptable pt = scriptable.getPrototype();
+            if (pt.get("constructor", pt) instanceof BaseFunction) {
+                BaseFunction func=(BaseFunction) pt.get("constructor", pt);
+                //Resolves Object since they're not typed
+                if (!func.getFunctionName().isEmpty() && !func.getFunctionName().equals("Object")) {
+                    return func.getFunctionName();
+                }
+            }
             for (Object id : scriptable.getIds()) {
                 String formattedKey = NameResolver.formatValue(id);
                 Object value;
