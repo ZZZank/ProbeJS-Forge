@@ -3,8 +3,6 @@ package com.probejs.formatter.formatter;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.type.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Collectors;
 
 public class FormatterType {

@@ -8,7 +8,6 @@ import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.Manager;
 import com.probejs.document.comment.special.CommentHidden;
-import com.probejs.document.type.IType;
 import com.probejs.document.type.TypeNamed;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.ClassInfo;

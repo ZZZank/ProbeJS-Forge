@@ -1,7 +1,5 @@
 package com.probejs.document.type;
 
-import java.util.List;
-import java.util.Set;
 import java.util.function.BiFunction;
 
 public interface IType {

@@ -1,7 +1,6 @@
 package com.probejs.formatter;
 
 import com.google.gson.Gson;
-import com.probejs.info.MethodInfo;
 import com.probejs.info.type.ITypeInfo;
 import dev.latvian.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.mods.rhino.BaseFunction;

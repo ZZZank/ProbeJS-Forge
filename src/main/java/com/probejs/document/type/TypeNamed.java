@@ -1,11 +1,6 @@
 package com.probejs.document.type;
 
-import com.probejs.document.Manager;
 import com.probejs.formatter.NameResolver;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 public class TypeNamed implements IType {
     private final String typeName;

@@ -1,10 +1,6 @@
 package com.probejs.document.type;
 
-import com.google.common.collect.Sets;
-
-import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 public class TypeIntersection implements IType {
     private final IType leftType;
