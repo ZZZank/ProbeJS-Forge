@@ -6,6 +6,7 @@ import com.probejs.document.Manager;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentReturns;
 import com.probejs.document.type.IType;
+import com.probejs.document.type.TypeNamed;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.MethodInfo;
 import com.probejs.info.type.ITypeInfo;
@@ -144,7 +145,21 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                             renames.getOrDefault(paramInfo.getName(), paramInfo.getName())
                         ),
                         modifiers.containsKey(paramInfo.getName())
-                            ? modifiers.get(paramInfo.getName()).getTypeName()
+                            ? modifiers
+                                .get(paramInfo.getName())
+                                .getTransformedName((t, s) -> {
+                                    if (!(t instanceof TypeNamed)) {
+                                        return s;
+                                    }
+                                    TypeNamed n = (TypeNamed) t;
+                                    if (
+                                        NameResolver.resolvedNames.containsKey(n.getRawTypeName()) &&
+                                        !NameResolver.resolvedPrimitives.contains((n.getRawTypeName()))
+                                    ) {
+                                        return s + "_";
+                                    }
+                                    return s;
+                                })
                             : formatParamUnderscore(paramInfo.getType())
                     )
                 )
@@ -221,7 +236,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             String name = info.getName();
             formatted.add(
                 PUtil.indent(indent) +
-                String.format( "set %s%s;",getBean(), formatParams(paramModifiers, new HashMap<>()))
+                String.format("set %s%s;", getBean(), formatParams(paramModifiers, new HashMap<>()))
             );
         }
         return formatted;
