@@ -1,6 +1,7 @@
 package com.probejs.info.type;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,22 @@ public class InfoTypeResolver {
             );
         }
 
+        return typeInfo;
+    }
+
+    public static ITypeInfo getContainedTypeOrSelf(ITypeInfo typeInfo) {
+        if (typeInfo instanceof TypeInfoParameterized) {
+            TypeInfoParameterized paramType = (TypeInfoParameterized) typeInfo;
+            ITypeInfo baseType = paramType.getBaseType();
+            if (
+                baseType.assignableFrom(resolveType(Collection.class)) && paramType.getParamTypes().size() > 0
+            ) {
+                return paramType.getParamTypes().get(0);
+            }
+            if (baseType.assignableFrom(resolveType(Map.class)) && paramType.getParamTypes().size() > 1) {
+                return paramType.getParamTypes().get(1);
+            }
+        }
         return typeInfo;
     }
 }

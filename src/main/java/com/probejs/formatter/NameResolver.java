@@ -3,9 +3,16 @@ package com.probejs.formatter;
 import com.google.gson.Gson;
 import com.probejs.info.MethodInfo;
 import com.probejs.info.type.ITypeInfo;
+import dev.latvian.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
 import dev.latvian.mods.rhino.NativeObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import net.minecraft.core.Registry;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
@@ -14,13 +21,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class NameResolver {
 
@@ -68,12 +68,12 @@ public class NameResolver {
     public static final HashMap<Class<?>, Function<ITypeInfo, String>> specialTypeFormatters = new HashMap<>();
     public static final HashMap<Class<?>, Function<Object, String>> specialValueFormatters = new HashMap<>();
     public static final HashMap<Class<?>, Supplier<List<String>>> specialClassAssigner = new HashMap<>();
+    public static final HashMap<Class<?>, Boolean> specialTypeGuards = new HashMap<>();
 
     public static final Set<String> keywords = new HashSet<>();
     public static final Set<String> resolvedPrimitives = new HashSet<>();
 
     public static void putResolvedName(String className, String resolvedName) {
-        // TODO: check if Arrays.asList works
         putResolvedName(className, new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
     }
 
@@ -97,6 +97,12 @@ public class NameResolver {
 
     public static void putTypeFormatter(Class<?> className, Function<ITypeInfo, String> formatter) {
         specialTypeFormatters.put(className, formatter);
+    }
+
+    public static void putTypeGuard(boolean isSafe, Class<?>... classes) {
+        for (Class<?> clazz : classes) {
+            specialTypeGuards.put(clazz, isSafe);
+        }
     }
 
     public static boolean isTypeSpecial(Class<?> clazz) {
@@ -129,9 +135,7 @@ public class NameResolver {
         // ResolvedName resolved = new ResolvedName(Arrays.asList(remappedName.split("\\.")));
         ResolvedName resolved = new ResolvedName(Arrays.asList(clazz.getName().split("\\.")));
         ResolvedName internal = new ResolvedName(Arrays.asList("Internal", resolved.getLastName()));
-        if (resolvedNames.containsValue(internal))
-            putResolvedName(clazz.getName(), resolved);
-        else {
+        if (resolvedNames.containsValue(internal)) putResolvedName(clazz.getName(), resolved); else {
             putResolvedName(clazz.getName(), internal);
         }
     }
@@ -191,12 +195,26 @@ public class NameResolver {
 
         Gson gson = new Gson();
 
-        putValueFormatter(gson::toJson,
-                String.class, Character.class, Character.TYPE,
-                Long.class, Long.TYPE, Integer.class, Integer.TYPE,
-                Short.class, Short.TYPE, Byte.class, Byte.TYPE,
-                Double.class, Double.TYPE, Float.class, Float.TYPE,
-                Boolean.class, Boolean.TYPE);
+        putValueFormatter(
+            gson::toJson,
+            String.class,
+            Character.class,
+            Character.TYPE,
+            Long.class,
+            Long.TYPE,
+            Integer.class,
+            Integer.TYPE,
+            Short.class,
+            Short.TYPE,
+            Byte.class,
+            Byte.TYPE,
+            Double.class,
+            Double.TYPE,
+            Float.class,
+            Float.TYPE,
+            Boolean.class,
+            Boolean.TYPE
+        );
         putValueFormatter(SpecialTypes::formatMap, Map.class);
         putValueFormatter(SpecialTypes::formatList, List.class);
         putValueFormatter(SpecialTypes::formatScriptable, NativeObject.class);
@@ -204,19 +222,23 @@ public class NameResolver {
         putValueFormatter(SpecialTypes::formatNJO, NativeJavaObject.class);
         //putValueFormatter(SpecialTypes::formatScriptable, Scriptable.class);
 
-        putSpecialAssignments(DamageSource.class, () -> {
-            List<String> result = new ArrayList<>();
-            try {
-                for (Field field : DamageSource.class.getDeclaredFields()) {
-                    field.setAccessible(true);
-                    if (Modifier.isStatic(field.getModifiers()) && field.getType() == DamageSource.class) {
-                        result.add(((DamageSource) field.get(null)).getMsgId());
+        putSpecialAssignments(
+            DamageSource.class,
+            () -> {
+                List<String> result = new ArrayList<>();
+                try {
+                    for (Field field : DamageSource.class.getDeclaredFields()) {
+                        field.setAccessible(true);
+                        if (
+                            Modifier.isStatic(field.getModifiers()) && field.getType() == DamageSource.class
+                        ) {
+                            result.add(((DamageSource) field.get(null)).getMsgId());
+                        }
                     }
-                }
-            } catch (Exception ignored) {
+                } catch (Exception ignored) {}
+                return result;
             }
-            return result;
-        });
+        );
 
         SpecialTypes.assignRegistry(Attribute.class, Registry.ATTRIBUTE_REGISTRY);
         SpecialTypes.assignRegistry(MobEffect.class, Registry.MOB_EFFECT_REGISTRY);
@@ -224,12 +246,15 @@ public class NameResolver {
         SpecialTypes.assignRegistry(Item.class, Registry.ITEM_REGISTRY);
         SpecialTypes.assignRegistry(SoundEvent.class, Registry.SOUND_EVENT_REGISTRY);
         SpecialTypes.assignRegistry(Fluid.class, Registry.FLUID_REGISTRY);
+  
+        // putTypeGuard(true, Class.class, ClassWrapper.class);
+        putTypeGuard(true, Class.class);
+        putTypeGuard(false, IngredientJS.class);
 
         addKeyword("function");
         addKeyword("debugger");
         addKeyword("in");
         addKeyword("with");
         addKeyword("java");
-
     }
 }

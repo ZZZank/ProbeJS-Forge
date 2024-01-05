@@ -5,6 +5,7 @@ import com.probejs.document.DocumentField;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.FieldInfo;
+import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,16 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
         } else if (fieldInfo.isStatic() && NameResolver.formatValue(fieldInfo.getStaticValue()) != null) {
             elements.add(NameResolver.formatValue(fieldInfo.getStaticValue()));
         } else {
-            elements.add(new FormatterType(fieldInfo.getType()).format(0, 0));
+            elements.add(
+                new FormatterType(
+                    fieldInfo.getType(),
+                    NameResolver.specialTypeGuards.getOrDefault(
+                        InfoTypeResolver.getContainedTypeOrSelf(fieldInfo.getType()).getResolvedClass(),
+                        true
+                    )
+                )
+                    .format(0, 0)
+            );
         }
         formatted.add(PUtil.indent(indent) + String.join(" ", elements) + ";");
         return formatted;
