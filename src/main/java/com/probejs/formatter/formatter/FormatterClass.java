@@ -1,5 +1,6 @@
 package com.probejs.formatter.formatter;
 
+import com.google.gson.Gson;
 import com.probejs.ProbeConfig;
 import com.probejs.document.DocumentClass;
 import com.probejs.document.DocumentComment;
@@ -8,6 +9,7 @@ import com.probejs.document.DocumentMethod;
 import com.probejs.document.Manager;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.document.type.IType;
+import com.probejs.document.type.TypeNamed;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.type.ITypeInfo;
@@ -15,6 +17,8 @@ import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.util.PUtil;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,6 +52,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
     @Override
     public List<String> format(Integer indent, Integer stepIndent) {
+        Gson gson = new Gson();
         List<String> formatted = new ArrayList<>();
         DocumentComment comment = document == null ? null : document.getComment();
         if (comment != null) {
@@ -58,11 +63,40 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         List<String> assignableTypes = Manager.typesAssignable
             .getOrDefault(classInfo.getClazzRaw().getName(), new ArrayList<>())
             .stream()
-            .map(IType::getTypeName)
+            .map(t ->
+                t.getTransformedName((i, s) -> {
+                    if (!(i instanceof TypeNamed)) {
+                        return s;
+                    }
+                    TypeNamed n = (TypeNamed) i;
+                    if (
+                        NameResolver.resolvedNames.containsKey(n.getRawTypeName()) &&
+                        !NameResolver.resolvedPrimitives.contains((n.getRawTypeName()))
+                    ) {
+                        return s + "_";
+                    }
+                    return s;
+                })
+            )
             .collect(Collectors.toList());
 
         if (classInfo.isEnum()) {
             //TODO: add special processing for KubeJS
+            Class<?> clazz = classInfo.getClazzRaw();
+            try {
+                Method values = clazz.getMethod("values");
+                values.setAccessible(true);
+                Object[] enumValues = (Object[]) values.invoke(null);
+                for (Object enumValue : enumValues) {
+                    //Use the name() here so won't be affected by overrides
+                    Method name = Enum.class.getMethod("name");
+                    assignableTypes.add(
+                        gson.toJson(name.invoke(enumValue).toString().toLowerCase(Locale.ROOT))
+                    );
+                }
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
 
         // First line
