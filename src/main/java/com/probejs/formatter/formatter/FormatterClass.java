@@ -103,9 +103,15 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
         if (!internal) firstLine.add("declare");
 
-        if (classInfo.isAbstract() && !classInfo.isInterface()) firstLine.add("abstract");
+        if (classInfo.isAbstract() && !classInfo.isInterface()) {
+            firstLine.add("abstract");
+        }
 
-        if (classInfo.isInterface()) firstLine.add("interface"); else firstLine.add("class");
+        if (classInfo.isInterface()) {
+            firstLine.add("interface");
+        } else {
+            firstLine.add("class");
+        }
 
         firstLine.add(NameResolver.getResolvedName(classInfo.getName()).getLastName());
         if (classInfo.getClazzRaw().getTypeParameters().length != 0) {
@@ -119,6 +125,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 )
             );
         }
+        // super class
         if (classInfo.getSuperClass() != null) {
             firstLine.add("extends");
             firstLine.add(
@@ -127,6 +134,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 )
             );
         }
+        // interface
         if (!classInfo.getInterfaces().isEmpty()) {
             firstLine.add(classInfo.isInterface() ? "extends" : "implements");
             firstLine.add(
@@ -141,6 +149,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             );
         }
         firstLine.add("{");
+        // first line processing, end
         formatted.add(PUtil.indent(indent) + String.join(" ", firstLine));
 
         // Fields, methods
@@ -297,12 +306,14 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         StringBuilder sb = new StringBuilder(new FormatterType(info, false).format(0, 0));
         if (info instanceof TypeInfoClass) {
             TypeInfoClass clazz = (TypeInfoClass) info;
-            if (clazz.getTypeVariables().size() != 0) sb.append(
-                String.format(
-                    "<%s>",
-                    String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any"))
-                )
-            );
+            if (clazz.getTypeVariables().size() != 0) {
+                sb.append(
+                    String.format(
+                        "<%s>",
+                        String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any"))
+                    )
+                );
+            }
         }
         return sb.toString();
     }

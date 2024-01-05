@@ -124,9 +124,11 @@ public class TypingCompiler {
             NameResolver.ResolvedName name = NameResolver.getResolvedName(clazz.getName());
             if (name.getNamespace().isEmpty()) {
                 writer.write(String.join("\n", formatter.format(0, 4)) + "\n");
-                if (clazz.isInterface()) writer.write(
-                    String.format("declare const %s: %s;", name.getFullName(), name.getFullName()) + "\n"
-                );
+                if (clazz.isInterface()) {
+                    writer.write(
+                        String.format("declare const %s: %s;", name.getFullName(), name.getFullName()) + "\n"
+                    );
+                }
             } else {
                 formatter.setInternal(true);
                 namespaced.computeIfAbsent(name.getNamespace(), s -> new ArrayList<>()).add(formatter);
