@@ -96,7 +96,7 @@ public class SpecialTypes {
         if (formattedValue == null) {
             if (
                 !NameResolver.resolvedNames.containsKey(obj.getClass().getName()) &&
-                !obj.getClass().getName().contains("$Lambda$")
+                !obj.getClass().getName().contains("$Lambda")
             ) {
                 NameResolver.resolveName(obj.getClass());
             }
