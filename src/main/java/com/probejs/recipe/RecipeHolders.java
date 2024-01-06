@@ -14,6 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RecipeHolders {
 
+    //TODO: redirect `recipes` using docs
+
     static FormatterNamespace namespaced;
     static Map<String, List<Pair<String, String>>> namespacedMap = new HashMap<>();
 

@@ -1,5 +1,5 @@
 /**
-* @target Internal.ItemStackJS
+* @target dev.latvian.kubejs.item.ItemStackJS
 * @assign string
 * @assign object
 */
@@ -7,10 +7,10 @@ class ItemStackJS {
 }
 
 /**
- * @target Internal.IngredientJS
+ * @target dev.latvian.kubejs.item.ingredient.IngredientJS
  * @assign string
  * @assign object
- * @assign Internal.ItemStackJS
+ * @assign dev.latvian.kubejs.item.ItemStackJS
  */
 class IngredientJS {
 
@@ -65,42 +65,42 @@ class RecipeEventJS {
      * 
      * This is used by Furnaces.
      */
-    smelting(output: Internal.ItemStackJS, input: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
+    smelting(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Smokers.
      */
-    smoking(output: Internal.ItemStackJS, input: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
+    smoking(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Blast Furnaces.
      */
-    blasting(output: Internal.ItemStackJS, input: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
+    blasting(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
 
     /**
      * Adds a shaped crafting recipe.
      */
-    shaped(output: Internal.ItemStackJS, pattern: string[], items: java.util.Map<string, Internal.IngredientJS>): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
+    shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: java.util.Map<string, dev.latvian.kubejs.item.ingredient.IngredientJS>): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
     /**
      * Adds a shapeless crafting recipe.
      */
-    shapeless(output: Internal.ItemStackJS, inputs: Internal.IngredientJS[]): dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
+    shapeless(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS[]): dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Camefire.
      */
-    campfireCooking(output: Internal.ItemStackJS, input: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
+    campfireCooking(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a stonecutting recipe.
      */
-    stonecutting(output: Internal.ItemStackJS, inputs: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.StonecuttingRecipeJS;
+    stonecutting(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.StonecuttingRecipeJS;
     /**
      * Adds a smithing recipe.
      */
-    smithing(output: Internal.ItemStackJS, base: Internal.IngredientJS, addition: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.SmithingRecipeJS;
+    smithing(output: dev.latvian.kubejs.item.ItemStackJS, base: dev.latvian.kubejs.item.ingredient.IngredientJS, addition: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.SmithingRecipeJS;
 
 }
 
@@ -119,40 +119,40 @@ class MinecraftRecipes {
      * 
      * This is used by Furnaces.
      */
-    smelting(output: Internal.ItemStackJS, input: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
+    smelting(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Smokers.
      */
-    smoking(output: Internal.ItemStackJS, input: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
+    smoking(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Blast Furnaces.
      */
-    blasting(output: Internal.ItemStackJS, input: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
+    blasting(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
 
     /**
      * Adds a shaped crafting recipe.
      */
-    crafting_shaped(output: Internal.ItemStackJS, pattern: string[], items: java.util.Map<string, Internal.IngredientJS>): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
+    crafting_shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: java.util.Map<string, dev.latvian.kubejs.item.ingredient.IngredientJS>): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
     /**
      * Adds a shapeless crafting recipe.
      */
-    crafting_shapeless(output: Internal.ItemStackJS, inputs: Internal.IngredientJS[]): dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
+    crafting_shapeless(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS[]): dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
      * 
      * This is used by Camefire.
      */
-    camefire_cooking(output: Internal.ItemStackJS, input: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
+    camefire_cooking(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a stonecutting recipe.
      */
-    stonecutting(output: Internal.ItemStackJS, inputs: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.StonecuttingRecipeJS;
+    stonecutting(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.StonecuttingRecipeJS;
     /**
      * Adds a smithing recipe.
      */
-    smithing(output: Internal.ItemStackJS, base: Internal.IngredientJS, addition: Internal.IngredientJS): dev.latvian.kubejs.recipe.minecraft.SmithingRecipeJS;
+    smithing(output: dev.latvian.kubejs.item.ItemStackJS, base: dev.latvian.kubejs.item.ingredient.IngredientJS, addition: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.SmithingRecipeJS;
 }
