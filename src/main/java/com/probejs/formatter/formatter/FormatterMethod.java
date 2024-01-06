@@ -34,7 +34,9 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     public String getBean() {
         String methodName = methodInfo.getName();
-        if (methodName.equals("is") || methodName.equals("get") || methodName.equals("set")) return null;
+        if (methodName.equals("is") || methodName.equals("get") || methodName.equals("set")) {
+            return null;
+        }
         if (
             methodName.startsWith("is") &&
             methodInfo.getParams().size() == 0 &&
@@ -42,13 +44,15 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 methodInfo.getReturnType().assignableFrom(new TypeInfoClass(Boolean.class)) ||
                 methodInfo.getReturnType().assignableFrom(new TypeInfoClass(Boolean.TYPE))
             )
-        ) return getCamelCase(methodName.substring(2));
-        if (methodName.startsWith("get") && methodInfo.getParams().size() == 0) return getCamelCase(
-            methodName.substring(3)
-        );
-        if (methodName.startsWith("set") && methodInfo.getParams().size() == 1) return getCamelCase(
-            methodName.substring(3)
-        );
+        ) {
+            return getCamelCase(methodName.substring(2));
+        }
+        if (methodName.startsWith("get") && methodInfo.getParams().size() == 0) {
+            return getCamelCase(methodName.substring(3));
+        }
+        if (methodName.startsWith("set") && methodInfo.getParams().size() == 1) {
+            return getCamelCase(methodName.substring(3));
+        }
         return null;
     }
 
@@ -70,18 +74,20 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             if (comment != null) {
                 modifiers.putAll(CommentUtil.getTypeModifiers(comment));
                 CommentReturns r = comment.getSpecialComment(CommentReturns.class);
-                if (r != null) returns = r.getReturnType();
+                if (r != null) {
+                    returns = r.getReturnType();
+                }
             }
         }
         return new Pair<>(modifiers, returns);
     }
 
     private static String formatTypeParameterized(ITypeInfo info, boolean useSpecial) {
-        StringBuilder sb = new StringBuilder(new FormatterType(info, useSpecial).format(0, 0));
         if (!(info instanceof TypeInfoClass)) {
-            return sb.toString();
+            return new FormatterType(info, useSpecial).format(0, 0);
         }
         TypeInfoClass clazz = (TypeInfoClass) info;
+        StringBuilder sb = new StringBuilder(new FormatterType(info, useSpecial).format(0, 0));
         if (!NameResolver.isTypeSpecial(clazz.getResolvedClass()) && clazz.getTypeVariables().size() != 0) {
             sb.append(
                 String.format(
