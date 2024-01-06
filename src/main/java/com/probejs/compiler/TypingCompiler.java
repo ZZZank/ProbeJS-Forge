@@ -20,6 +20,8 @@ import com.probejs.info.Walker;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.plugin.WrappedEventHandler;
 import com.probejs.plugin.WrappedForgeEventHandler;
+import com.probejs.recipe.RecipeHolders;
+
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
@@ -238,6 +240,17 @@ public class TypingCompiler {
         writer.flush();
     }
 
+    public static void compileRecipeHolder() throws IOException {
+        RecipeHolders.init();
+        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("recipe.d.ts"));
+        writer.write("/// <reference path=\"./globals.d.ts\" />\n");
+        for (String line : RecipeHolders.format(0, 4)) {
+            writer.write(line);
+            writer.write('\n');
+        }
+        writer.flush();
+    }
+
     public static void compileJSConfig() throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(KubeJSPaths.DIRECTORY.resolve("jsconfig.json"));
         String lines = String.join(
@@ -260,12 +273,13 @@ public class TypingCompiler {
 
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
-
+        // cache class
         Map<String, Class<?>> cachedEvents = readCachedEvents("cachedEvents.json");
         Map<String, Class<?>> cachedForgeEvents = readCachedEvents("cachedForgeEvents.json");
         Set<Class<?>> cachedClasses = new HashSet<>(cachedEvents.values());
         cachedClasses.addAll(cachedForgeEvents.values());
         // cachedClasses.addAll(RegistryCompiler.getRegistryClasses());
+        // global class
         Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
         globalClasses.removeIf(c -> ClassResolver.skipped.contains(c));
         SpecialTypes.processFunctionalInterfaces(globalClasses);
@@ -274,6 +288,7 @@ public class TypingCompiler {
         compileEvents(cachedEvents, cachedForgeEvents);
         compileConstants(bindingEvent);
         compileJava(globalClasses);
+        compileRecipeHolder();
         compileJSConfig();
         writeCachedEvents("cachedEvents.json", cachedEvents);
         writeCachedEvents("cachedForgedEvents.json", cachedForgeEvents);
