@@ -43,7 +43,7 @@ public class RecipeHolders {
             String namespace = key.getNamespace();
             String path = key.getPath();
             String invokeName =
-                "Internal." + NameResolver.getResolvedName(value.getClass().getName()).getLastName();
+                "Internal." + NameResolver.getResolvedName(value.factory.get().getClass().getName()).getLastName();
             
             namespacedMap
                 .computeIfAbsent(namespace, k -> new ArrayList<Pair<String, String>>())
