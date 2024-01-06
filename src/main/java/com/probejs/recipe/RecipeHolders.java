@@ -25,48 +25,41 @@ public class RecipeHolders {
         RegisterRecipeHandlersEvent event = new RegisterRecipeHandlersEvent(recipeHandlers);
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(event));
 
-        //TODO: remove when out of dev
-        int threshold = 10;
-        for (Entry<ResourceLocation, RecipeTypeJS> entry : recipeHandlers.entrySet()) {
-            if (threshold-- < 0) {
-                break;
-            }
-            ProbeJS.LOGGER.info(entry.getKey());
-            // ProbeJS.LOGGER.info(entry.getValue()); // same as getKey()
-            Class<?> clazz = entry.getValue().getClass();
-            ProbeJS.LOGGER.info(clazz);
-
-            NameResolver.getResolvedName(clazz.getName()).getLastName();
-        }
-
         recipeHandlers.forEach((key, value) -> {
             String namespace = key.getNamespace();
-            String path = key.getPath();
-            String invokeName =
-                "Internal." + NameResolver.getResolvedName(value.factory.get().getClass().getName()).getLastName();
-            
+            String invoke = key.getPath();
+            String recipeJSName =
+                "Internal." +
+                NameResolver.getResolvedName(value.factory.get().getClass().getName()).getLastName();
+
             namespacedMap
                 .computeIfAbsent(namespace, k -> new ArrayList<Pair<String, String>>())
-                .add(new Pair<>(path, invokeName));
+                .add(new Pair<>(invoke, recipeJSName));
         });
     }
 
     public static List<String> format(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
         // head
-        formatted.add("declare namespace stub.probejs.recipeHolder {");
-        // each class
+        formatted.add(PUtil.indent(indent) + "declare namespace stub.probejs.recipeHolder {");
+        // each namespace
+        indent += stepIndent;
         for (Entry<String, List<Pair<String, String>>> entry : namespacedMap.entrySet()) {
-            formatted.add(String.format("    class %s {", entry.getKey()));
-            // each method inside class
+            formatted.add(String.format(PUtil.indent(indent) + "class %s {", entry.getKey()));
+            // each method inside namespace
+            indent += stepIndent;
             for (Pair<String, String> pair : entry.getValue()) {
                 // we dont know how a Recipe Serializer actually works, so only `...args`
-                formatted.add(PUtil.indent(8) + pair.getFirst() + "(...args: object): " + pair.getSecond());
+                formatted.add(
+                    PUtil.indent(indent) + pair.getFirst() + "(...args: object): " + pair.getSecond()
+                );
             }
-            formatted.add("    }");
+            indent -= stepIndent;
+            formatted.add(PUtil.indent(indent) + "}");
         }
+        indent -= stepIndent;
         // end
-        formatted.add("}");
+        formatted.add(PUtil.indent(indent) + "}");
         return formatted;
     }
 }
