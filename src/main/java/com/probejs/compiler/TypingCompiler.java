@@ -21,7 +21,6 @@ import com.probejs.info.type.TypeInfoClass;
 import com.probejs.plugin.WrappedEventHandler;
 import com.probejs.plugin.WrappedForgeEventHandler;
 import com.probejs.recipe.RecipeHolders;
-
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
@@ -32,6 +31,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 import net.minecraft.resources.ResourceLocation;
@@ -240,13 +240,15 @@ public class TypingCompiler {
         writer.flush();
     }
 
-    public static void compileRecipeHolder() throws IOException {
-        RecipeHolders.init();
-        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("recipe.d.ts"));
-        writer.write("/// <reference path=\"./globals.d.ts\" />\n");
+    public static void compileRecipeHolder(Map<ResourceLocation, RecipeTypeJS> typeMap) throws IOException {
+        RecipeHolders.init(typeMap);
+        BufferedWriter writer = Files.newBufferedWriter(
+            ProbePaths.GENERATED.resolve("globals.d.ts"),
+            StandardOpenOption.APPEND
+        );
         for (String line : RecipeHolders.format(0, 4)) {
-            writer.write(line);
             writer.write('\n');
+            writer.write(line);
         }
         writer.flush();
     }
@@ -288,7 +290,7 @@ public class TypingCompiler {
         compileEvents(cachedEvents, cachedForgeEvents);
         compileConstants(bindingEvent);
         compileJava(globalClasses);
-        compileRecipeHolder();
+        compileRecipeHolder(typeMap);
         compileJSConfig();
         writeCachedEvents("cachedEvents.json", cachedEvents);
         writeCachedEvents("cachedForgedEvents.json", cachedForgeEvents);

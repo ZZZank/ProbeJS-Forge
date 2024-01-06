@@ -20,11 +20,7 @@ public class RecipeHolders {
     static FormatterNamespace namespaced;
     static Map<String, List<Pair<String, String>>> namespacedMap = new HashMap<>();
 
-    public static void init() {
-        Map<ResourceLocation, RecipeTypeJS> recipeHandlers = new HashMap<>();
-        RegisterRecipeHandlersEvent event = new RegisterRecipeHandlersEvent(recipeHandlers);
-        KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(event));
-
+    public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
         recipeHandlers.forEach((key, value) -> {
             String namespace = key.getNamespace();
             String invoke = key.getPath();
