@@ -1,13 +1,10 @@
 package com.probejs.recipe;
 
 import com.mojang.datafixers.util.Pair;
-import com.probejs.ProbeJS;
 import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.util.PUtil;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
-import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
-import dev.latvian.kubejs.util.KubeJSPlugins;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

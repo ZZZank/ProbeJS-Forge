@@ -15,7 +15,6 @@ import dev.latvian.mods.rhino.NativeJavaObject;
 import dev.latvian.mods.rhino.NativeObject;
 import dev.latvian.mods.rhino.Scriptable;
 import dev.latvian.mods.rhino.ScriptableObject;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -140,7 +139,7 @@ public class SpecialTypes {
             ScriptableObject scriptable = (NativeObject) obj;
             Scriptable pt = scriptable.getPrototype();
             if (pt.get("constructor", pt) instanceof BaseFunction) {
-                BaseFunction func=(BaseFunction) pt.get("constructor", pt);
+                BaseFunction func = (BaseFunction) pt.get("constructor", pt);
                 //Resolves Object since they're not typed
                 if (!func.getFunctionName().isEmpty() && !func.getFunctionName().equals("Object")) {
                     return func.getFunctionName();
@@ -205,7 +204,9 @@ public class SpecialTypes {
                     .genericRegistry(registry)
                     .getIds()
                     .forEach(r -> {
-                        if (r.getNamespace().equals("minecraft")) result.add(g.toJson(r.getPath()));
+                        if (r.getNamespace().equals("minecraft")) {
+                            result.add(g.toJson(r.getPath()));
+                        }
                         result.add(g.toJson(r.toString()));
                     });
                 return result;

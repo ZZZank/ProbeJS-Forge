@@ -117,9 +117,9 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 (typeInfo, rawString) -> {
                     if (typeInfo instanceof TypeInfoClass) {
                         Class<?> clazz = typeInfo.getResolvedClass();
-                        if (!NameResolver.resolvedPrimitives.contains(clazz.getName())) return (
-                            rawString + "_"
-                        );
+                        if (!NameResolver.resolvedPrimitives.contains(clazz.getName())) {
+                            return (rawString + "_");
+                        }
                     }
                     return rawString;
                 }

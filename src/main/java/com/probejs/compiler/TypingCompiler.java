@@ -247,8 +247,8 @@ public class TypingCompiler {
             StandardOpenOption.APPEND
         );
         for (String line : RecipeHolders.format(0, 4)) {
-            writer.write('\n');
             writer.write(line);
+            writer.write('\n');
         }
         writer.flush();
     }

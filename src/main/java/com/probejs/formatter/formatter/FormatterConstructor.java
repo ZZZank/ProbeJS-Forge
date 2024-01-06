@@ -7,7 +7,6 @@ import com.probejs.info.MethodInfo;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.util.PUtil;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,12 +24,14 @@ public class FormatterConstructor implements IFormatter {
         if (info instanceof TypeInfoClass) {
             TypeInfoClass clazz = (TypeInfoClass) info;
             ClassInfo classInfo = ClassInfo.getOrCache(clazz.getResolvedClass());
-            if (classInfo.getParameters().size() != 0) sb.append(
-                String.format(
-                    "<%s>",
-                    String.join(", ", Collections.nCopies(classInfo.getParameters().size(), "any"))
-                )
-            );
+            if (classInfo.getParameters().size() != 0) {
+                sb.append(
+                    String.format(
+                        "<%s>",
+                        String.join(", ", Collections.nCopies(classInfo.getParameters().size(), "any"))
+                    )
+                );
+            }
         }
         return sb.toString();
     }

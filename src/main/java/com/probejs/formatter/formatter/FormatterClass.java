@@ -100,19 +100,17 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
         // First line
         List<String> firstLine = new ArrayList<>();
-
-        if (!internal) firstLine.add("declare");
-
+        if (!internal) {
+            firstLine.add("declare");
+        }
         if (classInfo.isAbstract() && !classInfo.isInterface()) {
             firstLine.add("abstract");
         }
-
         if (classInfo.isInterface()) {
             firstLine.add("interface");
         } else {
             firstLine.add("class");
         }
-
         firstLine.add(NameResolver.getResolvedName(classInfo.getName()).getLastName());
         if (classInfo.getClazzRaw().getTypeParameters().length != 0) {
             firstLine.add(
@@ -149,8 +147,8 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             );
         }
         firstLine.add("{");
-        // first line processing, end
         formatted.add(PUtil.indent(indent) + String.join(" ", firstLine));
+        // first line processing, end
 
         // Fields, methods
         methodFormatters
@@ -219,20 +217,23 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         }
 
         // constructors
-        if (!classInfo.isInterface()) if (internal) {
-            formatted.add(PUtil.indent(indent + stepIndent) + "/**");
-            formatted.add(
-                PUtil.indent(indent + stepIndent) +
-                "* Internal constructor, this means that it's not valid and you will get an error if you use it."
-            );
-            formatted.add(PUtil.indent(indent + stepIndent) + "*/");
-            formatted.add(PUtil.indent(indent + stepIndent) + "protected constructor();");
-        } else {
-            classInfo
-                .getConstructorInfo()
-                .stream()
-                .map(FormatterConstructor::new)
-                .forEach(f -> formatted.addAll(f.format(indent + stepIndent, stepIndent)));
+        if (!classInfo.isInterface()) {
+            if (internal) {
+                String indnt = PUtil.indent(indent + stepIndent);
+                formatted.add(indnt + "/**");
+                formatted.add(
+                    indnt +
+                    " * Internal constructor, this means that it's not valid and you will get an error if you use it."
+                );
+                formatted.add(indnt + " */");
+                formatted.add(indnt + "protected constructor();");
+            } else {
+                classInfo
+                    .getConstructorInfo()
+                    .stream()
+                    .map(FormatterConstructor::new)
+                    .forEach(f -> formatted.addAll(f.format(indent + stepIndent, stepIndent)));
+            }
         }
         // additions
         fieldAdditions.forEach(fieldDoc -> formatted.addAll(fieldDoc.format(indent + stepIndent, stepIndent))
