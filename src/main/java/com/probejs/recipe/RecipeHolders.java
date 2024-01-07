@@ -16,10 +16,10 @@ public class RecipeHolders {
 
     //TODO: redirect `recipes` using docs
 
-    static FormatterNamespace namespaced;
     static Map<String, List<Pair<String, String>>> namespacedMap = new HashMap<>();
 
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
+        namespacedMap.clear();
         recipeHandlers.forEach((key, value) -> {
             String namespace = key.getNamespace();
             String invoke = key.getPath();
