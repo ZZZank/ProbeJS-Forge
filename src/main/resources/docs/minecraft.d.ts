@@ -7,6 +7,13 @@ class ItemStackJS {
 }
 
 /**
+ * @target dev.latvian.kubejs.recipe.RecipeEventJS
+ */
+class RecipeEventJS {
+    readonly recipes: stub.probejs.recipeHolder
+}
+
+/**
  * @target dev.latvian.kubejs.item.ingredient.IngredientJS
  * @assign string
  * @assign object

@@ -16,6 +16,7 @@ import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.util.PUtil;
+import dev.latvian.kubejs.recipe.RecipeEventJS;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
@@ -32,14 +33,19 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
     private boolean internal = false;
 
     public FormatterClass(ClassInfo classInfo) {
+        final String recipeEventJSName = RecipeEventJS.class.getName();
         this.classInfo = classInfo;
         classInfo
             .getMethodInfo()
-            .forEach(methodInfo ->
+            .forEach(methodInfo -> {
+                // TODO: dirty hack, should remove
+                if (classInfo.getName() == recipeEventJSName && methodInfo.getName() == "getRecipes") {
+                    return;
+                }
                 methodFormatters
                     .computeIfAbsent(methodInfo.getName(), s -> new ArrayList<>())
-                    .add(new FormatterMethod(methodInfo))
-            );
+                    .add(new FormatterMethod(methodInfo));
+            });
         classInfo
             .getFieldInfo()
             .forEach(fieldInfo -> fieldFormatters.put(fieldInfo.getName(), new FormatterField(fieldInfo)));
@@ -67,10 +73,10 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                     if (!(i instanceof TypeNamed)) {
                         return s;
                     }
-                    TypeNamed n = (TypeNamed) i;
+                    TypeNamed named = (TypeNamed) i;
                     if (
-                        NameResolver.resolvedNames.containsKey(n.getRawTypeName()) &&
-                        !NameResolver.resolvedPrimitives.contains((n.getRawTypeName()))
+                        NameResolver.resolvedNames.containsKey(named.getRawTypeName()) &&
+                        !NameResolver.resolvedPrimitives.contains((named.getRawTypeName()))
                     ) {
                         return s + "_";
                     }
