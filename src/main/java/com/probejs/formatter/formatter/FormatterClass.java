@@ -39,7 +39,9 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             .getMethodInfo()
             .forEach(methodInfo -> {
                 // TODO: dirty hack, should remove
-                if (classInfo.getName() == recipeEventJSName && methodInfo.getName() == "getRecipes") {
+                if (
+                    classInfo.getName().equals(recipeEventJSName) && methodInfo.getName().equals("getRecipes")
+                ) {
                     return;
                 }
                 methodFormatters
