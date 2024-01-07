@@ -9,6 +9,7 @@ public class CommentRename extends AbstractComment {
     public CommentRename(String line) {
         super(line);
         String[] nameTo = line.split(" ");
+        // nameTo[0] is `@rename`
         name = nameTo[1];
         to = nameTo[2];
     }
