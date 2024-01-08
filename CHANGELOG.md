@@ -6,16 +6,19 @@ A huge update, adding support for Document, Forge event listening, full config w
 
 -   Collected class/methods/... will now be dumped to `kubejs/probe/` folder, instead of `kubejs/kubetypings/` folder.
 -   ProbeJS can now dump more classes/methods into `global.d.ts`
-    - On a slihtly modded 1.16.5 Forge instance, ProbeJS can now dump about 164000 lines, 4.4 times of previously 37700 lines.
+    -   On a slightly modded 1.16.5 Forge instance, ProbeJS can now dump about 164000 lines, 4.4 times of previously 37700 lines.
 -   ProbeJS can now dump java access related data better.
-    -   On a slihtly modded 1.16.5 Forge instance, ProbeJS can now recognize and dump about 2000 method presets, 33% more than previously 1500.
+    -   On a slightly modded 1.16.5 Forge instance, ProbeJS can now recognize and dump about 2000 method presets, 33% more than previously 1500.
 -   An actual config file will be generated at `kubejs/config/probe.json`, and will be automatically saved on change(through command).
+-   Event dumping now supports `onForgeEvent()`
 -   Correctly resolves types used by List/Map
 -   Types will have `_` appended to prevent conflict
 -   better support for RecipeSerializer
 -   Remove `dump.js` generation, because it seems completely useless
 -   Suopprt getters
 -   and many small changes, for a better experience
+
+---
 
 # ProbeJS Legacy 1.?.? -> 1.6.0
 
