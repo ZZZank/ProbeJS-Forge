@@ -7,20 +7,12 @@ class ItemStackJS {
 }
 
 /**
- * @target dev.latvian.kubejs.recipe.RecipeEventJS
- */
-class RecipeEventJS {
-    readonly recipes: stub.probejs.recipeHolder
-}
-
-/**
  * @target dev.latvian.kubejs.item.ingredient.IngredientJS
  * @assign string
  * @assign object
  * @assign dev.latvian.kubejs.item.ItemStackJS
  */
 class IngredientJS {
-
 }
 
 /**
@@ -28,11 +20,9 @@ class IngredientJS {
 */
 class RecipeEventJS {
     /**
-     * Holds all the recipes collected from documents.
-     * @returns Document.RecipeHolder
+     * Holds all the recipes collected by probejs(not documents).
      */
-    getRecipes(): java.util.Map<java.lang.String, java.lang.Object>;
-
+    get recipes(): stub.probejs.recipeHolder;
 
     /**
      * @hidden
