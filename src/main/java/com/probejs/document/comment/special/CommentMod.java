@@ -4,6 +4,7 @@ import com.probejs.document.comment.AbstractComment;
 import me.shedaniel.architectury.platform.Platform;
 
 public class CommentMod extends AbstractComment {
+
     private static final int MARK_LEN = "@mod ".length();
     private final String mod;
 

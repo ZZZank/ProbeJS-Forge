@@ -3,6 +3,7 @@ package com.probejs.document.comment.special;
 import com.probejs.document.comment.AbstractComment;
 
 public class CommentRename extends AbstractComment {
+
     private final String name;
     private final String to;
 

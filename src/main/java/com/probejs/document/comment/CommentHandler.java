@@ -1,11 +1,11 @@
 package com.probejs.document.comment;
 
 import com.probejs.document.comment.special.*;
-
 import java.util.HashMap;
 import java.util.function.Function;
 
 public class CommentHandler {
+
     public static final HashMap<String, Function<String, AbstractComment>> specialCommentHandler = new HashMap<>();
 
     public static void init() {

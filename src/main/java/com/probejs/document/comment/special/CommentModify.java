@@ -5,6 +5,7 @@ import com.probejs.document.type.IType;
 import com.probejs.document.type.Resolver;
 
 public class CommentModify extends AbstractComment {
+
     private static final int MARK_LEN = "@modify ".length();
     private final String name;
     private final IType type;

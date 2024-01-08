@@ -1,6 +1,7 @@
 package com.probejs.formatter.formatter;
 
 public abstract class DocumentReceiver<T> implements IDocumented<T> {
+
     public T document;
 
     @Override
