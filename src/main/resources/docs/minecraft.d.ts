@@ -16,6 +16,15 @@ class IngredientJS {
 }
 
 /**
+ * @target net.minecraft.network.chat.Component
+ * @assign string
+ * @assign object
+ * @assign dev.latvian.kubejs.text.Text
+ */
+class ITextComponent {
+}
+
+/**
 * @target dev.latvian.kubejs.recipe.RecipeEventJS
 */
 class RecipeEventJS {
