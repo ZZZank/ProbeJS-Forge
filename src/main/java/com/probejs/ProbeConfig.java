@@ -13,7 +13,6 @@ public class ProbeConfig {
 
     public static ProbeConfig INSTANCE = new ProbeConfig();
     private static final Path CONFIG = KubeJSPaths.CONFIG.resolve("probejs.json");
-    public boolean dumpExport = true;
     public boolean dumpMethod = true;
     public boolean disabled = false;
     public boolean vanillaOrder = true;

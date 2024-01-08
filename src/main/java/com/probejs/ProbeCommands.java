@@ -142,21 +142,6 @@ public class ProbeCommands {
                         )
                         .then(
                             Commands
-                                .literal("toggle_server_dump")
-                                .executes(context -> {
-                                    ProbeConfig.INSTANCE.dumpExport = !ProbeConfig.INSTANCE.dumpExport;
-                                    ProbeConfig.INSTANCE.save();
-                                    return sendSuccess(
-                                        context,
-                                        String.format(
-                                            "Create dump.json set to: %s",
-                                            ProbeConfig.INSTANCE.dumpExport
-                                        )
-                                    );
-                                })
-                        )
-                        .then(
-                            Commands
                                 .literal("toggle_autoexport")
                                 .executes(context -> {
                                     ProbeConfig.INSTANCE.autoExport = !ProbeConfig.INSTANCE.autoExport;
