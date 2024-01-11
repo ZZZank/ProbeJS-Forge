@@ -16,7 +16,7 @@ class IngredientJS {
 }
 
 /**
- * @target net.minecraft.network.chat.Component
+ * @target net.minecraft.util.text.ITextComponent
  * @assign string
  * @assign object
  * @assign dev.latvian.kubejs.text.Text
@@ -25,8 +25,25 @@ class ITextComponent {
 }
 
 /**
-* @target dev.latvian.kubejs.recipe.RecipeEventJS
-*/
+ * @target dev.latvian.kubejs.entity.EntityJS
+ */
+class EntityJS {
+    /**
+     * @hidden
+     */
+    getServer(): net.minecraft.server.MinecraftServer
+}
+
+/**
+ * @target net.minecraft.util.ResourceLocation
+ * @assign string
+ */
+class ResourceLocation {
+}
+
+/**
+ * @target dev.latvian.kubejs.recipe.RecipeEventJS
+ */
 class RecipeEventJS {
     /**
      * Holds all the recipes collected by probejs(not documents).
