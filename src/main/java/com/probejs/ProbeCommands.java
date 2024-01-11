@@ -27,7 +27,10 @@ import net.minecraft.world.level.storage.WorldData;
 
 public class ProbeCommands {
 
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void register(
+        CommandDispatcher<CommandSourceStack> dispatcher,
+        net.minecraft.commands.Commands.CommandSelection selection
+    ) {
         dispatcher.register(
             Commands
                 .literal("probejs")

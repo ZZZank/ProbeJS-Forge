@@ -18,9 +18,8 @@ public class ProbeJS {
     public static final Logger LOGGER = LogManager.getLogger("probejs");
 
     public ProbeJS() {
-        CommandRegistrationEvent.EVENT.register(
-            ((dispatcher, selection) -> ProbeCommands.register(dispatcher))
-        );
+        CommandRegistrationEvent.EVENT.register(ProbeCommands::register);
+
         if (!ProbeConfig.INSTANCE.disabled) {
             ProbeJS.LOGGER.info("Listening to EVERY forge event. ");
             MinecraftForge.EVENT_BUS.addListener(
