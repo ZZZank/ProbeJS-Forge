@@ -3,7 +3,6 @@
   "compatibilityLevel": "JAVA_8",
   "package": "com.probejs.mixin",
   "mixins": [
-    "OnForgeEventMixin",
     "OnEventMixin"
   ],
   "injectors": {

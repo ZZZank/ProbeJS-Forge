@@ -18,8 +18,8 @@ import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.Walker;
 import com.probejs.info.type.TypeInfoClass;
+import com.probejs.plugin.ForgeEventListener;
 import com.probejs.plugin.WrappedEventHandler;
-import com.probejs.plugin.WrappedForgeEventHandler;
 import com.probejs.recipe.RecipeHolders;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.event.EventJS;
@@ -103,7 +103,7 @@ public class TypingCompiler {
                 .collect(Collectors.toList())
         );
         touchableClasses.addAll(WrappedEventHandler.capturedEvents.values());
-        touchableClasses.addAll(WrappedForgeEventHandler.capturedEvents.values());
+        touchableClasses.addAll(ForgeEventListener.capturedEvents.values());
 
         Walker walker = new Walker(touchableClasses);
         return walker.walk();
@@ -173,7 +173,7 @@ public class TypingCompiler {
         Map<String, Class<?>> cachedForgeEvents
     ) throws IOException {
         cachedEvents.putAll(WrappedEventHandler.capturedEvents);
-        cachedForgeEvents.putAll(WrappedForgeEventHandler.capturedEvents);
+        cachedForgeEvents.putAll(ForgeEventListener.capturedEvents);
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
         writer.write("/// <reference path=\"./registries.d.ts\" />\n");
