@@ -37,7 +37,7 @@ public class ProbeCommands {
                 .then(
                     Commands
                         .literal("dump")
-                        .requires(source -> source.getServer().isSingleplayer() || source.hasPermission(2))
+                        .requires(source -> source.getServer().isSingleplayer())
                         .executes(context -> {
                             try {
                                 if (ProbeConfig.INSTANCE.autoExport) {
@@ -66,7 +66,7 @@ public class ProbeCommands {
                 .then(
                     Commands
                         .literal("clear_cache")
-                        .requires(source -> source.getServer().isSingleplayer() || source.hasPermission(2))
+                        .requires(source -> source.getServer().isSingleplayer())
                         .executes(context -> {
                             Path path = KubeJSPaths.EXPORTED.resolve("cachedEvents.json");
                             if (!Files.exists(path)) {
