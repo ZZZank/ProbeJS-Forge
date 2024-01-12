@@ -1,3 +1,13 @@
+# ProbeJS Legacy 2.0.0 -> 2.0.1
+
+## What's new?
+
+-   ProbeJS will now listen to EVERY Forge events, so that users don't need to painstakingly search for names of Forge Events (which are usually very long). 
+-   `/probejs dump` command is now restricted to Singleplayer, to prevent freezing servers by accident. 
+-   A slightly better documents for builtin types, like `ResourceLocation`
+
+---
+
 # ProbeJS Legacy 1.6.0 -> 2.0.0
 
 A huge update, adding support for Document, Forge event listening, full config with autosave, and much much more
