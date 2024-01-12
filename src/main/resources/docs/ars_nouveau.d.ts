@@ -1,9 +1,14 @@
-
 /**
- * Holds recipes documented for Ars Nouveau
  * @mod ars_nouveau
  */
-class arsnouveauRecipes {
+class RecipeHolder {
+    ars_nouveau: Document.ArsNouveauRecipes;
+}
+
+/**
+ * @mod ars_nouveau
+ */
+class ArsNouveauRecipes {
     enchanting_apparatus(output: dev.latvian.kubejs.item.ItemStackJS, reagent: dev.latvian.kubejs.item.ingredient.IngredientJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS[]): dev.latvian.kubejs.recipe.mod.ArsNouveauEnchantingApparatusRecipeJS;
 
     enchantment(enchantment: string, level: number, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS[]): dev.latvian.kubejs.recipe.mod.ArsNouveauEnchantmentRecipeJS;

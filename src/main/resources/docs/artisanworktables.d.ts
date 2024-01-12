@@ -1,9 +1,14 @@
-
 /**
- * Holds recipes documented for Artisan Worktables
  * @mod artisanworktables
  */
-class artisanworktablesRecipes {
+ class RecipeHolder {
+    artisanworktables: Document.ArtisanWorktablesRecipes;
+}
+
+/**
+ * @mod artisanworktables
+ */
+class ArtisanWorktablesRecipes {
     basic_shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: java.util.Map<string, dev.latvian.kubejs.item.ingredient.IngredientJS>): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
     basic_shapeless(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS[]): dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
 
