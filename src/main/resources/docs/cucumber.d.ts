@@ -9,5 +9,5 @@ class RecipeHolder {
  * @mod cucumber
  */
 class CucumberRecipes {
-    shaped_no_mirror(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: java.util.Map<string, dev.latvian.kubejs.item.ingredient.IngredientJS>): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
+    shaped_no_mirror(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: { [key: string]: Internal.IngredientJS_ }): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
 }

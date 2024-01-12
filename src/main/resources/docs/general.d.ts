@@ -42,3 +42,24 @@ class EntityJS {
 class ResourceLocation {
 }
 
+/**
+ * @target net.minecraft.nbt.CompoundTag
+ * @assign string
+ * @assign {[string]: string | number | boolean | Internal.CompoundTag_}
+ */
+class CompoundTag {
+}
+
+/**
+ * @target java.util.Map
+ * @assign {[key in K]: V}
+ */
+class Map {
+}
+
+/**
+ * @target dev.latvian.kubejs.text.Text
+ * @assign string
+ */
+class Text {
+}
