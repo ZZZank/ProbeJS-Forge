@@ -1,19 +1,11 @@
-/**
-* @mod integrateddynamics
-*/
-class RecipeHolder {
-    /**
-     * The builtin support for Integrated Dynamics is not complete in KubeJS.
-     * 
-     * If you need Basin or Mechanical Basin, please use event.custom() .
-     */
-    readonly integrateddynamics: Document.IntegratedDynamicsRecipes;
-}
 
 /**
-* @mod integrateddynamics
-*/
-class IntegratedDynamicsRecipes {
+ * Holds recipes documented for Integrated Dynamics
+ * 
+ * If you need Basin or Mechanical Basin, please use event.custom() .
+ * @mod integrateddynamics
+ */
+class integrateddynamicsRecipes {
     /**
      * Adds a recipe of Squeezer.
      * 

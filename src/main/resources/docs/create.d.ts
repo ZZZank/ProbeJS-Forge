@@ -1,30 +1,21 @@
-/**
-* @mod create
-* @mod kubejs_create
-*/
-class RecipeHolder {
-    /**
-     * All recipes from Create.
-     */
-    readonly create: Document.CreateRecipes;
-}
 
 /**
-* @mod create
-* @mod kubejs_create
-*/
+ * @mod create
+ * @mod kubejs_create
+ */
 type ItemStackOrFluid = dev.latvian.kubejs.item.ItemStackJS | dev.latvian.kubejs.fluid.FluidStackJS;
 /**
-* @mod create
-* @mod kubejs_create
-*/
+ * @mod create
+ * @mod kubejs_create
+ */
 type IngredientOrFluid = dev.latvian.kubejs.item.ingredient.IngredientJS | dev.latvian.kubejs.fluid.FluidStackJS;
 
 /**
-* @mod create
-* @mod kubejs_create
-*/
-class CreateRecipes {
+ * Holds recipes documented for Create
+ * @mod create
+ * @mod kubejs_create
+ */
+class createRecipes {
     /**
      * Creates a recipe for Crushing Wheels.
      * 
@@ -92,7 +83,7 @@ class CreateRecipes {
     /**
      * Creates a recipe for Mechanical Crafting.
      */
-    mechanical_crafting(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: java.util.Map<string, dev.latvian.kubejs.item.ingredient.IngredientJS>): dev.latvian.kubejs.create.ProcessingRecipeJS;
+    mechanical_crafting(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: { [key: string]: Internal.IngredientJS_ }): dev.latvian.kubejs.create.ProcessingRecipeJS;
 
     /**
      * Creates a recipe for Emptying.
