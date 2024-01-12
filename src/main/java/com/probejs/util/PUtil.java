@@ -1,6 +1,10 @@
 package com.probejs.util;
 
+import java.util.Collections;
+
 public class PUtil {
+
+    private static final String INDENT_4 = "    ";
 
     public static <T> T tryOrDefault(TrySupplier<T> toEval, T defaultValue) {
         try {
@@ -15,13 +19,10 @@ public class PUtil {
     }
 
     public static String indent(int indentLength) {
-        String s = " ";
-        while (s.length() < indentLength) {
-            s = s + s;
+        if (indentLength == 4) {
+            // shortcut sine 4-space indent is very common
+            return INDENT_4;
         }
-        if (s.length() == indentLength) {
-            return s;
-        }
-        return s.substring(0, indentLength);
+        return String.join("", Collections.nCopies(indentLength, " "));
     }
 }
