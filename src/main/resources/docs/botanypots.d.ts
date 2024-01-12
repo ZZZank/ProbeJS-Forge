@@ -1,14 +1,9 @@
-/**
- * @mod botanypots
- */
-class RecipeHolder {
-    botanypots: Document.BotanyPotsRecipes;
-}
 
 /**
+ * Holds recipes documented for Botany Pots
  * @mod botanypots
  */
-class BotanyPotsRecipes {
+class botanypotsRecipes {
     /**
      * @param outputs any of the `ItemStackJS`, or `{item: ItemStackJS, minRolls: number, maxRolls: number}`
      */

@@ -1,30 +1,21 @@
-/**
-* @mod create
-* @mod kubejs_create
-*/
-class RecipeHolder {
-    /**
-     * All recipes from Create.
-     */
-    readonly create: Document.CreateRecipes;
-}
 
 /**
-* @mod create
-* @mod kubejs_create
-*/
+ * @mod create
+ * @mod kubejs_create
+ */
 type ItemStackOrFluid = dev.latvian.kubejs.item.ItemStackJS | dev.latvian.kubejs.fluid.FluidStackJS;
 /**
-* @mod create
-* @mod kubejs_create
-*/
+ * @mod create
+ * @mod kubejs_create
+ */
 type IngredientOrFluid = dev.latvian.kubejs.item.ingredient.IngredientJS | dev.latvian.kubejs.fluid.FluidStackJS;
 
 /**
-* @mod create
-* @mod kubejs_create
-*/
-class CreateRecipes {
+ * Holds recipes documented for Create
+ * @mod create
+ * @mod kubejs_create
+ */
+class createRecipes {
     /**
      * Creates a recipe for Crushing Wheels.
      * 

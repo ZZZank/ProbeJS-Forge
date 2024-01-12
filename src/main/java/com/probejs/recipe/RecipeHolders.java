@@ -13,8 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RecipeHolders {
 
-    //TODO: redirect `recipes` using docs
-
+    // namespace : {methodName, return}[]
     static Map<String, List<Pair<String, String>>> namespacedMap = new HashMap<>();
 
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
@@ -49,7 +48,13 @@ public class RecipeHolders {
         formatted.add(PUtil.indent(indent) + "}");
         // recipeHolder classes
         for (Entry<String, List<Pair<String, String>>> entry : namespacedMap.entrySet()) {
-            formatted.add(String.format(PUtil.indent(indent) + "class %s {", entry.getKey()));
+            formatted.add(
+                String.format(
+                    PUtil.indent(indent) + "class %s extends %s {",
+                    entry.getKey(),
+                    "Document." + entry.getKey() + "Recipes"
+                )
+            );
             // methods inside recipeHolder classes
             indent += stepIndent;
             for (Pair<String, String> pair : entry.getValue()) {

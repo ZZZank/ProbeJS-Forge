@@ -81,12 +81,6 @@ class RecipeEventJS {
 
 }
 
-
-class RecipeHolder {
-    readonly minecraft: Document.MinecraftRecipes;
-}
-
-
 /**
  * All recipes from Minecraft.
  */
