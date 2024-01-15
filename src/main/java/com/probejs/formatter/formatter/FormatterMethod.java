@@ -226,18 +226,18 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             if (comment != null) formatted.addAll(comment.format(indent, stepIndent));
         }
 
-        if (methodName.startsWith("is")) formatted.add(
-            String.format(PUtil.indent(indent) + "get %s(): boolean;", getBean())
-        );
-        if (methodName.startsWith("get")) formatted.add(
-            PUtil.indent(indent) +
-            String.format(
-                "get %s(): %s;",
-                getBean(),
-                returnModifier == null ? formatReturn() : returnModifier.getTypeName()
-            )
-        );
-        if (methodName.startsWith("set")) {
+        if (methodName.startsWith("is")) {
+            formatted.add(String.format(PUtil.indent(indent) + "get %s(): boolean;", getBean()));
+        } else if (methodName.startsWith("get")) {
+            formatted.add(
+                PUtil.indent(indent) +
+                String.format(
+                    "get %s(): %s;",
+                    getBean(),
+                    returnModifier == null ? formatReturn() : returnModifier.getTypeName()
+                )
+            );
+        } else if (methodName.startsWith("set")) {
             MethodInfo.ParamInfo info = methodInfo.getParams().get(0);
             String name = info.getName();
             formatted.add(

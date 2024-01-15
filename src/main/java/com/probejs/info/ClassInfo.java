@@ -38,22 +38,6 @@ public class ClassInfo {
     private final ClassInfo superClass;
     private final List<ClassInfo> interfaces;
 
-    private static Map<String, ITypeInfo> resolveTypeOverrides(ITypeInfo typeInfo) {
-        Map<String, ITypeInfo> caughtTypes = new HashMap<>();
-        if (typeInfo instanceof TypeInfoParameterized) {
-            TypeInfoParameterized parType = (TypeInfoParameterized) typeInfo;
-            List<ITypeInfo> rawClassNames = Arrays
-                .stream(parType.getResolvedClass().getTypeParameters())
-                .map(InfoTypeResolver::resolveType)
-                .collect(Collectors.toList());
-            List<ITypeInfo> parTypeNames = parType.getParamTypes();
-            for (int i = 0; i < parTypeNames.size(); i++) {
-                caughtTypes.put(rawClassNames.get(i).getTypeName(), parTypeNames.get(i));
-            }
-        }
-        return caughtTypes;
-    }
-
     private ClassInfo(Class<?> clazz) {
         clazzRaw = clazz;
         name = clazzRaw.getName();
@@ -62,8 +46,8 @@ public class ClassInfo {
         constructorInfo =
             Arrays.stream(clazzRaw.getConstructors()).map(ConstructorInfo::new).collect(Collectors.toList());
         superClass =
-            (clazzRaw.getSuperclass() == Object.class || clazzRaw.getSuperclass() == null)
-                ? null
+            clazzRaw.getSuperclass() == null
+                ? getOrCache(Object.class)
                 : getOrCache(clazzRaw.getSuperclass());
         interfaces =
             Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::getOrCache).collect(Collectors.toList());
@@ -88,8 +72,26 @@ public class ClassInfo {
                 .filter(f -> !f.shouldHide())
                 .collect(Collectors.toList());
 
+        //TODO: filter method/field based on inheriting
+
         //Resolve types - rollback everything till Object
         applySuperGenerics(methodInfo, fieldInfo);
+    }
+
+    private static Map<String, ITypeInfo> resolveTypeOverrides(ITypeInfo typeInfo) {
+        Map<String, ITypeInfo> caughtTypes = new HashMap<>();
+        if (typeInfo instanceof TypeInfoParameterized) {
+            TypeInfoParameterized parType = (TypeInfoParameterized) typeInfo;
+            List<ITypeInfo> rawClassNames = Arrays
+                .stream(parType.getResolvedClass().getTypeParameters())
+                .map(InfoTypeResolver::resolveType)
+                .collect(Collectors.toList());
+            List<ITypeInfo> parTypeNames = parType.getParamTypes();
+            for (int i = 0; i < parTypeNames.size(); i++) {
+                caughtTypes.put(rawClassNames.get(i).getTypeName(), parTypeNames.get(i));
+            }
+        }
+        return caughtTypes;
     }
 
     private void applySuperGenerics(List<MethodInfo> methodsToMutate, List<FieldInfo> fieldsToMutate) {
