@@ -1,5 +1,6 @@
 package com.probejs.info;
 
+import com.probejs.ProbeConfig;
 import com.probejs.formatter.ClassResolver;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.InfoTypeResolver;
@@ -8,8 +9,10 @@ import com.probejs.info.type.TypeInfoVariable;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ClassInfo {
@@ -17,6 +20,9 @@ public class ClassInfo {
     public static final Map<Class<?>, ClassInfo> CLASS_CACHE = new HashMap<>();
 
     public static ClassInfo getOrCache(Class<?> clazz) {
+        if (clazz == null) {
+            return null;
+        }
         //No computeIfAbsent because new ClassInfo will call getOrCache for superclass lookup
         //This will cause a CME because multiple updates occurred in one computeIfAbsent
         if (CLASS_CACHE.containsKey(clazz)) {
@@ -45,10 +51,10 @@ public class ClassInfo {
         isInterface = clazzRaw.isInterface();
         constructorInfo =
             Arrays.stream(clazzRaw.getConstructors()).map(ConstructorInfo::new).collect(Collectors.toList());
-        superClass =
-            clazzRaw.getSuperclass() == null
-                ? getOrCache(Object.class)
-                : getOrCache(clazzRaw.getSuperclass());
+        superClass = getOrCache(clazzRaw.getSuperclass());
+        // clazzRaw.getSuperclass() == null
+        //     ? getOrCache(Object.class)
+        //     : getOrCache(clazzRaw.getSuperclass());
         interfaces =
             Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::getOrCache).collect(Collectors.toList());
         parameters =
@@ -57,10 +63,21 @@ public class ClassInfo {
                 .map(InfoTypeResolver::resolveType)
                 .collect(Collectors.toList());
 
+        Set<MethodInfo> inhertedMethods = new HashSet<>();
+        if (ProbeConfig.INSTANCE.trimMethod && superClass != null) {
+            inhertedMethods.addAll(superClass.methodInfo);
+        }
+
         methodInfo =
             Arrays
                 .stream(clazzRaw.getMethods())
                 .map(m -> new MethodInfo(m, clazz))
+                .filter(method ->
+                    //always true if don't want to trim
+                    !ProbeConfig.INSTANCE.trimMethod || 
+                    //only methods that differ from superclass's methods
+                    !inhertedMethods.contains(method)
+                )
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
                 .filter(m -> !m.shouldHide())
                 .collect(Collectors.toList());
@@ -71,8 +88,6 @@ public class ClassInfo {
                 .filter(f -> ClassResolver.acceptField(f.getName()))
                 .filter(f -> !f.shouldHide())
                 .collect(Collectors.toList());
-
-        //TODO: filter method/field based on inheriting
 
         //Resolve types - rollback everything till Object
         applySuperGenerics(methodInfo, fieldInfo);

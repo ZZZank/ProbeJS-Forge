@@ -13,8 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RecipeHolders {
 
-    //TODO: redirect `recipes` using docs
-
     static Map<String, List<Pair<String, String>>> namespacedMap = new HashMap<>();
 
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {

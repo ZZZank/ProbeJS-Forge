@@ -99,6 +99,21 @@ public class ProbeCommands {
                         )
                         .then(
                             Commands
+                                .literal("toggle_triming")
+                                .executes(context -> {
+                                    ProbeConfig.INSTANCE.trimMethod = !ProbeConfig.INSTANCE.trimMethod;
+                                    ProbeConfig.INSTANCE.save();
+                                    return sendSuccess(
+                                        context,
+                                        String.format(
+                                            "Dump trimming set to: %s",
+                                            ProbeConfig.INSTANCE.trimMethod
+                                        )
+                                    );
+                                })
+                        )
+                        .then(
+                            Commands
                                 .literal("toggle_mixin")
                                 .executes(context -> {
                                     ProbeConfig.INSTANCE.disabled = !ProbeConfig.INSTANCE.disabled;
