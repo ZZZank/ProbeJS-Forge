@@ -52,7 +52,7 @@ class CompoundTag {
 
 /**
  * @target java.util.Map
- * @assign {[key in K]: V}
+ * @assign {[key: K]: V}
  */
 class Map {
 }
@@ -68,7 +68,7 @@ class Text {
  * @target java.lang.Class
  * @assign (typeof T)
  */
-class Class {
+class Class<T> {
 }
 
 /**
