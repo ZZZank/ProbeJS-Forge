@@ -25,4 +25,13 @@ public class PUtil {
         }
         return String.join("", Collections.nCopies(indentLength, " "));
     }
+
+    public static String getCamelCase(String text) {
+        if (text.isEmpty()) {
+            return text;
+        }
+        char[] arr = text.toCharArray();
+        arr[0] = Character.toUpperCase(arr[0]);
+        return arr.toString();
+    }
 }

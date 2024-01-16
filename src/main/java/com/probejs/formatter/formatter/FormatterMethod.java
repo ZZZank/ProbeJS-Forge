@@ -20,10 +20,6 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     private final MethodInfo methodInfo;
 
-    private static String getCamelCase(String text) {
-        return Character.toLowerCase(text.charAt(0)) + text.substring(1);
-    }
-
     public FormatterMethod(MethodInfo methodInfo) {
         this.methodInfo = methodInfo;
     }
@@ -37,21 +33,22 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         if (methodName.equals("is") || methodName.equals("get") || methodName.equals("set")) {
             return null;
         }
+        int paramSize = methodInfo.getParams().size();
         if (
             methodName.startsWith("is") &&
-            methodInfo.getParams().size() == 0 &&
+            paramSize == 0 &&
             (
-                methodInfo.getReturnType().assignableFrom(new TypeInfoClass(Boolean.class)) ||
-                methodInfo.getReturnType().assignableFrom(new TypeInfoClass(Boolean.TYPE))
+                methodInfo.getReturnType().assignableFrom(TypeInfoClass.BOOL_CLASS) ||
+                methodInfo.getReturnType().assignableFrom(TypeInfoClass.BOOL_TYPE)
             )
         ) {
-            return getCamelCase(methodName.substring(2));
+            return PUtil.getCamelCase(methodName.substring(2));
         }
-        if (methodName.startsWith("get") && methodInfo.getParams().size() == 0) {
-            return getCamelCase(methodName.substring(3));
+        if (methodName.startsWith("get") && paramSize == 0) {
+            return PUtil.getCamelCase(methodName.substring(3));
         }
-        if (methodName.startsWith("set") && methodInfo.getParams().size() == 1) {
-            return getCamelCase(methodName.substring(3));
+        if (methodName.startsWith("set") && paramSize == 1) {
+            return PUtil.getCamelCase(methodName.substring(3));
         }
         return null;
     }
@@ -106,7 +103,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     private String formatParamUnderscore(ITypeInfo info) {
         Class<?> resolvedClass = info.getResolvedClass();
         //No assigned types, and not enum, use normal route.
-        if (Manager.typesAssignable.get(resolvedClass.getName()) == null && !resolvedClass.isEnum()) {
+        if (!Manager.typesAssignable.containsKey(resolvedClass.getName()) && !resolvedClass.isEnum()) {
             return formatTypeParameterized(info, true);
         }
 
@@ -127,13 +124,13 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 .format(0, 0)
         );
         if (info instanceof TypeInfoClass) {
-            TypeInfoClass clazz = (TypeInfoClass) info;
-            if (clazz.getTypeVariables().size() != 0) sb.append(
-                String.format(
-                    "<%s>",
-                    String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any"))
-                )
-            );
+            TypeInfoClass classInfo = (TypeInfoClass) info;
+            int typeCount = classInfo.getTypeVariables().size();
+            if (typeCount != 0) {
+                sb.append('<');
+                sb.append(String.join(", ", Collections.nCopies(typeCount, "any")));
+                sb.append('>');
+            }
         }
         return sb.toString();
     }
@@ -144,31 +141,32 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             methodInfo
                 .getParams()
                 .stream()
-                .map(paramInfo ->
-                    String.format(
+                .map(paramInfo -> {
+                    String paramType = modifiers.containsKey(paramInfo.getName())
+                        ? modifiers
+                            .get(paramInfo.getName())
+                            .getTransformedName((t, s) -> {
+                                if (!(t instanceof TypeNamed)) {
+                                    return s;
+                                }
+                                TypeNamed n = (TypeNamed) t;
+                                if (
+                                    NameResolver.resolvedNames.containsKey(n.getRawTypeName()) &&
+                                    !NameResolver.resolvedPrimitives.contains((n.getRawTypeName()))
+                                ) {
+                                    return s + "_";
+                                }
+                                return s;
+                            })
+                        : formatParamUnderscore(paramInfo.getType());
+                    return String.format(
                         "%s: %s",
                         NameResolver.getNameSafe(
                             renames.getOrDefault(paramInfo.getName(), paramInfo.getName())
                         ),
-                        modifiers.containsKey(paramInfo.getName())
-                            ? modifiers
-                                .get(paramInfo.getName())
-                                .getTransformedName((t, s) -> {
-                                    if (!(t instanceof TypeNamed)) {
-                                        return s;
-                                    }
-                                    TypeNamed n = (TypeNamed) t;
-                                    if (
-                                        NameResolver.resolvedNames.containsKey(n.getRawTypeName()) &&
-                                        !NameResolver.resolvedPrimitives.contains((n.getRawTypeName()))
-                                    ) {
-                                        return s + "_";
-                                    }
-                                    return s;
-                                })
-                            : formatParamUnderscore(paramInfo.getType())
-                    )
-                )
+                        paramType
+                    );
+                })
                 .collect(Collectors.joining(", "))
         );
     }
@@ -179,36 +177,49 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
         if (document != null) {
             DocumentComment comment = document.getComment();
-            if (CommentUtil.isHidden(comment)) return formatted;
-            if (comment != null) formatted.addAll(comment.format(indent, stepIndent));
+            if (CommentUtil.isHidden(comment)) {
+                return formatted;
+            }
+            if (comment != null) {
+                formatted.addAll(comment.format(indent, stepIndent));
+            }
         }
 
         Pair<Map<String, IType>, IType> modifierPair = getModifiers();
         Map<String, IType> modifiers = modifierPair.getFirst();
         IType returnModifier = modifierPair.getSecond();
         Map<String, String> renames = new HashMap<>();
-        if (document != null) renames.putAll(CommentUtil.getRenames(document.getComment()));
+        if (document != null) {
+            renames.putAll(CommentUtil.getRenames(document.getComment()));
+        }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(PUtil.indent(indent));
-        if (methodInfo.isStatic()) sb.append("static ");
-        sb.append(methodInfo.getName());
-        if (methodInfo.getTypeVariables().size() != 0) sb.append(
-            String.format(
-                "<%s>",
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(PUtil.indent(indent));
+        if (methodInfo.isStatic()) {
+            builder.append("static ");
+        }
+        builder.append(methodInfo.getName());
+        if (methodInfo.getTypeVariables().size() != 0) {
+            builder.append('<');
+            builder.append(
                 methodInfo
                     .getTypeVariables()
                     .stream()
                     .map(ITypeInfo::getTypeName)
                     .collect(Collectors.joining(", "))
-            )
-        );
-        sb.append(formatParams(modifiers, renames));
-        sb.append(
-            String.format(": %s;", returnModifier != null ? returnModifier.getTypeName() : formatReturn())
-        );
+            );
+            builder.append('>');
+        }
+        // param
+        builder.append(formatParams(modifiers, renames));
+        builder.append(": ");
+        // return type
+        builder.append(returnModifier != null ? returnModifier.getTypeName() : formatReturn());
+        // end
+        builder.append(';');
 
-        formatted.add(sb.toString());
+        formatted.add(builder.toString());
         return formatted;
     }
 
@@ -226,11 +237,11 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             if (comment != null) formatted.addAll(comment.format(indent, stepIndent));
         }
 
+        formatted.add(PUtil.indent(indent));
         if (methodName.startsWith("is")) {
-            formatted.add(String.format(PUtil.indent(indent) + "get %s(): boolean;", getBean()));
+            formatted.add(String.format("get %s(): boolean;", getBean()));
         } else if (methodName.startsWith("get")) {
             formatted.add(
-                PUtil.indent(indent) +
                 String.format(
                     "get %s(): %s;",
                     getBean(),
@@ -241,7 +252,6 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             MethodInfo.ParamInfo info = methodInfo.getParams().get(0);
             String name = info.getName();
             formatted.add(
-                PUtil.indent(indent) +
                 String.format("set %s%s;", getBean(), formatParams(paramModifiers, new HashMap<>()))
             );
         }
