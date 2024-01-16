@@ -63,3 +63,17 @@ class Map {
  */
 class Text {
 }
+
+/**
+ * @target java.lang.Class
+ * @assign (typeof T)
+ */
+class Class {
+}
+
+/**
+ * @target java.lang.Object
+ * @assign any
+ */
+class Object {
+}
