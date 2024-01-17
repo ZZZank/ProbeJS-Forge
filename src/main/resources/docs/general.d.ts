@@ -65,15 +65,36 @@ class Text {
 }
 
 /**
+ * Represents the base Java Class
+ * 
+ * In JavaScript, `Class<T>`can be considered as `typeof T`
  * @target java.lang.Class
- * @assign (typeof T)
  */
-class Class<T> {
+class Class {
 }
 
 /**
- * @target java.lang.Object
- * @assign any
+ * Class `Object` is the root of the class hierarchy.
+ * Every class has `Object` as a superclass. All objects,
+ * including arrays, implement the methods of this class.
+ * 
+ * Any JavaScript object can be considered as `Object`
  */
 class Object {
+    getClass(): Internal.Class<Document.Object>;
+    wait(arg0: number): void;
+    wait(arg0: number, arg1: number): void;
+    wait(): void;
+    hashCode(): number;
+    notifyAll(): void;
+    equals(arg0: any): boolean;
+    toString(): string;
+    notify(): void;
+}
+
+/**
+ * @target net.minecraft.world.item.enchantment.Enchantment
+ * @assign string
+ */
+class Enchantment {
 }

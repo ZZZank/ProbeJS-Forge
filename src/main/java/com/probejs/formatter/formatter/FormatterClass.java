@@ -131,11 +131,17 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         // super class
         if (classInfo.getSuperClass() != null) {
             firstLine.add("extends");
-            firstLine.add(
-                formatTypeParameterized(
-                    InfoTypeResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
-                )
-            );
+            Class<?> superClass = classInfo.getClazzRaw().getSuperclass();
+            if (superClass == Object.class) {
+                // redirect to another `Object` so that we can bypass replacement of original `Object`
+                firstLine.add("Document.Object");
+            } else {
+                firstLine.add(
+                    formatTypeParameterized(
+                        InfoTypeResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
+                    )
+                );
+            }
         }
         // interface
         if (!classInfo.getInterfaces().isEmpty()) {
