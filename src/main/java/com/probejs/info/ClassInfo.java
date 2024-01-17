@@ -6,6 +6,7 @@ import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,30 +58,30 @@ public class ClassInfo {
         //     : getOrCache(clazzRaw.getSuperclass());
         interfaces =
             Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::getOrCache).collect(Collectors.toList());
+
         parameters =
             Arrays
                 .stream(clazzRaw.getTypeParameters())
                 .map(InfoTypeResolver::resolveType)
                 .collect(Collectors.toList());
 
-        Set<MethodInfo> inhertedMethods = new HashSet<>();
-        if (ProbeConfig.INSTANCE.trimMethod && superClass != null) {
-            inhertedMethods.addAll(superClass.methodInfo);
+        // declared methods include public/protected/private methods, but exclude inherited ones
+        Set<Method> declared = new HashSet<>();
+        if (ProbeConfig.INSTANCE.trimMethod) {
+            declared.addAll(Arrays.asList(clazzRaw.getDeclaredMethods()));
         }
 
         methodInfo =
             Arrays
                 .stream(clazzRaw.getMethods())
-                .map(m -> new MethodInfo(m, clazz))
                 .filter(method ->
-                    //always true if don't want to trim
-                    !ProbeConfig.INSTANCE.trimMethod || 
-                    //only methods that differ from superclass's methods
-                    !inhertedMethods.contains(method)
+                    !ProbeConfig.INSTANCE.trimMethod || declared.isEmpty() || declared.contains(method)
                 )
+                .map(m -> new MethodInfo(m, clazz))
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
                 .filter(m -> !m.shouldHide())
                 .collect(Collectors.toList());
+
         fieldInfo =
             Arrays
                 .stream(clazzRaw.getFields())
