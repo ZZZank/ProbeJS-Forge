@@ -131,8 +131,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         // super class
         if (classInfo.getSuperClass() != null) {
             firstLine.add("extends");
-            Class<?> superClass = classInfo.getClazzRaw().getSuperclass();
-            if (superClass == Object.class) {
+            if (classInfo.getClazzRaw().getSuperclass() == Object.class) {
                 // redirect to another `Object` so that we can bypass replacement of original `Object`
                 firstLine.add("Document.Object");
             } else {
@@ -147,14 +146,11 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         if (!classInfo.getInterfaces().isEmpty()) {
             firstLine.add(classInfo.isInterface() ? "extends" : "implements");
             firstLine.add(
-                String.format(
-                    "%s",
-                    Arrays
-                        .stream(classInfo.getClazzRaw().getGenericInterfaces())
-                        .map(InfoTypeResolver::resolveType)
-                        .map(FormatterClass::formatTypeParameterized)
-                        .collect(Collectors.joining(", "))
-                )
+                Arrays
+                    .stream(classInfo.getClazzRaw().getGenericInterfaces())
+                    .map(InfoTypeResolver::resolveType)
+                    .map(FormatterClass::formatTypeParameterized)
+                    .collect(Collectors.joining(", "))
             );
         }
         firstLine.add("{");
@@ -168,24 +164,25 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 fmtrMethods
                     .stream()
                     .filter(fmtrMethod ->
-                        ProbeConfig.INSTANCE.keepBeaned ||
-                        fmtrMethod.getBean() == null ||
-                        fieldFormatters.containsKey(fmtrMethod.getBean()) ||
-                        methodFormatters.containsKey(fmtrMethod.getBean())
+                        ProbeConfig.INSTANCE.keepBeaned || //want to keep, or
+                        fmtrMethod.getBean() == null || //cannot be beaned when not wanting to keep
+                        fieldFormatters.containsKey(fmtrMethod.getBean()) || //beaning will cause conflict
+                        methodFormatters.containsKey(fmtrMethod.getBean()) //also conflict
                     )
-                    .forEach(fmtrMethod -> {
-                        if (classInfo.isInterface() && fmtrMethod.getMethodInfo().isStatic() && internal) {
-                            return;
-                        }
-                        formatted.addAll(fmtrMethod.format(indent + stepIndent, stepIndent));
-                    })
+                    .filter(fmtrMethod ->
+                        //not static interface in namespace `Internal`
+                        !(classInfo.isInterface() && fmtrMethod.getMethodInfo().isStatic() && internal)
+                    )
+                    .forEach(fmtrMethod ->
+                        formatted.addAll(fmtrMethod.format(indent + stepIndent, stepIndent))
+                    )
             );
         fieldFormatters
             .entrySet()
             .stream()
             .filter(e -> !methodFormatters.containsKey(e.getKey()))
+            .filter(f -> !(classInfo.isInterface() && f.getValue().getFieldInfo().isStatic() && internal))
             .forEach(f -> {
-                if (classInfo.isInterface() && f.getValue().getFieldInfo().isStatic() && internal) return;
                 f.getValue().setInterface(classInfo.isInterface());
                 formatted.addAll(f.getValue().format(indent + stepIndent, stepIndent));
             });
@@ -195,38 +192,34 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             Map<String, FormatterMethod> getterMap = new HashMap<>();
             Map<String, List<FormatterMethod>> setterMap = new HashMap<>();
 
-            methodFormatters
-                .values()
-                .forEach(ml ->
-                    ml.forEach(m -> {
-                        String beanName = m.getBean();
-                        if (
-                            beanName != null &&
-                            Character.isUpperCase(beanName.charAt(0)) &&
-                            !fieldFormatters.containsKey(beanName) &&
-                            !methodFormatters.containsKey(beanName)
-                        ) {
-                            if (m.isGetter()) {
-                                getterMap.put(beanName, m);
-                            } else {
-                                setterMap.computeIfAbsent(beanName, s -> new ArrayList<>()).add(m);
-                            }
+            for (List<FormatterMethod> ml : methodFormatters.values()) {
+                for (FormatterMethod m : ml) {
+                    String beanName = m.getBean();
+                    if (
+                        beanName != null &&
+                        Character.isAlphabetic(beanName.charAt(0)) &&
+                        !fieldFormatters.containsKey(beanName) &&
+                        !methodFormatters.containsKey(beanName)
+                    ) {
+                        if (m.isGetter()) {
+                            getterMap.put(beanName, m);
+                        } else {
+                            setterMap.computeIfAbsent(beanName, s -> new ArrayList<>()).add(m);
                         }
-                    })
-                );
+                    }
+                }
+            }
 
             getterMap.forEach((k, v) -> formatted.addAll(v.formatBean(indent + stepIndent, stepIndent)));
             setterMap.forEach((k, v) -> {
-                Optional<FormatterMethod> result = v
+                v
                     .stream()
                     .filter(m ->
                         !getterMap.containsKey(m.getBean()) ||
                         getterMap.get(m.getBean()).getBeanTypeString().equals(m.getBeanTypeString())
                     )
-                    .findFirst();
-                if (result.isPresent()) {
-                    formatted.addAll(result.get().formatBean(indent + stepIndent, stepIndent));
-                }
+                    .findFirst()
+                    .ifPresent(fmtr -> formatted.addAll(fmtr.formatBean(indent + stepIndent, stepIndent)));
             });
         }
 

@@ -33,22 +33,23 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
             }
             formatted.addAll(comment.format(indent, stepIndent));
         }
-        List<String> elements = new ArrayList<>();
+
+        StringBuilder builder = new StringBuilder(PUtil.indent(indent));
         if (fieldInfo.isStatic() && !isInterface) {
-            elements.add("static");
+            builder.append("static ");
         }
         if (fieldInfo.isFinal()) {
-            elements.add("readonly");
+            builder.append("readonly ");
         }
-        elements.add(fieldInfo.getName());
-        elements.add(":");
+        builder.append(fieldInfo.getName());
+        builder.append(": ");
 
         if (document != null) {
-            elements.add(document.getType().getTypeName());
+            builder.append(document.getType().getTypeName());
         } else if (fieldInfo.isStatic() && NameResolver.formatValue(fieldInfo.getStaticValue()) != null) {
-            elements.add(NameResolver.formatValue(fieldInfo.getStaticValue()));
+            builder.append(NameResolver.formatValue(fieldInfo.getStaticValue()));
         } else {
-            elements.add(
+            builder.append(
                 new FormatterType(
                     fieldInfo.getType(),
                     NameResolver.specialTypeGuards.getOrDefault(
@@ -59,7 +60,8 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
                     .format(0, 0)
             );
         }
-        formatted.add(PUtil.indent(indent) + String.join(" ", elements) + ";");
+        builder.append(';');
+        formatted.add(builder.toString());
         return formatted;
     }
 

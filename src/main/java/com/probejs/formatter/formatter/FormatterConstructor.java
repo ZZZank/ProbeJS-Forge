@@ -25,12 +25,9 @@ public class FormatterConstructor implements IFormatter {
             TypeInfoClass clazz = (TypeInfoClass) info;
             ClassInfo classInfo = ClassInfo.getOrCache(clazz.getResolvedClass());
             if (classInfo.getParameters().size() != 0) {
-                sb.append(
-                    String.format(
-                        "<%s>",
-                        String.join(", ", Collections.nCopies(classInfo.getParameters().size(), "any"))
-                    )
-                );
+                sb.append('<');
+                sb.append(String.join(", ", Collections.nCopies(classInfo.getParameters().size(), "any")));
+                sb.append('>');
             }
         }
         return sb.toString();

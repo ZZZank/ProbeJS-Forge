@@ -27,15 +27,17 @@ public class PUtil {
     }
 
     /**
-     * Gets a new String with its first char set to lower case, like `AABB`->`aABB`
+     * Gets a String with its first char set to lower case, like `AABB`->`aABB`
      * @param text The original string
+     * @return The original string if it's already lower case in first char, or a
+     * new, processed string
      */
     public static String withLowerCaseHead(String text) {
-        if (text.isEmpty()) {
+        if (text.isEmpty() || Character.isLowerCase(text.charAt(0))) {
             return text;
         }
-        StringBuilder builder = new StringBuilder(text);
-        builder.setCharAt(0, Character.toLowerCase(builder.charAt(0)));
-        return builder.toString();
+        char[] arr = text.toCharArray();
+        arr[0] = Character.toLowerCase(arr[0]);
+        return new String(arr);
     }
 }
