@@ -30,8 +30,8 @@ public class PUtil {
         if (text.isEmpty()) {
             return text;
         }
-        char[] arr = text.toCharArray();
-        arr[0] = Character.toUpperCase(arr[0]);
-        return arr.toString();
+        StringBuilder builder = new StringBuilder(text);
+        builder.setCharAt(0, Character.toUpperCase(builder.charAt(0)));
+        return builder.toString();
     }
 }
