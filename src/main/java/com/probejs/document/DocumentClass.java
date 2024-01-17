@@ -24,7 +24,7 @@ public class DocumentClass implements IConcrete, IFormatter {
     public void acceptProperty(IDocument document) {
         if (document instanceof DocumentProperty) {
             DocumentComment comment = ((DocumentProperty) document).getComment();
-            if (!CommentUtil.isLoaded(comment)) return;
+            if (!CommentUtil.isLoaded(comment)) {return;}
         }
 
         if (document instanceof DocumentField) {
@@ -36,7 +36,7 @@ public class DocumentClass implements IConcrete, IFormatter {
     }
 
     public void merge(DocumentClass other) {
-        if (comment == null) comment = other.getComment();
+        if (comment == null) {comment = other.getComment();}
         fields.addAll(other.getFields());
         methods.addAll(other.getMethods());
     }

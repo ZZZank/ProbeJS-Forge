@@ -69,26 +69,26 @@ public class ClassInfo {
 
         // declared methods include public/protected/private methods, but exclude inherited ones
         Set<Method> declaredMethods = new HashSet<>();
-        if (ProbeConfig.INSTANCE.trimMethod) {
+        if (ProbeConfig.INSTANCE.trimming) {
             declaredMethods.addAll(Arrays.asList(clazzRaw.getDeclaredMethods()));
         }
         methodInfo =
             Arrays
                 .stream(clazzRaw.getMethods())
-                .filter(method -> !ProbeConfig.INSTANCE.trimMethod || declaredMethods.contains(method))
+                .filter(method -> !ProbeConfig.INSTANCE.trimming || declaredMethods.contains(method))
                 .map(m -> new MethodInfo(m, clazz))
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
                 .filter(m -> !m.shouldHide())
                 .collect(Collectors.toList());
 
         Set<Field> declaredFields = new HashSet<>();
-        if (ProbeConfig.INSTANCE.trimMethod) {
+        if (ProbeConfig.INSTANCE.trimming) {
             declaredFields.addAll(Arrays.asList(clazzRaw.getDeclaredFields()));
         }
         fieldInfo =
             Arrays
                 .stream(clazzRaw.getFields())
-                .filter(field -> !ProbeConfig.INSTANCE.trimMethod || declaredFields.contains(field))
+                .filter(field -> !ProbeConfig.INSTANCE.trimming || declaredFields.contains(field))
                 .map(FieldInfo::new)
                 .filter(f -> ClassResolver.acceptField(f.getName()))
                 .filter(f -> !f.shouldHide())

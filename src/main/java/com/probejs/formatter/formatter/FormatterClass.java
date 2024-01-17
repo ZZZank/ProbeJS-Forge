@@ -199,12 +199,17 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 .forEach(ml ->
                     ml.forEach(m -> {
                         String beanName = m.getBean();
-                        if (beanName != null && Character.isAlphabetic(beanName.charAt(0))) if (
-                            !fieldFormatters.containsKey(beanName) && !methodFormatters.containsKey(beanName)
+                        if (
+                            beanName != null &&
+                            Character.isAlphabetic(beanName.charAt(0)) &&
+                            !fieldFormatters.containsKey(beanName) &&
+                            !methodFormatters.containsKey(beanName)
                         ) {
-                            if (m.isGetter()) getterMap.put(beanName, m); else setterMap
-                                .computeIfAbsent(beanName, s -> new ArrayList<>())
-                                .add(m);
+                            if (m.isGetter()) {
+                                getterMap.put(beanName, m);
+                            } else {
+                                setterMap.computeIfAbsent(beanName, s -> new ArrayList<>()).add(m);
+                            }
                         }
                     })
                 );
@@ -254,7 +259,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         //type conversion
         String underName = NameResolver.getResolvedName(classInfo.getName()).getLastName() + "_";
         String origName = NameResolver.getResolvedName(classInfo.getName()).getLastName();
-        if (NameResolver.specialTypeFormatters.containsKey(classInfo.getClazzRaw())) assignableTypes.add(
+        if (NameResolver.specialTypeFormatters.containsKey(classInfo.getClazzRaw())) {assignableTypes.add(
             new FormatterType(
                 new TypeInfoParameterized(
                     new TypeInfoClass(classInfo.getClazzRaw()),
@@ -262,7 +267,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 )
             )
                 .format(0, 0)
-        );
+        );}
         List<ITypeInfo> params = classInfo.getParameters();
         if (params.size() > 0) {
             String paramString = String.format(

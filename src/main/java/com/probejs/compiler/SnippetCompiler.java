@@ -46,7 +46,7 @@ public class SnippetCompiler {
                     .stream()
                     .map(rl -> rl.split(":"))
                     .forEach(rl -> {
-                        if (!byModMembers.containsKey(rl[0])) byModMembers.put(rl[0], new ArrayList<>());
+                        if (!byModMembers.containsKey(rl[0])) {byModMembers.put(rl[0], new ArrayList<>());}
                         byModMembers.get(rl[0]).add(rl[1]);
                     });
                 byModMembers.forEach((mod, modMembers) -> {

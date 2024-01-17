@@ -18,7 +18,7 @@ public class ProbeConfig {
     public boolean vanillaOrder = true;
     public boolean exportClassNames = false;
     public boolean autoExport = true;
-    public boolean trimMethod = false;
+    public boolean trimming = false;
 
     private static <E> E fetchPropertyOrDefault(Object key, Map<?, ?> values, E defaultValue) {
         Object v = values.get(key);
@@ -35,7 +35,7 @@ public class ProbeConfig {
                 vanillaOrder = fetchPropertyOrDefault("vanillaOrder", obj, true);
                 exportClassNames = fetchPropertyOrDefault("exportClassNames", obj, false);
                 autoExport = fetchPropertyOrDefault("autoExport", obj, true);
-                trimMethod = fetchPropertyOrDefault("trimMethod", obj, false);
+                trimming = fetchPropertyOrDefault("trimMethod", obj, false);
             } catch (IOException e) {
                 ProbeJS.LOGGER.warn("Cannot read config properties, falling back to defaults.");
             }

@@ -21,9 +21,9 @@ public class InfoTypeResolver {
      * If the typeInfo is immutable, a new TypeInfo will be returned.
      */
     public static ITypeInfo mutateTypeMap(ITypeInfo typeInfo, Map<String, ITypeInfo> toMutate) {
-        if (typeInfo instanceof TypeInfoClass || typeInfo instanceof TypeInfoVariable) return toMutate
-            .getOrDefault(typeInfo.getTypeName(), typeInfo)
-            .copy();
+        if (typeInfo instanceof TypeInfoClass || typeInfo instanceof TypeInfoVariable) {
+            return toMutate.getOrDefault(typeInfo.getTypeName(), typeInfo).copy();
+        }
 
         typeInfo = typeInfo.copy();
 

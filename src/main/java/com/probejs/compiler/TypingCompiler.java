@@ -49,7 +49,7 @@ public class TypingCompiler {
                     if (k instanceof String && v instanceof String) {
                         try {
                             Class<?> clazz = Class.forName((String) v);
-                            if (EventJS.class.isAssignableFrom(clazz)) cachedEvents.put((String) k, clazz);
+                            if (EventJS.class.isAssignableFrom(clazz)) {cachedEvents.put((String) k, clazz);}
                         } catch (ClassNotFoundException e) {
                             ProbeJS.LOGGER.warn(
                                 String.format(

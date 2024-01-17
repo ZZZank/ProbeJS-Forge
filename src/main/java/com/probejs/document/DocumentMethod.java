@@ -148,9 +148,12 @@ public class DocumentMethod
         methodInfo.getParams().forEach(p -> params.put(p.getName(), p));
         this.params.forEach(p -> docParams.put(p.name, p));
 
-        if (!params.keySet().equals(docParams.keySet())) return false;
-
-        if (!Resolver.typeEquals(returnType, methodInfo.getReturnType())) return false;
+        if (
+            !params.keySet().equals(docParams.keySet()) ||
+            !Resolver.typeEquals(returnType, methodInfo.getReturnType())
+        ) {
+            return false;
+        }
 
         for (Map.Entry<String, MethodInfo.ParamInfo> e : params.entrySet()) {
             DocumentParam doc = docParams.get(e.getKey());

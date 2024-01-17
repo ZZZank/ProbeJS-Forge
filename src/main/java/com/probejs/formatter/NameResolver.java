@@ -136,7 +136,9 @@ public class NameResolver {
         // ResolvedName resolved = new ResolvedName(Arrays.asList(remappedName.split("\\.")));
         ResolvedName resolved = new ResolvedName(Arrays.asList(clazz.getName().split("\\.")));
         ResolvedName internal = new ResolvedName(Arrays.asList("Internal", resolved.getLastName()));
-        if (resolvedNames.containsValue(internal)) putResolvedName(clazz.getName(), resolved); else {
+        if (resolvedNames.containsValue(internal)) {
+            putResolvedName(clazz.getName(), resolved);
+        } else {
             putResolvedName(clazz.getName(), internal);
         }
     }
@@ -247,7 +249,10 @@ public class NameResolver {
         SpecialTypes.assignRegistry(Item.class, Registry.ITEM_REGISTRY);
         SpecialTypes.assignRegistry(SoundEvent.class, Registry.SOUND_EVENT_REGISTRY);
         SpecialTypes.assignRegistry(Fluid.class, Registry.FLUID_REGISTRY);
-        SpecialTypes.assignRegistry(RecipeSerializer.class, ((ResourceKey<Registry<RecipeSerializer>>) ((Object) Registry.RECIPE_SERIALIZER_REGISTRY)));
+        SpecialTypes.assignRegistry(
+            RecipeSerializer.class,
+            ((ResourceKey<Registry<RecipeSerializer>>) ((Object) Registry.RECIPE_SERIALIZER_REGISTRY))
+        );
 
         // putTypeGuard(true, Class.class, ClassWrapper.class);
         putTypeGuard(true, Class.class);

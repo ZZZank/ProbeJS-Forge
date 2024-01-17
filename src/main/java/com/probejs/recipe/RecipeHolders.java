@@ -13,10 +13,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RecipeHolders {
 
-    static Map<String, List<Pair<String, String>>> namespacedMap = new HashMap<>();
+    static Map<String, List<Pair<String, String>>> namespace2Method = new HashMap<>();
 
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
-        namespacedMap.clear();
+        namespace2Method.clear();
         recipeHandlers.forEach((key, value) -> {
             String namespace = key.getNamespace();
             String invoke = key.getPath();
@@ -24,7 +24,7 @@ public class RecipeHolders {
                 "Internal." +
                 NameResolver.getResolvedName(value.factory.get().getClass().getName()).getLastName();
 
-            namespacedMap
+            namespace2Method
                 .computeIfAbsent(namespace, k -> new ArrayList<Pair<String, String>>())
                 .add(new Pair<>(invoke, recipeJSName));
         });
@@ -38,15 +38,15 @@ public class RecipeHolders {
         // a base class for indexing other classes
         formatted.add(PUtil.indent(indent) + "class recipeHolder {");
         indent += stepIndent;
-        for (String namespace : namespacedMap.keySet()) {
+        for (String namespace : namespace2Method.keySet()) {
             formatted.add(
-                PUtil.indent(indent) + String.format("readonly %s : stub.probejs.%s", namespace, namespace)
+                PUtil.indent(indent) + String.format("%sreadonly %s : stub.probejs.%s", namespace, namespace)
             );
         }
         indent -= stepIndent;
         formatted.add(PUtil.indent(indent) + "}");
         // recipeHolder classes
-        for (Entry<String, List<Pair<String, String>>> entry : namespacedMap.entrySet()) {
+        for (Entry<String, List<Pair<String, String>>> entry : namespace2Method.entrySet()) {
             formatted.add(String.format(PUtil.indent(indent) + "class %s {", entry.getKey()));
             // methods inside recipeHolder classes
             indent += stepIndent;

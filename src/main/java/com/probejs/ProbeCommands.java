@@ -101,13 +101,13 @@ public class ProbeCommands {
                             Commands
                                 .literal("toggle_triming")
                                 .executes(context -> {
-                                    ProbeConfig.INSTANCE.trimMethod = !ProbeConfig.INSTANCE.trimMethod;
+                                    ProbeConfig.INSTANCE.trimming = !ProbeConfig.INSTANCE.trimming;
                                     ProbeConfig.INSTANCE.save();
                                     return sendSuccess(
                                         context,
                                         String.format(
                                             "Dump trimming set to: %s",
-                                            ProbeConfig.INSTANCE.trimMethod
+                                            ProbeConfig.INSTANCE.trimming
                                         )
                                     );
                                 })
