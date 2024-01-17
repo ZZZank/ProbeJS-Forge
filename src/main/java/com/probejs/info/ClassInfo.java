@@ -6,6 +6,8 @@ import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
+
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -66,25 +68,27 @@ public class ClassInfo {
                 .collect(Collectors.toList());
 
         // declared methods include public/protected/private methods, but exclude inherited ones
-        Set<Method> declared = new HashSet<>();
+        Set<Method> declaredMethods = new HashSet<>();
         if (ProbeConfig.INSTANCE.trimMethod) {
-            declared.addAll(Arrays.asList(clazzRaw.getDeclaredMethods()));
+            declaredMethods.addAll(Arrays.asList(clazzRaw.getDeclaredMethods()));
         }
-
         methodInfo =
             Arrays
                 .stream(clazzRaw.getMethods())
-                .filter(method ->
-                    !ProbeConfig.INSTANCE.trimMethod || declared.isEmpty() || declared.contains(method)
-                )
+                .filter(method -> !ProbeConfig.INSTANCE.trimMethod || declaredMethods.contains(method))
                 .map(m -> new MethodInfo(m, clazz))
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
                 .filter(m -> !m.shouldHide())
                 .collect(Collectors.toList());
 
+        Set<Field> declaredFields = new HashSet<>();
+        if (ProbeConfig.INSTANCE.trimMethod) {
+            declaredFields.addAll(Arrays.asList(clazzRaw.getDeclaredFields()));
+        }
         fieldInfo =
             Arrays
                 .stream(clazzRaw.getFields())
+                .filter(field -> !ProbeConfig.INSTANCE.trimMethod || declaredFields.contains(field))
                 .map(FieldInfo::new)
                 .filter(f -> ClassResolver.acceptField(f.getName()))
                 .filter(f -> !f.shouldHide())
