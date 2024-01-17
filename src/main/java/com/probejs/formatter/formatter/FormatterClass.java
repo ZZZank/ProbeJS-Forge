@@ -10,7 +10,7 @@ import com.probejs.document.Manager;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.document.type.TypeNamed;
 import com.probejs.formatter.NameResolver;
-import com.probejs.info.ClassInfo;
+import com.probejs.info.*;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoClass;
@@ -33,24 +33,22 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
     private boolean internal = false;
 
     public FormatterClass(ClassInfo classInfo) {
-        final String recipeEventJSName = RecipeEventJS.class.getName();
         this.classInfo = classInfo;
-        classInfo
-            .getMethodInfo()
-            .forEach(methodInfo -> {
-                // TODO: dirty hack, should remove
-                if (
-                    classInfo.getName().equals(recipeEventJSName) && methodInfo.getName().equals("getRecipes")
-                ) {
-                    return;
-                }
-                methodFormatters
-                    .computeIfAbsent(methodInfo.getName(), s -> new ArrayList<>())
-                    .add(new FormatterMethod(methodInfo));
-            });
-        classInfo
-            .getFieldInfo()
-            .forEach(fieldInfo -> fieldFormatters.put(fieldInfo.getName(), new FormatterField(fieldInfo)));
+        for (MethodInfo methodInfo : classInfo.getMethodInfo()) {
+            // TODO: dirty hack, should remove
+            if (
+                classInfo.getName().equals(RecipeEventJS.class.getName()) &&
+                methodInfo.getName().equals("getRecipes")
+            ) {
+                continue;
+            }
+            methodFormatters
+                .computeIfAbsent(methodInfo.getName(), s -> new ArrayList<>())
+                .add(new FormatterMethod(methodInfo));
+        }
+        for (FieldInfo fieldInfo : classInfo.getFieldInfo()) {
+            fieldFormatters.put(fieldInfo.getName(), new FormatterField(fieldInfo));
+        }
     }
 
     public void setInternal(boolean internal) {
@@ -78,7 +76,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                     TypeNamed named = (TypeNamed) i;
                     if (
                         NameResolver.resolvedNames.containsKey(named.getRawTypeName()) &&
-                        !NameResolver.resolvedPrimitives.contains((named.getRawTypeName()))
+                        !NameResolver.resolvedPrimitives.contains(named.getRawTypeName())
                     ) {
                         return s + "_";
                     }
@@ -111,11 +109,10 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         if (!internal) {
             firstLine.add("declare");
         }
-        if (classInfo.isAbstract() && !classInfo.isInterface()) {
-            firstLine.add("abstract");
-        }
         if (classInfo.isInterface()) {
             firstLine.add("interface");
+        } else if (classInfo.isAbstract()) {
+            firstLine.add("abstract class");
         } else {
             firstLine.add("class");
         }
@@ -161,22 +158,20 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         // Fields, methods
         methodFormatters
             .values()
-            .forEach(m ->
-                m
+            .forEach(fmtrMethods ->
+                fmtrMethods
                     .stream()
-                    .filter(mf ->
-                        ProbeConfig.INSTANCE.dumpMethod ||
-                        (
-                            mf.getBean() == null ||
-                            fieldFormatters.containsKey(mf.getBean()) ||
-                            methodFormatters.containsKey(mf.getBean())
-                        )
+                    .filter(fmtrMethod ->
+                        ProbeConfig.INSTANCE.keepBeaned ||
+                        fmtrMethod.getBean() == null ||
+                        fieldFormatters.containsKey(fmtrMethod.getBean()) ||
+                        methodFormatters.containsKey(fmtrMethod.getBean())
                     )
-                    .forEach(mf -> {
-                        if (classInfo.isInterface() && mf.getMethodInfo().isStatic() && internal) {
+                    .forEach(fmtrMethod -> {
+                        if (classInfo.isInterface() && fmtrMethod.getMethodInfo().isStatic() && internal) {
                             return;
                         }
-                        formatted.addAll(mf.format(indent + stepIndent, stepIndent));
+                        formatted.addAll(fmtrMethod.format(indent + stepIndent, stepIndent));
                     })
             );
         fieldFormatters
@@ -201,7 +196,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                         String beanName = m.getBean();
                         if (
                             beanName != null &&
-                            Character.isAlphabetic(beanName.charAt(0)) &&
+                            Character.isUpperCase(beanName.charAt(0)) &&
                             !fieldFormatters.containsKey(beanName) &&
                             !methodFormatters.containsKey(beanName)
                         ) {
@@ -223,9 +218,9 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                         getterMap.get(m.getBean()).getBeanTypeString().equals(m.getBeanTypeString())
                     )
                     .findFirst();
-                result.ifPresent(formatterMethod ->
-                    formatted.addAll(formatterMethod.formatBean(indent + stepIndent, stepIndent))
-                );
+                if (result.isPresent()) {
+                    formatted.addAll(result.get().formatBean(indent + stepIndent, stepIndent));
+                }
             });
         }
 
@@ -257,17 +252,19 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
         formatted.add(PUtil.indent(indent) + "}");
         //type conversion
-        String underName = NameResolver.getResolvedName(classInfo.getName()).getLastName() + "_";
         String origName = NameResolver.getResolvedName(classInfo.getName()).getLastName();
-        if (NameResolver.specialTypeFormatters.containsKey(classInfo.getClazzRaw())) {assignableTypes.add(
-            new FormatterType(
-                new TypeInfoParameterized(
-                    new TypeInfoClass(classInfo.getClazzRaw()),
-                    classInfo.getParameters()
+        String underName = origName + "_";
+        if (NameResolver.specialTypeFormatters.containsKey(classInfo.getClazzRaw())) {
+            assignableTypes.add(
+                new FormatterType(
+                    new TypeInfoParameterized(
+                        new TypeInfoClass(classInfo.getClazzRaw()),
+                        classInfo.getParameters()
+                    )
                 )
-            )
-                .format(0, 0)
-        );}
+                    .format(0, 0)
+            );
+        }
         List<ITypeInfo> params = classInfo.getParameters();
         if (params.size() > 0) {
             String paramString = String.format(

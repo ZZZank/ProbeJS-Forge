@@ -53,6 +53,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         return null;
     }
 
+    /**
+     * Warning: This method assumes that the method is knowned to be either getter or setter
+     * @return True if method name is `isXXX` or `getXX`
+     */
     public boolean isGetter() {
         return !methodInfo.getName().startsWith("set");
     }
@@ -86,12 +90,9 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         TypeInfoClass clazz = (TypeInfoClass) info;
         StringBuilder sb = new StringBuilder(new FormatterType(info, useSpecial).format(0, 0));
         if (!NameResolver.isTypeSpecial(clazz.getResolvedClass()) && clazz.getTypeVariables().size() != 0) {
-            sb.append(
-                String.format(
-                    "<%s>",
-                    String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any"))
-                )
-            );
+            sb.append('<');
+            sb.append(String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any")));
+            sb.append('>');
         }
         return sb.toString();
     }

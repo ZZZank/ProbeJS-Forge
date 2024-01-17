@@ -86,13 +86,13 @@ public class ProbeCommands {
                             Commands
                                 .literal("toggle_bean")
                                 .executes(context -> {
-                                    ProbeConfig.INSTANCE.dumpMethod = !ProbeConfig.INSTANCE.dumpMethod;
+                                    ProbeConfig.INSTANCE.keepBeaned = !ProbeConfig.INSTANCE.keepBeaned;
                                     ProbeConfig.INSTANCE.save();
                                     return sendSuccess(
                                         context,
                                         String.format(
                                             "Keep method while beaning set to: %s",
-                                            ProbeConfig.INSTANCE.dumpMethod
+                                            ProbeConfig.INSTANCE.keepBeaned
                                         )
                                     );
                                 })

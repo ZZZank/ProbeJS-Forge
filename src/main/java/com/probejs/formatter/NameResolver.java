@@ -143,7 +143,7 @@ public class NameResolver {
         }
     }
 
-    public static void resolveNames(Set<Class<?>> classes) {
+    public static void resolveNames(Collection<Class<?>> classes) {
         for (Class<?> clazz : classes) {
             resolveName(clazz);
         }

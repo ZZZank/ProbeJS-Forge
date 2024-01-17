@@ -13,7 +13,7 @@ public class ProbeConfig {
 
     public static ProbeConfig INSTANCE = new ProbeConfig();
     private static final Path CONFIG = KubeJSPaths.CONFIG.resolve("probejs.json");
-    public boolean dumpMethod = true;
+    public boolean keepBeaned = true;
     public boolean disabled = false;
     public boolean vanillaOrder = true;
     public boolean exportClassNames = false;
@@ -30,12 +30,12 @@ public class ProbeConfig {
         if (Files.exists(cfg)) {
             try {
                 Map<?, ?> obj = new Gson().fromJson(Files.newBufferedReader(cfg), Map.class);
-                dumpMethod = fetchPropertyOrDefault("dumpMethod", obj, true);
+                keepBeaned = fetchPropertyOrDefault("keepBeaned", obj, true);
                 disabled = fetchPropertyOrDefault("disabled", obj, false);
                 vanillaOrder = fetchPropertyOrDefault("vanillaOrder", obj, true);
                 exportClassNames = fetchPropertyOrDefault("exportClassNames", obj, false);
                 autoExport = fetchPropertyOrDefault("autoExport", obj, true);
-                trimming = fetchPropertyOrDefault("trimMethod", obj, false);
+                trimming = fetchPropertyOrDefault("trimming", obj, false);
             } catch (IOException e) {
                 ProbeJS.LOGGER.warn("Cannot read config properties, falling back to defaults.");
             }
