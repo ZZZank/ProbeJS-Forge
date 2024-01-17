@@ -7,9 +7,6 @@ import java.util.stream.Collectors;
 
 public class TypeInfoClass implements ITypeInfo {
 
-    public static final TypeInfoClass BOOL_CLASS = new TypeInfoClass(Boolean.class);
-    public static final TypeInfoClass BOOL_TYPE = new TypeInfoClass(Boolean.TYPE);
-
     public static boolean test(Type type) {
         return type instanceof Class<?>;
     }

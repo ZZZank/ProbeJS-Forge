@@ -15,6 +15,7 @@ import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements IFormatter {
 
@@ -28,6 +29,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         return methodInfo;
     }
 
+    @Nullable
     public String getBean() {
         String methodName = methodInfo.getName();
         if (methodName.equals("is") || methodName.equals("get") || methodName.equals("set")) {
@@ -38,17 +40,18 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             methodName.startsWith("is") &&
             paramSize == 0 &&
             (
-                methodInfo.getReturnType().assignableFrom(TypeInfoClass.BOOL_CLASS) ||
-                methodInfo.getReturnType().assignableFrom(TypeInfoClass.BOOL_TYPE)
+                //TODO: it seems that we can't pre-calculate the Boolean TypeInfoClass, why
+                methodInfo.getReturnType().assignableFrom(new TypeInfoClass(Boolean.class)) ||
+                methodInfo.getReturnType().assignableFrom(new TypeInfoClass(Boolean.TYPE))
             )
         ) {
-            return PUtil.getCamelCase(methodName.substring(2));
+            return PUtil.withLowerCaseHead(methodName.substring(2));
         }
         if (methodName.startsWith("get") && paramSize == 0) {
-            return PUtil.getCamelCase(methodName.substring(3));
+            return PUtil.withLowerCaseHead(methodName.substring(3));
         }
         if (methodName.startsWith("set") && paramSize == 1) {
-            return PUtil.getCamelCase(methodName.substring(3));
+            return PUtil.withLowerCaseHead(methodName.substring(3));
         }
         return null;
     }
@@ -136,6 +139,12 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         return sb.toString();
     }
 
+    /**
+     * Get a `(a: string, b: any)` style String representation of params of this method
+     * @param modifiers
+     * @param renames
+     * @return
+     */
     private String formatParams(Map<String, IType> modifiers, Map<String, String> renames) {
         return String.format(
             "(%s)",
@@ -238,11 +247,12 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             if (comment != null) formatted.addAll(comment.format(indent, stepIndent));
         }
 
-        formatted.add(PUtil.indent(indent));
+        String idnt = PUtil.indent(indent);
         if (methodName.startsWith("is")) {
-            formatted.add(String.format("get %s(): boolean;", getBean()));
+            formatted.add(idnt + String.format("get %s(): boolean;", getBean()));
         } else if (methodName.startsWith("get")) {
             formatted.add(
+                idnt +
                 String.format(
                     "get %s(): %s;",
                     getBean(),
@@ -253,7 +263,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             MethodInfo.ParamInfo info = methodInfo.getParams().get(0);
             String name = info.getName();
             formatted.add(
-                String.format("set %s%s;", getBean(), formatParams(paramModifiers, new HashMap<>()))
+                idnt + String.format("set %s%s;", getBean(), formatParams(paramModifiers, new HashMap<>()))
             );
         }
         return formatted;
