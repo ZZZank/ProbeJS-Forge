@@ -18,7 +18,7 @@ public class ProbeConfig {
     public boolean vanillaOrder = true;
     public boolean exportClassNames = false;
     public boolean autoExport = true;
-    public boolean trimming = false;
+    public boolean trimming = true;
 
     private static <E> E fetchPropertyOrDefault(Object key, Map<?, ?> values, E defaultValue) {
         Object v = values.get(key);
