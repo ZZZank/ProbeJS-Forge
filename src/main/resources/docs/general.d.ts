@@ -45,14 +45,14 @@ class ResourceLocation {
 /**
  * @target net.minecraft.nbt.CompoundTag
  * @assign string
- * @assign {[string]: string | number | boolean | Internal.CompoundTag_}
+ * @assign {[x in string]: (string | number | boolean | Internal.CompoundTag_)}
  */
 class CompoundTag {
 }
 
 /**
  * @target java.util.Map
- * @assign {[key: K]: V}
+ * @assign {[key in K]: V}
  */
 class Map {
 }

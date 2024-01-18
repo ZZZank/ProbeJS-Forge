@@ -34,6 +34,7 @@ public class RecipeHolders {
         List<String> formatted = new ArrayList<>();
         // head
         formatted.add(PUtil.indent(indent) + "declare namespace stub.probejs {");
+
         indent += stepIndent;
         // a base class for indexing other classes
         formatted.add(PUtil.indent(indent) + "class recipeHolder {");
@@ -45,6 +46,7 @@ public class RecipeHolders {
         }
         indent -= stepIndent;
         formatted.add(PUtil.indent(indent) + "}");
+
         // recipeHolder classes
         for (Entry<String, List<Pair<String, String>>> entry : namespace2Method.entrySet()) {
             formatted.add(String.format(PUtil.indent(indent) + "class %s {", entry.getKey()));
@@ -60,6 +62,7 @@ public class RecipeHolders {
             formatted.add(PUtil.indent(indent) + "}");
         }
         indent -= stepIndent;
+
         // end
         formatted.add(PUtil.indent(indent) + "}");
         return formatted;
