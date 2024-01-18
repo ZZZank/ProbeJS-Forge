@@ -1,9 +1,22 @@
+# ProbeJS Legacy 2.1.0 -> 2.2.0
+
+Dump trimming!
+
+## What's new?
+
+-   Dump trimming: probeJS will now make use of inherited Class, and avoid dumping a method/field if such method/field is already avaliable through inheritance. This can greatly reduce the size of `global.d.ts`
+    -   On a slightly modded instance, dump trimming makes dump size decrease from 8.02MB to 2.55MB, less than 1/3 of the original dump size.
+-   Better documents for builtin types, like `Text` or `Map`
+-   Java type `Object` will now be showed, but in namespace `Document`, and every "complex" type will be it's subclass(for better dump trimming)
+
+---
+
 # ProbeJS Legacy 2.0.0 -> 2.0.1
 
 ## What's new?
 
--   ProbeJS will now listen to EVERY Forge events, so that users don't need to painstakingly search for names of Forge Events (which are usually very long). 
--   `/probejs dump` command is now restricted to Singleplayer, to prevent freezing servers by accident. 
+-   ProbeJS will now listen to EVERY Forge events, so that users don't need to painstakingly search for names of Forge Events (which are usually very long).
+-   `/probejs dump` command is now restricted to Singleplayer, to prevent freezing servers by accident.
 -   A slightly better documents for builtin types, like `ResourceLocation`
 
 ---
