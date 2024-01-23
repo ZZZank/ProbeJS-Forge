@@ -92,6 +92,11 @@ public class NameResolver {
         putResolvedName(className, new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
     }
 
+    /**
+     * resolve full-name of a class into ones used by ProbeJS 
+     * @param className Full class name, like "java.lang.String"
+     * @return Resolved name, or {@code ResolvedName.UNRESOLVED} if unable to resolve
+     */
     public static ResolvedName getResolvedName(String className) {
         return resolvedNames.getOrDefault(className, ResolvedName.UNRESOLVED);
     }

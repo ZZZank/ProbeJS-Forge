@@ -70,7 +70,7 @@ public class MethodInfo {
     }
 
     public ClassInfo getFrom() {
-        return ClassInfo.getOrCache(from);
+        return ClassInfo.ofCache(from);
     }
 
     public void setParams(List<ParamInfo> params) {

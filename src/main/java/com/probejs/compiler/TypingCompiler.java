@@ -118,7 +118,7 @@ public class TypingCompiler {
         Map<String, List<IFormatter>> namespaced = new HashMap<>();
 
         for (Class<?> clazz : globalClasses) {
-            FormatterClass formatter = new FormatterClass(ClassInfo.getOrCache(clazz));
+            FormatterClass formatter = new FormatterClass(ClassInfo.ofCache(clazz));
             Manager.classDocuments
                 .getOrDefault(clazz.getName(), new ArrayList<>())
                 .forEach(formatter::addDocument);
@@ -176,7 +176,7 @@ public class TypingCompiler {
         cachedForgeEvents.putAll(ForgeEventListener.capturedEvents);
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
-        writer.write("/// <reference path=\"./registries.d.ts\" />\n");
+        // writer.write("/// <reference path=\"./registries.d.ts\" />\n");
         for (Map.Entry<String, Class<?>> entry : cachedEvents.entrySet()) {
             String name = entry.getKey();
             Class<?> event = entry.getValue();

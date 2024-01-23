@@ -78,7 +78,7 @@ public class SpecialTypes {
                 !skippedSpecials.contains(clazz)
             ) {
                 //Functional interfaces has one and only one abstract method
-                ClassInfo info = ClassInfo.getOrCache(clazz);
+                ClassInfo info = ClassInfo.ofCache(clazz);
                 for (MethodInfo method : info.getMethodInfo()) {
                     if (method.isAbstract()) {
                         FormatterLambda formatter = new FormatterLambda(method);

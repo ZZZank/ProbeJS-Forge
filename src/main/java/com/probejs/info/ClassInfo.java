@@ -6,7 +6,6 @@ import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -22,11 +21,11 @@ public class ClassInfo {
 
     public static final Map<Class<?>, ClassInfo> CLASS_CACHE = new HashMap<>();
 
-    public static ClassInfo getOrCache(Class<?> clazz) {
+    public static ClassInfo ofCache(Class<?> clazz) {
         if (clazz == null) {
             return null;
         }
-        //No computeIfAbsent because new ClassInfo will call getOrCache for superclass lookup
+        //No computeIfAbsent because new ClassInfo will call ofCache for superclass lookup
         //This will cause a CME because multiple updates occurred in one computeIfAbsent
         if (CLASS_CACHE.containsKey(clazz)) {
             return CLASS_CACHE.get(clazz);
@@ -34,6 +33,13 @@ public class ClassInfo {
         ClassInfo info = new ClassInfo(clazz);
         CLASS_CACHE.put(clazz, info);
         return info;
+    }
+
+    public static ClassInfo of(Class<?> clazz) {
+        if (clazz == null) {
+            return null;
+        }
+        return new ClassInfo(clazz);
     }
 
     private final Class<?> clazzRaw;
@@ -54,12 +60,12 @@ public class ClassInfo {
         isInterface = clazzRaw.isInterface();
         constructorInfo =
             Arrays.stream(clazzRaw.getConstructors()).map(ConstructorInfo::new).collect(Collectors.toList());
-        superClass = getOrCache(clazzRaw.getSuperclass());
+        superClass = ofCache(clazzRaw.getSuperclass());
         // clazzRaw.getSuperclass() == null
-        //     ? getOrCache(Object.class)
-        //     : getOrCache(clazzRaw.getSuperclass());
+        //     ? ofCache(Object.class)
+        //     : ofCache(clazzRaw.getSuperclass());
         interfaces =
-            Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::getOrCache).collect(Collectors.toList());
+            Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::ofCache).collect(Collectors.toList());
 
         parameters =
             Arrays

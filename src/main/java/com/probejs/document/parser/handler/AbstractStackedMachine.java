@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractStackedMachine<T> {
+
     protected final List<IStateHandler<T>> stack = new ArrayList<>();
 
     public void step(T element) {
-        if (!this.isEmpty())
+        if (!this.isEmpty()) {
             stack.get(stack.size() - 1).trial(element, stack);
+        }
     }
 
     public boolean isEmpty() {

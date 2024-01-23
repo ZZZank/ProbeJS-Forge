@@ -213,17 +213,17 @@ public class ProbeCommands {
         MinecraftServer server = source.getServer();
         PackRepository packRepository = server.getPackRepository();
         WorldData worldData = server.getWorldData();
-        Collection<String> collection = packRepository.getSelectedIds();
+        Collection<String> selectedPackIds = packRepository.getSelectedIds();
         packRepository.reload();
-        Collection<String> collection2 = Lists.newArrayList(collection);
         Collection<String> disabledDatapacks = worldData.getDataPackConfig().getDisabled();
-
+        
+        Collection<String> selected = Lists.newArrayList(selectedPackIds);
         for (String string : packRepository.getAvailableIds()) {
-            if (!disabledDatapacks.contains(string) && !collection2.contains(string)) {
-                collection2.add(string);
+            if (!disabledDatapacks.contains(string) && !selected.contains(string)) {
+                selected.add(string);
             }
         }
 
-        ReloadCommand.reloadPacks(collection2, source);
+        ReloadCommand.reloadPacks(selected, source);
     }
 }

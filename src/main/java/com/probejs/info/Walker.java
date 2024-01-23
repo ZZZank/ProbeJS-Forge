@@ -52,7 +52,7 @@ public class Walker {
     private Set<Class<?>> touch(Set<Class<?>> classes) {
         Set<Class<?>> result = new HashSet<>();
         for (Class<?> clazz : classes) {
-            ClassInfo info = ClassInfo.getOrCache(clazz);
+            ClassInfo info = ClassInfo.ofCache(clazz);
 
             if (walkSuper) {
                 ClassInfo superclass = info.getSuperClass();

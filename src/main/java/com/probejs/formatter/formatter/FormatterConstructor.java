@@ -23,7 +23,7 @@ public class FormatterConstructor implements IFormatter {
         StringBuilder sb = new StringBuilder(new FormatterType(info).format(0, 0));
         if (info instanceof TypeInfoClass) {
             TypeInfoClass clazz = (TypeInfoClass) info;
-            ClassInfo classInfo = ClassInfo.getOrCache(clazz.getResolvedClass());
+            ClassInfo classInfo = ClassInfo.ofCache(clazz.getResolvedClass());
             if (classInfo.getParameters().size() != 0) {
                 sb.append('<');
                 sb.append(String.join(", ", Collections.nCopies(classInfo.getParameters().size(), "any")));
