@@ -4,9 +4,43 @@ import com.probejs.document.parser.handler.AbstractStackedMachine;
 import com.probejs.document.parser.handler.IStateHandler;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Stack;
+import java.util.function.Predicate;
 
 public class StringUtil {
+
+    public static final Predicate<Character> PUSH_INDICATOR = c -> c == '(' || c == '{' || c == '<';
+    public static final Predicate<Character> POP_INDICATOR = c -> c == ')' || c == '}' || c == '>';
+
+    /**
+     * Get the index of {@code target} in {@code str}, with "nested" one ignored. 
+     * <p>
+     * E.g. If {@code target} is '+', {@code str} is "(1+2)+3", the first
+     * '+' will be ignored
+     *
+     * @param str
+     * @param target
+     * @return The index, or -1 if not found
+     * @see com.probejs.util.StringUtil#PUSH_INDICATOR
+     * @see com.probejs.util.StringUtil#POP_INDICATOR
+     */
+    public static int indexLayered(String str, char target) {
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (stack.empty() && c == target) {
+                return i;
+            }
+            if (PUSH_INDICATOR.test(c)) {
+                stack.push(c);
+            } else if (POP_INDICATOR.test(c)) {
+                if (!stack.empty()) {
+                    stack.pop();
+                }
+            }
+        }
+        return -1;
+    }
 
     private static class SplitState extends AbstractStackedMachine<String> {
 
@@ -71,9 +105,8 @@ public class StringUtil {
     }
 
     public static int indexLayer(String s, String push, String pop, String delimiter) {
-        List<String> ss = s.chars().mapToObj(String::valueOf).collect(Collectors.toList());
         SplitState state = new SplitState(push, pop, delimiter);
-        for (String step : ss) {
+        for (String step : s.split("")) {
             state.step(step);
             if (state.isEmpty()) {
                 break;

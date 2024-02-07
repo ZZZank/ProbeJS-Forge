@@ -111,18 +111,34 @@ public class DocumentMethod
         String paramsStr = line.substring(nameIndex + 1, methodIndex);
         // e.g. FnReturnName
         String remainedString = line.substring(methodIndex + 1).replace(":", "").trim();
-        params:{
-            params = new ArrayList<>();
-            int i = StringUtil.indexLayered(paramsStr, ',');
-            while (i != -1) {
-                String[] nameAndType = paramsStr.substring(0, i).trim().split(":", 2);
-                params.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));
-
-                paramsStr = paramsStr.substring(i + 1).trim();
-                i = StringUtil.indexLayered(paramsStr, ',');
-            }
-        }
+        params = buildParams(paramsStr);
         returnType = Resolver.resolveType(remainedString);
+    }
+
+    /**
+     *
+     * @param paramsStr E.g. "a: (string|number), b: {required: bool}"
+     * @return
+     */
+    private List<DocumentParam> buildParams(String paramsStr) {
+        List<DocumentParam> paramList = new ArrayList<>();
+        if (paramsStr.isEmpty()) {
+            return paramList;
+        }
+        while (true) {
+            int i = StringUtil.indexLayered(paramsStr, ',');
+            if (i == -1) {
+                String[] nameAndType = paramsStr.trim().split(":", 2);
+                params.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));
+                break;
+            }
+            String[] nameAndType = paramsStr.substring(0, i).trim().split(":", 2);
+            params.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));
+
+            paramsStr = paramsStr.substring(i + 1).trim();
+            i = StringUtil.indexLayered(paramsStr, ',');
+        }
+        return paramList;
     }
 
     public boolean isStatic() {
