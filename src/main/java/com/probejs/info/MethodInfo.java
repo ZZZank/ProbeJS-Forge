@@ -23,6 +23,7 @@ public class MethodInfo {
     private ITypeInfo returnType;
     private List<ParamInfo> params;
     private List<ITypeInfo> typeVariables;
+
     // public static final Remapper RUNTIME = RemappingHelper.createModRemapper();
 
     private static String getRemappedOrDefault(Method method, Class<?> from) {
@@ -38,7 +39,11 @@ public class MethodInfo {
         this.modifiers = method.getModifiers();
         this.returnType = InfoTypeResolver.resolveType(method.getGenericReturnType());
         this.params = Arrays.stream(method.getParameters()).map(ParamInfo::new).collect(Collectors.toList());
-        this.typeVariables = Arrays.stream(method.getTypeParameters()).map(InfoTypeResolver::resolveType).collect(Collectors.toList());
+        this.typeVariables =
+            Arrays
+                .stream(method.getTypeParameters())
+                .map(InfoTypeResolver::resolveType)
+                .collect(Collectors.toList());
     }
 
     public String getName() {
@@ -86,6 +91,7 @@ public class MethodInfo {
     }
 
     public static class ParamInfo {
+
         private final String name;
         private ITypeInfo type;
 

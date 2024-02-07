@@ -1,5 +1,6 @@
 package com.probejs.document.parser.processor;
 
+import com.probejs.ProbeJS;
 import com.probejs.document.DocumentClass;
 import com.probejs.document.IConcrete;
 import com.probejs.document.IDecorative;
@@ -65,6 +66,7 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
                 return;
             }
         }
+        ProbeJS.LOGGER.error("Cannot handle document string: {}", element);
     }
 
     @Override

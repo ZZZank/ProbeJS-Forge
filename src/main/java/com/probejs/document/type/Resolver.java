@@ -12,8 +12,10 @@ public class Resolver {
         type = type.trim();
 
         //TODO: Resolve object type
-        if (type.startsWith("{"))
+        if (type.startsWith("{")) {
+            // {[x in string]: string}
             return new TypeNamed(type);
+        }
 
         Pair<String, String> splitUnion = StringUtil.splitFirst(type, "<", ">", "|");
         if (splitUnion != null) {

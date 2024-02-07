@@ -10,8 +10,8 @@ public class FormatterNamespace implements IFormatter {
     private final List<? extends IFormatter> formatters;
 
     public FormatterNamespace(String path, List<? extends IFormatter> formatters) {
-        this.formatters = formatters;
         this.path = path;
+        this.formatters = formatters;
     }
 
     @Override

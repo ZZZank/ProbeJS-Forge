@@ -41,28 +41,30 @@ public class TypingCompiler {
     public static Map<String, Class<?>> readCachedEvents(String fileName) throws IOException {
         Map<String, Class<?>> cachedEvents = new HashMap<>();
         Path cachedEventPath = KubeJSPaths.EXPORTED.resolve(fileName);
-        if (Files.exists(cachedEventPath)) {
-            try {
-                Map<?, ?> cachedMap = new Gson()
-                    .fromJson(Files.newBufferedReader(cachedEventPath), Map.class);
-                cachedMap.forEach((k, v) -> {
-                    if (k instanceof String && v instanceof String) {
-                        try {
-                            Class<?> clazz = Class.forName((String) v);
-                            if (EventJS.class.isAssignableFrom(clazz)) {cachedEvents.put((String) k, clazz);}
-                        } catch (ClassNotFoundException e) {
-                            ProbeJS.LOGGER.warn(
-                                String.format(
-                                    "Class %s was in the cache, but disappeared in packages now.",
-                                    v
-                                )
-                            );
-                        }
+        if (!Files.exists(cachedEventPath)) {
+            ProbeJS.LOGGER.warn("No event cache file: " + fileName);
+            return cachedEvents;
+        }
+        try {
+            Map<?, ?> fileCache = new Gson().fromJson(Files.newBufferedReader(cachedEventPath), Map.class);
+            fileCache.forEach((k, v) -> {
+                if (!(k instanceof String) || !(v instanceof String)) {
+                    ProbeJS.LOGGER.warn("Unexpected entry in class cache: " + k + ", " + v);
+                    return;
+                }
+                try {
+                    Class<?> clazz = Class.forName((String) v);
+                    if (EventJS.class.isAssignableFrom(clazz)) {
+                        cachedEvents.put((String) k, clazz);
                     }
-                });
-            } catch (JsonSyntaxException | JsonIOException e) {
-                ProbeJS.LOGGER.warn("Cannot read malformed cache, ignoring.");
-            }
+                } catch (ClassNotFoundException e) {
+                    ProbeJS.LOGGER.warn(
+                        String.format("Class %s was in the cache, but disappeared in packages now.", v)
+                    );
+                }
+            });
+        } catch (JsonSyntaxException | JsonIOException e) {
+            ProbeJS.LOGGER.warn("Cannot read malformed cache, ignoring.");
         }
         return cachedEvents;
     }
@@ -81,27 +83,23 @@ public class TypingCompiler {
     }
 
     public static Set<Class<?>> fetchClasses(
-        Map<ResourceLocation, RecipeTypeJS> typeMap,
+        Map<ResourceLocation, RecipeTypeJS> recipeTypeMap,
         DummyBindingEvent bindingEvent,
         Set<Class<?>> cachedClasses
     ) {
-        Set<Class<?>> touchableClasses = new HashSet<>(bindingEvent.getClassDumpMap().values());
-        touchableClasses.addAll(cachedClasses);
-        touchableClasses.addAll(
-            typeMap
-                .values()
-                .stream()
-                .map(recipeTypeJS -> recipeTypeJS.factory.get().getClass())
-                .collect(Collectors.toList())
-        );
-        touchableClasses.addAll(
-            bindingEvent
-                .getConstantDumpMap()
-                .values()
-                .stream()
-                .map(Object::getClass)
-                .collect(Collectors.toList())
-        );
+        Set<Class<?>> touchableClasses = new HashSet<>(cachedClasses);
+        touchableClasses.addAll(bindingEvent.getClassDumpMap().values());
+        recipeTypeMap
+            .values()
+            .stream()
+            .map(recipeTypeJS -> recipeTypeJS.factory.get().getClass())
+            .forEach(touchableClasses::add);
+        bindingEvent
+            .getConstantDumpMap()
+            .values()
+            .stream()
+            .map(Object::getClass)
+            .forEach(touchableClasses::add);
         touchableClasses.addAll(WrappedEventHandler.capturedEvents.values());
         touchableClasses.addAll(ForgeEventListener.capturedEvents.values());
 
@@ -125,10 +123,13 @@ public class TypingCompiler {
 
             NameResolver.ResolvedName name = NameResolver.getResolvedName(clazz.getName());
             if (name.getNamespace().isEmpty()) {
-                writer.write(String.join("\n", formatter.format(0, 4)) + "\n");
+                for (String line : formatter.format(0, 4)) {
+                    writer.write(line);
+                    writer.write("\n");
+                }
                 if (clazz.isInterface()) {
                     writer.write(
-                        String.format("declare const %s: %s;", name.getFullName(), name.getFullName()) + "\n"
+                        String.format("declare const %s: %s;\n", name.getFullName(), name.getFullName())
                     );
                 }
             } else {
@@ -150,21 +151,26 @@ public class TypingCompiler {
             document.subList(1, document.size()).forEach(start::merge);
         }
 
-        writer.write(
-            String.join(
-                "\n",
-                new FormatterNamespace(
-                    "Document",
-                    Manager.classAdditions.values().stream().map(l -> l.get(0)).collect(Collectors.toList())
-                )
-                    .format(0, 4)
-            ) +
-            "\n"
-        );
-        writer.write(
-            String.join("\n", new FormatterNamespace("Type", Manager.typeDocuments).format(0, 4)) + "\n"
-        );
-        writer.write(String.join("\n", new FormatterRawTS(Manager.rawTSDoc).format(0, 4)) + "\n");
+        //Doc
+        for (String line : new FormatterNamespace(
+            "Document",
+            Manager.classAdditions.values().stream().map(l -> l.get(0)).collect(Collectors.toList())
+        )
+            .format(0, 4)) {
+            writer.write(line);
+            writer.write("\n");
+        }
+        //namespace::Type
+        for (String line : new FormatterNamespace("Type", Manager.typeDocuments).format(0, 4)) {
+            writer.write(line);
+            writer.write("\n");
+        }
+        //namespace::TSDoc
+        for (String line : new FormatterRawTS(Manager.rawTSDoc).format(0, 4)) {
+            writer.write(line);
+            writer.write("\n");
+        }
+
         writer.flush();
     }
 
