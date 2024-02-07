@@ -16,8 +16,6 @@ public class DocumentMethod
     extends DocumentProperty
     implements IDocumentProvider<DocumentMethod>, IFormatter {
 
-    // TODO: param in method seems not working perfectly
-
     @Override
     public DocumentMethod provide() {
         return this;
@@ -101,9 +99,11 @@ public class DocumentMethod
             isStatic = false;
         }
         // e.g. fnName(a: (string|number), b: {required: bool}): FnReturnName
+        // e.g. at fnName(, which is 6
         int nameIndex = line.indexOf("(");
-        // TODO: handle nested bracket
-        int methodIndex = line.indexOf(")");
+        // e.g. use substr to index from "a: (string|number), b: {required: bool}): FnReturnName"
+        //      then add length of "fnName(" to get actual index
+        int methodIndex = nameIndex + 1 + StringUtil.indexLayered(line.substring(nameIndex + 1), ')');
 
         // e.g. fnName
         name = line.substring(0, nameIndex).trim();
