@@ -81,7 +81,8 @@ public class Walker {
 
         while (!current.isEmpty()) {
             result.addAll(current);
-            current = touch(current).stream().filter(c -> !result.contains(c)).collect(Collectors.toSet());
+            current =
+                touch(current).parallelStream().filter(c -> !result.contains(c)).collect(Collectors.toSet());
         }
         return result;
     }
