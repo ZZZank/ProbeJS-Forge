@@ -10,6 +10,7 @@ public class DocumentClass implements IConcrete, IFormatter {
 
     private DocumentComment comment;
     private String name;
+    private String superClass;
     private final List<DocumentField> fields = new ArrayList<>();
     private final List<DocumentMethod> methods = new ArrayList<>();
 
@@ -21,10 +22,16 @@ public class DocumentClass implements IConcrete, IFormatter {
         this.name = name;
     }
 
+    public void setSuperClass(String superClass) {
+        this.superClass = superClass;
+    }
+
     public void acceptProperty(IDocument document) {
         if (document instanceof DocumentProperty) {
             DocumentComment comment = ((DocumentProperty) document).getComment();
-            if (!CommentUtil.isLoaded(comment)) {return;}
+            if (!CommentUtil.isLoaded(comment)) {
+                return;
+            }
         }
 
         if (document instanceof DocumentField) {
@@ -36,7 +43,9 @@ public class DocumentClass implements IConcrete, IFormatter {
     }
 
     public void merge(DocumentClass other) {
-        if (comment == null) {comment = other.getComment();}
+        if (comment == null) {
+            comment = other.getComment();
+        }
         fields.addAll(other.getFields());
         methods.addAll(other.getMethods());
     }
@@ -65,7 +74,11 @@ public class DocumentClass implements IConcrete, IFormatter {
     @Override
     public List<String> format(Integer indent, Integer stepIndent) {
         List<String> formatted = new ArrayList<>();
-        formatted.add(PUtil.indent(indent) + String.format("class %s {", this.name));
+        StringBuilder builder = new StringBuilder("class ").append(this.name).append(' ');
+        if (this.superClass != null) {
+            builder.append(superClass).append(' ');
+        }
+        formatted.add(PUtil.indent(indent) + String.format("class %s {", builder.append('{').toString()));
         getFields().forEach(f -> formatted.addAll(f.format(indent + stepIndent, stepIndent)));
         getMethods().forEach(m -> formatted.addAll(m.format(indent + stepIndent, stepIndent)));
         formatted.add(PUtil.indent(indent) + "}");
