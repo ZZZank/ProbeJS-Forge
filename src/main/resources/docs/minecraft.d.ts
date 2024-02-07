@@ -6,7 +6,7 @@ class RecipeEventJS {
     /**
      * Holds all the recipes collected by probejs(not documents).
      */
-    get recipes(): stub.probejs.recipeHolder;
+    get recipes(): Document.RecipeHolder;
 
     /**
      * @hidden
@@ -81,16 +81,14 @@ class RecipeEventJS {
 
 }
 
-
-class RecipeHolder {
+class RecipeHolder extends stub.probejs.RecipeHolder {
     readonly minecraft: Document.MinecraftRecipes;
 }
-
 
 /**
  * All recipes from Minecraft.
  */
-class MinecraftRecipes {
+class MinecraftRecipes extends stub.probejs.minecraft {
     /**
      * Adds a smelting recipe to Minecraft.
      * Used by Furnaces.

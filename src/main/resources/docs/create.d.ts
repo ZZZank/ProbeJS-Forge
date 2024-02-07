@@ -2,7 +2,7 @@
 * @mod create
 * @mod kubejs_create
 */
-class RecipeHolder {
+class RecipeHolder extends stub.probejs.RecipeHolder {
     /**
      * All recipes from Create.
      */
@@ -24,7 +24,7 @@ type IngredientOrFluid = dev.latvian.kubejs.item.ingredient.IngredientJS | dev.l
 * @mod create
 * @mod kubejs_create
 */
-class CreateRecipes {
+class CreateRecipes extends stub.probejs.create {
     /**
      * Creates a recipe for Crushing Wheels.
      * 

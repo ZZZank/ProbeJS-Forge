@@ -1,14 +1,14 @@
 /**
  * @mod botanypots
  */
-class RecipeHolder {
-    botanypots: Document.BotanyPotsRecipes;
+class RecipeHolder extends stub.probejs.RecipeHolder {
+    readonly botanypots: Document.BotanyPotsRecipes;
 }
 
 /**
  * @mod botanypots
  */
-class BotanyPotsRecipes {
+class BotanyPotsRecipes extends stub.probejs.botanypots {
     /**
      * @param outputs any of the `ItemStackJS`, or `{item: ItemStackJS, minRolls: number, maxRolls: number}`
      */

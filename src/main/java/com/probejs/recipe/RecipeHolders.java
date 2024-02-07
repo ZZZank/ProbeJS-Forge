@@ -37,7 +37,7 @@ public abstract class RecipeHolders {
 
         indent += stepIndent;
         // a base class for indexing other classes
-        formatted.add(PUtil.indent(indent) + "class recipeHolder {");
+        formatted.add(PUtil.indent(indent) + "class RecipeHolder {");
         indent += stepIndent;
         for (String namespace : namespace2Method.keySet()) {
             formatted.add(

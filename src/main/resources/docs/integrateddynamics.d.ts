@@ -1,7 +1,7 @@
 /**
 * @mod integrateddynamics
 */
-class RecipeHolder {
+class RecipeHolder extends stub.probejs.RecipeHolder {
     /**
      * The builtin support for Integrated Dynamics is not complete in KubeJS.
      * 
@@ -13,7 +13,7 @@ class RecipeHolder {
 /**
 * @mod integrateddynamics
 */
-class IntegratedDynamicsRecipes {
+class IntegratedDynamicsRecipes extends stub.probejs.integrateddynamics {
     /**
      * Adds a recipe of Squeezer.
      * 

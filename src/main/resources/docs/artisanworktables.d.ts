@@ -1,14 +1,14 @@
 /**
  * @mod artisanworktables
  */
- class RecipeHolder {
-    artisanworktables: Document.ArtisanWorktablesRecipes;
+class RecipeHolder extends stub.probejs.RecipeHolder {
+    readonly artisanworktables: Document.ArtisanWorktablesRecipes;
 }
 
 /**
  * @mod artisanworktables
  */
-class ArtisanWorktablesRecipes {
+class ArtisanWorktablesRecipes extends stub.probejs.artisanworktables {
     basic_shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: {[x in string]: Internal.IngredientJS_}): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
     basic_shapeless(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS[]): dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
 
