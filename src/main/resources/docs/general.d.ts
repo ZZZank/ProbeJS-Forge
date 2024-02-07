@@ -90,6 +90,7 @@ class Object {
     equals(arg0: any): boolean;
     toString(): string;
     notify(): void;
+    get class(): Internal.Class<Document.Object>;
 }
 
 /**
@@ -97,4 +98,18 @@ class Object {
  * @assign string
  */
 class Enchantment {
+}
+
+/**
+ * @target dev.latvian.kubejs.block.MaterialJS
+ * @assign string
+ */
+class MaterialJS {
+}
+
+/**
+ * @target net.minecraft.nbt.CompoundNBT
+ * @assign object
+ */
+class CompoundNBT {
 }

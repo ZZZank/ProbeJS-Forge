@@ -60,7 +60,7 @@ class RecipeEventJS {
     /**
      * Adds a shaped crafting recipe.
      */
-    shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: { [key in string]: dev.latvian.kubejs.item.ingredient.IngredientJS }): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
+    shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: { [x in string]: Internal.IngredientJS_ }): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
     /**
      * Adds a shapeless crafting recipe.
      */
@@ -109,7 +109,7 @@ class MinecraftRecipes {
     /**
      * Adds a shaped crafting recipe.
      */
-    crafting_shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: { [key in string]: dev.latvian.kubejs.item.ingredient.IngredientJS }): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
+    crafting_shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: { [x in string]: Internal.IngredientJS_ }): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
     /**
      * Adds a shapeless crafting recipe.
      */

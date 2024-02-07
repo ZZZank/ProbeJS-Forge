@@ -92,7 +92,7 @@ class CreateRecipes {
     /**
      * Creates a recipe for Mechanical Crafting.
      */
-    mechanical_crafting(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: { [key in string]: dev.latvian.kubejs.item.ingredient.IngredientJS }): dev.latvian.kubejs.create.ProcessingRecipeJS;
+    mechanical_crafting(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: { [x in string]: Internal.IngredientJS_ }): dev.latvian.kubejs.create.ProcessingRecipeJS;
 
     /**
      * Creates a recipe for Emptying.
