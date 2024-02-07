@@ -129,14 +129,13 @@ public class DocumentMethod
             int i = StringUtil.indexLayered(paramsStr, ',');
             if (i == -1) {
                 String[] nameAndType = paramsStr.trim().split(":", 2);
-                params.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));
+                paramList.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));
                 break;
             }
             String[] nameAndType = paramsStr.substring(0, i).trim().split(":", 2);
-            params.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));
+            paramList.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));
 
             paramsStr = paramsStr.substring(i + 1).trim();
-            i = StringUtil.indexLayered(paramsStr, ',');
         }
         return paramList;
     }
