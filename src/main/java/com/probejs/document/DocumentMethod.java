@@ -25,48 +25,45 @@ public class DocumentMethod
 
     public String getMethodBody() {
         StringBuilder sb = new StringBuilder();
-        if (isStatic) sb.append("static ");
-        sb.append(name);
-        sb.append("(%s)");
-        sb.append(String.format(": %s;", returnType.getTypeName()));
-        return sb.toString();
+        if (isStatic) {
+            sb.append("static ");
+        }
+        return sb
+            .append(name)
+            .append("(%s)")
+            .append(String.format(": %s;", returnType.getTypeName()))
+            .toString();
     }
 
     @Override
     public List<String> format(Integer indent, Integer stepIndent) {
         List<String> formatted = new ArrayList<>();
         if (comment != null) formatted.addAll(comment.format(indent, stepIndent));
-        String methodBody = getMethodBody();
-        formatted.add(
-            PUtil.indent(indent) +
-            String.format(
-                methodBody,
-                getParams()
-                    .stream()
-                    .map(documentParam ->
-                        String.format(
-                            "%s: %s",
-                            documentParam.getName(),
-                            documentParam
-                                .getType()
-                                .getTransformedName((t, s) -> {
-                                    if (!(t instanceof TypeNamed)) {
-                                        return s;
-                                    }
-                                    TypeNamed named = (TypeNamed) t;
-                                    if (
-                                        NameResolver.resolvedNames.containsKey(named.getRawTypeName()) &&
-                                        !NameResolver.resolvedPrimitives.contains((named.getRawTypeName()))
-                                    ) {
-                                        return s + "_";
-                                    }
-                                    return s;
-                                })
-                        )
-                    )
-                    .collect(Collectors.joining(", "))
+        String paramStr = getParams()
+            .stream()
+            .map(documentParam ->
+                String.format(
+                    "%s: %s",
+                    documentParam.getName(),
+                    documentParam
+                        .getType()
+                        .getTransformedName((type, s) -> {
+                            if (!(type instanceof TypeNamed)) {
+                                return s;
+                            }
+                            String rawName = ((TypeNamed) type).getRawTypeName();
+                            if (
+                                NameResolver.resolvedNames.containsKey(rawName) &&
+                                !NameResolver.resolvedPrimitives.contains(rawName)
+                            ) {
+                                return s + "_";
+                            }
+                            return s;
+                        })
+                )
             )
-        );
+            .collect(Collectors.joining(", "));
+        formatted.add(PUtil.indent(indent) + String.format(getMethodBody(), paramStr));
         return formatted;
     }
 
@@ -96,29 +93,35 @@ public class DocumentMethod
 
     public DocumentMethod(String line) {
         line = line.trim();
-        if (line.startsWith("static")) {
-            line = line.substring(6).trim();
+        // static fnName(a: (string|number), b: {required: bool}): FnReturnName
+        if (line.startsWith("static ")) {
+            line = line.substring(7).trim();
             isStatic = true;
         } else {
             isStatic = false;
         }
+        // e.g. fnName(a: (string|number), b: {required: bool}): FnReturnName
         int nameIndex = line.indexOf("(");
+        // TODO: handle nested bracket
         int methodIndex = line.indexOf(")");
 
+        // e.g. fnName
         name = line.substring(0, nameIndex).trim();
-        String paramsString = line.substring(nameIndex + 1, methodIndex);
+        // e.g. a: (string|number), b: {required: bool}
+        String paramsStr = line.substring(nameIndex + 1, methodIndex);
+        // e.g. FnReturnName
         String remainedString = line.substring(methodIndex + 1).replace(":", "").trim();
-        params =
-            StringUtil
-                .splitLayer(paramsString, "<", ">", ",")
-                .stream()
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .map(s -> {
-                    String[] nameType = s.split(":");
-                    return new DocumentParam(nameType[0].trim(), Resolver.resolveType(nameType[1]));
-                })
-                .collect(Collectors.toList());
+        params:{
+            params = new ArrayList<>();
+            int i = StringUtil.indexLayered(paramsStr, ',');
+            while (i != -1) {
+                String[] nameAndType = paramsStr.substring(0, i).trim().split(":", 2);
+                params.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));
+
+                paramsStr = paramsStr.substring(i + 1).trim();
+                i = StringUtil.indexLayered(paramsStr, ',');
+            }
+        }
         returnType = Resolver.resolveType(remainedString);
     }
 
