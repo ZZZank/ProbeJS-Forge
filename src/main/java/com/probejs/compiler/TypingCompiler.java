@@ -1,6 +1,7 @@
 package com.probejs.compiler;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -18,8 +19,8 @@ import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.Walker;
 import com.probejs.info.type.TypeInfoClass;
-import com.probejs.plugin.ForgeEventListener;
-import com.probejs.plugin.WrappedEventHandler;
+import com.probejs.plugin.CapturedClasses;
+import com.probejs.plugin.CapturedEvent;
 import com.probejs.recipe.RecipeHolders;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.event.EventJS;
@@ -38,18 +39,68 @@ import net.minecraft.resources.ResourceLocation;
 
 public class TypingCompiler {
 
-    public static Map<String, Class<?>> readCachedEvents(String fileName) throws IOException {
+    public static Map<String, CapturedEvent> readCachedEvents(String fileName) throws IOException {
+        Map<String, CapturedEvent> cachedEvents = new HashMap<>();
+        Path cachedEventPath = KubeJSPaths.EXPORTED.resolve(fileName);
+        if (!Files.exists(cachedEventPath)) {
+            ProbeJS.LOGGER.warn("No event cache file: {}", fileName);
+            return cachedEvents;
+        }
+        try {
+            JsonObject cachedMap = new Gson()
+                .fromJson(Files.newBufferedReader(cachedEventPath), JsonObject.class);
+            for (Map.Entry<String, JsonElement> entry : cachedMap.entrySet()) {
+                String key = entry.getKey();
+                JsonElement value = entry.getValue();
+                if (!value.isJsonObject()) {
+                    ProbeJS.LOGGER.warn(
+                        "Dropping unknown/unsupported entry: {}, this may caused by a change in cache format, please regenerate the dump",
+                        entry.getKey()
+                    );
+                    continue;
+                }
+                JsonObject obj = value.getAsJsonObject();
+                if (!obj.has("class") || !obj.has("id")) {
+                    continue;
+                }
+                try {
+                    Class<?> clazz = Class.forName(obj.get("class").getAsString());
+                    if (!EventJS.class.isAssignableFrom(clazz)) {
+                        continue;
+                    }
+                    cachedEvents.put(
+                        key,
+                        new CapturedEvent(
+                            (Class<? extends EventJS>) clazz,
+                            obj.get("id").getAsString(),
+                            obj.has("sub") ? obj.get("sub").getAsString() : null
+                        )
+                    );
+                } catch (ClassNotFoundException e) {
+                    ProbeJS.LOGGER.warn(
+                        "Class {} was in the cache, but disappeared in packages now.",
+                        obj.get("class").getAsString()
+                    );
+                }
+            }
+        } catch (JsonSyntaxException | JsonIOException e) {
+            ProbeJS.LOGGER.warn("Cannot read malformed cache, ignoring.");
+        }
+        return cachedEvents;
+    }
+
+    public static Map<String, Class<?>> readCachedForgeEvents(String fileName) throws IOException {
         Map<String, Class<?>> cachedEvents = new HashMap<>();
         Path cachedEventPath = KubeJSPaths.EXPORTED.resolve(fileName);
         if (!Files.exists(cachedEventPath)) {
-            ProbeJS.LOGGER.warn("No event cache file: " + fileName);
+            ProbeJS.LOGGER.warn("No event cache file: {}", fileName);
             return cachedEvents;
         }
         try {
             Map<?, ?> fileCache = new Gson().fromJson(Files.newBufferedReader(cachedEventPath), Map.class);
             fileCache.forEach((k, v) -> {
                 if (!(k instanceof String) || !(v instanceof String)) {
-                    ProbeJS.LOGGER.warn("Unexpected entry in class cache: " + k + ", " + v);
+                    ProbeJS.LOGGER.warn("Unexpected entry in class cache: {}, {}", k, v);
                     return;
                 }
                 try {
@@ -58,9 +109,7 @@ public class TypingCompiler {
                         cachedEvents.put((String) k, clazz);
                     }
                 } catch (ClassNotFoundException e) {
-                    ProbeJS.LOGGER.warn(
-                        String.format("Class %s was in the cache, but disappeared in packages now.", v)
-                    );
+                    ProbeJS.LOGGER.warn("Class {} was in the cache, but disappeared in packages now.", v);
                 }
             });
         } catch (JsonSyntaxException | JsonIOException e) {
@@ -69,7 +118,28 @@ public class TypingCompiler {
         return cachedEvents;
     }
 
-    public static void writeCachedEvents(String fileName, Map<String, Class<?>> events) throws IOException {
+    public static void writeCachedEvents(String fileName, Map<String, CapturedEvent> events)
+        throws IOException {
+        BufferedWriter cacheWriter = Files.newBufferedWriter(KubeJSPaths.EXPORTED.resolve(fileName));
+        JsonObject outJson = new JsonObject();
+        for (Map.Entry<String, CapturedEvent> entry : events.entrySet()) {
+            String eventName = entry.getKey();
+            CapturedEvent eventClass = entry.getValue();
+            JsonObject captured = new JsonObject();
+            captured.addProperty("class", eventClass.getCaptured().getName());
+            captured.addProperty("id", eventClass.getId());
+            if (eventClass.hasSub()) {
+                captured.addProperty("sub", eventClass.getSub());
+            }
+            outJson.add(eventName, captured);
+        }
+        Gson gson = new Gson();
+        gson.toJson(outJson, cacheWriter);
+        cacheWriter.flush();
+    }
+
+    public static void writeCachedForgeEvents(String fileName, Map<String, Class<?>> events)
+        throws IOException {
         BufferedWriter cacheWriter = Files.newBufferedWriter(KubeJSPaths.EXPORTED.resolve(fileName));
         JsonObject outJson = new JsonObject();
         for (Map.Entry<String, Class<?>> entry : events.entrySet()) {
@@ -88,7 +158,12 @@ public class TypingCompiler {
         Set<Class<?>> cachedClasses
     ) {
         Set<Class<?>> touchableClasses = new HashSet<>(cachedClasses);
-        touchableClasses.addAll(bindingEvent.getClassDumpMap().values());
+        CapturedClasses.capturedEvents
+            .values()
+            .stream()
+            .map(CapturedEvent::getCaptured)
+            .forEach(touchableClasses::add);
+        touchableClasses.addAll(CapturedClasses.capturedRawEvents.values());
         recipeTypeMap
             .values()
             .stream()
@@ -100,8 +175,6 @@ public class TypingCompiler {
             .stream()
             .map(Object::getClass)
             .forEach(touchableClasses::add);
-        touchableClasses.addAll(WrappedEventHandler.capturedEvents.values());
-        touchableClasses.addAll(ForgeEventListener.capturedEvents.values());
 
         Walker walker = new Walker(touchableClasses);
         return walker.walk();
@@ -175,32 +248,55 @@ public class TypingCompiler {
     }
 
     public static void compileEvents(
-        Map<String, Class<?>> cachedEvents,
+        Map<String, CapturedEvent> cachedEvents,
         Map<String, Class<?>> cachedForgeEvents
     ) throws IOException {
-        cachedEvents.putAll(WrappedEventHandler.capturedEvents);
-        cachedForgeEvents.putAll(ForgeEventListener.capturedEvents);
+        cachedEvents.putAll(CapturedClasses.capturedEvents);
+        cachedForgeEvents.putAll(CapturedClasses.capturedRawEvents);
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
         // writer.write("/// <reference path=\"./registries.d.ts\" />\n");
-        for (Map.Entry<String, Class<?>> entry : cachedEvents.entrySet()) {
-            String name = entry.getKey();
-            Class<?> event = entry.getValue();
+        Gson g = new Gson();
+        Set<CapturedEvent> wildcards = new HashSet<>();
+        for (Map.Entry<String, CapturedEvent> entry : cachedEvents.entrySet()) {
+            String id = entry.getValue().getId();
+            Class<?> event = entry.getValue().getCaptured();
+            String sub = entry.getValue().getSub();
+            if (entry.getValue().hasSub()) {
+                wildcards.add(entry.getValue());
+            }
             writer.write(
                 String.format(
-                    "declare function onEvent(name: \"%s\", handler: (event: %s) => void);\n",
-                    name,
+                    "declare function onEvent(name: %s, handler: (event: %s) => void);\n",
+                    g.toJson(id + (sub == null ? "" : ("." + sub))),
                     FormatterClass.formatTypeParameterized(new TypeInfoClass(event))
                 )
             );
         }
+
+        Set<String> writtenWildcards = new HashSet<>();
+        for (CapturedEvent wildcard : wildcards) {
+            String id = g.toJson(wildcard.getId());
+            if (writtenWildcards.contains(id)) {
+                continue;
+            }
+            writtenWildcards.add(id);
+            writer.write(
+                String.format(
+                    "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void);\n",
+                    id.substring(1, id.length() - 1),
+                    FormatterClass.formatTypeParameterized(new TypeInfoClass(wildcard.getCaptured()))
+                )
+            );
+        }
+
         for (Map.Entry<String, Class<?>> entry : cachedForgeEvents.entrySet()) {
             String name = entry.getKey();
             Class<?> event = entry.getValue();
             writer.write(
                 String.format(
-                    "declare function onForgeEvent(name: \"%s\", handler: (event: %s) => void);\n",
-                    name,
+                    "declare function onForgeEvent(name: %s, handler: (event: %s) => void);\n",
+                    g.toJson(name),
                     FormatterClass.formatTypeParameterized(new TypeInfoClass(event))
                 )
             );
@@ -282,9 +378,11 @@ public class TypingCompiler {
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
         // cache class
-        Map<String, Class<?>> cachedEvents = readCachedEvents("cachedEvents.json");
-        Map<String, Class<?>> cachedForgeEvents = readCachedEvents("cachedForgeEvents.json");
-        Set<Class<?>> cachedClasses = new HashSet<>(cachedEvents.values());
+        Map<String, CapturedEvent> cachedEvents = readCachedEvents("cachedEvents.json");
+        Map<String, Class<?>> cachedForgeEvents = readCachedForgeEvents("cachedForgeEvents.json");
+        Set<Class<?>> cachedClasses = new HashSet<>(
+            cachedEvents.values().stream().map(CapturedEvent::getCaptured).collect(Collectors.toList())
+        );
         cachedClasses.addAll(cachedForgeEvents.values());
         // cachedClasses.addAll(RegistryCompiler.getRegistryClasses());
         // global class
@@ -299,6 +397,6 @@ public class TypingCompiler {
         compileRecipeHolder(typeMap);
         compileJSConfig();
         writeCachedEvents("cachedEvents.json", cachedEvents);
-        writeCachedEvents("cachedForgedEvents.json", cachedForgeEvents);
+        writeCachedForgeEvents("cachedForgedEvents.json", cachedForgeEvents);
     }
 }

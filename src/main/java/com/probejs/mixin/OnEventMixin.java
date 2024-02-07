@@ -1,20 +1,43 @@
 package com.probejs.mixin;
 
-import com.probejs.plugin.WrappedEventHandler;
-import dev.latvian.kubejs.event.EventsJS;
-import dev.latvian.kubejs.event.IEventHandler;
+import com.probejs.ProbeConfig;
+import com.probejs.plugin.CapturedClasses;
+import com.probejs.plugin.CapturedEvent;
+import dev.latvian.kubejs.event.EventJS;
+import dev.latvian.kubejs.script.ScriptType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(EventsJS.class)
+@Mixin(EventJS.class)
 public class OnEventMixin {
 
-    @ModifyVariable(method = "listen", argsOnly = true, at = @At("HEAD"), remap = false)
-    private IEventHandler listen(IEventHandler handler, String id) {
-        if (handler instanceof WrappedEventHandler) {
-            return handler;
+    @Inject(
+        method = "post(Ldev/latvian/kubejs/script/ScriptType;Ljava/lang/String;)Z",
+        at = @At("HEAD"),
+        remap = false
+    )
+    private void post(ScriptType t, String id, CallbackInfoReturnable<Boolean> returns) {
+        if (!ProbeConfig.INSTANCE.disabled && !CapturedClasses.isEventIgnored(this.getClass())) {
+            CapturedClasses.capturedEvents.put(
+                id,
+                new CapturedEvent(((EventJS) ((Object) this)).getClass(), id, null)
+            );
         }
-        return new WrappedEventHandler(id, handler);
+    }
+
+    @Inject(
+        method = "post(Ldev/latvian/kubejs/script/ScriptType;Ljava/lang/String;Ljava/lang/String;)Z",
+        at = @At("HEAD"),
+        remap = false
+    )
+    private void post(ScriptType t, String id, String sub, CallbackInfoReturnable<Boolean> returns) {
+        if (!ProbeConfig.INSTANCE.disabled && !CapturedClasses.isEventIgnored(this.getClass())) {
+            CapturedClasses.capturedEvents.put(
+                id + '.' + sub,
+                new CapturedEvent(((EventJS) ((Object) this)).getClass(), id, sub)
+            );
+        }
     }
 }
