@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.probejs.ProbeConfig;
+import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.formatter.NameResolver;
 import dev.latvian.kubejs.KubeJSPaths;
@@ -73,7 +74,7 @@ public class SnippetCompiler {
                 Map<String, List<String>> byModMembers = new HashMap<>();
                 members
                     .stream()
-                    .map(rl -> rl.split(":"))
+                    .map(rl -> rl.split(":", 2))
                     .forEach(rl -> byModMembers.getOrDefault(rl[0], new ArrayList<>()).add(rl[1]));
                 byModMembers.forEach((mod, modMembers) -> {
                     JsonObject modMembersJson = new JsonObject();
@@ -98,15 +99,18 @@ public class SnippetCompiler {
 
     public static void compile() throws IOException {
         Path kubePath = KubeJSPaths.EXPORTED.resolve("kubejs-server-export.json");
-        if (kubePath.toFile().canRead()) {
-            Path codeFile = ProbePaths.SNIPPET.resolve("probe.code-snippets");
-            Gson gson = new Gson();
-            Reader reader = Files.newBufferedReader(kubePath);
-            KubeDump kubeDump = gson.fromJson(reader, KubeDump.class);
-            BufferedWriter writer = Files.newBufferedWriter(codeFile);
-            writer.write(gson.toJson(kubeDump.toSnippet()));
-            writer.flush();
+        if (!kubePath.toFile().canRead()) {
+            ProbeJS.LOGGER.error("'kubejs-server-export.json' not found!");
+            return;
         }
+        Path codeFile = ProbePaths.SNIPPET.resolve("probe.code-snippets");
+        Gson gson = new Gson();
+        Reader reader = Files.newBufferedReader(kubePath);
+        KubeDump kubeDump = gson.fromJson(reader, KubeDump.class);
+        BufferedWriter writer = Files.newBufferedWriter(codeFile);
+        writer.write(gson.toJson(kubeDump.toSnippet()));
+        writer.flush();
+        writer.close();
     }
 
     public static void compileClassNames() throws IOException {

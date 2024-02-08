@@ -245,6 +245,7 @@ public class TypingCompiler {
         }
 
         writer.flush();
+        writer.close();
     }
 
     public static void compileEvents(
@@ -303,6 +304,7 @@ public class TypingCompiler {
         }
         // RegistryCompiler.compileEventRegistries(writer);
         writer.flush();
+        writer.close();
     }
 
     public static void compileConstants(DummyBindingEvent bindingEvent) throws IOException {
@@ -323,6 +325,7 @@ public class TypingCompiler {
             );
         }
         writer.flush();
+        writer.close();
     }
 
     public static void compileJava(Set<Class<?>> globalClasses) throws IOException {
@@ -340,6 +343,7 @@ public class TypingCompiler {
             }
         }
         writer.flush();
+        writer.close();
     }
 
     public static void compileRecipeHolder(Map<ResourceLocation, RecipeTypeJS> typeMap) throws IOException {
@@ -353,6 +357,7 @@ public class TypingCompiler {
             writer.write('\n');
         }
         writer.flush();
+        writer.close();
     }
 
     public static void compileJSConfig() throws IOException {
@@ -368,6 +373,7 @@ public class TypingCompiler {
         );
         writer.write(lines);
         writer.flush();
+        writer.close();
     }
 
     public static void compile() throws IOException {

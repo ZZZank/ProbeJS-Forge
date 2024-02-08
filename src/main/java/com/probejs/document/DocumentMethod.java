@@ -91,7 +91,7 @@ public class DocumentMethod
 
     public DocumentMethod(String line) {
         line = line.trim();
-        // static fnName(a: (string|number), b: {required: bool}): FnReturnName
+        // e.g. static fnName(a: (string|number), b: {required: bool}): FnReturnName
         if (line.startsWith("static ")) {
             line = line.substring(7).trim();
             isStatic = true;

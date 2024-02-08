@@ -41,7 +41,7 @@ public abstract class RecipeHolders {
         indent += stepIndent;
         for (String namespace : namespace2Method.keySet()) {
             formatted.add(
-                PUtil.indent(indent) + String.format("readonly %s : stub.probejs.%s", namespace, namespace)
+                String.format("%sreadonly %s: stub.probejs.%s", PUtil.indent(indent), namespace, namespace)
             );
         }
         indent -= stepIndent;

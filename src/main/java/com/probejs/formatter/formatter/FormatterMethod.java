@@ -203,31 +203,32 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             renames.putAll(CommentUtil.getRenames(document.getComment()));
         }
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(PUtil.indent(indent));
 
-        builder.append(PUtil.indent(indent));
         if (methodInfo.isStatic()) {
             builder.append("static ");
         }
         builder.append(methodInfo.getName());
         if (methodInfo.getTypeVariables().size() != 0) {
-            builder.append('<');
-            builder.append(
-                methodInfo
-                    .getTypeVariables()
-                    .stream()
-                    .map(ITypeInfo::getTypeName)
-                    .collect(Collectors.joining(", "))
-            );
-            builder.append('>');
+            builder
+                .append('<')
+                .append(
+                    methodInfo
+                        .getTypeVariables()
+                        .stream()
+                        .map(ITypeInfo::getTypeName)
+                        .collect(Collectors.joining(", "))
+                )
+                .append('>');
         }
-        // param
-        builder.append(formatParams(modifiers, renames));
-        builder.append(": ");
-        // return type
-        builder.append(returnModifier != null ? returnModifier.getTypeName() : formatReturn());
-        // end
-        builder.append(';');
+        builder
+            // param
+            .append(formatParams(modifiers, renames))
+            .append(": ")
+            // return type
+            .append(returnModifier != null ? returnModifier.getTypeName() : formatReturn())
+            // end
+            .append(';');
 
         formatted.add(builder.toString());
         return formatted;

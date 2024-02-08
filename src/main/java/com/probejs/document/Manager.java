@@ -28,13 +28,17 @@ public class Manager {
 
     public static void fromPath(Document document) throws IOException {
         File[] files = ProbePaths.DOCS.toFile().listFiles();
-        List<File> filesSorted = files == null
-            ? new ArrayList<>()
-            : new ArrayList<>(Arrays.stream(files).collect(Collectors.toList()));
-        filesSorted.sort(Comparator.comparing(File::getName));
+        if (files == null) {
+            return;
+        }
+        List<File> filesSorted = Arrays
+            .stream(files)
+            .sorted(Comparator.comparing(File::getName))
+            .collect(Collectors.toList());
         for (File f : filesSorted) {
             if (!f.getName().endsWith(".d.ts") || f.isDirectory()) {
-                return;
+                continue;
+                //return?
             }
             BufferedReader reader = Files.newBufferedReader(f.toPath());
             if (!f.getName().startsWith("!")) {
@@ -42,6 +46,7 @@ public class Manager {
             } else {
                 reader.lines().forEach(rawTSDoc::add);
             }
+            reader.close();
         }
     }
 
@@ -64,40 +69,40 @@ public class Manager {
             if (entry == null) {
                 continue;
             }
-            ProbeJS.LOGGER.info(String.format("Found documents list from %s", mod.getName()));
+            ProbeJS.LOGGER.info("Found documents list from {}", mod.getName());
             InputStream stream = file.getInputStream(entry);
             BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new BufferedInputStream(stream), StandardCharsets.UTF_8)
             );
-            List<String> list = reader.lines().collect(Collectors.toList());
-            for (String subEntry : list) {
-                if (subEntry.startsWith("!")) {
-                    subEntry = subEntry.substring(1);
-                    int i = subEntry.indexOf(" ");
+            List<String> docNames = reader.lines().collect(Collectors.toList());
+            for (String docName : docNames) {
+                if (docName.startsWith("!")) {
+                    docName = docName.substring(1);
+                    int i = docName.indexOf(" ");
                     if (i != -1) {
-                        if (!Platform.isModLoaded(subEntry.substring(0, i))) {
+                        if (!Platform.isModLoaded(docName.substring(0, i))) {
                             continue;
                         }
-                        subEntry = subEntry.substring(i + 1);
+                        docName = docName.substring(i + 1);
                     }
-                    ZipEntry docEntry = file.getEntry(subEntry);
+                    ZipEntry docEntry = file.getEntry(docName);
                     if (docEntry != null) {
-                        ProbeJS.LOGGER.info(String.format("Loading document inside jar - %s", subEntry));
+                        ProbeJS.LOGGER.info("Loading document inside jar - {}", docName);
                         InputStream docStream = file.getInputStream(docEntry);
                         BufferedReader docReader = new BufferedReader(
                             new InputStreamReader(new BufferedInputStream(docStream), StandardCharsets.UTF_8)
                         );
                         docReader.lines().forEach(rawTSDoc::add);
                     } else {
-                        ProbeJS.LOGGER.warn(String.format("Document from file is not found - %s", subEntry));
+                        ProbeJS.LOGGER.warn("Document from file not found - {}", docName);
                     }
                 } else {
-                    ZipEntry docEntry = file.getEntry(subEntry);
+                    ZipEntry docEntry = file.getEntry(docName);
                     if (docEntry == null) {
-                        ProbeJS.LOGGER.warn(String.format("Document from file is not found - %s", subEntry));
+                        ProbeJS.LOGGER.warn("Document from file not found - {}", docName);
                         continue;
                     }
-                    ProbeJS.LOGGER.info(String.format("Loading document inside jar - %s", subEntry));
+                    ProbeJS.LOGGER.info("Loading document inside jar - {}", docName);
                     InputStream docStream = file.getInputStream(docEntry);
                     BufferedReader docReader = new BufferedReader(
                         new InputStreamReader(new BufferedInputStream(docStream), StandardCharsets.UTF_8)
@@ -105,6 +110,7 @@ public class Manager {
                     docReader.lines().forEach(document::step);
                 }
             }
+            file.close();
         }
     }
 
@@ -126,28 +132,26 @@ public class Manager {
         for (IDocument doc : documentState.getDocument().getDocuments()) {
             if (doc instanceof DocumentClass) {
                 DocumentClass classDoc = (DocumentClass) doc;
-                if (CommentUtil.isLoaded(classDoc.getComment())) {
-                    DocumentComment comment = classDoc.getComment();
-                    if (comment != null) {
-                        CommentTarget target = comment.getSpecialComment(CommentTarget.class);
-                        if (target != null) {
-                            classDocuments
-                                .computeIfAbsent(target.getTargetName(), s -> new ArrayList<>())
-                                .add(classDoc);
-                            List<CommentAssign> assignable = comment.getSpecialComments(CommentAssign.class);
-                            typesAssignable
-                                .computeIfAbsent(target.getTargetName(), s -> new ArrayList<>())
-                                .addAll(
-                                    assignable
-                                        .stream()
-                                        .map(CommentAssign::getType)
-                                        .collect(Collectors.toList())
-                                );
-                            continue;
-                        }
-                    }
-                    classAdditions.computeIfAbsent(classDoc.getName(), s -> new ArrayList<>()).add(classDoc);
+                if (!CommentUtil.isLoaded(classDoc.getComment())) {
+                    continue;
                 }
+                DocumentComment comment = classDoc.getComment();
+                if (comment != null) {
+                    CommentTarget target = comment.getSpecialComment(CommentTarget.class);
+                    if (target != null) {
+                        classDocuments
+                            .computeIfAbsent(target.getTargetName(), s -> new ArrayList<>())
+                            .add(classDoc);
+                        List<CommentAssign> assignable = comment.getSpecialComments(CommentAssign.class);
+                        typesAssignable
+                            .computeIfAbsent(target.getTargetName(), s -> new ArrayList<>())
+                            .addAll(
+                                assignable.stream().map(CommentAssign::getType).collect(Collectors.toList())
+                            );
+                        continue;
+                    }
+                }
+                classAdditions.computeIfAbsent(classDoc.getName(), s -> new ArrayList<>()).add(classDoc);
             }
 
             if (doc instanceof DocumentType) {
