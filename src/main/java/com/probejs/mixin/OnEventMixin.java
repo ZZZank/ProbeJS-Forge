@@ -20,11 +20,12 @@ public class OnEventMixin {
     )
     private void post(ScriptType t, String id, CallbackInfoReturnable<Boolean> returns) {
         if (!ProbeConfig.INSTANCE.disabled && !CapturedClasses.isEventIgnored(this.getClass())) {
-            CapturedClasses.capturedEvents.put(
-                id,
-                new CapturedEvent(((EventJS) ((Object) this)).getClass(), id, null)
-            );
+            CapturedClasses.capturedEvents.computeIfAbsent(id, this::captureSelf);
         }
+    }
+
+    private CapturedEvent captureSelf(String id) {
+        return new CapturedEvent(((EventJS) ((Object) this)).getClass(), id, null);
     }
 
     @Inject(
@@ -34,10 +35,7 @@ public class OnEventMixin {
     )
     private void post(ScriptType t, String id, String sub, CallbackInfoReturnable<Boolean> returns) {
         if (!ProbeConfig.INSTANCE.disabled && !CapturedClasses.isEventIgnored(this.getClass())) {
-            CapturedClasses.capturedEvents.put(
-                id + '.' + sub,
-                new CapturedEvent(((EventJS) ((Object) this)).getClass(), id, sub)
-            );
+            CapturedClasses.capturedEvents.computeIfAbsent(id + '.' + sub, this::captureSelf);
         }
     }
 }
