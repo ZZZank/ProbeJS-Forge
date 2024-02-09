@@ -4,7 +4,7 @@
  */
 class RecipeEventJS {
     /**
-     * Holds all the recipes collected by probejs(not documents).
+     * Holds all recipe types collected by probejs.
      */
     get recipes(): Document.RecipeHolder;
 
@@ -43,16 +43,19 @@ class RecipeEventJS {
 
     /**
      * Adds a smelting recipe to Minecraft.
+     * 
      * Used by Furnaces.
      */
     smelting(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
+     * 
      * Used by Smokers.
      */
     smoking(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
+     * 
      * Used by Blast Furnaces.
      */
     blasting(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
@@ -67,6 +70,7 @@ class RecipeEventJS {
     shapeless(output: dev.latvian.kubejs.item.ItemStackJS, inputs: dev.latvian.kubejs.item.ingredient.IngredientJS[]): dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
     /**
      * Adds a smelting recipe to Minecraft.
+     * 
      * Used by Campfire.
      */
     campfireCooking(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.CookingRecipeJS;
@@ -78,7 +82,6 @@ class RecipeEventJS {
      * Adds a smithing recipe.
      */
     smithing(output: dev.latvian.kubejs.item.ItemStackJS, base: dev.latvian.kubejs.item.ingredient.IngredientJS, addition: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.recipe.minecraft.SmithingRecipeJS;
-
 }
 
 class RecipeHolder extends stub.probejs.RecipeHolder {
@@ -107,7 +110,7 @@ class MinecraftRecipes extends stub.probejs.minecraft {
     /**
      * Adds a shaped crafting recipe.
      */
-    crafting_shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: { [x in string]: Internal.IngredientJS_ }): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
+    crafting_shaped(output: dev.latvian.kubejs.item.ItemStackJS, pattern: string[], items: {[x in string]: Internal.IngredientJS_}): dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
     /**
      * Adds a shapeless crafting recipe.
      */
