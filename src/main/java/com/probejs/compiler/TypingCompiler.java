@@ -175,6 +175,7 @@ public class TypingCompiler {
             .stream()
             .map(Object::getClass)
             .forEach(touchableClasses::add);
+        bindingEvent.getClassDumpMap().values().forEach(touchableClasses::add);
 
         Walker walker = new Walker(touchableClasses);
         return walker.walk();

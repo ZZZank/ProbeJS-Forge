@@ -50,6 +50,9 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
     @Override
     public void trial(String element, List<IStateHandler<String>> stack) {
         element = element.trim();
+        if (element.isEmpty()) {
+            return;
+        }
         if (element.startsWith("class ") && element.endsWith("{")) {
             int start = "class ".length();
             int end = element.length() - 1; // `-1` because we dont need "{"
@@ -79,7 +82,7 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
                 return;
             }
         }
-        ProbeJS.LOGGER.error("Cannot handle document string: {}", element);
+        // ProbeJS.LOGGER.error("Cannot handle document string: {}", element);
     }
 
     @Override
