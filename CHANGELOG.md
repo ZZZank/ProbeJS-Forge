@@ -1,19 +1,34 @@
+# ProbeJS Legacy 2.3.0 -> 2.3.1
+
+Fix crash caused by ConcurrentModificationException
+
+## What's new?
+
+-   use `containsKey` + `put` instead of `computeIfAbsent` to avoid CME crash.
+-   fix events with sub-id not actually having sub-id.
+
+---
+
 # ProbeJS Legacy 2.2.0 -> 2.3.0
 
 Better document system
 
+NOTE: Due to changes in event cache for sub-id support, previous cache will be invalid for this version.
+
 ## What's new?
 
 -   Fix param fetching of documents.
-    -   This is a bug that has existed since 2.0.0, because the original document system derived from ProbeJS for MC 1.18 is problematic.
+    -   This is a bug that has existed since 2.0.0, because the original document system from ProbeJS for MC 1.18 is already problematic.
     -   Try `event.shaped()` or `event.shapeless()` in recipe event, its type hint should be normal now.
--   RawTS doc will now has no namespace wrapped. 
--   ProbeJS Legacy can now properly get the index of outter bracket in method documents.
 -   ProbeJS Legacy can now catch every fired KubeJS event, without the needs of `onEvent`.
--   Documents for class now support `extends` . 
+-   ProbeJS Legacy can catch events with sub id, e.g. those from FTB Quest.
+    -   Because of
 -   Hand-written recipe doc and auto-gen recipe doc will now be combined together, providing more accurate parameter info.
--   Better documents for builtin types, like `CompoundNBT` . 
--   Several performance tweaks to improve performance, especially on heavily modded instances. 
+-   Documents for class now support `extends` .
+-   RawTS doc will now has no namespace wrapped.
+-   ProbeJS Legacy can now properly get the index of outter bracket in method documents.
+-   Better documents for builtin types, like `CompoundNBT` .
+-   Several performance tweaks to improve performance, especially on heavily modded instances.
 
 ---
 
