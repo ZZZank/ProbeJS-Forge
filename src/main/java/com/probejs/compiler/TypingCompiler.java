@@ -262,13 +262,13 @@ public class TypingCompiler {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
         // writer.write("/// <reference path=\"./registries.d.ts\" />\n");
-        Set<CapturedEvent> wildcards = new HashSet<>();
-        for (Map.Entry<String, CapturedEvent> entry : cachedEvents.entrySet()) {
+        Map<String, CapturedEvent> wildcards = new HashMap<>();
+        for (Map.Entry<String, CapturedEvent> entry : (new TreeMap<>(cachedEvents)).entrySet()) {
             CapturedEvent captured = entry.getValue();
             String id = captured.getId();
             Class<?> event = captured.getCaptured();
             if (captured.hasSub()) {
-                wildcards.add(captured);
+                wildcards.put(id, captured);
                 id = id + "." + captured.getSub();
             }
             writer.write(
@@ -280,13 +280,8 @@ public class TypingCompiler {
             );
         }
 
-        Set<String> writtenWildcards = new HashSet<>();
-        for (CapturedEvent wildcard : wildcards) {
+        for (CapturedEvent wildcard : (new TreeMap<>(wildcards)).values()) {
             String id = wildcard.getId();
-            if (writtenWildcards.contains(id)) {
-                continue;
-            }
-            writtenWildcards.add(id);
             writer.write(
                 String.format(
                     "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void);\n",
@@ -296,7 +291,7 @@ public class TypingCompiler {
             );
         }
 
-        for (Map.Entry<String, Class<?>> entry : cachedForgeEvents.entrySet()) {
+        for (Map.Entry<String, Class<?>> entry : (new TreeMap<>(cachedForgeEvents)).entrySet()) {
             String name = entry.getKey();
             Class<?> event = entry.getValue();
             writer.write(
