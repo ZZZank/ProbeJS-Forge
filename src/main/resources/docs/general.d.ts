@@ -113,3 +113,5 @@ class MaterialJS {
  */
 class CompoundNBT {
 }
+
+type SelfOrArray<T> = T | T[]
