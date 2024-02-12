@@ -16,7 +16,6 @@ import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.util.PUtil;
-import dev.latvian.kubejs.recipe.RecipeEventJS;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
@@ -35,13 +34,6 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
     public FormatterClass(ClassInfo classInfo) {
         this.classInfo = classInfo;
         for (MethodInfo methodInfo : classInfo.getMethodInfo()) {
-            // TODO: dirty hack, should remove
-            if (
-                classInfo.getName().equals(RecipeEventJS.class.getName()) &&
-                methodInfo.getName().equals("getRecipes")
-            ) {
-                continue;
-            }
             methodFormatters
                 .computeIfAbsent(methodInfo.getName(), s -> new ArrayList<>())
                 .add(new FormatterMethod(methodInfo));

@@ -4,9 +4,10 @@
  */
 class RecipeEventJS {
     /**
-     * Holds all recipe types collected by probejs.
+     * Holds all the recipes collected by ProbeJS.
+     * @returns Document.RecipeHolder
      */
-    get recipes(): Document.RecipeHolder;
+    getRecipes(): java.util.Map<java.lang.String, java.lang.Object>;
 
     /**
      * @hidden
