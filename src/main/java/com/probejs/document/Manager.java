@@ -116,6 +116,7 @@ public class Manager {
 
     public static void init() {
         Document documentState = new Document();
+        rawTSDoc.clear();
         try {
             fromFiles(documentState);
             fromPath(documentState);
@@ -127,7 +128,6 @@ public class Manager {
         classAdditions.clear();
         typeDocuments.clear();
         typesAssignable.clear();
-        rawTSDoc.clear();
 
         for (IDocument doc : documentState.getDocument().getDocuments()) {
             if (doc instanceof DocumentClass) {
