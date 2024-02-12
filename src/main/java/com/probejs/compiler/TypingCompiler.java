@@ -1,6 +1,5 @@
 package com.probejs.compiler;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
@@ -47,8 +46,10 @@ public class TypingCompiler {
             return cachedEvents;
         }
         try {
-            JsonObject cachedMap = new Gson()
-                .fromJson(Files.newBufferedReader(cachedEventPath), JsonObject.class);
+            JsonObject cachedMap = ProbeJS.GSON.fromJson(
+                Files.newBufferedReader(cachedEventPath),
+                JsonObject.class
+            );
             for (Map.Entry<String, JsonElement> entry : cachedMap.entrySet()) {
                 String key = entry.getKey();
                 JsonElement value = entry.getValue();
@@ -97,7 +98,7 @@ public class TypingCompiler {
             return cachedEvents;
         }
         try {
-            Map<?, ?> fileCache = new Gson().fromJson(Files.newBufferedReader(cachedEventPath), Map.class);
+            Map<?, ?> fileCache = ProbeJS.GSON.fromJson(Files.newBufferedReader(cachedEventPath), Map.class);
             fileCache.forEach((k, v) -> {
                 if (!(k instanceof String) || !(v instanceof String)) {
                     ProbeJS.LOGGER.warn("Unexpected entry in class cache: {}, {}", k, v);
@@ -133,8 +134,7 @@ public class TypingCompiler {
             }
             outJson.add(eventName, captured);
         }
-        Gson gson = new Gson();
-        gson.toJson(outJson, cacheWriter);
+        ProbeJS.GSON.toJson(outJson, cacheWriter);
         cacheWriter.flush();
     }
 
@@ -147,8 +147,7 @@ public class TypingCompiler {
             Class<?> eventClass = entry.getValue();
             outJson.addProperty(eventName, eventClass.getName());
         }
-        Gson gson = new Gson();
-        gson.toJson(outJson, cacheWriter);
+        ProbeJS.GSON.toJson(outJson, cacheWriter);
         cacheWriter.flush();
     }
 

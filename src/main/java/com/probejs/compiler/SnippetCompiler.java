@@ -1,6 +1,5 @@
 package com.probejs.compiler;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.probejs.ProbeConfig;
@@ -111,11 +110,10 @@ public class SnippetCompiler {
             return;
         }
         Path codeFile = ProbePaths.SNIPPET.resolve("probe.code-snippets");
-        Gson gson = new Gson();
         Reader reader = Files.newBufferedReader(kubePath);
-        KubeDump kubeDump = gson.fromJson(reader, KubeDump.class);
+        KubeDump kubeDump = ProbeJS.GSON.fromJson(reader, KubeDump.class);
         BufferedWriter writer = Files.newBufferedWriter(codeFile);
-        writer.write(gson.toJson(kubeDump.toSnippet()));
+        writer.write(ProbeJS.GSON.toJson(kubeDump.toSnippet()));
         writer.flush();
         writer.close();
     }
@@ -134,9 +132,8 @@ public class SnippetCompiler {
         }
 
         Path codeFile = ProbePaths.SNIPPET.resolve("classNames.code-snippets");
-        Gson gson = new Gson();
         BufferedWriter writer = Files.newBufferedWriter(codeFile);
-        gson.toJson(resultJson, writer);
+        ProbeJS.GSON.toJson(resultJson, writer);
         writer.flush();
     }
 }

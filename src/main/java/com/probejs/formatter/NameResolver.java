@@ -1,6 +1,6 @@
 package com.probejs.formatter;
 
-import com.google.gson.Gson;
+import com.probejs.ProbeJS;
 import com.probejs.info.type.ITypeInfo;
 import dev.latvian.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.mods.rhino.BaseFunction;
@@ -203,10 +203,8 @@ public class NameResolver {
         putResolvedPrimitive(Boolean.class, "boolean");
         putResolvedPrimitive(Boolean.TYPE, "boolean");
 
-        Gson gson = new Gson();
-
         putValueFormatter(
-            gson::toJson,
+            ProbeJS.GSON::toJson,
             String.class,
             Character.class,
             Character.TYPE,

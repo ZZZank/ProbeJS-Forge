@@ -1,5 +1,7 @@
 package com.probejs;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.probejs.plugin.ForgeEventListener;
 import me.shedaniel.architectury.event.events.CommandRegistrationEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,7 +17,12 @@ import org.apache.logging.log4j.Logger;
 @Mod("probejs")
 public class ProbeJS {
 
-    public static final Logger LOGGER = LogManager.getLogger("probejs");
+    public static final String MOD_ID = "probejs";
+    public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+    public static final Gson GSON = new GsonBuilder()
+        .serializeSpecialFloatingPointValues()
+        .disableHtmlEscaping()
+        .create();
 
     public ProbeJS() {
         CommandRegistrationEvent.EVENT.register(ProbeCommands::register);

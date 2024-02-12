@@ -1,6 +1,6 @@
 package com.probejs.formatter;
 
-import com.google.gson.Gson;
+import com.probejs.ProbeJS;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.info.ClassInfo;
@@ -199,15 +199,14 @@ public class SpecialTypes {
             clazz,
             () -> {
                 List<String> result = new ArrayList<>();
-                Gson g = new Gson();
                 KubeJSRegistries
                     .genericRegistry(registry)
                     .getIds()
                     .forEach(r -> {
                         if (r.getNamespace().equals("minecraft")) {
-                            result.add(g.toJson(r.getPath()));
+                            result.add(ProbeJS.GSON.toJson(r.getPath()));
                         }
-                        result.add(g.toJson(r.toString()));
+                        result.add(ProbeJS.GSON.toJson(r.toString()));
                     });
                 return result;
             }
