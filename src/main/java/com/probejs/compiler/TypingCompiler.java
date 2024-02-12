@@ -157,18 +157,22 @@ public class TypingCompiler {
         DummyBindingEvent bindingEvent,
         Set<Class<?>> cachedClasses
     ) {
+        // cache
         Set<Class<?>> touchableClasses = new HashSet<>(cachedClasses);
+        //captured
         CapturedClasses.capturedEvents
             .values()
             .stream()
             .map(CapturedEvent::getCaptured)
             .forEach(touchableClasses::add);
         touchableClasses.addAll(CapturedClasses.capturedRawEvents.values());
+        //recipe type
         recipeTypeMap
             .values()
             .stream()
             .map(recipeTypeJS -> recipeTypeJS.factory.get().getClass())
             .forEach(touchableClasses::add);
+        //binding event
         bindingEvent
             .getConstantDumpMap()
             .values()
@@ -258,19 +262,19 @@ public class TypingCompiler {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
         // writer.write("/// <reference path=\"./registries.d.ts\" />\n");
-        Gson g = new Gson();
         Set<CapturedEvent> wildcards = new HashSet<>();
         for (Map.Entry<String, CapturedEvent> entry : cachedEvents.entrySet()) {
-            String id = entry.getValue().getId();
-            Class<?> event = entry.getValue().getCaptured();
-            String sub = entry.getValue().getSub();
-            if (entry.getValue().hasSub()) {
-                wildcards.add(entry.getValue());
+            CapturedEvent captured = entry.getValue();
+            String id = captured.getId();
+            Class<?> event = captured.getCaptured();
+            if (captured.hasSub()) {
+                wildcards.add(captured);
+                id = id + "." + captured.getSub();
             }
             writer.write(
                 String.format(
-                    "declare function onEvent(name: %s, handler: (event: %s) => void);\n",
-                    g.toJson(id + (sub == null ? "" : ("." + sub))),
+                    "declare function onEvent(name: \"%s\", handler: (event: %s) => void);\n",
+                    id,
                     FormatterClass.formatTypeParameterized(new TypeInfoClass(event))
                 )
             );
@@ -278,7 +282,7 @@ public class TypingCompiler {
 
         Set<String> writtenWildcards = new HashSet<>();
         for (CapturedEvent wildcard : wildcards) {
-            String id = g.toJson(wildcard.getId());
+            String id = wildcard.getId();
             if (writtenWildcards.contains(id)) {
                 continue;
             }
@@ -286,7 +290,7 @@ public class TypingCompiler {
             writer.write(
                 String.format(
                     "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void);\n",
-                    id.substring(1, id.length() - 1),
+                    id,
                     FormatterClass.formatTypeParameterized(new TypeInfoClass(wildcard.getCaptured()))
                 )
             );
@@ -297,8 +301,8 @@ public class TypingCompiler {
             Class<?> event = entry.getValue();
             writer.write(
                 String.format(
-                    "declare function onForgeEvent(name: %s, handler: (event: %s) => void);\n",
-                    g.toJson(name),
+                    "declare function onForgeEvent(name: \"%s\", handler: (event: %s) => void);\n",
+                    name,
                     FormatterClass.formatTypeParameterized(new TypeInfoClass(event))
                 )
             );
@@ -315,15 +319,10 @@ public class TypingCompiler {
             String name = entry.getKey();
             Object value = entry.getValue();
             String resolved = NameResolver.formatValue(value);
-            writer.write(
-                String.format(
-                    "declare const %s: %s;\n",
-                    name,
-                    resolved == null
-                        ? FormatterClass.formatTypeParameterized(new TypeInfoClass(value.getClass()))
-                        : resolved
-                )
-            );
+            if (resolved == null) {
+                resolved = FormatterClass.formatTypeParameterized(new TypeInfoClass(value.getClass()));
+            }
+            writer.write(String.format("declare const %s: %s;\n", name, resolved));
         }
         writer.flush();
         writer.close();
@@ -384,7 +383,7 @@ public class TypingCompiler {
 
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
-        // cache class
+        //cache class
         Map<String, CapturedEvent> cachedEvents = readCachedEvents("cachedEvents.json");
         Map<String, Class<?>> cachedForgeEvents = readCachedForgeEvents("cachedForgeEvents.json");
         Set<Class<?>> cachedClasses = new HashSet<>(
@@ -392,7 +391,7 @@ public class TypingCompiler {
         );
         cachedClasses.addAll(cachedForgeEvents.values());
         // cachedClasses.addAll(RegistryCompiler.getRegistryClasses());
-        // global class
+        //global class
         Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
         globalClasses.removeIf(c -> ClassResolver.skipped.contains(c));
         SpecialTypes.processFunctionalInterfaces(globalClasses);
