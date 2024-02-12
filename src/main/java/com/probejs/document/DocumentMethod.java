@@ -101,15 +101,14 @@ public class DocumentMethod
         // e.g. fnName(a: (string|number), b: {required: bool}): FnReturnName
         // e.g. at "fnName(", which is 6
         int nameIndex = line.indexOf("(");
-        // e.g. at "fnName(a: (string|number), b: {required: bool}):", which is 6
+        // e.g. at "fnName(a: (string|number), b: {required: bool}):"
         int methodIndex = StringUtil.indexLayer(line, ":");
 
         // e.g. "fnName"
         name = line.substring(0, nameIndex).trim();
         // e.g. buildParams("(a: (string|number), b: {required: bool})")
         params = buildParams(line.substring(nameIndex, methodIndex));
-        // e.g. Resolver.resolveType(" FnReturnName")
-        // no need to trim, resolveType() will do so
+        // e.g. Resolver.resolveType(" FnReturnName"), no need to trim, resolveType() will do so
         returnType = Resolver.resolveType(line.substring(methodIndex + 1));
     }
 
@@ -124,6 +123,9 @@ public class DocumentMethod
             return paramList;
         }
         paramsStr = paramsStr.trim().substring(1, paramsStr.length() - 1).trim();
+        if (paramsStr.isEmpty()) {
+            return paramList;
+        }
         for (String paramStr : StringUtil.splitLayer(paramsStr, ",")) {
             String[] nameAndType = paramStr.trim().split(":", 2);
             paramList.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));

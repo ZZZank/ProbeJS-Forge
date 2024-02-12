@@ -49,7 +49,7 @@ public class StringUtil {
         if (index == -1) {
             return null;
         }
-        return new Pair<>(s.substring(0, index - 1), s.substring(index));
+        return new Pair<>(s.substring(0, index), s.substring(index + 1));
     }
 
     /**
