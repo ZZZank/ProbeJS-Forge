@@ -15,9 +15,9 @@ public class FormatterRawTS implements IFormatter {
     @Override
     public List<String> format(Integer indent, Integer stepIndent) {
         List<String> formatted = new ArrayList<>();
-        formatted.add("// Raw TS doc region start");
+        formatted.add(PUtil.indent(indent) + "// Raw TS doc region start");
         docs.stream().map(s -> PUtil.indent(indent) + s).forEach(formatted::add);
-        formatted.add("// Raw TS doc region end");
+        formatted.add(PUtil.indent(indent) + "// Raw TS doc region end");
         return formatted;
     }
 }

@@ -7,9 +7,7 @@ import com.probejs.document.comment.special.CommentModify;
 import com.probejs.document.comment.special.CommentRename;
 import com.probejs.document.type.IType;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class CommentUtil {
 
@@ -17,12 +15,11 @@ public class CommentUtil {
         if (comment == null) {
             return true;
         }
-        List<CommentMod> mod = comment
+        return comment
             .getSpecialComments(CommentMod.class)
             .stream()
             .map(c -> (CommentMod) c)
-            .collect(Collectors.toList());
-        return mod.stream().allMatch(CommentMod::isLoaded);
+            .allMatch(CommentMod::isLoaded);
     }
 
     public static boolean isHidden(DocumentComment comment) {

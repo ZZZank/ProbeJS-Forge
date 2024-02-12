@@ -61,9 +61,6 @@ public class ClassInfo {
         constructorInfo =
             Arrays.stream(clazzRaw.getConstructors()).map(ConstructorInfo::new).collect(Collectors.toList());
         superClass = ofCache(clazzRaw.getSuperclass());
-        // clazzRaw.getSuperclass() == null
-        //     ? ofCache(Object.class)
-        //     : ofCache(clazzRaw.getSuperclass());
         interfaces =
             Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::ofCache).collect(Collectors.toList());
 

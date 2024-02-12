@@ -310,7 +310,9 @@ public class TypingCompiler {
     public static void compileConstants(DummyBindingEvent bindingEvent) throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("constants.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
-        for (Map.Entry<String, Object> entry : bindingEvent.getConstantDumpMap().entrySet()) {
+        for (Map.Entry<String, Object> entry : (
+            new TreeMap<>(bindingEvent.getConstantDumpMap())
+        ).entrySet()) {
             String name = entry.getKey();
             Object value = entry.getValue();
             String resolved = NameResolver.formatValue(value);

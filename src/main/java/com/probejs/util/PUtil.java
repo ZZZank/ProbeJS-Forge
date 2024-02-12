@@ -4,8 +4,6 @@ import java.util.Collections;
 
 public class PUtil {
 
-    private static final String INDENT_4 = "    ";
-
     public static <T> T tryOrDefault(TrySupplier<T> toEval, T defaultValue) {
         try {
             return toEval.get();
@@ -19,9 +17,12 @@ public class PUtil {
     }
 
     public static String indent(int indentLength) {
+        if (indentLength == 0) {
+            return "";
+        }
         if (indentLength == 4) {
             // shortcut sine 4-space indent is very common
-            return INDENT_4;
+            return "    ";
         }
         return String.join("", Collections.nCopies(indentLength, " "));
     }

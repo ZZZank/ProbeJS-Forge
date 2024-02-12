@@ -152,13 +152,13 @@ public class Manager {
                     }
                 }
                 classAdditions.computeIfAbsent(classDoc.getName(), s -> new ArrayList<>()).add(classDoc);
-            }
-
-            if (doc instanceof DocumentType) {
+            } else if (doc instanceof DocumentType) {
                 DocumentType typeDoc = (DocumentType) doc;
                 if (CommentUtil.isLoaded(typeDoc.getComment())) {
                     typeDocuments.add(typeDoc);
                 }
+            } else {
+                //maybe we can add more doc type
             }
         }
     }

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SnippetCompiler {
 
@@ -41,13 +40,15 @@ public class SnippetCompiler {
             // Compile normal entries to snippet
             for (Map.Entry<String, List<String>> entry : this.registries.entrySet()) {
                 String type = entry.getKey();
-                List<String> members = entry.getValue();
                 Map<String, List<String>> byModMembers = new HashMap<>();
-                members
+                entry
+                    .getValue()
                     .stream()
-                    .map(rl -> rl.split(":"))
+                    .map(rl -> rl.split(":", 2))
                     .forEach(rl -> {
-                        if (!byModMembers.containsKey(rl[0])) {byModMembers.put(rl[0], new ArrayList<>());}
+                        if (!byModMembers.containsKey(rl[0])) {
+                            byModMembers.put(rl[0], new ArrayList<>());
+                        }
                         byModMembers.get(rl[0]).add(rl[1]);
                     });
                 byModMembers.forEach((mod, modMembers) -> {
@@ -70,9 +71,10 @@ public class SnippetCompiler {
             // Compile tag entries to snippet
             for (Map.Entry<String, Map<String, List<String>>> entry : this.tags.entrySet()) {
                 String type = entry.getKey();
-                List<String> members = entry.getValue().keySet().stream().collect(Collectors.toList());
                 Map<String, List<String>> byModMembers = new HashMap<>();
-                members
+                entry
+                    .getValue()
+                    .keySet()
                     .stream()
                     .map(rl -> rl.split(":", 2))
                     .forEach(rl -> {

@@ -140,10 +140,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     /**
-     * Get a `(a: string, b: any)` style String representation of params of this method
-     * @param modifiers
-     * @param renames
-     * @return
+     * Get a `(a: string, b: number)` style String representation of params of this method
      */
     private String formatParams(Map<String, IType> modifiers, Map<String, String> renames) {
         return String.format(
