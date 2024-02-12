@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ProbeConfig {
 
-    public static ProbeConfig INSTANCE = new ProbeConfig();
+    public static final ProbeConfig INSTANCE = new ProbeConfig();
     private static final Path CONFIG = KubeJSPaths.CONFIG.resolve("probejs.json");
     public boolean keepBeaned = true;
     public boolean disabled = false;

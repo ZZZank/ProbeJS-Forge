@@ -99,25 +99,23 @@ public class DocumentMethod
             isStatic = false;
         }
         // e.g. fnName(a: (string|number), b: {required: bool}): FnReturnName
-        // e.g. at fnName(, which is 6
+        // e.g. at "fnName(", which is 6
         int nameIndex = line.indexOf("(");
-        // e.g. use substr to index from "a: (string|number), b: {required: bool}): FnReturnName"
-        //      then add length of "fnName(" to get actual index
-        int methodIndex = nameIndex + 1 + StringUtil.indexLayered(line.substring(nameIndex + 1), ')');
+        // e.g. at "fnName(a: (string|number), b: {required: bool}):", which is 6
+        int methodIndex = StringUtil.indexLayer(line, ":");
 
-        // e.g. fnName
+        // e.g. "fnName"
         name = line.substring(0, nameIndex).trim();
-        // e.g. a: (string|number), b: {required: bool}
-        String paramsStr = line.substring(nameIndex + 1, methodIndex);
-        // e.g. FnReturnName
-        String remainedString = line.substring(methodIndex + 1).replace(":", "").trim();
-        params = buildParams(paramsStr);
-        returnType = Resolver.resolveType(remainedString);
+        // e.g. buildParams("(a: (string|number), b: {required: bool})")
+        params = buildParams(line.substring(nameIndex, methodIndex));
+        // e.g. Resolver.resolveType(" FnReturnName")
+        // no need to trim, resolveType() will do so
+        returnType = Resolver.resolveType(line.substring(methodIndex + 1));
     }
 
     /**
      *
-     * @param paramsStr E.g. "a: (string|number), b: {required: bool}"
+     * @param paramsStr E.g. "(a: (string|number), b: {required: bool})"
      * @return
      */
     private List<DocumentParam> buildParams(String paramsStr) {
@@ -125,17 +123,10 @@ public class DocumentMethod
         if (paramsStr.isEmpty()) {
             return paramList;
         }
-        while (true) {
-            int i = StringUtil.indexLayered(paramsStr, ',');
-            if (i == -1) {
-                String[] nameAndType = paramsStr.trim().split(":", 2);
-                paramList.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));
-                break;
-            }
-            String[] nameAndType = paramsStr.substring(0, i).trim().split(":", 2);
+        paramsStr = paramsStr.trim().substring(1, paramsStr.length() - 1).trim();
+        for (String paramStr : StringUtil.splitLayer(paramsStr, ",")) {
+            String[] nameAndType = paramStr.trim().split(":", 2);
             paramList.add(new DocumentParam(nameAndType[0].trim(), Resolver.resolveType(nameAndType[1])));
-
-            paramsStr = paramsStr.substring(i + 1).trim();
         }
         return paramList;
     }

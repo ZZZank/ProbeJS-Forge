@@ -1,118 +1,47 @@
 package com.probejs.util;
 
-import com.probejs.document.parser.handler.AbstractStackedMachine;
-import com.probejs.document.parser.handler.IStateHandler;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
-import java.util.function.Predicate;
 
 public class StringUtil {
 
-    public static final Predicate<Character> PUSH_INDICATOR = c -> c == '(' || c == '{' || c == '<';
-    public static final Predicate<Character> POP_INDICATOR = c -> c == ')' || c == '}' || c == '>';
+    public static final String PUSH_INDICATOR = "({[<";
+    public static final String POP_INDICATOR = ">]})";
 
     /**
-     * Get the index of {@code target} in {@code str}, with "nested" one ignored. 
+     * Get the index of {@code delimiter} in {@code str}, with "nested" one ignored.
      * <p>
-     * E.g. If {@code target} is '+', {@code str} is "(1+2)+3", the first
+     * E.g. If {@code delimiter} is '+', {@code str} is "(1+2)+3", the first
      * '+' will be ignored
      *
-     * @param str
-     * @param target
-     * @return The index, or -1 if not found
+     * @param delimiter its length should be 1
+     * @return the index of `delimiter`, or -1 when not found
      * @see com.probejs.util.StringUtil#PUSH_INDICATOR
      * @see com.probejs.util.StringUtil#POP_INDICATOR
      */
-    public static int indexLayered(String str, char target) {
-        Stack<Character> stack = new Stack<>();
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (stack.empty() && c == target) {
-                return i;
-            }
-            if (PUSH_INDICATOR.test(c)) {
-                stack.push(c);
-            } else if (POP_INDICATOR.test(c)) {
-                if (!stack.empty()) {
-                    stack.pop();
-                }
-            }
-        }
-        return -1;
+    public static int indexLayer(String str, String delimiter) {
+        return indexLayer(str, PUSH_INDICATOR, POP_INDICATOR, delimiter);
     }
 
-    private static class SplitState extends AbstractStackedMachine<String> {
-
-        private int index = 0;
-
-        private SplitState(String push, String pop, String delimiter) {
-            stack.add(new Split(push, pop, delimiter));
-        }
-
-        @Override
-        public void step(String element) {
-            super.step(element);
-            index++;
-        }
-
-        private int getIndex() {
-            if (stack.isEmpty()) {
+    /**
+     *
+     * @param delimiter its length should be 1
+     * @return the index of `delimiter`, or -1 when not found
+     */
+    public static int indexLayer(String str, String push, String pop, String delimiter) {
+        int depth = 0;
+        int index = 0;
+        for (String c : str.split("")) {
+            if (push.contains(c)) {
+                depth++;
+            } else if (pop.contains(c) && depth != 0) {
+                depth--;
+            } else if (depth == 0 && delimiter.equals(c)) {
                 return index;
             }
-            return -1;
+            index++;
         }
-    }
-
-    private static class Mask implements IStateHandler<String> {
-
-        private final String push;
-        private final String pop;
-
-        private Mask(String push, String pop) {
-            this.push = push;
-            this.pop = pop;
-        }
-
-        @Override
-        public void trial(String element, List<IStateHandler<String>> stack) {
-            if (element.equals(push)) stack.add(new Mask(push, pop));
-            if (element.equals(pop)) stack.remove(this);
-        }
-    }
-
-    private static class Split implements IStateHandler<String> {
-
-        private final String push;
-        private final String pop;
-        private final String split;
-
-        private Split(String push, String pop, String split) {
-            this.push = push;
-            this.pop = pop;
-            this.split = split;
-        }
-
-        @Override
-        public void trial(String element, List<IStateHandler<String>> stack) {
-            if (element.equals(push)) {
-                stack.add(new Mask(push, pop));
-            }
-            if (element.equals(split)) {
-                stack.remove(this);
-            }
-        }
-    }
-
-    public static int indexLayer(String s, String push, String pop, String delimiter) {
-        SplitState state = new SplitState(push, pop, delimiter);
-        for (String step : s.split("")) {
-            state.step(step);
-            if (state.isEmpty()) {
-                break;
-            }
-        }
-        return state.getIndex();
+        return -1;
     }
 
     public static Pair<String, String> splitFirst(String s, String push, String pop, String delimiter) {
@@ -121,6 +50,14 @@ public class StringUtil {
             return null;
         }
         return new Pair<>(s.substring(0, index - 1), s.substring(index));
+    }
+
+    /**
+     * @see com.probejs.util.StringUtil#PUSH_INDICATOR
+     * @see com.probejs.util.StringUtil#POP_INDICATOR
+     */
+    public static Pair<String, String> splitFirst(String s, String delimiter) {
+        return splitFirst(s, PUSH_INDICATOR, POP_INDICATOR, delimiter);
     }
 
     public static List<String> splitLayer(String s, String push, String pop, String delimiter) {
@@ -133,5 +70,13 @@ public class StringUtil {
         }
         splits.add(s);
         return splits;
+    }
+
+    /**
+     * @see com.probejs.util.StringUtil#PUSH_INDICATOR
+     * @see com.probejs.util.StringUtil#POP_INDICATOR
+     */
+    public static List<String> splitLayer(String s, String delimiter) {
+        return splitLayer(s, PUSH_INDICATOR, POP_INDICATOR, delimiter);
     }
 }
