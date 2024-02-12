@@ -6,6 +6,8 @@ import dev.latvian.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
 import dev.latvian.mods.rhino.NativeObject;
+import dev.latvian.mods.rhino.Scriptable;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -228,7 +230,7 @@ public class NameResolver {
         putValueFormatter(SpecialTypes::formatScriptable, NativeObject.class);
         putValueFormatter(SpecialTypes::formatFunction, BaseFunction.class);
         putValueFormatter(SpecialTypes::formatNJO, NativeJavaObject.class);
-        //putValueFormatter(SpecialTypes::formatScriptable, Scriptable.class);
+        putValueFormatter(SpecialTypes::formatScriptable, Scriptable.class);
 
         putSpecialAssignments(
             DamageSource.class,
