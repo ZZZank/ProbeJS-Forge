@@ -55,9 +55,9 @@ public class DocumentComment implements IDecorative, IFormatter {
             .filter(text ->
                 text.startsWith("*")
                     ? !CommentHandler.specialCommentHandler.containsKey(
-                        text.substring(1).trim().split(" ")[0]
+                        text.substring(1).trim().split(" ", 2)[0]
                     )
-                    : !CommentHandler.specialCommentHandler.containsKey(text.split(" ")[0])
+                    : !CommentHandler.specialCommentHandler.containsKey(text.split(" ", 2)[0])
             )
             .collect(Collectors.toList());
     }

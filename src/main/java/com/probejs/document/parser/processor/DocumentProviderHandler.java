@@ -13,7 +13,7 @@ public class DocumentProviderHandler {
         DocumentHandler.addMultiHandler(
             c -> {
                 String cs = c.trim();
-                return cs.startsWith("class") && c.endsWith("{");
+                return cs.startsWith("class ") && c.endsWith("{");
             },
             (s, d) -> {
                 ProviderClass clazz = new ProviderClass();
@@ -31,7 +31,7 @@ public class DocumentProviderHandler {
         );
 
         DocumentHandler.addSingleHandler(
-            c -> c.trim().startsWith("type"),
+            c -> c.trim().startsWith("type "),
             (s, d) -> d.addElement(new DocumentType(s))
         );
 

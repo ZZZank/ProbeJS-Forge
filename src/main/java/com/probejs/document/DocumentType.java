@@ -19,11 +19,11 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
     private final IType type;
 
     public DocumentType(String line) {
-        line = line.trim().substring(4).trim();
+        line = line.trim().substring("type ".length()).trim();
         if (line.endsWith(";")) {
             line = line.substring(0, line.length() - 1);
         }
-        String[] nameType = line.split("=");
+        String[] nameType = line.split("=", 2);
         name = nameType[0].trim();
         type = Resolver.resolveType(nameType[1].trim());
     }
