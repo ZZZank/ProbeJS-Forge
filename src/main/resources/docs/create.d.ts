@@ -82,10 +82,6 @@ class CreateRecipes extends stub.probejs.create {
      */
     splashing(output: dev.latvian.kubejs.item.ItemStackJS[], input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.create.ProcessingRecipeJS;
     /**
-     * Creates a recipe for Haunting.
-     */
-    haunting(output: dev.latvian.kubejs.item.ItemStackJS[], input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.create.ProcessingRecipeJS;
-    /**
      * Creates a recipe for Sandpaper Polishing.
      */
     sandpaper_polishing(output: dev.latvian.kubejs.item.ItemStackJS, input: dev.latvian.kubejs.item.ingredient.IngredientJS): dev.latvian.kubejs.create.ProcessingRecipeJS;
