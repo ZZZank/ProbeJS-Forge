@@ -224,7 +224,7 @@ public class TypingCompiler {
         compileJava(globalClasses);
         compileRecipeHolder(typeMap);
         compileJSConfig();
-        EventCompiler.writeCachedEvents("cachedEvents.json", cachedEvents);
-        EventCompiler.writeCachedForgeEvents("cachedForgedEvents.json", cachedForgeEvents);
+        EventCompiler.writeEvents2Cache("cachedEvents.json", cachedEvents);
+        EventCompiler.writeForgeEvents2Cache("cachedForgeEvents.json", cachedForgeEvents);
     }
 }

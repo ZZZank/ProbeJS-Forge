@@ -9,6 +9,7 @@ import java.nio.file.Path;
 
 public class ProbePaths {
 
+    public static final Path CACHE = KubeJSPaths.EXPORTED;
     public static final Path PROBE = KubeJSPaths.DIRECTORY.resolve("probe");
     public static final Path DOCS = PROBE.resolve("docs");
     public static final Path GENERATED = PROBE.resolve("generated");
