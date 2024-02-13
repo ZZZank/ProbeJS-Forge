@@ -19,12 +19,12 @@ public class OnEventMixin {
         remap = false
     )
     private void post(ScriptType t, String id, CallbackInfoReturnable<Boolean> returns) {
-        if (
-            !ProbeConfig.INSTANCE.disabled &&
-            !CapturedClasses.isEventIgnored(this.getClass()) &&
-            !CapturedClasses.capturedEvents.containsKey(id)
-        ) {
-            CapturedClasses.capturedEvents.put(id, new EventInfo(t, (EventJS) (Object) this, id, null));
+        if (!ProbeConfig.INSTANCE.disabled && !CapturedClasses.isEventIgnored(this.getClass())) {
+            if (!CapturedClasses.capturedEvents.containsKey(id)) {
+                CapturedClasses.capturedEvents.put(id, new EventInfo(t, (EventJS) (Object) this, id, null));
+            } else {
+                CapturedClasses.capturedEvents.get(id).scriptTypes.add(t);
+            }
         }
     }
 
@@ -39,10 +39,14 @@ public class OnEventMixin {
             !CapturedClasses.isEventIgnored(this.getClass()) &&
             !CapturedClasses.capturedEvents.containsKey(id)
         ) {
-            CapturedClasses.capturedEvents.put(
-                id + "." + sub,
-                new EventInfo(t, (EventJS) (Object) this, id, sub)
-            );
+            if (!CapturedClasses.capturedEvents.containsKey(id)) {
+                CapturedClasses.capturedEvents.put(
+                    id + "." + sub,
+                    new EventInfo(t, (EventJS) (Object) this, id, sub)
+                );
+            } else {
+                CapturedClasses.capturedEvents.get(id).scriptTypes.add(t);
+            }
         }
     }
 }
