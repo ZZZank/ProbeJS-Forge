@@ -177,13 +177,7 @@ public class EventCompiler {
         for (Map.Entry<String, EventInfo> entry : events.entrySet()) {
             String eventName = entry.getKey();
             EventInfo eventClass = entry.getValue();
-            JsonObject captured = new JsonObject();
-            captured.addProperty("class", eventClass.captured.getName());
-            captured.addProperty("id", eventClass.id);
-            if (eventClass.hasSub()) {
-                captured.addProperty("sub", eventClass.sub);
-            }
-            outJson.add(eventName, captured);
+            outJson.add(eventName, eventClass.toJson());
         }
         ProbeJS.GSON.toJson(outJson, cacheWriter);
         cacheWriter.flush();
