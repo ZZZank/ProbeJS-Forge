@@ -216,7 +216,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
         // constructors
         if (!classInfo.isInterface()) {
-            if (internal) {
+            if (internal && !classInfo.getConstructorInfo().isEmpty()) {
                 String indnt = PUtil.indent(indent + stepIndent);
                 formatted.add(indnt + "/**");
                 formatted.add(indnt + " * Internal constructor, not callable unless via `java()`.");
