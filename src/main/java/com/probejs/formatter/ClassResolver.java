@@ -6,7 +6,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public class ClassResolver {
-    public static Set<Class<?>> skipped = new HashSet<>();
+
+    public static final Set<Class<?>> skipped = new HashSet<>();
 
     public static void skipClass(Class<?>... clazz) {
         skipped.addAll(Arrays.asList(clazz));
@@ -31,6 +32,4 @@ public class ClassResolver {
         skipClass(Double.class, Double.TYPE, Float.class, Float.TYPE);
         skipClass(Boolean.class, Boolean.TYPE);
     }
-
-
 }

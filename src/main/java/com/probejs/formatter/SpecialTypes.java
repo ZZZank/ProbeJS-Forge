@@ -23,7 +23,7 @@ import net.minecraft.resources.ResourceKey;
 
 public class SpecialTypes {
 
-    public static Set<Class<?>> skippedSpecials = new HashSet<>();
+    public static final Set<Class<?>> skippedSpecials = new HashSet<>();
 
     private static class FormatterLambda {
 

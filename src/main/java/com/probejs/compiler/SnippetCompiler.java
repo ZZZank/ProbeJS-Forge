@@ -21,8 +21,8 @@ public class SnippetCompiler {
 
     public static class KubeDump {
 
-        public Map<String, Map<String, List<String>>> tags;
-        public Map<String, List<String>> registries;
+        public final Map<String, Map<String, List<String>>> tags;
+        public final Map<String, List<String>> registries;
 
         public KubeDump(Map<String, Map<String, List<String>>> tags, Map<String, List<String>> registries) {
             this.tags = tags;

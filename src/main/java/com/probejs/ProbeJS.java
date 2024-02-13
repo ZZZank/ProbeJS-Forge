@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Prunoideae
  */
-@Mod("probejs")
+@Mod(ProbeJS.MOD_ID)
 public class ProbeJS {
 
     public static final String MOD_ID = "probejs";

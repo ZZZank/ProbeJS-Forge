@@ -20,11 +20,11 @@ import me.shedaniel.architectury.platform.Platform;
 
 public class Manager {
 
-    public static Map<String, List<DocumentClass>> classDocuments = new HashMap<>();
-    public static Map<String, List<IType>> typesAssignable = new HashMap<>();
-    public static Map<String, List<DocumentClass>> classAdditions = new HashMap<>();
-    public static List<String> rawTSDoc = new ArrayList<>();
-    public static List<DocumentType> typeDocuments = new ArrayList<>();
+    public static final Map<String, List<DocumentClass>> classDocuments = new HashMap<>();
+    public static final Map<String, List<IType>> typesAssignable = new HashMap<>();
+    public static final Map<String, List<DocumentClass>> classAdditions = new HashMap<>();
+    public static final List<String> rawTSDoc = new ArrayList<>();
+    public static final List<DocumentType> typeDocuments = new ArrayList<>();
 
     public static void fromPath(Document document) throws IOException {
         File[] files = ProbePaths.DOCS.toFile().listFiles();
