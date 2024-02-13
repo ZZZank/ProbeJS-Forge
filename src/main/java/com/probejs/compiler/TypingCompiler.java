@@ -206,11 +206,13 @@ public class TypingCompiler {
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
         //cache class
-        Map<String, EventInfo> cachedEvents = EventCompiler.readCachedEvents("cachedEvents.json");
-        Map<String, Class<?>> cachedForgeEvents = EventCompiler.readCachedForgeEvents("cachedForgeEvents.json");
-        Set<Class<?>> cachedClasses = new HashSet<>(
-            cachedEvents.values().stream().map(eventInfo -> eventInfo.captured).collect(Collectors.toList())
-        );
+        Map<String, EventInfo> cachedEvents = EventCompiler.readCachedEvents();
+        Map<String, Class<?>> cachedForgeEvents = EventCompiler.readCachedForgeEvents();
+        Set<Class<?>> cachedClasses = cachedEvents
+            .values()
+            .stream()
+            .map(eventInfo -> eventInfo.captured)
+            .collect(Collectors.toSet());
         cachedClasses.addAll(cachedForgeEvents.values());
         // cachedClasses.addAll(RegistryCompiler.getRegistryClasses());
         //global class
@@ -224,7 +226,7 @@ public class TypingCompiler {
         compileJava(globalClasses);
         compileRecipeHolder(typeMap);
         compileJSConfig();
-        EventCompiler.writeEvents2Cache("cachedEvents.json", cachedEvents);
-        EventCompiler.writeForgeEvents2Cache("cachedForgeEvents.json", cachedForgeEvents);
+        EventCompiler.writeEvents2Cache(cachedEvents);
+        EventCompiler.writeForgeEvents2Cache(cachedForgeEvents);
     }
 }

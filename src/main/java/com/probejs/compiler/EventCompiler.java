@@ -24,6 +24,11 @@ import java.util.stream.Collectors;
 
 public class EventCompiler {
 
+    public static final String EVENT_CACHE_FILENAME = "cachedEvents.json";
+    public static final String FORGE_EVENT_CACHE_FILENAME = "cachedForgeEvents.json";
+    public static final Path EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(EVENT_CACHE_FILENAME);
+    public static final Path FORGE_EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(FORGE_EVENT_CACHE_FILENAME);
+
     public static void compileEvents(
         Map<String, EventInfo> cachedEvents,
         Map<String, Class<?>> cachedForgeEvents
@@ -107,13 +112,12 @@ public class EventCompiler {
         }
     }
 
-    public static Map<String, EventInfo> readCachedEvents(String fileName) throws IOException {
+    public static Map<String, EventInfo> readCachedEvents() throws IOException {
         Map<String, EventInfo> cachedEvents = new HashMap<>();
-        Path cachedEventPath = KubeJSPaths.EXPORTED.resolve(fileName);
-        if (Files.exists(cachedEventPath)) {
+        if (Files.exists(EVENT_CACHE_PATH)) {
             try {
                 JsonObject cachedMap = ProbeJS.GSON.fromJson(
-                    Files.newBufferedReader(cachedEventPath),
+                    Files.newBufferedReader(EVENT_CACHE_PATH),
                     JsonObject.class
                 );
                 for (Map.Entry<String, JsonElement> entry : cachedMap.entrySet()) {
@@ -132,8 +136,8 @@ public class EventCompiler {
         return cachedEvents;
     }
 
-    public static void writeEvents2Cache(String fileName, Map<String, EventInfo> events) throws IOException {
-        BufferedWriter cacheWriter = Files.newBufferedWriter(ProbePaths.CACHE.resolve(fileName));
+    public static void writeEvents2Cache(Map<String, EventInfo> events) throws IOException {
+        BufferedWriter cacheWriter = Files.newBufferedWriter(EVENT_CACHE_PATH);
         JsonObject outJson = new JsonObject();
         for (Map.Entry<String, EventInfo> entry : events.entrySet()) {
             String eventName = entry.getKey();
@@ -144,15 +148,17 @@ public class EventCompiler {
         cacheWriter.flush();
     }
 
-    public static Map<String, Class<?>> readCachedForgeEvents(String fileName) throws IOException {
+    public static Map<String, Class<?>> readCachedForgeEvents() throws IOException {
         Map<String, Class<?>> cachedEvents = new HashMap<>();
-        Path cachedEventPath = ProbePaths.CACHE.resolve(fileName);
-        if (!Files.exists(cachedEventPath)) {
-            ProbeJS.LOGGER.warn("No event cache file: {}", fileName);
+        if (!Files.exists(FORGE_EVENT_CACHE_PATH)) {
+            ProbeJS.LOGGER.warn("No event cache file: {}", FORGE_EVENT_CACHE_FILENAME);
             return cachedEvents;
         }
         try {
-            Map<?, ?> fileCache = ProbeJS.GSON.fromJson(Files.newBufferedReader(cachedEventPath), Map.class);
+            Map<?, ?> fileCache = ProbeJS.GSON.fromJson(
+                Files.newBufferedReader(FORGE_EVENT_CACHE_PATH),
+                Map.class
+            );
             fileCache.forEach((k, v) -> {
                 if (!(k instanceof String) || !(v instanceof String)) {
                     ProbeJS.LOGGER.warn("Unexpected entry in class cache: {}, {}", k, v);
@@ -173,9 +179,8 @@ public class EventCompiler {
         return cachedEvents;
     }
 
-    public static void writeForgeEvents2Cache(String fileName, Map<String, Class<?>> events)
-        throws IOException {
-        BufferedWriter cacheWriter = Files.newBufferedWriter(KubeJSPaths.EXPORTED.resolve(fileName));
+    public static void writeForgeEvents2Cache(Map<String, Class<?>> events) throws IOException {
+        BufferedWriter cacheWriter = Files.newBufferedWriter(FORGE_EVENT_CACHE_PATH);
         JsonObject outJson = new JsonObject();
         for (Map.Entry<String, Class<?>> entry : events.entrySet()) {
             String eventName = entry.getKey();
