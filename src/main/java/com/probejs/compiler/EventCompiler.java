@@ -83,17 +83,17 @@ public class EventCompiler {
                 wildcards.put(id, captured);
                 id = id + "." + captured.sub;
             }
-            writer.write("/**" + "\n");
-            writer.write(" * Cancellable: " + (captured.cancellable ? "Yes" : "No") + "\n");
+            writer.write("/**\n");
+            writer.write(" * @cancellable " + (captured.cancellable ? "Yes" : "No") + "\n");
             writer.write(
-                " * Type: " +
+                " * @at " +
                 String.join(
                     ", ",
                     captured.scriptTypes.stream().map(type -> type.name).collect(Collectors.toList())
                 ) +
                 "\n"
             );
-            writer.write(" */");
+            writer.write(" */\n");
             writer.write(
                 String.format(
                     "declare function onEvent(name: \"%s\", handler: (event: %s) => void);\n",
