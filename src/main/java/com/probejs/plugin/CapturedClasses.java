@@ -1,5 +1,6 @@
 package com.probejs.plugin;
 
+import com.probejs.info.EventInfo;
 // import dev.latvian.kubejs.RegistryObjectBuilderTypes;
 
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.Set;
 
 public class CapturedClasses {
 
-    public static final Map<String, CapturedEvent> capturedEvents = new HashMap<>();
+    public static final Map<String, EventInfo> capturedEvents = new HashMap<>();
     public static final Map<String, Class<?>> capturedRawEvents = new HashMap<>();
     public static final Set<Class<?>> capturedJavaClasses = new HashSet<>();
     public static final Set<Class<?>> ignoredEvents = new HashSet<>();

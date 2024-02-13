@@ -1,8 +1,8 @@
 package com.probejs.mixin;
 
 import com.probejs.ProbeConfig;
+import com.probejs.info.EventInfo;
 import com.probejs.plugin.CapturedClasses;
-import com.probejs.plugin.CapturedEvent;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,10 +24,7 @@ public class OnEventMixin {
             !CapturedClasses.isEventIgnored(this.getClass()) &&
             !CapturedClasses.capturedEvents.containsKey(id)
         ) {
-            CapturedClasses.capturedEvents.put(
-                id,
-                new CapturedEvent(((EventJS) ((Object) this)).getClass(), id, null)
-            );
+            CapturedClasses.capturedEvents.put(id, new EventInfo(t, (EventJS) (Object) this, id, null));
         }
     }
 
@@ -44,7 +41,7 @@ public class OnEventMixin {
         ) {
             CapturedClasses.capturedEvents.put(
                 id + "." + sub,
-                new CapturedEvent(((EventJS) ((Object) this)).getClass(), id, sub)
+                new EventInfo(t, (EventJS) (Object) this, id, sub)
             );
         }
     }

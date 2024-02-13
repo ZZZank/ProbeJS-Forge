@@ -16,10 +16,10 @@ import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRawTS;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.ClassInfo;
+import com.probejs.info.EventInfo;
 import com.probejs.info.Walker;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.plugin.CapturedClasses;
-import com.probejs.plugin.CapturedEvent;
 import com.probejs.recipe.RecipeHolders;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.event.EventJS;
@@ -38,8 +38,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class TypingCompiler {
 
-    public static Map<String, CapturedEvent> readCachedEvents(String fileName) throws IOException {
-        Map<String, CapturedEvent> cachedEvents = new HashMap<>();
+    public static Map<String, EventInfo> readCachedEvents(String fileName) throws IOException {
+        Map<String, EventInfo> cachedEvents = new HashMap<>();
         Path cachedEventPath = KubeJSPaths.EXPORTED.resolve(fileName);
         if (!Files.exists(cachedEventPath)) {
             ProbeJS.LOGGER.warn("No event cache file: {}", fileName);
@@ -71,7 +71,7 @@ public class TypingCompiler {
                     }
                     cachedEvents.put(
                         key,
-                        new CapturedEvent(
+                        new EventInfo(
                             (Class<? extends EventJS>) clazz,
                             obj.get("id").getAsString(),
                             obj.has("sub") ? obj.get("sub").getAsString() : null
@@ -119,18 +119,17 @@ public class TypingCompiler {
         return cachedEvents;
     }
 
-    public static void writeCachedEvents(String fileName, Map<String, CapturedEvent> events)
-        throws IOException {
+    public static void writeCachedEvents(String fileName, Map<String, EventInfo> events) throws IOException {
         BufferedWriter cacheWriter = Files.newBufferedWriter(KubeJSPaths.EXPORTED.resolve(fileName));
         JsonObject outJson = new JsonObject();
-        for (Map.Entry<String, CapturedEvent> entry : events.entrySet()) {
+        for (Map.Entry<String, EventInfo> entry : events.entrySet()) {
             String eventName = entry.getKey();
-            CapturedEvent eventClass = entry.getValue();
+            EventInfo eventClass = entry.getValue();
             JsonObject captured = new JsonObject();
-            captured.addProperty("class", eventClass.getCaptured().getName());
-            captured.addProperty("id", eventClass.getId());
+            captured.addProperty("class", eventClass.captured.getName());
+            captured.addProperty("id", eventClass.id);
             if (eventClass.hasSub()) {
-                captured.addProperty("sub", eventClass.getSub());
+                captured.addProperty("sub", eventClass.sub);
             }
             outJson.add(eventName, captured);
         }
@@ -162,7 +161,7 @@ public class TypingCompiler {
         CapturedClasses.capturedEvents
             .values()
             .stream()
-            .map(CapturedEvent::getCaptured)
+            .map(eventInfo -> eventInfo.captured)
             .forEach(touchableClasses::add);
         touchableClasses.addAll(CapturedClasses.capturedRawEvents.values());
         //recipe type
@@ -253,7 +252,7 @@ public class TypingCompiler {
     }
 
     public static void compileEvents(
-        Map<String, CapturedEvent> cachedEvents,
+        Map<String, EventInfo> cachedEvents,
         Map<String, Class<?>> cachedForgeEvents
     ) throws IOException {
         cachedEvents.putAll(CapturedClasses.capturedEvents);
@@ -261,14 +260,14 @@ public class TypingCompiler {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
         // writer.write("/// <reference path=\"./registries.d.ts\" />\n");
-        Map<String, CapturedEvent> wildcards = new HashMap<>();
-        for (Map.Entry<String, CapturedEvent> entry : (new TreeMap<>(cachedEvents)).entrySet()) {
-            CapturedEvent captured = entry.getValue();
-            String id = captured.getId();
-            Class<?> event = captured.getCaptured();
+        Map<String, EventInfo> wildcards = new HashMap<>();
+        for (Map.Entry<String, EventInfo> entry : (new TreeMap<>(cachedEvents)).entrySet()) {
+            EventInfo captured = entry.getValue();
+            String id = captured.id;
+            Class<?> event = captured.captured;
             if (captured.hasSub()) {
                 wildcards.put(id, captured);
-                id = id + "." + captured.getSub();
+                id = id + "." + captured.sub;
             }
             writer.write(
                 String.format(
@@ -279,13 +278,13 @@ public class TypingCompiler {
             );
         }
 
-        for (CapturedEvent wildcard : (new TreeMap<>(wildcards)).values()) {
-            String id = wildcard.getId();
+        for (EventInfo wildcard : (new TreeMap<>(wildcards)).values()) {
+            String id = wildcard.id;
             writer.write(
                 String.format(
                     "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void);\n",
                     id,
-                    FormatterClass.formatTypeParameterized(new TypeInfoClass(wildcard.getCaptured()))
+                    FormatterClass.formatTypeParameterized(new TypeInfoClass(wildcard.captured))
                 )
             );
         }
@@ -380,10 +379,10 @@ public class TypingCompiler {
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
         //cache class
-        Map<String, CapturedEvent> cachedEvents = readCachedEvents("cachedEvents.json");
+        Map<String, EventInfo> cachedEvents = readCachedEvents("cachedEvents.json");
         Map<String, Class<?>> cachedForgeEvents = readCachedForgeEvents("cachedForgeEvents.json");
         Set<Class<?>> cachedClasses = new HashSet<>(
-            cachedEvents.values().stream().map(CapturedEvent::getCaptured).collect(Collectors.toList())
+            cachedEvents.values().stream().map(eventInfo -> eventInfo.captured).collect(Collectors.toList())
         );
         cachedClasses.addAll(cachedForgeEvents.values());
         // cachedClasses.addAll(RegistryCompiler.getRegistryClasses());
