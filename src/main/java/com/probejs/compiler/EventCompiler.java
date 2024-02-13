@@ -84,15 +84,17 @@ public class EventCompiler {
                 wildcards.put(id, captured);
                 id = id + "." + captured.sub;
             }
+            String canCancel = captured.cancellable ? "Yes" : "No";
             List<String> typeNames = captured.scriptTypes
                 .stream()
                 .map(type -> type.name)
                 .collect(Collectors.toList());
             if (typeNames.isEmpty()) {
+                canCancel = "unknown";
                 typeNames.add("unknown, info of this event seems fetched from an older version of cache");
             }
             writer.write("/**" + "\n");
-            writer.write(" * @cancellable " + (captured.cancellable ? "Yes" : "No") + "\n");
+            writer.write(" * @cancellable " + canCancel + "\n");
             writer.write(" * @at " + String.join(", ", typeNames) + "\n");
             writer.write(" */" + "\n");
             writer.write(
