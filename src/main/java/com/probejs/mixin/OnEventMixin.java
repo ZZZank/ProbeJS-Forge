@@ -34,11 +34,7 @@ public class OnEventMixin {
         remap = false
     )
     private void post(ScriptType t, String id, String sub, CallbackInfoReturnable<Boolean> returns) {
-        if (
-            !ProbeConfig.INSTANCE.disabled &&
-            !CapturedClasses.isEventIgnored(this.getClass()) &&
-            !CapturedClasses.capturedEvents.containsKey(id)
-        ) {
+        if (!ProbeConfig.INSTANCE.disabled && !CapturedClasses.isEventIgnored(this.getClass())) {
             if (!CapturedClasses.capturedEvents.containsKey(id)) {
                 CapturedClasses.capturedEvents.put(
                     id + "." + sub,
