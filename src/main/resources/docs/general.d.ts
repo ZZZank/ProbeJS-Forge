@@ -112,6 +112,7 @@ class MaterialJS {
  * @assign object
  */
 class CompoundNBT {
+    [x: string]: any;
 }
 
 type SelfOrArray<T> = T | T[]
