@@ -10,7 +10,6 @@ import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.info.EventInfo;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.plugin.CapturedClasses;
-import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.event.EventJS;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -114,24 +113,25 @@ public class EventCompiler {
 
     public static Map<String, EventInfo> readCachedEvents() throws IOException {
         Map<String, EventInfo> cachedEvents = new HashMap<>();
-        if (Files.exists(EVENT_CACHE_PATH)) {
-            try {
-                JsonObject cachedMap = ProbeJS.GSON.fromJson(
-                    Files.newBufferedReader(EVENT_CACHE_PATH),
-                    JsonObject.class
-                );
-                for (Map.Entry<String, JsonElement> entry : cachedMap.entrySet()) {
-                    String key = entry.getKey();
-                    JsonElement value = entry.getValue();
-                    if (value.isJsonObject()) {
-                        EventInfo
-                            .fromJson(value.getAsJsonObject())
-                            .ifPresent(event -> cachedEvents.put(key, event));
-                    }
+        if (!Files.exists(EVENT_CACHE_PATH)) {
+            return cachedEvents;
+        }
+        try {
+            JsonObject cachedMap = ProbeJS.GSON.fromJson(
+                Files.newBufferedReader(EVENT_CACHE_PATH),
+                JsonObject.class
+            );
+            for (Map.Entry<String, JsonElement> entry : cachedMap.entrySet()) {
+                String key = entry.getKey();
+                JsonElement value = entry.getValue();
+                if (!value.isJsonObject()) {
+                    //old cache is string, which means JsonElement, so not JsonObject
+                    break;
                 }
-            } catch (JsonSyntaxException | JsonIOException e) {
-                ProbeJS.LOGGER.warn("Cannot read malformed cache, ignoring.");
+                EventInfo.fromJson(value.getAsJsonObject()).ifPresent(event -> cachedEvents.put(key, event));
             }
+        } catch (JsonSyntaxException | JsonIOException e) {
+            ProbeJS.LOGGER.warn("Cannot read malformed cache, ignoring.");
         }
         return cachedEvents;
     }

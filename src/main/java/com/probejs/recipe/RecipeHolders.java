@@ -38,27 +38,25 @@ public abstract class RecipeHolders {
         indent += stepIndent;
         // a base class for indexing other classes
         formatted.add(PUtil.indent(indent) + "class RecipeHolder {");
-        indent += stepIndent;
         for (String namespace : namespace2Method.keySet()) {
             formatted.add(
-                String.format("%sreadonly %s: stub.probejs.%s", PUtil.indent(indent), namespace, namespace)
+                PUtil.indent(indent + stepIndent) +
+                String.format("readonly %s: stub.probejs.%s", namespace, namespace)
             );
         }
-        indent -= stepIndent;
         formatted.add(PUtil.indent(indent) + "}");
 
         // recipeHolder classes
         for (Entry<String, List<Pair<String, String>>> entry : namespace2Method.entrySet()) {
             formatted.add(String.format(PUtil.indent(indent) + "class %s {", entry.getKey()));
             // methods inside recipeHolder classes
-            indent += stepIndent;
             for (Pair<String, String> pair : entry.getValue()) {
                 // we dont know how a Recipe Serializer actually works, so only `...args`
                 formatted.add(
-                    PUtil.indent(indent) + pair.getFirst() + "(...args: object): " + pair.getSecond()
+                    PUtil.indent(indent + stepIndent) +
+                    String.format("%s(...args: object): %s", pair.getFirst(), pair.getSecond())
                 );
             }
-            indent -= stepIndent;
             formatted.add(PUtil.indent(indent) + "}");
         }
         indent -= stepIndent;

@@ -184,15 +184,17 @@ public class TypingCompiler {
 
     public static void compileJSConfig() throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(KubeJSPaths.DIRECTORY.resolve("jsconfig.json"));
-        String lines = String.join(
-            "\n",
-            "{",
-            "    \"compilerOptions\": {",
-            "        \"lib\": [\"ES5\", \"ES2015\"],",
-            "        \"typeRoots\": [\"./probe/generated\", \"./probe/user\"]",
-            "    }",
-            "}"
-        );
+        String lines = String
+            .join(
+                "\n",
+                "{",
+                "    'compilerOptions': {",
+                "        'lib': ['ES5', 'ES2015'],",
+                "        'typeRoots': ['./probe/generated', './probe/user']",
+                "    }",
+                "}"
+            )
+            .replace("'", "\"");
         writer.write(lines);
         writer.flush();
         writer.close();
@@ -220,11 +222,11 @@ public class TypingCompiler {
         globalClasses.removeIf(c -> ClassResolver.skipped.contains(c));
         SpecialTypes.processFunctionalInterfaces(globalClasses);
         compileGlobal(bindingEvent, globalClasses);
+        compileRecipeHolder(typeMap);
         // RegistryCompiler.compileRegistries();
         EventCompiler.compileEvents(cachedEvents, cachedForgeEvents);
         compileConstants(bindingEvent);
         compileJava(globalClasses);
-        compileRecipeHolder(typeMap);
         compileJSConfig();
         EventCompiler.writeEvents2Cache(cachedEvents);
         EventCompiler.writeForgeEvents2Cache(cachedForgeEvents);
