@@ -5,6 +5,8 @@
 class RecipeHolder extends stub.probejs.RecipeHolder {
     /**
      * Recipes from Thermal Series
+     * 
+     * Most of them require Thermal Expansion
      */
     readonly thermal: Document.ThermalRecipes;
 }

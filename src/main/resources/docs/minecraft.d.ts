@@ -86,6 +86,9 @@ class RecipeEventJS {
 }
 
 class RecipeHolder extends stub.probejs.RecipeHolder {
+    /**
+     * Vanilla recipes
+     */
     readonly minecraft: Document.MinecraftRecipes;
 }
 

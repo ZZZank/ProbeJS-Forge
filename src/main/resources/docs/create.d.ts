@@ -4,7 +4,7 @@
 */
 class RecipeHolder extends stub.probejs.RecipeHolder {
     /**
-     * All recipes from Create.
+     * Recipes from Create.
      */
     readonly create: Document.CreateRecipes;
 }
