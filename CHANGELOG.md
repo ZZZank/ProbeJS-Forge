@@ -1,3 +1,28 @@
+# ProbeJS Legacy 2.3.1 -> 2.4.0
+
+Event dump ++
+
+## What's new?
+
+-   events dumped in `events.d.ts` are now naturally sorted(in alphabet order).
+-   dumped events will have more info displayed, e.g. if such event is cancellabe or not.
+    ```js
+    /**
+     * @cancellable No
+     * @at startup, server
+     */
+    declare function onEvent(name: "item.crafted", handler: (event: Internal.ItemCraftedEventJS) => void);
+    ```
+-   rawTS doc will now have no namespace wrapped. Instead, there will be two comments marking start and end.
+-   fix Raw TS doc being cleared even before they are used for doc gen, so Raw TS doc can actually get generated.
+-   fix tag snippets not writing into files.
+-   enable special formatter for rhino::Scriptable.
+-   recipe doc for Thermal Series.
+-   constructors for classes in `Internal` namespaces will now be showed, with comments clarifying that you needs `java()` to actually use it.
+-   remove `haunting` in Create doc, since it's not a thing in MC1.16.
+
+---
+
 # ProbeJS Legacy 2.3.0 -> 2.3.1
 
 Fix crash caused by ConcurrentModificationException
