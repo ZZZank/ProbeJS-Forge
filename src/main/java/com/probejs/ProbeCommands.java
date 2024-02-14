@@ -50,9 +50,6 @@ public class ProbeCommands {
                                 ClassResolver.init();
                                 NameResolver.init();
                                 TypingCompiler.compile();
-                                if (ProbeConfig.INSTANCE.exportClassNames) {
-                                    SnippetCompiler.compileClassNames();
-                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 sendSuccess(

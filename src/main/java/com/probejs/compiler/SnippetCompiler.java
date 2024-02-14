@@ -104,6 +104,13 @@ public class SnippetCompiler {
     }
 
     public static void compile() throws IOException {
+        if (ProbeConfig.INSTANCE.exportClassNames) {
+            compileClassNames();
+        }
+        writeDumpSnippets();
+    }
+
+    private static void writeDumpSnippets() throws IOException {
         Path kubePath = KubeJSPaths.EXPORTED.resolve("kubejs-server-export.json");
         if (!kubePath.toFile().canRead()) {
             ProbeJS.LOGGER.error("'kubejs-server-export.json' not found!");
@@ -112,13 +119,14 @@ public class SnippetCompiler {
         Path codeFile = ProbePaths.SNIPPET.resolve("probe.code-snippets");
         Reader reader = Files.newBufferedReader(kubePath);
         KubeDump kubeDump = ProbeJS.GSON.fromJson(reader, KubeDump.class);
+
         BufferedWriter writer = Files.newBufferedWriter(codeFile);
         writer.write(ProbeJS.GSON.toJson(kubeDump.toSnippet()));
         writer.flush();
         writer.close();
     }
 
-    public static void compileClassNames() throws IOException {
+    private static void compileClassNames() throws IOException {
         JsonObject resultJson = new JsonObject();
         for (Map.Entry<String, NameResolver.ResolvedName> entry : NameResolver.resolvedNames.entrySet()) {
             String className = entry.getKey();
