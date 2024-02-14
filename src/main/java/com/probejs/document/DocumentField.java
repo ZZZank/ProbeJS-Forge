@@ -5,11 +5,14 @@ import com.probejs.document.type.IType;
 import com.probejs.document.type.Resolver;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
+import com.probejs.util.Pair;
+import com.probejs.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentField extends DocumentProperty implements IDocumentProvider<DocumentField>, IFormatter {
+
     private final boolean isFinal;
     private final boolean isStatic;
     private final String name;
@@ -19,8 +22,7 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
         line = line.trim();
         boolean f = false;
         boolean s = false;
-        boolean flag = true;
-        while (flag) {
+        for (boolean flag = true; flag;) {
             if (line.startsWith("readonly")) {
                 line = line.substring(8).trim();
                 f = true;
@@ -63,16 +65,14 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
     @Override
     public List<String> format(Integer indent, Integer stepIndent) {
         List<String> formatted = new ArrayList<>();
-        if (comment != null)
+        if (comment != null) {
             formatted.addAll(comment.format(indent, stepIndent));
+        }
         List<String> pre = new ArrayList<>();
-        if (isStatic)
-            pre.add("static");
-        if (isFinal)
-            pre.add("readonly");
-        pre.add(String.format("%s: %s;",name, type.getTypeName()));
+        if (isStatic) pre.add("static");
+        if (isFinal) pre.add("readonly");
+        pre.add(String.format("%s: %s;", name, type.getTypeName()));
         formatted.add(PUtil.indent(indent) + String.join(" ", pre));
-
         return formatted;
     }
 }
