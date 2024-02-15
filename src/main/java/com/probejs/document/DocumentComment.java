@@ -19,8 +19,8 @@ public class DocumentComment implements IDecorative, IFormatter {
         this.documentText = documentText.stream().map(String::trim).collect(Collectors.toList());
         this.documentText.stream()
             .map(t -> t.startsWith("*") ? t.substring(1).trim() : t)
-            .filter(t -> CommentHandler.specialCommentHandler.containsKey(t.split(" ")[0]))
-            .map(t -> CommentHandler.specialCommentHandler.get(t.split(" ")[0]).apply(t))
+            .filter(t -> CommentHandler.specialCommentHandler.containsKey(t.split(" ", 2)[0]))
+            .map(t -> CommentHandler.specialCommentHandler.get(t.split(" ", 2)[0]).apply(t))
             .forEach(c -> abstractComments.computeIfAbsent(c.getClass(), s -> new ArrayList<>()).add(c));
     }
 

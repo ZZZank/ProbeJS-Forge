@@ -6,6 +6,9 @@ import com.probejs.document.type.IType;
 import com.probejs.document.type.Resolver;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
+import com.probejs.util.Pair;
+import com.probejs.util.StringUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,9 +26,9 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
         if (line.endsWith(";")) {
             line = line.substring(0, line.length() - 1);
         }
-        String[] nameType = line.split("=", 2);
-        name = nameType[0].trim();
-        type = Resolver.resolveType(nameType[1].trim());
+        Pair<String, String> nameType = StringUtil.splitFirst(line, "=");
+        name = nameType.getFirst().trim();
+        type = Resolver.resolveType(nameType.getSecond().trim());
     }
 
     @Override
