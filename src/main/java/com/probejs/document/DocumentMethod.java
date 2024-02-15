@@ -26,11 +26,7 @@ public class DocumentMethod
         if (isStatic) {
             sb.append("static ");
         }
-        return sb
-            .append(name)
-            .append("(%s)")
-            .append(String.format(": %s;", returnType.getTypeName()))
-            .toString();
+        return sb.append(name).append("(%s): ").append(returnType.getTypeName()).append(";").toString();
     }
 
     @Override
@@ -91,6 +87,9 @@ public class DocumentMethod
 
     public DocumentMethod(String line) {
         line = line.trim();
+        if (line.endsWith(";")) {
+            line = line.substring(0, line.length() - 1);
+        }
         // e.g. static fnName(a: (string|number), b: {required: bool}): FnReturnName
         if (line.startsWith("static ")) {
             line = line.substring(7).trim();

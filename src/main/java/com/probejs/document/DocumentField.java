@@ -7,7 +7,6 @@ import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +19,10 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
 
     public DocumentField(String line) {
         line = line.trim();
+        if (line.endsWith(";")) {
+            line = line.substring(0, line.length() - 1);
+        }
+
         boolean f = false;
         boolean s = false;
         for (boolean flag = true; flag;) {

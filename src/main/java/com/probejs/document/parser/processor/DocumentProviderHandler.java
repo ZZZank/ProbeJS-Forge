@@ -13,7 +13,7 @@ public class DocumentProviderHandler {
         DocumentHandler.addMultiHandler(
             c -> {
                 String cs = c.trim();
-                return cs.startsWith("class ") && c.endsWith("{");
+                return cs.startsWith("class ") && cs.endsWith("{");
             },
             (s, d) -> {
                 ProviderClass clazz = new ProviderClass();
@@ -47,17 +47,12 @@ public class DocumentProviderHandler {
         ProviderClass.addSingleHandler(
             s -> s.contains(":") && !s.contains("("),
             (s, d) -> {
-                if (s.endsWith(";")) s = s.substring(0, s.length() - 1);
                 d.addElement(new DocumentField(s));
             }
         );
         ProviderClass.addSingleHandler(
             s -> s.contains("("),
             (s, d) -> {
-                if (s.endsWith(";")) {
-                    // static someName(a: (string|number), b: {required: bool}): returnOK
-                    s = s.substring(0, s.length() - 1);
-                }
                 d.addElement(new DocumentMethod(s));
             }
         );
