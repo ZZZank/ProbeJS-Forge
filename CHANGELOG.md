@@ -1,3 +1,14 @@
+# ProbeJS Legacy 2.4.0 -> 2.4.1
+
+Fix type casting error
+
+## What's new?
+
+-   fix error caused by type casting in formatScriptable()
+-   doc for `AttachedData` and `CompoundNBT`. It can now act like a regular JS object(which means accessing members in formats like `data.some_member` or `data["some_member"]` will no longer confuse your IDE)
+
+---
+
 # ProbeJS Legacy 2.3.1 -> 2.4.0
 
 Event dump ++
