@@ -12,7 +12,6 @@ import com.probejs.info.type.TypeInfoVariable;
 import dev.latvian.kubejs.KubeJSRegistries;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
-import dev.latvian.mods.rhino.NativeObject;
 import dev.latvian.mods.rhino.Scriptable;
 import dev.latvian.mods.rhino.ScriptableObject;
 import java.util.*;
@@ -105,30 +104,34 @@ public class SpecialTypes {
     }
 
     public static String formatMap(Object obj) {
+        if (!(obj instanceof Map<?, ?>)) {
+            return "{}";
+        }
         List<String> values = new ArrayList<>();
-        if (obj instanceof Map<?, ?>) {
-            Map<?, ?> map = (Map<?, ?>) obj;
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                Object key = entry.getKey();
-                Object value = entry.getValue();
-                String formattedKey = NameResolver.formatValue(key);
-                if (formattedKey == null) continue;
-                String formattedValue = formatValueOrType(value);
-                values.add(String.format("%s:%s", formattedKey, formattedValue));
+        Map<?, ?> map = (Map<?, ?>) obj;
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+            String formattedKey = NameResolver.formatValue(key);
+            if (formattedKey == null) {
+                continue;
             }
+            String formattedValue = formatValueOrType(value);
+            values.add(String.format("%s:%s", formattedKey, formattedValue));
         }
         return String.format("{%s}", String.join(",", values));
     }
 
     public static String formatList(Object obj) {
+        if (!(obj instanceof List<?>)) {
+            return "[]";
+        }
         List<String> values = new ArrayList<>();
-        if (obj instanceof List<?>) {
-            List<?> list = (List<?>) obj;
-            for (Object o : list) {
-                String formattedValue = NameResolver.formatValue(o);
-                if (formattedValue == null) formattedValue = "undefined";
-                values.add(formattedValue);
-            }
+        List<?> list = (List<?>) obj;
+        for (Object o : list) {
+            String formattedValue = NameResolver.formatValue(o);
+            if (formattedValue == null) formattedValue = "undefined";
+            values.add(formattedValue);
         }
         return String.format("[%s]", String.join(", ", values));
     }
@@ -175,25 +178,25 @@ public class SpecialTypes {
     }
 
     public static String formatFunction(Object obj) {
-        if (obj instanceof BaseFunction) {
-            BaseFunction function = (BaseFunction) obj;
-            return String.format(
-                "(%s) => any",
-                IntStream
-                    .range(0, function.getLength())
-                    .mapToObj(str -> String.format("arg%s", str))
-                    .collect(Collectors.joining(", "))
-            );
+        if (!(obj instanceof BaseFunction)) {
+            return null;
         }
-        return null;
+        BaseFunction function = (BaseFunction) obj;
+        return String.format(
+            "(%s) => any",
+            IntStream
+                .range(0, function.getLength())
+                .mapToObj(i -> "arg" + i)
+                .collect(Collectors.joining(", "))
+        );
     }
 
     public static String formatNJO(Object obj) {
-        if (obj instanceof NativeJavaObject) {
-            NativeJavaObject njo = (NativeJavaObject) obj;
-            return formatValueOrType(njo.unwrap());
+        if (!(obj instanceof NativeJavaObject)) {
+            return null;
         }
-        return null;
+        NativeJavaObject njo = (NativeJavaObject) obj;
+        return formatValueOrType(njo.unwrap());
     }
 
     public static <T> void assignRegistry(Class<T> clazz, ResourceKey<Registry<T>> registry) {
