@@ -134,40 +134,42 @@ public class SpecialTypes {
     }
 
     public static String formatScriptable(Object obj) {
+        if (!(obj instanceof ScriptableObject)) {
+            // if not Scriptable, why call this
+            return "{}";
+        }
         List<String> values = new ArrayList<>();
-        if (obj instanceof ScriptableObject) {
-            ScriptableObject scriptable = (NativeObject) obj;
-            Scriptable pt = scriptable.getPrototype();
-            if (pt.get("constructor", pt) instanceof BaseFunction) {
-                BaseFunction func = (BaseFunction) pt.get("constructor", pt);
-                //Resolves Object since they're not typed
-                if (!func.getFunctionName().isEmpty() && !func.getFunctionName().equals("Object")) {
-                    return func.getFunctionName();
-                }
+        ScriptableObject scriptable = (ScriptableObject) obj;
+        Scriptable prototype = scriptable.getPrototype();
+        if (prototype.get("constructor", prototype) instanceof BaseFunction) {
+            BaseFunction func = (BaseFunction) prototype.get("constructor", prototype);
+            //Resolves Object since they're not typed
+            if (!func.getFunctionName().isEmpty() && !func.getFunctionName().equals("Object")) {
+                return func.getFunctionName();
             }
-            for (Object id : scriptable.getIds()) {
-                String formattedKey = NameResolver.formatValue(id);
-                Object value;
-                if (id instanceof Number) {
-                    value = scriptable.get((Integer) id, scriptable);
-                } else {
-                    value = scriptable.get((String) id, scriptable);
-                }
-                String formattedValue = formatValueOrType(value);
-                values.add(String.format("%s:%s", formattedKey, formattedValue));
+        }
+        for (Object id : scriptable.getIds()) {
+            String formattedKey = NameResolver.formatValue(id);
+            Object value;
+            if (id instanceof Number) {
+                value = scriptable.get((Integer) id, scriptable);
+            } else {
+                value = scriptable.get((String) id, scriptable);
             }
-            Scriptable proto = scriptable.getPrototype();
-            for (Object id : proto.getIds()) {
-                String formattedKey = NameResolver.formatValue(id);
-                Object value;
-                if (id instanceof Number) {
-                    value = proto.get((Integer) id, scriptable);
-                } else {
-                    value = proto.get((String) id, scriptable);
-                }
-                String formattedValue = formatValueOrType(value);
-                values.add(String.format("%s:%s", formattedKey, formattedValue));
+            String formattedValue = formatValueOrType(value);
+            values.add(String.format("%s:%s", formattedKey, formattedValue));
+        }
+        Scriptable proto = scriptable.getPrototype();
+        for (Object id : proto.getIds()) {
+            String formattedKey = NameResolver.formatValue(id);
+            Object value;
+            if (id instanceof Number) {
+                value = proto.get((Integer) id, scriptable);
+            } else {
+                value = proto.get((String) id, scriptable);
             }
+            String formattedValue = formatValueOrType(value);
+            values.add(String.format("%s:%s", formattedKey, formattedValue));
         }
         return String.format("{%s}", String.join(",", values));
     }
