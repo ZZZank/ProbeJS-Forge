@@ -115,4 +115,11 @@ class CompoundNBT {
     [x: string]: any;
 }
 
+/**
+ * @target dev.latvian.kubejs.util.AttachedData
+ */
+class AttachedData {
+    [x: string]: any;
+}
+
 type SelfOrArray<T> = T | T[]
