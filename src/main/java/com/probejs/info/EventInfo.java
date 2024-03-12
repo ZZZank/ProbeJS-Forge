@@ -4,8 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 public class EventInfo {
@@ -58,6 +61,30 @@ public class EventInfo {
         json.add("type", types);
         json.addProperty("cancellable", cancellable);
         return json;
+    }
+
+    /**
+     * get builtin property as multi-line comments, including `cancellable`, `script
+     * types`, and additional info for wildcarded event
+     */
+    public List<String> getBuiltinPropAsComment() {
+        List<String> lines = new ArrayList<>();
+        String canCancel = this.cancellable ? "Yes" : "No";
+        List<String> typeNames =
+            this.scriptTypes.stream().map(type -> type.name).collect(Collectors.toList());
+        if (typeNames.isEmpty()) {
+            canCancel = "unknown";
+            typeNames.add("unknown, info of this event seems fetched from an older version of cache");
+        }
+        lines.add("/**\n");
+        if (sub != null) {
+            lines.add(" * This is a wildcardeded event, you should replace `${string}` with actual id.");
+            lines.add(" * E.g. `player.data_from_server.reload`, `ftbquests.completed.123456`");
+        }
+        lines.add(" * @cancellable " + canCancel + "\n");
+        lines.add(" * @at " + String.join(", ", typeNames) + "\n");
+        lines.add(" */\n");
+        return lines;
     }
 
     @SuppressWarnings("unchecked")

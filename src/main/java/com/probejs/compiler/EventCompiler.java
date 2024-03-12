@@ -19,14 +19,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 public class EventCompiler {
 
-    public static final String EVENT_CACHE_FILENAME = "cachedEvents.json";
-    public static final String FORGE_EVENT_CACHE_FILENAME = "cachedForgeEvents.json";
-    public static final Path EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(EVENT_CACHE_FILENAME);
-    public static final Path FORGE_EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(FORGE_EVENT_CACHE_FILENAME);
+    private static final String EVENT_CACHE_FILENAME = "cachedEvents.json";
+    private static final String FORGE_EVENT_CACHE_FILENAME = "cachedForgeEvents.json";
+    private static final Path EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(EVENT_CACHE_FILENAME);
+    private static final Path FORGE_EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(FORGE_EVENT_CACHE_FILENAME);
 
     public static void compileEvents(
         Map<String, EventInfo> cachedEvents,
@@ -65,13 +64,18 @@ public class EventCompiler {
         throws IOException {
         for (EventInfo wildcard : (new TreeMap<>(wildcards)).values()) {
             String id = wildcard.id;
-            writer.write(
+            List<String> lines = wildcard.getBuiltinPropAsComment();
+            lines.add(
                 String.format(
-                    "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void);\n",
+                    "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void);",
                     id,
                     FormatterClass.formatTypeParameterized(new TypeInfoClass(wildcard.captured))
                 )
             );
+            for (String line : lines) {
+                writer.write(line);
+                writer.write("\n");
+            }
         }
     }
 
@@ -88,26 +92,18 @@ public class EventCompiler {
                 wildcards.put(id, captured);
                 id = id + "." + captured.sub;
             }
-            String canCancel = captured.cancellable ? "Yes" : "No";
-            List<String> typeNames = captured.scriptTypes
-                .stream()
-                .map(type -> type.name)
-                .collect(Collectors.toList());
-            if (typeNames.isEmpty()) {
-                canCancel = "unknown";
-                typeNames.add("unknown, info of this event seems fetched from an older version of cache");
-            }
-            writer.write("/**" + "\n");
-            writer.write(" * @cancellable " + canCancel + "\n");
-            writer.write(" * @at " + String.join(", ", typeNames) + "\n");
-            writer.write(" */" + "\n");
-            writer.write(
+            List<String> lines = captured.getBuiltinPropAsComment();
+            lines.add(
                 String.format(
-                    "declare function onEvent(name: \"%s\", handler: (event: %s) => void);\n",
+                    "declare function onEvent(name: \"%s\", handler: (event: %s) => void);",
                     id,
                     FormatterClass.formatTypeParameterized(new TypeInfoClass(event))
                 )
             );
+            for (String line : lines) {
+                writer.write(line);
+                writer.write("\n");
+            }
         }
     }
 
@@ -136,7 +132,7 @@ public class EventCompiler {
         return cachedEvents;
     }
 
-    public static void writeEvents2Cache(Map<String, EventInfo> events) throws IOException {
+    public static void compileEventsCache(Map<String, EventInfo> events) throws IOException {
         BufferedWriter cacheWriter = Files.newBufferedWriter(EVENT_CACHE_PATH);
         JsonObject outJson = new JsonObject();
         for (Map.Entry<String, EventInfo> entry : events.entrySet()) {
@@ -179,7 +175,7 @@ public class EventCompiler {
         return cachedEvents;
     }
 
-    public static void writeForgeEvents2Cache(Map<String, Class<?>> events) throws IOException {
+    public static void comileForgeEventsCache(Map<String, Class<?>> events) throws IOException {
         BufferedWriter cacheWriter = Files.newBufferedWriter(FORGE_EVENT_CACHE_PATH);
         JsonObject outJson = new JsonObject();
         for (Map.Entry<String, Class<?>> entry : events.entrySet()) {
