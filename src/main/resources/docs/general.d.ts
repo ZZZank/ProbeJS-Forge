@@ -122,4 +122,16 @@ class AttachedData {
     [x: string]: any;
 }
 
-type SelfOrArray<T> = T | T[]
+/**
+ * @target dev.latvian.kubejs.fluid.FluidStackJS
+ * @assign string
+ */
+class FluidStackJS {
+}
+
+/**
+ * @target dev.latvian.mods.rhino.mod.util.color.Color
+ * @assign string
+ */
+class Color {
+}
