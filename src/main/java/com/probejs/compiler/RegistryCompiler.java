@@ -27,9 +27,7 @@ public class RegistryCompiler {
             .forEach(v -> v.types.values().forEach(v1 -> result.add(v1.builderClass())));
         return result;
     }
-    */
 
-    /*
     public static void compileEventRegistries(BufferedWriter writer) throws IOException {
         Gson stringG = new Gson();
         for (RegistryObjectBuilderTypes<?> types : RegistryObjectBuilderTypes.MAP.values()) {
@@ -56,9 +54,7 @@ public class RegistryCompiler {
             }
         }
     }
-     */
 
-    /*
     public static void compileRegistries() throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("registries.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
@@ -73,9 +69,7 @@ public class RegistryCompiler {
         writer.write(String.join("\n", namespace.format(0, 4)));
         writer.flush();
     }
-     */
 
-    /*
     private static class FormatterRegistry implements IFormatter {
 
         RegistryObjectBuilderTypes<?> types;

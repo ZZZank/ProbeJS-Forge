@@ -108,7 +108,7 @@ public class TypingCompiler {
             document.subList(1, document.size()).forEach(start::merge);
         }
 
-        //Doc
+        //namespace::Document
         for (String line : new FormatterNamespace(
             "Document",
             Manager.classAdditions.values().stream().map(l -> l.get(0)).collect(Collectors.toList())
@@ -122,7 +122,7 @@ public class TypingCompiler {
             writer.write(line);
             writer.write("\n");
         }
-        //namespace::TSDoc
+        //no namespace
         for (String line : new FormatterRawTS(Manager.rawTSDoc).format(0, 4)) {
             writer.write(line);
             writer.write("\n");
@@ -228,7 +228,7 @@ public class TypingCompiler {
         compileConstants(bindingEvent);
         compileJava(globalClasses);
         compileJSConfig();
-        EventCompiler.writeEvents2Cache(cachedEvents);
-        EventCompiler.writeForgeEvents2Cache(cachedForgeEvents);
+        EventCompiler.compileEventsCache(cachedEvents);
+        EventCompiler.comileForgeEventsCache(cachedForgeEvents);
     }
 }

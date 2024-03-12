@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[32,)"
-issueTrackerURL = ""
+issueTrackerURL = "https://github.com/ZZZank/ProbeJS-Forge/issues"
 license = "GNU LGPLv3"
 
 [[mods]]

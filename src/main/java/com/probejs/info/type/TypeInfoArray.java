@@ -5,11 +5,19 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class TypeInfoArray implements ITypeInfo {
-    public static boolean test1(Type type) {
+
+    /**
+     * @return {@code type instanceof GenericArrayType}
+     */
+    public static boolean isGenericArray(Type type) {
         return type instanceof GenericArrayType;
     }
 
-    public static boolean test2(Type type) {
+    /**
+     * @return true if it can be casted into {@code Class<?>} and {@code ((Class<?>) type).isArray()}
+     * is true, otherwise false
+     */
+    public static boolean isClassArray(Type type) {
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
             return clazz.isArray();
@@ -18,15 +26,16 @@ public class TypeInfoArray implements ITypeInfo {
     }
 
     public static boolean test(Type type) {
-        return test1(type) || test2(type);
+        return isGenericArray(type) || isClassArray(type);
     }
 
     private ITypeInfo type;
 
     public TypeInfoArray(Type type) {
-        if (test1(type))
+        if (isGenericArray(type)) {
             this.type = InfoTypeResolver.resolveType(((GenericArrayType) type).getGenericComponentType());
-        if (test2(type)) {
+        }
+        if (isClassArray(type)) {
             assert type instanceof Class<?>;
             this.type = InfoTypeResolver.resolveType(((Class<?>) type).getComponentType());
         }
@@ -50,7 +59,6 @@ public class TypeInfoArray implements ITypeInfo {
     public String getTypeName() {
         return type.getTypeName() + "[]";
     }
-
 
     public void setType(ITypeInfo type) {
         this.type = type;
