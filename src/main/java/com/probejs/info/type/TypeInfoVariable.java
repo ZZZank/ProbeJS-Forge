@@ -4,6 +4,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
 public class TypeInfoVariable implements ITypeInfo {
+
     public static boolean test(Type type) {
         return type instanceof TypeVariable;
     }
@@ -30,7 +31,15 @@ public class TypeInfoVariable implements ITypeInfo {
 
     @Override
     public String getTypeName() {
-        return type.getName() + (underscored ? "_" : "");
+        return wrapTypeName(this.type.getTypeName());
+    }
+
+    @Override
+    public String wrapTypeName(String rawName) {
+        if (underscored) {
+            return rawName + '_';
+        }
+        return rawName + "[]";
     }
 
     @Override

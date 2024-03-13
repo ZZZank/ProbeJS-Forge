@@ -33,7 +33,12 @@ public class TypeInfoClass implements ITypeInfo {
 
     @Override
     public String getTypeName() {
-        return type.getName();
+        return wrapTypeName(this.type.getTypeName());
+    }
+
+    @Override
+    public String wrapTypeName(String rawName) {
+        return rawName;
     }
 
     @Override
@@ -51,6 +56,9 @@ public class TypeInfoClass implements ITypeInfo {
     }
 
     public List<ITypeInfo> getTypeVariables() {
-        return Arrays.stream(type.getTypeParameters()).map(InfoTypeResolver::resolveType).collect(Collectors.toList());
+        return Arrays
+            .stream(type.getTypeParameters())
+            .map(InfoTypeResolver::resolveType)
+            .collect(Collectors.toList());
     }
 }

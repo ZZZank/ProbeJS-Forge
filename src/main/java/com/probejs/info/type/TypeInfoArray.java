@@ -57,7 +57,12 @@ public class TypeInfoArray implements ITypeInfo {
 
     @Override
     public String getTypeName() {
-        return type.getTypeName() + "[]";
+        return wrapTypeName(this.type.getTypeName());
+    }
+
+    @Override
+    public String wrapTypeName(String rawName) {
+        return rawName + "[]";
     }
 
     public void setType(ITypeInfo type) {

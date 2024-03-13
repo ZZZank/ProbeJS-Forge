@@ -16,15 +16,16 @@ public class TypeInfoParameterized implements ITypeInfo {
     private List<ITypeInfo> paramTypes;
 
     public TypeInfoParameterized(Type type) {
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parType = (ParameterizedType) type;
-            rawType = InfoTypeResolver.resolveType(parType.getRawType());
-            paramTypes =
-                Arrays
-                    .stream(parType.getActualTypeArguments())
-                    .map(InfoTypeResolver::resolveType)
-                    .collect(Collectors.toList());
+        if (!(type instanceof ParameterizedType)) {
+            throw new IllegalArgumentException("provided `type` is not an instance of ParameterizedType");
         }
+        ParameterizedType parType = (ParameterizedType) type;
+        rawType = InfoTypeResolver.resolveType(parType.getRawType());
+        paramTypes =
+            Arrays
+                .stream(parType.getActualTypeArguments())
+                .map(InfoTypeResolver::resolveType)
+                .collect(Collectors.toList());
     }
 
     public TypeInfoParameterized(ITypeInfo rawType, List<ITypeInfo> paramTypes) {
@@ -48,12 +49,16 @@ public class TypeInfoParameterized implements ITypeInfo {
 
     @Override
     public String getTypeName() {
+        return wrapTypeName(this.rawType.getTypeName());
+    }
+
+    @Override
+    public String wrapTypeName(String rawName) {
         return (
-            rawType.getTypeName() +
-            String.format(
-                "<%s>",
-                paramTypes.stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", "))
-            )
+            rawName +
+            "<" +
+            paramTypes.stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", ")) +
+            ">"
         );
     }
 

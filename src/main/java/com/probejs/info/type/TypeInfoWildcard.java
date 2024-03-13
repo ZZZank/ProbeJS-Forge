@@ -5,7 +5,6 @@ import java.lang.reflect.WildcardType;
 
 public class TypeInfoWildcard implements ITypeInfo {
 
-
     public static boolean test(Type type) {
         return type instanceof WildcardType;
     }
@@ -45,7 +44,12 @@ public class TypeInfoWildcard implements ITypeInfo {
 
     @Override
     public String getTypeName() {
-        return type.getTypeName();
+        return wrapTypeName(this.type.getTypeName());
+    }
+
+    @Override
+    public String wrapTypeName(String rawName) {
+        return rawName;
     }
 
     @Override
