@@ -15,6 +15,7 @@ import com.probejs.info.EventInfo;
 import com.probejs.info.Walker;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.plugin.CapturedClasses;
+import com.probejs.plugin.DummyBindingEvent;
 import com.probejs.recipe.RecipeHolders;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
@@ -42,7 +43,7 @@ public class TypingCompiler {
         CapturedClasses.capturedEvents
             .values()
             .stream()
-            .map(eventInfo -> eventInfo.captured)
+            .map(eventInfo -> eventInfo.clazzRaw)
             .forEach(touchableClasses::add);
         touchableClasses.addAll(CapturedClasses.capturedRawEvents.values());
         //recipe type
@@ -213,7 +214,7 @@ public class TypingCompiler {
         Set<Class<?>> cachedClasses = cachedEvents
             .values()
             .stream()
-            .map(eventInfo -> eventInfo.captured)
+            .map(eventInfo -> eventInfo.clazzRaw)
             .collect(Collectors.toSet());
         cachedClasses.addAll(cachedForgeEvents.values());
         // cachedClasses.addAll(RegistryCompiler.getRegistryClasses());

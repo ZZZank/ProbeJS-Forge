@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 public class EventInfo {
 
-    public final Class<? extends EventJS> captured;
+    public final Class<? extends EventJS> clazzRaw;
     public final String id;
     public final boolean cancellable;
     public final EnumSet<ScriptType> scriptTypes;
@@ -28,7 +28,7 @@ public class EventInfo {
         EnumSet<ScriptType> scriptTypes,
         boolean cancellable
     ) {
-        this.captured = captured;
+        this.clazzRaw = captured;
         this.id = id;
         this.sub = sub;
         this.cancellable = cancellable;
@@ -36,7 +36,7 @@ public class EventInfo {
     }
 
     public EventInfo(ScriptType t, EventJS event, String id, @Nullable String sub) {
-        this.captured = event.getClass();
+        this.clazzRaw = event.getClass();
         this.sub = sub;
         this.id = id;
         this.cancellable = event.canCancel();
@@ -55,7 +55,7 @@ public class EventInfo {
         JsonObject json = new JsonObject();
         json.addProperty("id", id);
         json.addProperty("sub", sub);
-        json.addProperty("class", captured.getName());
+        json.addProperty("class", clazzRaw.getName());
         JsonArray types = new JsonArray();
         scriptTypes.forEach(script -> types.add(script.name()));
         json.add("type", types);
@@ -78,8 +78,6 @@ public class EventInfo {
         }
         lines.add("/**\n");
         if (sub != null) {
-            lines.add(" * This is a wildcardeded event, you should replace `${string}` with actual id.");
-            lines.add(" * E.g. `player.data_from_server.reload`, `ftbquests.completed.123456`");
         }
         lines.add(" * @cancellable " + canCancel + "\n");
         lines.add(" * @at " + String.join(", ", typeNames) + "\n");

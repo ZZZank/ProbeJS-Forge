@@ -1,6 +1,7 @@
 package com.probejs.formatter;
 
 import com.probejs.ProbeJS;
+import com.probejs.document.type.TypeResolver;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.info.ClassInfo;
@@ -143,6 +144,7 @@ public class SpecialTypes {
         }
         List<String> values = new ArrayList<>();
         ScriptableObject scriptable = (ScriptableObject) obj;
+
         Scriptable prototype = scriptable.getPrototype();
         if (prototype.get("constructor", prototype) instanceof BaseFunction) {
             BaseFunction func = (BaseFunction) prototype.get("constructor", prototype);
@@ -151,6 +153,7 @@ public class SpecialTypes {
                 return func.getFunctionName();
             }
         }
+
         for (Object id : scriptable.getIds()) {
             String formattedKey = NameResolver.formatValue(id);
             Object value;
@@ -162,6 +165,7 @@ public class SpecialTypes {
             String formattedValue = formatValueOrType(value);
             values.add(String.format("%s:%s", formattedKey, formattedValue));
         }
+
         Scriptable proto = scriptable.getPrototype();
         for (Object id : proto.getIds()) {
             String formattedKey = NameResolver.formatValue(id);

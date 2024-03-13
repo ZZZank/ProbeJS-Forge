@@ -87,7 +87,7 @@ public class EventCompiler {
         for (Map.Entry<String, EventInfo> entry : (new TreeMap<>(cachedEvents)).entrySet()) {
             EventInfo captured = entry.getValue();
             String id = captured.id;
-            Class<?> event = captured.captured;
+            Class<?> event = captured.clazzRaw;
             if (captured.hasSub()) {
                 wildcards.put(id, captured);
                 id = id + "." + captured.sub;

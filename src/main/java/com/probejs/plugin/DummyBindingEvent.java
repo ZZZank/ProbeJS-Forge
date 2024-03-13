@@ -1,4 +1,4 @@
-package com.probejs.compiler;
+package com.probejs.plugin;
 
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptManager;

@@ -6,9 +6,9 @@ import com.probejs.util.StringUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Resolver {
+public class TypeResolver {
 
-    public static IType resolveType(String type) {
+    public static IType resolve(String type) {
         type = type.trim();
 
         //TODO: Resolve object type
@@ -19,19 +19,19 @@ public class Resolver {
 
         Pair<String, String> splitUnion = StringUtil.splitFirst(type, "<", ">", "|");
         if (splitUnion != null) {
-            return new TypeUnion(resolveType(splitUnion.getFirst()), resolveType(splitUnion.getSecond()));
+            return new TypeUnion(resolve(splitUnion.getFirst()), resolve(splitUnion.getSecond()));
         }
 
         Pair<String, String> splitIntersection = StringUtil.splitFirst(type, "<", ">", "&");
         if (splitIntersection != null) {
             return new TypeIntersection(
-                resolveType(splitIntersection.getFirst()),
-                resolveType(splitIntersection.getSecond())
+                resolve(splitIntersection.getFirst()),
+                resolve(splitIntersection.getSecond())
             );
         }
 
         if (type.endsWith("[]")) {
-            return new TypeArray(resolveType(type.substring(0, type.length() - 2)));
+            return new TypeArray(resolve(type.substring(0, type.length() - 2)));
         }
 
         if (type.endsWith(">")) {
@@ -40,8 +40,8 @@ public class Resolver {
             String typeParams = type.substring(indexLeft + 1, type.length() - 1);
             List<String> params = StringUtil.splitLayer(typeParams, "<", ">", ",");
             return new TypeParameterized(
-                resolveType(rawType),
-                params.stream().map(Resolver::resolveType).collect(Collectors.toList())
+                resolve(rawType),
+                params.stream().map(TypeResolver::resolve).collect(Collectors.toList())
             );
         }
         return new TypeNamed(type);
