@@ -7,7 +7,6 @@ import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
 import dev.latvian.mods.rhino.NativeObject;
 import dev.latvian.mods.rhino.Scriptable;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -76,26 +75,46 @@ public class NameResolver {
     public static final Set<String> keywords = new HashSet<>();
     public static final Set<String> resolvedPrimitives = new HashSet<>();
 
-    public static void putResolvedName(String className, String resolvedName) {
-        putResolvedName(className, new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
-    }
-
-    public static void putResolvedName(String className, ResolvedName resolvedName) {
-        if (!resolvedNames.containsKey(className)) {
-            resolvedNames.put(className, resolvedName);
-        }
-    }
-
-    public static void putResolvedName(Class<?> className, ResolvedName resolvedName) {
-        putResolvedName(className.getName(), resolvedName);
-    }
-
-    public static void putResolvedName(Class<?> className, String resolvedName) {
-        putResolvedName(className, new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
+    /**
+     * @see com.probejs.formatter.NameResolver#putResolvedName(String, ResolvedName)
+     */
+    public static ResolvedName putResolvedName(String className, String resolvedName) {
+        return putResolvedName(className, new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
     }
 
     /**
-     * resolve full-name of a class into ones used by ProbeJS 
+     * works like {@code resolvedNames::putIfAbsent}, only puts {@code resolvedName} in when
+     * the specified className is NOT resolved
+     * @param className key
+     * @param resolvedName value
+     * @return Current value if className is already resolved, otherwise new value(
+     * {@code resolvedName}), so returned value will always be not-null, as long as
+     * provided {@code resolvedName} is not null
+     */
+    public static ResolvedName putResolvedName(String className, ResolvedName resolvedName) {
+        ResolvedName curr = resolvedNames.putIfAbsent(className, resolvedName);
+        if (curr != null) {
+            return curr;
+        }
+        return resolvedNames.get(className);
+    }
+
+    /**
+     * @see com.probejs.formatter.NameResolver#putResolvedName(String, ResolvedName)
+     */
+    public static ResolvedName putResolvedName(Class<?> clazz, ResolvedName resolvedName) {
+        return putResolvedName(clazz.getName(), resolvedName);
+    }
+
+    /**
+     * @see com.probejs.formatter.NameResolver#putResolvedName(String, ResolvedName)
+     */
+    public static ResolvedName putResolvedName(Class<?> clazz, String resolvedName) {
+        return putResolvedName(clazz, new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
+    }
+
+    /**
+     * resolve full-name of a class into ones used by ProbeJS
      * @param className Full class name, like "java.lang.String"
      * @return Resolved name, or {@code ResolvedName.UNRESOLVED} if unable to resolve
      */
@@ -138,15 +157,15 @@ public class NameResolver {
         return null;
     }
 
-    public static void resolveName(Class<?> clazz) {
+    public static ResolvedName resolveName(Class<?> clazz) {
         // String remappedName = MethodInfo.RUNTIME.getMappedClass(clazz);
         // ResolvedName resolved = new ResolvedName(Arrays.asList(remappedName.split("\\.")));
         ResolvedName resolved = new ResolvedName(Arrays.asList(clazz.getName().split("\\.")));
         ResolvedName internal = new ResolvedName(Arrays.asList("Internal", resolved.getLastName()));
         if (resolvedNames.containsValue(internal)) {
-            putResolvedName(clazz.getName(), resolved);
+            return putResolvedName(clazz.getName(), resolved);
         } else {
-            putResolvedName(clazz.getName(), internal);
+            return putResolvedName(clazz.getName(), internal);
         }
     }
 
