@@ -59,6 +59,7 @@ public class EventCompiler {
                 )
             );
         }
+        writer.write("\n");
     }
 
     private static void writeWildcardEvents(BufferedWriter writer, Map<String, EventInfo> wildcards)
