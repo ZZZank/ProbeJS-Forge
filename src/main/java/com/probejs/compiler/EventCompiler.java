@@ -15,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,20 +63,32 @@ public class EventCompiler {
 
     private static void writeWildcardEvents(BufferedWriter writer, Map<String, EventInfo> wildcards)
         throws IOException {
+        final List<String> lines = new ArrayList<>();
+        lines.add("/**");
+        lines.add(
+            " * This is the general representation of wildcarded event, you should replace `${string}` with actual id."
+        );
+        lines.add(" * ");
+        lines.add(" * E.g. `player.data_from_server.reload`, `ftbquests.completed.123456`");
+        lines.add(" */");
+        lines.add(
+            "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void);"
+        );
         for (EventInfo wildcard : (new TreeMap<>(wildcards)).values()) {
             String id = wildcard.id;
-            List<String> lines = wildcard.getBuiltinPropAsComment();
+            lines.addAll(wildcard.getBuiltinPropAsComment());
             lines.add(
                 String.format(
                     "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void);",
                     id,
-                    FormatterClass.formatTypeParameterized(new TypeInfoClass(wildcard.captured))
+                    FormatterClass.formatTypeParameterized(new TypeInfoClass(wildcard.clazzRaw))
                 )
             );
-            for (String line : lines) {
-                writer.write(line);
-                writer.write("\n");
-            }
+        }
+        lines.add("");
+        for (String line : lines) {
+            writer.write(line);
+            writer.write("\n");
         }
     }
 
@@ -84,6 +97,13 @@ public class EventCompiler {
         BufferedWriter writer,
         Map<String, EventInfo> wildcards
     ) throws IOException {
+        final List<String> lines = new ArrayList<>();
+        lines.add("/**");
+        lines.add(
+            " * General representation of `onEvent()`, seeing this comment usually indicates that such event does not exist, or is unknown to ProbeJS yet"
+        );
+        lines.add(" */");
+        lines.add("declare function onEvent(name: string, handler: (event: Internal.EventJS) => void);");
         for (Map.Entry<String, EventInfo> entry : (new TreeMap<>(cachedEvents)).entrySet()) {
             EventInfo captured = entry.getValue();
             String id = captured.id;
@@ -92,7 +112,7 @@ public class EventCompiler {
                 wildcards.put(id, captured);
                 id = id + "." + captured.sub;
             }
-            List<String> lines = captured.getBuiltinPropAsComment();
+            lines.addAll(captured.getBuiltinPropAsComment());
             lines.add(
                 String.format(
                     "declare function onEvent(name: \"%s\", handler: (event: %s) => void);",
@@ -100,10 +120,11 @@ public class EventCompiler {
                     FormatterClass.formatTypeParameterized(new TypeInfoClass(event))
                 )
             );
-            for (String line : lines) {
-                writer.write(line);
-                writer.write("\n");
-            }
+        }
+        lines.add("");
+        for (String line : lines) {
+            writer.write(line);
+            writer.write("\n");
         }
     }
 

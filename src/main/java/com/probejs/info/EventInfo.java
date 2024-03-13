@@ -76,12 +76,10 @@ public class EventInfo {
             canCancel = "unknown";
             typeNames.add("unknown, info of this event seems fetched from an older version of cache");
         }
-        lines.add("/**\n");
-        if (sub != null) {
-        }
-        lines.add(" * @cancellable " + canCancel + "\n");
-        lines.add(" * @at " + String.join(", ", typeNames) + "\n");
-        lines.add(" */\n");
+        lines.add("/**");
+        lines.add(" * @cancellable " + canCancel);
+        lines.add(" * @at " + String.join(", ", typeNames));
+        lines.add(" */");
         return lines;
     }
 
