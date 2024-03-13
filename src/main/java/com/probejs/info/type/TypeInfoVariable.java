@@ -39,7 +39,7 @@ public class TypeInfoVariable implements ITypeInfo {
         if (underscored) {
             return rawName + '_';
         }
-        return rawName + "[]";
+        return rawName;
     }
 
     @Override
