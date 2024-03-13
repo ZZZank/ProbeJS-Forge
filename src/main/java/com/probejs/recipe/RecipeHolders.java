@@ -1,8 +1,8 @@
 package com.probejs.recipe;
 
-import com.mojang.datafixers.util.Pair;
 import com.probejs.formatter.NameResolver;
 import com.probejs.util.PUtil;
+import com.probejs.util.Pair;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import java.util.ArrayList;
 import java.util.HashMap;
