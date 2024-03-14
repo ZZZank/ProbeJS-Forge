@@ -9,7 +9,7 @@ import com.probejs.document.DocumentMethod;
 import com.probejs.document.Manager;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentHidden;
-import com.probejs.document.type.TypeNamed;
+import com.probejs.document.type.IType;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.*;
 import com.probejs.info.type.ITypeInfo;
@@ -60,21 +60,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         List<String> assignableTypes = Manager.typesAssignable
             .getOrDefault(classInfo.getClazzRaw().getName(), new ArrayList<>())
             .stream()
-            .map(t ->
-                t.transform((i, s) -> {
-                    if (!(i instanceof TypeNamed)) {
-                        return s;
-                    }
-                    TypeNamed named = (TypeNamed) i;
-                    if (
-                        NameResolver.resolvedNames.containsKey(named.getRawTypeName()) &&
-                        !NameResolver.resolvedPrimitives.contains(named.getRawTypeName())
-                    ) {
-                        return s + "_";
-                    }
-                    return s;
-                })
-            )
+            .map(t -> t.transform(IType.underscoreTransformer))
             .collect(Collectors.toList());
 
         if (classInfo.isEnum()) {
@@ -84,9 +70,9 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 Method values = clazz.getMethod("values");
                 values.setAccessible(true);
                 Object[] enumValues = (Object[]) values.invoke(null);
+                //Use the name() here so won't be affected by overrides
+                Method name = Enum.class.getMethod("name");
                 for (Object enumValue : enumValues) {
-                    //Use the name() here so won't be affected by overrides
-                    Method name = Enum.class.getMethod("name");
                     assignableTypes.add(
                         ProbeJS.GSON.toJson(name.invoke(enumValue).toString().toLowerCase(Locale.ROOT))
                     );
@@ -181,13 +167,13 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             });
         //special processing for FunctionalInterface
         if (classInfo.isFunctionalInterface()) {
-            List<MethodInfo> fnTargets = classInfo
+            Optional<MethodInfo> fnTargets = classInfo
                 .getMethodInfo()
                 .stream()
                 .filter(MethodInfo::isAbstract)
-                .collect(Collectors.toList());
-            if (fnTargets.size() == 1) {
-                FormatterMethod fnFormatter = new FormatterMethod(fnTargets.get(0));
+                .findFirst();
+            if (fnTargets.isPresent()) {
+                FormatterMethod fnFormatter = new FormatterMethod(fnTargets.get());
                 DocumentMethod doc = fnFormatter.document;
                 assignableTypes.add(
                     String.format(
@@ -253,12 +239,13 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 .forEach(f -> formatted.addAll(f.format(indent + stepIndent, stepIndent)));
         }
         // additions
-        fieldAdditions.forEach(fieldDoc -> formatted.addAll(fieldDoc.format(indent + stepIndent, stepIndent))
-        );
-        methodAdditions.forEach(methodDoc ->
-            formatted.addAll(methodDoc.format(indent + stepIndent, stepIndent))
-        );
-
+        for (DocumentField fieldDoc : fieldAdditions) {
+            formatted.addAll(fieldDoc.format(indent + stepIndent, stepIndent));
+        }
+        for (DocumentMethod methodDoc : methodAdditions) {
+            formatted.addAll(methodDoc.format(indent + stepIndent, stepIndent));
+        }
+        //end
         formatted.add(PUtil.indent(indent) + "}");
         //type conversion
         String origName = NameResolver.getResolvedName(classInfo.getName()).getLastName();
