@@ -3,12 +3,12 @@ package com.probejs.formatter;
 import com.probejs.ProbeJS;
 import com.probejs.document.Manager;
 import com.probejs.document.type.TypeNamed;
-import com.probejs.document.type.TypeResolver;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.MethodInfo;
 import com.probejs.info.type.ITypeInfo;
+import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
@@ -65,7 +65,7 @@ public class SpecialTypes {
                     variableMap.getOrDefault(resolvedReturn.getTypeName(), new TypeInfoClass(Object.class));
             }
             return String.format(
-                "((%s) => %s)",
+                "((%s)=>%s)",
                 String.join(", ", formattedParam),
                 new FormatterType(resolvedReturn).format(0, 0)
             );
@@ -89,29 +89,14 @@ public class SpecialTypes {
                 //Functional interfaces has one and only one abstract method
                 .findAny()
                 .ifPresent(mInfo -> {
-                    String fnBody = String.format(
-                        "((%s) => %s)",
-                        mInfo
-                            .getParams()
-                            .stream()
-                            .map(info -> {
-                                ITypeInfo typ = info.getType();
-                                return (
-                                    info.getName() +
-                                    ": " +
-                                    typ.wrapTypeName(
-                                        NameResolver.resolveName(typ.getResolvedClass()).getFullName()
-                                    )
-                                );
-                            })
-                            .collect(Collectors.joining(", ")),
-                        mInfo.getReturnType().getTypeName()
-                    );
                     Manager.typesAssignable
                         .computeIfAbsent(clazz.getName(), k -> new ArrayList<>())
-                        .add(new TypeNamed(fnBody));
-                    // FormatterLambda formatter = new FormatterLambda(mInfo);
-                    // NameResolver.putTypeFormatter(clazz, formatter::format);
+                        .add(
+                            new TypeNamed(
+                                new FormatterLambda(mInfo).format(InfoTypeResolver.resolveType(clazz))
+                            )
+                        );
+                    // NameResolver.putTypeFormatter(clazz, new FormatterLambda(mInfo)::format);
                 });
         }
     }
