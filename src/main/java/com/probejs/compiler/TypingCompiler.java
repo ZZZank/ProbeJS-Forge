@@ -221,7 +221,6 @@ public class TypingCompiler {
         //global class
         Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
         globalClasses.removeIf(c -> ClassResolver.skipped.contains(c));
-        // SpecialTypes.processFunctionalInterfaces(globalClasses);
         compileGlobal(bindingEvent, globalClasses);
         compileRecipeHolder(typeMap);
         // RegistryCompiler.compileRegistries();

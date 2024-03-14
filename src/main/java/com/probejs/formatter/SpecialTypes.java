@@ -71,33 +71,7 @@ public class SpecialTypes {
             );
         }
     }
-/*
-    public static void processFunctionalInterfaces(Set<Class<?>> globalClasses) {
-        for (Class<?> clazz : globalClasses) {
-            if (
-                !clazz.isInterface() ||
-                clazz.getAnnotation(FunctionalInterface.class) == null ||
-                skippedSpecials.contains(clazz)
-            ) {
-                continue;
-            }
-            ITypeInfo classType = InfoTypeResolver.resolveType(clazz);
-            ClassInfo
-                .ofCache(clazz)
-                .getMethodInfo()
-                .stream()
-                .filter(MethodInfo::isAbstract)
-                //Functional interfaces has one and only one abstract method
-                .findAny()
-                .ifPresent(mInfo -> {
-                    Manager.typesAssignable
-                        .computeIfAbsent(clazz.getName(), k -> new ArrayList<>())
-                        .add(new TypeNamed(new FormatterLambda(mInfo).format(classType)));
-                    // NameResolver.putTypeFormatter(clazz, new FormatterLambda(mInfo)::format);
-                });
-        }
-    }
-*/
+
     private static String formatValueOrType(Object obj) {
         String formattedValue = NameResolver.formatValue(obj);
         if (formattedValue == null) {
