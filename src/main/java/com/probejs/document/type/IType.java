@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 public interface IType {
     /**
      * performs NO processing
+     * @return the provided string itself
      */
     BiFunction<IType, String, String> dummyTransformer = (type, raw) -> raw;
     BiFunction<IType, String, String> underscoreTransformer = (type, raw) -> {

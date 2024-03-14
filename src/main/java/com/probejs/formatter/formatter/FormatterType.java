@@ -29,7 +29,7 @@ public class FormatterType {
         this(typeInfo, true);
     }
 
-    public String format(Integer indent, Integer stepIndent) {
+    public String format(int indent, int stepIndent) {
         if (useSpecial) {
             Class<?> rawClass = typeInfo.getResolvedClass();
             if (NameResolver.specialTypeFormatters.containsKey(rawClass)) {

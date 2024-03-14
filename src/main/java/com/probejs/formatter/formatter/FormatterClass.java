@@ -49,7 +49,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
     }
 
     @Override
-    public List<String> format(Integer indent, Integer stepIndent) {
+    public List<String> format(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
         DocumentComment comment = document == null ? null : document.getComment();
         if (comment != null) {
@@ -149,7 +149,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         formatted.add(PUtil.indent(indent) + String.join(" ", firstLine));
         // first line processing, end
 
-        // Fields, methods
+        // methods
         methodFormatters
             .values()
             .forEach(fmtrMethods ->
@@ -169,6 +169,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                         formatted.addAll(fmtrMethod.format(indent + stepIndent, stepIndent))
                     )
             );
+        //fields
         fieldFormatters
             .entrySet()
             .stream()
@@ -178,7 +179,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 f.getValue().setInterface(classInfo.isInterface());
                 formatted.addAll(f.getValue().format(indent + stepIndent, stepIndent));
             });
-        //FunctionalInterface
+        //special processing for FunctionalInterface
         if (classInfo.isFunctionalInterface()) {
             List<MethodInfo> fnTargets = classInfo
                 .getMethodInfo()

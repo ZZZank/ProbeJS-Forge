@@ -24,7 +24,7 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
     }
 
     @Override
-    public List<String> format(Integer indent, Integer stepIndent) {
+    public List<String> format(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
         DocumentComment comment = document != null ? document.getComment() : null;
         if (comment != null) {

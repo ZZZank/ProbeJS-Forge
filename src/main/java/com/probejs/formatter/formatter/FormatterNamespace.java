@@ -15,7 +15,7 @@ public class FormatterNamespace implements IFormatter {
     }
 
     @Override
-    public List<String> format(Integer indent, Integer stepIndent) {
+    public List<String> format(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
         formatted.add(PUtil.indent(indent) + String.format("declare namespace %s {", path));
         for (IFormatter formatter : formatters) {

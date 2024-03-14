@@ -72,7 +72,7 @@ public class DocumentClass implements IConcrete, IFormatter {
     }
 
     @Override
-    public List<String> format(Integer indent, Integer stepIndent) {
+    public List<String> format(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
         StringBuilder builder = new StringBuilder(PUtil.indent(indent))
             .append("class ")

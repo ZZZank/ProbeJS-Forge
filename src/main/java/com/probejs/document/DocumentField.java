@@ -66,7 +66,7 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
     }
 
     @Override
-    public List<String> format(Integer indent, Integer stepIndent) {
+    public List<String> format(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
         if (comment != null) {
             formatted.addAll(comment.format(indent, stepIndent));

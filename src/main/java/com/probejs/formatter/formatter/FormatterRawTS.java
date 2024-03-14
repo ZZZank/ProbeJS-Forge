@@ -13,7 +13,7 @@ public class FormatterRawTS implements IFormatter {
     }
 
     @Override
-    public List<String> format(Integer indent, Integer stepIndent) {
+    public List<String> format(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
         formatted.add(PUtil.indent(indent) + "// Raw TS doc region start");
         for (String line : docs) {

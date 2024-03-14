@@ -54,11 +54,10 @@ public class TypeInfoParameterized implements ITypeInfo {
 
     @Override
     public String wrapTypeName(String rawName) {
-        return (
-            rawName +
-            "<" +
-            paramTypes.stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", ")) +
-            ">"
+        return String.format(
+            "%s<%s>",
+            rawName,
+            paramTypes.stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", "))
         );
     }
 

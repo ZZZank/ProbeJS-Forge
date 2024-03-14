@@ -63,7 +63,7 @@ public class DocumentComment implements IDecorative, IFormatter {
     }
 
     @Override
-    public List<String> format(Integer indent, Integer stepIndent) {
+    public List<String> format(int indent, int stepIndent) {
         return getDocumentText().stream().map(s -> PUtil.indent(indent) + s).collect(Collectors.toList());
     }
 }

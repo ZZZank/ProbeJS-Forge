@@ -49,9 +49,9 @@ public class FormatterConstructor implements IFormatter {
     }
 
     @Override
-    public List<String> format(Integer indent, Integer stepIndent) {
+    public List<String> format(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
-        formatted.add(PUtil.indent(indent) + String.format("constructor(%s);", formatParams()));
+        formatted.add(String.format("%sconstructor(%s);", PUtil.indent(indent), formatParams()));
         return formatted;
     }
 }

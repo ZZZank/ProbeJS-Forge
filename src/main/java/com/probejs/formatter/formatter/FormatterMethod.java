@@ -145,9 +145,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             TypeInfoClass classInfo = (TypeInfoClass) info;
             int typeCount = classInfo.getTypeVariables().size();
             if (typeCount != 0) {
-                sb.append('<');
-                sb.append(String.join(", ", Collections.nCopies(typeCount, "any")));
-                sb.append('>');
+                sb.append('<').append(String.join(", ", Collections.nCopies(typeCount, "any"))).append('>');
             }
         }
         return sb.toString();
@@ -187,7 +185,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     @Override
-    public List<String> format(Integer indent, Integer stepIndent) {
+    public List<String> format(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
 
         if (document != null) {
@@ -237,7 +235,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         return formatted;
     }
 
-    public List<String> formatBean(Integer indent, Integer stepIndent) {
+    public List<String> formatBean(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
 
         String methodName = methodInfo.getName();

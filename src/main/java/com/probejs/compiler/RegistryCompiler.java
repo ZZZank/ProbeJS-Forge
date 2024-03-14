@@ -88,7 +88,7 @@ public class RegistryCompiler {
         }
 
         @Override
-        public List<String> format(Integer indent, Integer stepIndent) {
+        public List<String> format(int indent, int stepIndent) {
             List<String> formatted = new ArrayList<>();
             int stepped = indent + stepIndent;
             Gson stringG = new Gson();
