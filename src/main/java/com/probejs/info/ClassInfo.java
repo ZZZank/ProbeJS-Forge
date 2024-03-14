@@ -46,6 +46,7 @@ public class ClassInfo {
     private final String name;
     private final int modifiers;
     private final boolean isInterface;
+    private final boolean isFunctionalInterface;
     private final List<ITypeInfo> parameters;
     private final List<MethodInfo> methodInfo;
     private final List<FieldInfo> fieldInfo;
@@ -58,6 +59,7 @@ public class ClassInfo {
         name = clazzRaw.getName();
         modifiers = clazzRaw.getModifiers();
         isInterface = clazzRaw.isInterface();
+        isFunctionalInterface = clazzRaw.isAnnotationPresent(FunctionalInterface.class);
         constructorInfo =
             Arrays.stream(clazzRaw.getConstructors()).map(ConstructorInfo::new).collect(Collectors.toList());
         superClass = ofCache(clazzRaw.getSuperclass());
@@ -192,6 +194,10 @@ public class ClassInfo {
 
     public boolean isInterface() {
         return isInterface;
+    }
+
+    public boolean isFunctionalInterface() {
+        return isFunctionalInterface;
     }
 
     public boolean isAbstract() {
