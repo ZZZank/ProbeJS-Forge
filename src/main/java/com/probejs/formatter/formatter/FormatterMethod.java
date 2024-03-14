@@ -14,6 +14,7 @@ import com.probejs.info.type.TypeInfoClass;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -156,6 +157,16 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
      * Get a `a: string, b: number` style String representation of params of this method
      */
     public String formatParams(Map<String, String> renames) {
+        return formatParams(renames, false);
+    }
+
+    /**
+     * Get a `a: string, b: number` style String representation of params of this method
+     */
+    public String formatParams(Map<String, String> renames, boolean forceNoUnderscore) {
+        BiFunction<IType, String, String> typeTransformer = forceNoUnderscore
+            ? IType.dummyTransformer
+            : IType.underscoreTransformer;
         Map<String, IType> modifiers = getModifiers().getFirst();
         // modifiers = getModifiers().getFirst();
         return methodInfo
@@ -164,8 +175,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             .map(paramInfo -> {
                 String paramNameRaw = paramInfo.getName();
                 String paramType = modifiers.containsKey(paramNameRaw)
-                    ? modifiers.get(paramNameRaw).transform(IType.underscoreTransformer)
-                    : formatParamUnderscore(paramInfo.getType());
+                    ? modifiers.get(paramNameRaw).transform(typeTransformer)
+                    : formatParamUnderscore(paramInfo.getType(), forceNoUnderscore);
                 return String.format(
                     "%s: %s",
                     NameResolver.getNameSafe(renames.getOrDefault(paramNameRaw, paramNameRaw)),

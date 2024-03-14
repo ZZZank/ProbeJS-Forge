@@ -188,14 +188,14 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             if (fnTargets.size() == 1) {
                 FormatterMethod fnFormatter = new FormatterMethod(fnTargets.get(0));
                 DocumentMethod doc = fnFormatter.document;
-                String params = fnFormatter.formatParams(
-                    CommentUtil.getRenames(doc == null ? null : doc.getComment())
-                );
                 formatted.add(
                     String.format(
                         "%s(%s): %s;",
                         PUtil.indent(indent + stepIndent),
-                        params,
+                        fnFormatter.formatParams(
+                            CommentUtil.getRenames(doc == null ? null : doc.getComment()),
+                            true
+                        ),
                         fnFormatter.formatReturn()
                     )
                 );
