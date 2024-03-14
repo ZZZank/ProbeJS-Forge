@@ -192,7 +192,14 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                     fnFormatter.getModifiers().getFirst(),
                     CommentUtil.getRenames(doc == null ? null : doc.getComment())
                 );
-                formatted.add(String.format("%s: %s", params, fnFormatter.formatReturn()));
+                formatted.add(
+                    String.format(
+                        "%s%s: %s;",
+                        PUtil.indent(indent + stepIndent),
+                        params,
+                        fnFormatter.formatReturn()
+                    )
+                );
             }
         }
 
