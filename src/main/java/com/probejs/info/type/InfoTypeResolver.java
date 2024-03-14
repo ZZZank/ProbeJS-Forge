@@ -9,10 +9,10 @@ public class InfoTypeResolver {
 
     public static ITypeInfo resolveType(Type type) {
         if (TypeInfoArray.test(type)) return new TypeInfoArray(type);
-        if (TypeInfoClass.test(type)) return new TypeInfoClass(type);
         if (TypeInfoVariable.test(type)) return new TypeInfoVariable(type);
         if (TypeInfoWildcard.test(type)) return new TypeInfoWildcard(type);
         if (TypeInfoParameterized.test(type)) return new TypeInfoParameterized(type);
+        if (TypeInfoClass.test(type)) return new TypeInfoClass(type);
         return null;
     }
 
