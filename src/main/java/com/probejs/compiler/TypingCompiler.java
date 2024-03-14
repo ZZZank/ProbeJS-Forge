@@ -208,9 +208,13 @@ public class TypingCompiler {
 
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
-        //cache class
+
+        //event cache
         Map<String, EventInfo> cachedEvents = EventCompiler.readCachedEvents();
         Map<String, Class<?>> cachedForgeEvents = EventCompiler.readCachedForgeEvents();
+        cachedEvents.putAll(CapturedClasses.capturedEvents);
+        cachedForgeEvents.putAll(CapturedClasses.capturedRawEvents);
+
         Set<Class<?>> cachedClasses = cachedEvents
             .values()
             .stream()
@@ -218,9 +222,11 @@ public class TypingCompiler {
             .collect(Collectors.toSet());
         cachedClasses.addAll(cachedForgeEvents.values());
         // cachedClasses.addAll(RegistryCompiler.getRegistryClasses());
+        
         //global class
         Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
-        globalClasses.removeIf(c -> ClassResolver.skipped.contains(c));
+        globalClasses.removeIf(ClassResolver.skipped::contains);
+
         compileGlobal(bindingEvent, globalClasses);
         compileRecipeHolder(typeMap);
         // RegistryCompiler.compileRegistries();

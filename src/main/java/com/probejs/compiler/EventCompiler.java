@@ -32,8 +32,6 @@ public class EventCompiler {
         Map<String, EventInfo> cachedEvents,
         Map<String, Class<?>> cachedForgeEvents
     ) throws IOException {
-        cachedEvents.putAll(CapturedClasses.capturedEvents);
-        cachedForgeEvents.putAll(CapturedClasses.capturedRawEvents);
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
         // writer.write("/// <reference path=\"./registries.d.ts\" />\n");
