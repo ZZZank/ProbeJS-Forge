@@ -187,9 +187,10 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 .collect(Collectors.toList());
             if (fnTargets.size() == 1) {
                 FormatterMethod fnFormatter = new FormatterMethod(fnTargets.get(0));
+                DocumentMethod doc = fnFormatter.document;
                 String params = fnFormatter.formatParams(
                     fnFormatter.getModifiers().getFirst(),
-                    CommentUtil.getRenames(fnFormatter.document.getComment())
+                    CommentUtil.getRenames(doc == null ? null : doc.getComment())
                 );
                 formatted.add(String.format("%s: %s", params, fnFormatter.formatReturn()));
             }
