@@ -2,6 +2,7 @@
 /**
 * @target dev.latvian.kubejs.item.ItemStackJS
 * @assign string
+* @assign `${string}x ${string}`
 * @assign object
 */
 class ItemStackJS {
@@ -12,11 +13,14 @@ class ItemStackJS {
  * @assign dev.latvian.kubejs.item.ItemStackJS
  * @assign dev.latvian.kubejs.fluid.FluidStackJS
  * @assign "*"
+ * @assign "" | "-" | "air" | "minecraft:air"
  * @assign `%${string}`
+ * @assign `@${string}`
+ * @assign `#${string}`
  * @assign RegExp
- * @assign net.minecraft.world.item.crafting.Ingredient
+ * @assign Internal.Ingredient
  * @assign dev.latvian.kubejs.item.ingredient.IngredientJS[]
- * @assign {type: Special.Ingredient}
+ * @assign {type: string}
  * @assign {item: Internal.ItemStackJS_, count?: number}
  * @assign {fluid: Internal.FluidStackJS_}
  * @assign {value: object}
