@@ -1,3 +1,16 @@
+# ProbeJS Legacy 2.4.1 -> 2.5.0
+
+RecipeFilter_ & FunctionalInterfaces
+
+## What's new?
+
+-   Functional Interfaces(Interfaces that accept Lambda as their instances) can now also display their original type, thus accepting document
+    -  e.g. `event.replaceInput(filter, toReplace, replaceWith)` in RecipeEvent, where `filter` used to be a only lambda function, but now accepts Lambda, original type, and objects like `{mod: "minecraft", type: "minecraft:blasting"}`
+-   Detailed doc for `RecipeFilter`, `ItemStackJS`, `IngredientJS`, and much more
+-   Event doc will now have a generalized variant displayed, to handle events that are not exported by ProbeJS yet
+
+---
+
 # ProbeJS Legacy 2.4.0 -> 2.4.1
 
 Fix type casting error
