@@ -1,17 +1,8 @@
 package com.probejs.formatter;
 
 import com.probejs.ProbeJS;
-import com.probejs.document.Manager;
-import com.probejs.document.type.TypeNamed;
 import com.probejs.formatter.formatter.FormatterClass;
-import com.probejs.formatter.formatter.FormatterType;
-import com.probejs.info.ClassInfo;
-import com.probejs.info.MethodInfo;
-import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoClass;
-import com.probejs.info.type.TypeInfoParameterized;
-import com.probejs.info.type.TypeInfoVariable;
 import dev.latvian.kubejs.KubeJSRegistries;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
@@ -27,6 +18,7 @@ public class SpecialTypes {
 
     public static final Set<Class<?>> skippedSpecials = new HashSet<>();
 
+    /*
     private static class FormatterLambda {
 
         private final MethodInfo info;
@@ -71,6 +63,7 @@ public class SpecialTypes {
             );
         }
     }
+    */
 
     private static String formatValueOrType(Object obj) {
         String formattedValue = NameResolver.formatValue(obj);

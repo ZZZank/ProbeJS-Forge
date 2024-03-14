@@ -44,12 +44,7 @@ public class SnippetCompiler {
                     .getValue()
                     .stream()
                     .map(rl -> rl.split(":", 2))
-                    .forEach(rl -> {
-                        if (!byModMembers.containsKey(rl[0])) {
-                            byModMembers.put(rl[0], new ArrayList<>());
-                        }
-                        byModMembers.get(rl[0]).add(rl[1]);
-                    });
+                    .forEach(rl -> byModMembers.computeIfAbsent(rl[0], k -> new ArrayList<>()).add(rl[1]));
                 byModMembers.forEach((mod, modMembers) -> {
                     JsonObject modMembersJson = new JsonObject();
                     JsonArray prefixes = new JsonArray();
@@ -76,12 +71,7 @@ public class SnippetCompiler {
                     .keySet()
                     .stream()
                     .map(rl -> rl.split(":", 2))
-                    .forEach(rl -> {
-                        if (!byModMembers.containsKey(rl[0])) {
-                            byModMembers.put(rl[0], new ArrayList<>());
-                        }
-                        byModMembers.get(rl[0]).add(rl[1]);
-                    });
+                    .forEach(rl -> byModMembers.computeIfAbsent(rl[0], k -> new ArrayList<>()).add(rl[1]));
                 byModMembers.forEach((mod, modMembers) -> {
                     JsonObject modMembersJson = new JsonObject();
                     JsonArray prefixes = new JsonArray();

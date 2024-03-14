@@ -9,7 +9,6 @@ import com.probejs.ProbePaths;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.info.EventInfo;
 import com.probejs.info.type.TypeInfoClass;
-import com.probejs.plugin.CapturedClasses;
 import dev.latvian.kubejs.event.EventJS;
 import java.io.BufferedWriter;
 import java.io.IOException;
