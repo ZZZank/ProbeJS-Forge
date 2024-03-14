@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements IFormatter {
 
     private final MethodInfo methodInfo;
+    private Pair<Map<String, IType>, IType> modifiersCache;
 
     public FormatterMethod(MethodInfo methodInfo) {
         this.methodInfo = methodInfo;
@@ -70,7 +71,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             : methodInfo.getParams().get(0).getType().getTypeName();
     }
 
-    private Pair<Map<String, IType>, IType> getModifiers() {
+    public Pair<Map<String, IType>, IType> getModifiers() {
+        if (modifiersCache != null) {
+            return modifiersCache;
+        }
         Map<String, IType> modifiers = new HashMap<>();
         IType returns = null;
         if (document != null) {
@@ -83,7 +87,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 }
             }
         }
-        return new Pair<>(modifiers, returns);
+        modifiersCache = new Pair<>(modifiers, returns);
+        return modifiersCache;
     }
 
     private static String formatTypeParameterized(ITypeInfo info, boolean useSpecial) {
@@ -100,7 +105,11 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         return sb.toString();
     }
 
-    private String formatReturn() {
+    public String formatReturn() {
+        IType returnModifier = getModifiers().getSecond();
+        if (returnModifier != null) {
+            return returnModifier.getTypeName();
+        }
         return formatTypeParameterized(methodInfo.getReturnType(), false);
     }
 
@@ -142,7 +151,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     /**
      * Get a `(a: string, b: number)` style String representation of params of this method
      */
-    private String formatParams(Map<String, IType> modifiers, Map<String, String> renames) {
+    public String formatParams(Map<String, IType> modifiers, Map<String, String> renames) {
         return String.format(
             "(%s)",
             methodInfo
@@ -194,7 +203,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
         Pair<Map<String, IType>, IType> modifierPair = getModifiers();
         Map<String, IType> modifiers = modifierPair.getFirst();
-        IType returnModifier = modifierPair.getSecond();
+        // IType returnModifier = modifierPair.getSecond();
         Map<String, String> renames = new HashMap<>();
         if (document != null) {
             renames.putAll(CommentUtil.getRenames(document.getComment()));
@@ -223,7 +232,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             .append(formatParams(modifiers, renames))
             .append(": ")
             // return type
-            .append(returnModifier != null ? returnModifier.getTypeName() : formatReturn())
+            .append(formatReturn())
             // end
             .append(';');
 
