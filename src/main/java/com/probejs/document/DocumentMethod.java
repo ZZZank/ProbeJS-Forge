@@ -3,8 +3,6 @@ package com.probejs.document;
 import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IType;
 import com.probejs.document.type.TypeResolver;
-import com.probejs.document.type.TypeNamed;
-import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.MethodInfo;
 import com.probejs.util.PUtil;
@@ -39,21 +37,7 @@ public class DocumentMethod
                 String.format(
                     "%s: %s",
                     documentParam.getName(),
-                    documentParam
-                        .getType()
-                        .getTransformedName((type, s) -> {
-                            if (!(type instanceof TypeNamed)) {
-                                return s;
-                            }
-                            String rawName = ((TypeNamed) type).getRawTypeName();
-                            if (
-                                NameResolver.resolvedNames.containsKey(rawName) &&
-                                !NameResolver.resolvedPrimitives.contains(rawName)
-                            ) {
-                                return s + "_";
-                            }
-                            return s;
-                        })
+                    documentParam.getType().transform(IType.underscoreTransformer)
                 )
             )
             .collect(Collectors.joining(", "));

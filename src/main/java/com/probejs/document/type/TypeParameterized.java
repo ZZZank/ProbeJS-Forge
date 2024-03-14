@@ -32,7 +32,7 @@ public class TypeParameterized implements IType {
     }
 
     @Override
-    public String getTransformedName(BiFunction<IType, String, String> transformer) {
-        return transformer.apply(this, String.format("%s<%s>",rawType.getTransformedName(transformer), paramTypes.stream().map(t -> t.getTransformedName(transformer)).collect(Collectors.joining(", "))));
+    public String transform(BiFunction<IType, String, String> transformer) {
+        return transformer.apply(this, String.format("%s<%s>",rawType.transform(transformer), paramTypes.stream().map(t -> t.transform(transformer)).collect(Collectors.joining(", "))));
     }
 }

@@ -17,7 +17,7 @@ public class TypeUnion implements IType {
     }
 
     @Override
-    public String getTransformedName(BiFunction<IType, String, String> transformer) {
-        return transformer.apply(this, leftType.getTransformedName(transformer) + " | " + rightType.getTransformedName(transformer));
+    public String transform(BiFunction<IType, String, String> transformer) {
+        return transformer.apply(this, leftType.transform(transformer) + " | " + rightType.transform(transformer));
     }
 }

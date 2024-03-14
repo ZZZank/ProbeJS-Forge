@@ -61,7 +61,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             .getOrDefault(classInfo.getClazzRaw().getName(), new ArrayList<>())
             .stream()
             .map(t ->
-                t.getTransformedName((i, s) -> {
+                t.transform((i, s) -> {
                     if (!(i instanceof TypeNamed)) {
                         return s;
                     }
@@ -123,7 +123,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         // super class
         if (classInfo.getSuperClass() != null) {
             firstLine.add("extends");
-            if (classInfo.getClazzRaw().getSuperclass() == Object.class) {
+            if (classInfo.getSuperClass().getClazzRaw() == Object.class) {
                 // redirect to another `Object` so that we can bypass replacement of original `Object`
                 firstLine.add("Document.Object");
             } else {
