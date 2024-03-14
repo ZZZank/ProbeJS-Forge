@@ -9,9 +9,25 @@ class ItemStackJS {
 
 /**
  * @target dev.latvian.kubejs.item.ingredient.IngredientJS
- * @assign string
- * @assign object
  * @assign dev.latvian.kubejs.item.ItemStackJS
+ * @assign dev.latvian.kubejs.fluid.FluidStackJS
+ * @assign "*"
+ * @assign `%${string}`
+ * @assign RegExp
+ * @assign net.minecraft.world.item.crafting.Ingredient
+ * @assign dev.latvian.kubejs.item.ingredient.IngredientJS[]
+ * @assign {type: Special.Ingredient}
+ * @assign {item: Internal.ItemStackJS_, count?: number}
+ * @assign {fluid: Internal.FluidStackJS_}
+ * @assign {value: object}
+ * @assign {ingredient: object}
+ * Represents an Ingredient, which can match one or multiple ItemStacks.
+ * 
+ * Can be casted from several object, which has different usages.
+ * 
+ * If you want to specify nbt to check in ItemStack, use either Item.of() or {type: "forge:nbt"}.
+ * 
+ * Using {item: ItemStackJS} will NOT preserve NBT in any form.
  */
 class IngredientJS {
 }
@@ -134,4 +150,24 @@ class FluidStackJS {
  * @assign string
  */
 class Color {
+}
+
+/**
+ * @target dev.latvian.kubejs.recipe.filter.RecipeFilter
+ * @assign dev.latvian.kubejs.recipe.filter.RecipeFilter[]
+ * @assign {exact?: boolean, not?: Internal.RecipeFilter_, or?: Internal.RecipeFilter_[], id?: string | RegExp, type?: string, group?: string, mod?: string, input?: Internal.IngredientJS_, output?: Internal.IngredientJS_}
+ */
+class RecipeFilter {
+}
+
+/**
+ * @target dev.latvian.kubejs.block.BlockStatePredicate
+ * @assign dev.latvian.kubejs.block.BlockStatePredicate[]
+ * @assign {or?: Internal.BlockStatePredicate_, not?: Internal.BlockStatePredicate_}
+ * @assign net.minecraft.world.level.block.Block
+ * @assign net.minecraft.world.level.block.state.BlockState
+ * @assign `#${string}`
+ * @assign RegExp
+ */
+class BlockStatePredicate {
 }
