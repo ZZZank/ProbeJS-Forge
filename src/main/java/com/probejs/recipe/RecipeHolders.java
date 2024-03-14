@@ -20,9 +20,7 @@ public abstract class RecipeHolders {
         recipeHandlers.forEach((key, value) -> {
             String namespace = key.getNamespace();
             String invoke = key.getPath();
-            String recipeJSName =
-                "Internal." +
-                NameResolver.getResolvedName(value.factory.get().getClass().getName()).getLastName();
+            String recipeJSName = NameResolver.resolveName(value.factory.get().getClass()).getFullName();
 
             namespace2Method
                 .computeIfAbsent(namespace, k -> new ArrayList<Pair<String, String>>())

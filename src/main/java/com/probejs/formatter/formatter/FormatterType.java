@@ -69,9 +69,10 @@ public class FormatterType {
             }
             return transformer.apply(
                 typeInfo,
-                new FormatterType(parType.getBaseType(), useSpecial, transformer).format(indent, stepIndent) +
                 String.format(
-                    "<%s>",
+                    "%s<%s>",
+                    new FormatterType(parType.getBaseType(), useSpecial, transformer)
+                        .format(indent, stepIndent),
                     parType
                         .getParamTypes()
                         .stream()
