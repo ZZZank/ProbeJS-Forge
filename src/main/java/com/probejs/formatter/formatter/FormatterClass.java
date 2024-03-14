@@ -194,7 +194,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 );
                 formatted.add(
                     String.format(
-                        "%s%s: %s;",
+                        "%s(%s): %s;",
                         PUtil.indent(indent + stepIndent),
                         params,
                         fnFormatter.formatReturn()

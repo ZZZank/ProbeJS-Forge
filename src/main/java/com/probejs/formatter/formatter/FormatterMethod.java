@@ -149,42 +149,37 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     /**
-     * Get a `(a: string, b: number)` style String representation of params of this method
+     * Get a `a: string, b: number` style String representation of params of this method
      */
     public String formatParams(Map<String, IType> modifiers, Map<String, String> renames) {
-        return String.format(
-            "(%s)",
-            methodInfo
-                .getParams()
-                .stream()
-                .map(paramInfo -> {
-                    String paramType = modifiers.containsKey(paramInfo.getName())
-                        ? modifiers
-                            .get(paramInfo.getName())
-                            .getTransformedName((t, s) -> {
-                                if (!(t instanceof TypeNamed)) {
-                                    return s;
-                                }
-                                TypeNamed n = (TypeNamed) t;
-                                if (
-                                    NameResolver.resolvedNames.containsKey(n.getRawTypeName()) &&
-                                    !NameResolver.resolvedPrimitives.contains((n.getRawTypeName()))
-                                ) {
-                                    return s + "_";
-                                }
+        return methodInfo
+            .getParams()
+            .stream()
+            .map(paramInfo -> {
+                String paramType = modifiers.containsKey(paramInfo.getName())
+                    ? modifiers
+                        .get(paramInfo.getName())
+                        .getTransformedName((t, s) -> {
+                            if (!(t instanceof TypeNamed)) {
                                 return s;
-                            })
-                        : formatParamUnderscore(paramInfo.getType());
-                    return String.format(
-                        "%s: %s",
-                        NameResolver.getNameSafe(
-                            renames.getOrDefault(paramInfo.getName(), paramInfo.getName())
-                        ),
-                        paramType
-                    );
-                })
-                .collect(Collectors.joining(", "))
-        );
+                            }
+                            TypeNamed n = (TypeNamed) t;
+                            if (
+                                NameResolver.resolvedNames.containsKey(n.getRawTypeName()) &&
+                                !NameResolver.resolvedPrimitives.contains((n.getRawTypeName()))
+                            ) {
+                                return s + "_";
+                            }
+                            return s;
+                        })
+                    : formatParamUnderscore(paramInfo.getType());
+                return String.format(
+                    "%s: %s",
+                    NameResolver.getNameSafe(renames.getOrDefault(paramInfo.getName(), paramInfo.getName())),
+                    paramType
+                );
+            })
+            .collect(Collectors.joining(", "));
     }
 
     @Override
