@@ -72,18 +72,10 @@ public class ClassInfo {
                 .map(InfoTypeResolver::resolveType)
                 .collect(Collectors.toList());
 
-        // "declare" means it can be protected/private, but will not be directly inherited
-        HashSet<Method> declaredMethod = new HashSet<>();
-        if (ProbeJS.CONFIG.trimming) {
-            declaredMethod.addAll(Arrays.asList(clazzRaw.getDeclaredMethods()));
-        }
         methodInfo =
             Arrays
                 .stream(clazzRaw.getMethods())
-                .filter(method ->
-                    (hasIdenticalParentMethod(method, clazzRaw) && declaredMethod.contains(method)) ||
-                    !ProbeJS.CONFIG.trimming
-                )
+                .filter(method -> method.getDeclaringClass() == clazzRaw || !ProbeJS.CONFIG.trimming)
                 .map(m -> new MethodInfo(m, clazz))
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
                 .filter(m -> !m.shouldHide())
