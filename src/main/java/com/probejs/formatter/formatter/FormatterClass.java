@@ -212,7 +212,8 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 DocumentMethod doc = fnFormatter.document;
                 formatted.add(
                     String.format(
-                        "(%s): %s;",
+                        "%s(%s): %s;",
+                        PUtil.indent(indent + stepIndent),
                         fnFormatter.formatParams(
                             CommentUtil.getRenames(doc == null ? null : doc.getComment()),
                             true
