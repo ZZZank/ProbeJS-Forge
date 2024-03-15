@@ -7,7 +7,6 @@ import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.Manager;
-import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.document.type.IType;
 import com.probejs.formatter.NameResolver;
@@ -62,6 +61,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             .stream()
             .map(t -> t.transform(IType.underscoreTransformer))
             .collect(Collectors.toList());
+        Manager.typesAssignable.get("").add(null);
 
         if (classInfo.isEnum()) {
             //TODO: add special processing for KubeJS
@@ -165,28 +165,6 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 f.getValue().setInterface(classInfo.isInterface());
                 formatted.addAll(f.getValue().format(indent + stepIndent, stepIndent));
             });
-        //special processing for FunctionalInterface
-        if (classInfo.isFunctionalInterface()) {
-            Optional<MethodInfo> fnTargets = classInfo
-                .getMethodInfo()
-                .stream()
-                .filter(MethodInfo::isAbstract)
-                .findFirst();
-            if (fnTargets.isPresent()) {
-                FormatterMethod fnFormatter = new FormatterMethod(fnTargets.get());
-                DocumentMethod doc = fnFormatter.document;
-                assignableTypes.add(
-                    String.format(
-                        "((%s)=>%s)",
-                        fnFormatter.formatParams(
-                            CommentUtil.getRenames(doc == null ? null : doc.getComment()),
-                            true
-                        ),
-                        fnFormatter.formatReturn()
-                    )
-                );
-            }
-        }
 
         // beans
         if (!classInfo.isInterface()) {

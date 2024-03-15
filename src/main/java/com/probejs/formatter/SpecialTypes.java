@@ -1,7 +1,14 @@
 package com.probejs.formatter;
 
 import com.probejs.ProbeJS;
+import com.probejs.document.DocumentMethod;
+import com.probejs.document.Manager;
+import com.probejs.document.comment.CommentUtil;
+import com.probejs.document.type.TypeNamed;
 import com.probejs.formatter.formatter.FormatterClass;
+import com.probejs.formatter.formatter.FormatterMethod;
+import com.probejs.info.ClassInfo;
+import com.probejs.info.MethodInfo;
 import com.probejs.info.type.TypeInfoClass;
 import dev.latvian.kubejs.KubeJSRegistries;
 import dev.latvian.mods.rhino.BaseFunction;
@@ -176,6 +183,39 @@ public class SpecialTypes {
         }
         NativeJavaObject njo = (NativeJavaObject) obj;
         return formatValueOrType(njo.unwrap());
+    }
+
+    /**
+     * add type alias for Functional Interfaces
+     * @param classes
+     */
+    public static void processFnIntfs(Collection<Class<?>> classes) {
+        for (Class<?> clazz : classes) {
+            ClassInfo cInfo = ClassInfo.CLASS_CACHE.get(clazz);
+            if (!cInfo.isFunctionalInterface()) {
+                continue;
+            }
+            Optional<MethodInfo> fnTargets = cInfo
+                .getMethodInfo()
+                .stream()
+                .filter(MethodInfo::isAbstract)
+                .findFirst();
+            if (fnTargets.isPresent()) {
+                FormatterMethod fnFormatter = new FormatterMethod(fnTargets.get());
+                DocumentMethod doc = fnFormatter.document;
+                String fnBody = String.format(
+                    "((%s)=>%s)",
+                    fnFormatter.formatParams(
+                        CommentUtil.getRenames(doc == null ? null : doc.getComment()),
+                        true
+                    ),
+                    fnFormatter.formatReturn()
+                );
+                Manager.typesAssignable
+                    .computeIfAbsent(cInfo.getClazzRaw().getName(), k -> new ArrayList<>())
+                    .add(new TypeNamed(fnBody));
+            }
+        }
     }
 
     public static <T> void assignRegistry(Class<T> clazz, ResourceKey<Registry<T>> registry) {
