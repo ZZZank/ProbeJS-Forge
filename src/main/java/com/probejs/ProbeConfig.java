@@ -10,18 +10,25 @@ import java.util.Map;
 
 public class ProbeConfig {
 
-    public static final ProbeConfig INSTANCE = new ProbeConfig();
+    private static ProbeConfig reference = null;
     private static final Path CONFIG = KubeJSPaths.CONFIG.resolve("probejs.json");
-    public boolean keepBeaned = true;
-    public boolean disabled = false;
-    public boolean vanillaOrder = true;
-    public boolean exportClassNames = false;
-    public boolean autoExport = true;
-    public boolean trimming = true;
+    public boolean keepBeaned;
+    public boolean disabled;
+    public boolean vanillaOrder;
+    public boolean exportClassNames;
+    public boolean autoExport;
+    public boolean trimming;
 
     private static <E> E fetchPropertyOrDefault(Object key, Map<?, ?> values, E defaultValue) {
         Object v = values.get(key);
         return v == null ? defaultValue : (E) v;
+    }
+
+    public static ProbeConfig getInstance() {
+        if (reference == null) {
+            reference = new ProbeConfig();
+        }
+        return reference;
     }
 
     private ProbeConfig() {

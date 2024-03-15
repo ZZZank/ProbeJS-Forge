@@ -2,7 +2,6 @@ package com.probejs.compiler;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.probejs.ProbeConfig;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.formatter.NameResolver;
@@ -48,7 +47,7 @@ public class SnippetCompiler {
                 byModMembers.forEach((mod, modMembers) -> {
                     JsonObject modMembersJson = new JsonObject();
                     JsonArray prefixes = new JsonArray();
-                    if (ProbeConfig.INSTANCE.vanillaOrder) {
+                    if (ProbeJS.CONFIG.vanillaOrder) {
                         prefixes.add(String.format("@%s.%s", mod, type));
                     } else {
                         prefixes.add(String.format("@%s.%s", type, mod));
@@ -75,7 +74,7 @@ public class SnippetCompiler {
                 byModMembers.forEach((mod, modMembers) -> {
                     JsonObject modMembersJson = new JsonObject();
                     JsonArray prefixes = new JsonArray();
-                    if (ProbeConfig.INSTANCE.vanillaOrder) {
+                    if (ProbeJS.CONFIG.vanillaOrder) {
                         prefixes.add(String.format("@%s.tags.%s", mod, type));
                     } else {
                         prefixes.add(String.format("@%s.tags.%s", type, mod));
@@ -94,7 +93,7 @@ public class SnippetCompiler {
     }
 
     public static void compile() throws IOException {
-        if (ProbeConfig.INSTANCE.exportClassNames) {
+        if (ProbeJS.CONFIG.exportClassNames) {
             compileClassNames();
         }
         writeDumpSnippets();

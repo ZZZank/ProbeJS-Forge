@@ -1,6 +1,5 @@
 package com.probejs.formatter.formatter;
 
-import com.probejs.ProbeConfig;
 import com.probejs.ProbeJS;
 import com.probejs.document.DocumentClass;
 import com.probejs.document.DocumentComment;
@@ -141,7 +140,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 fmtrMethods
                     .stream()
                     .filter(fmtrMethod ->
-                        ProbeConfig.INSTANCE.keepBeaned || //want to keep, or
+                        ProbeJS.CONFIG.keepBeaned || //want to keep, or
                         fmtrMethod.getBean() == null || //cannot be beaned when not wanting to keep
                         fieldFormatters.containsKey(fmtrMethod.getBean()) || //beaning will cause conflict
                         methodFormatters.containsKey(fmtrMethod.getBean()) //also conflict

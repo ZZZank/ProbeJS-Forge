@@ -1,6 +1,6 @@
 package com.probejs.info;
 
-import com.probejs.ProbeConfig;
+import com.probejs.ProbeJS;
 import com.probejs.formatter.ClassResolver;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.InfoTypeResolver;
@@ -74,7 +74,7 @@ public class ClassInfo {
 
         // "declare" means it can be protected/private, but will not be directly inherited
         HashSet<Method> declaredMethod = new HashSet<>();
-        if (ProbeConfig.INSTANCE.trimming) {
+        if (ProbeJS.CONFIG.trimming) {
             declaredMethod.addAll(Arrays.asList(clazzRaw.getDeclaredMethods()));
         }
         methodInfo =
@@ -82,7 +82,7 @@ public class ClassInfo {
                 .stream(clazzRaw.getMethods())
                 .filter(method ->
                     (hasIdenticalParentMethod(method, clazzRaw) && declaredMethod.contains(method)) ||
-                    !ProbeConfig.INSTANCE.trimming
+                    !ProbeJS.CONFIG.trimming
                 )
                 .map(m -> new MethodInfo(m, clazz))
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
@@ -92,7 +92,7 @@ public class ClassInfo {
         fieldInfo =
             Arrays
                 .stream(clazzRaw.getFields())
-                .filter(field -> !ProbeConfig.INSTANCE.trimming || field.getDeclaringClass() == clazzRaw)
+                .filter(field -> !ProbeJS.CONFIG.trimming || field.getDeclaringClass() == clazzRaw)
                 .map(FieldInfo::new)
                 .filter(f -> ClassResolver.acceptField(f.getName()))
                 .filter(f -> !f.shouldHide())

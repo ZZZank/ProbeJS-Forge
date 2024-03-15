@@ -23,11 +23,12 @@ public class ProbeJS {
         .serializeSpecialFloatingPointValues()
         .disableHtmlEscaping()
         .create();
+    public static final ProbeConfig CONFIG = ProbeConfig.getInstance();
 
     public ProbeJS() {
         CommandRegistrationEvent.EVENT.register(ProbeCommands::register);
 
-        if (!ProbeConfig.INSTANCE.disabled) {
+        if (!ProbeJS.CONFIG.disabled) {
             ProbeJS.LOGGER.info("Listening to EVERY forge event. ");
             MinecraftForge.EVENT_BUS.addListener(
                 EventPriority.NORMAL,

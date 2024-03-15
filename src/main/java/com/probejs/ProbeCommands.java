@@ -40,7 +40,7 @@ public class ProbeCommands {
                         .requires(source -> source.getServer().isSingleplayer())
                         .executes(context -> {
                             try {
-                                if (ProbeConfig.INSTANCE.autoExport) {
+                                if (ProbeJS.CONFIG.autoExport) {
                                     export(context.getSource());
                                 }
                                 SnippetCompiler.compile();
@@ -83,13 +83,13 @@ public class ProbeCommands {
                             Commands
                                 .literal("toggle_bean")
                                 .executes(context -> {
-                                    ProbeConfig.INSTANCE.keepBeaned = !ProbeConfig.INSTANCE.keepBeaned;
-                                    ProbeConfig.INSTANCE.save();
+                                    ProbeJS.CONFIG.keepBeaned = !ProbeJS.CONFIG.keepBeaned;
+                                    ProbeJS.CONFIG.save();
                                     return sendSuccess(
                                         context,
                                         String.format(
                                             "Keep method while beaning set to: %s",
-                                            ProbeConfig.INSTANCE.keepBeaned
+                                            ProbeJS.CONFIG.keepBeaned
                                         )
                                     );
                                 })
@@ -98,13 +98,13 @@ public class ProbeCommands {
                             Commands
                                 .literal("toggle_triming")
                                 .executes(context -> {
-                                    ProbeConfig.INSTANCE.trimming = !ProbeConfig.INSTANCE.trimming;
-                                    ProbeConfig.INSTANCE.save();
+                                    ProbeJS.CONFIG.trimming = !ProbeJS.CONFIG.trimming;
+                                    ProbeJS.CONFIG.save();
                                     return sendSuccess(
                                         context,
                                         String.format(
                                             "Dump trimming set to: %s",
-                                            ProbeConfig.INSTANCE.trimming
+                                            ProbeJS.CONFIG.trimming
                                         )
                                     );
                                 })
@@ -113,13 +113,13 @@ public class ProbeCommands {
                             Commands
                                 .literal("toggle_mixin")
                                 .executes(context -> {
-                                    ProbeConfig.INSTANCE.disabled = !ProbeConfig.INSTANCE.disabled;
-                                    ProbeConfig.INSTANCE.save();
+                                    ProbeJS.CONFIG.disabled = !ProbeJS.CONFIG.disabled;
+                                    ProbeJS.CONFIG.save();
                                     return sendSuccess(
                                         context,
                                         String.format(
                                             "OnEvent mixin wrapper set to: %s. Changes will be applied next time you start the game",
-                                            ProbeConfig.INSTANCE.disabled ? "disabled" : "enabled"
+                                            ProbeJS.CONFIG.disabled ? "disabled" : "enabled"
                                         )
                                     );
                                 })
@@ -128,13 +128,13 @@ public class ProbeCommands {
                             Commands
                                 .literal("toggle_snippet_order")
                                 .executes(context -> {
-                                    ProbeConfig.INSTANCE.vanillaOrder = !ProbeConfig.INSTANCE.vanillaOrder;
-                                    ProbeConfig.INSTANCE.save();
+                                    ProbeJS.CONFIG.vanillaOrder = !ProbeJS.CONFIG.vanillaOrder;
+                                    ProbeJS.CONFIG.save();
                                     return sendSuccess(
                                         context,
                                         String.format(
                                             "In snippets, which will appear first: %s",
-                                            ProbeConfig.INSTANCE.vanillaOrder ? "mod_id" : "member_type"
+                                            ProbeJS.CONFIG.vanillaOrder ? "mod_id" : "member_type"
                                         )
                                     );
                                 })
@@ -143,14 +143,14 @@ public class ProbeCommands {
                             Commands
                                 .literal("toggle_classname_snippets")
                                 .executes(context -> {
-                                    ProbeConfig.INSTANCE.exportClassNames =
-                                        !ProbeConfig.INSTANCE.exportClassNames;
-                                    ProbeConfig.INSTANCE.save();
+                                    ProbeJS.CONFIG.exportClassNames =
+                                        !ProbeJS.CONFIG.exportClassNames;
+                                    ProbeJS.CONFIG.save();
                                     return sendSuccess(
                                         context,
                                         String.format(
                                             "Export class name as snippets set to: %s",
-                                            ProbeConfig.INSTANCE.exportClassNames
+                                            ProbeJS.CONFIG.exportClassNames
                                         )
                                     );
                                 })
@@ -159,13 +159,13 @@ public class ProbeCommands {
                             Commands
                                 .literal("toggle_autoexport")
                                 .executes(context -> {
-                                    ProbeConfig.INSTANCE.autoExport = !ProbeConfig.INSTANCE.autoExport;
-                                    ProbeConfig.INSTANCE.save();
+                                    ProbeJS.CONFIG.autoExport = !ProbeJS.CONFIG.autoExport;
+                                    ProbeJS.CONFIG.save();
                                     return sendSuccess(
                                         context,
                                         String.format(
                                             "Auto-export for KubeJS set to: %s",
-                                            ProbeConfig.INSTANCE.autoExport
+                                            ProbeJS.CONFIG.autoExport
                                         )
                                     );
                                 })

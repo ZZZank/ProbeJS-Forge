@@ -1,6 +1,6 @@
 package com.probejs.mixin;
 
-import com.probejs.ProbeConfig;
+import com.probejs.ProbeJS;
 import com.probejs.info.EventInfo;
 import com.probejs.plugin.CapturedClasses;
 import dev.latvian.kubejs.event.EventJS;
@@ -19,7 +19,7 @@ public class OnEventMixin {
         remap = false
     )
     private void post(ScriptType t, String id, CallbackInfoReturnable<Boolean> returns) {
-        if (!ProbeConfig.INSTANCE.disabled && !CapturedClasses.isEventIgnored(this.getClass())) {
+        if (!ProbeJS.CONFIG.disabled && !CapturedClasses.isEventIgnored(this.getClass())) {
             if (!CapturedClasses.capturedEvents.containsKey(id)) {
                 CapturedClasses.capturedEvents.put(id, new EventInfo(t, (EventJS) (Object) this, id, null));
             } else {
@@ -34,7 +34,7 @@ public class OnEventMixin {
         remap = false
     )
     private void post(ScriptType t, String id, String sub, CallbackInfoReturnable<Boolean> returns) {
-        if (!ProbeConfig.INSTANCE.disabled && !CapturedClasses.isEventIgnored(this.getClass())) {
+        if (!ProbeJS.CONFIG.disabled && !CapturedClasses.isEventIgnored(this.getClass())) {
             if (!CapturedClasses.capturedEvents.containsKey(id)) {
                 CapturedClasses.capturedEvents.put(
                     id + "." + sub,
