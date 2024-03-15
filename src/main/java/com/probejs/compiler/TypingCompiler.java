@@ -227,7 +227,6 @@ public class TypingCompiler {
         Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
 
         globalClasses.removeIf(ClassResolver.skipped::contains);
-        SpecialTypes.processFnIntfs(globalClasses);
 
         compileGlobal(bindingEvent, globalClasses);
         compileRecipeHolder(typeMap);

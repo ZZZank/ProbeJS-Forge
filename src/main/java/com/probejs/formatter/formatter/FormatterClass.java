@@ -6,6 +6,7 @@ import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.Manager;
+import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.document.type.IType;
 import com.probejs.formatter.NameResolver;
@@ -198,6 +199,28 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                     .findFirst()
                     .ifPresent(fmtr -> formatted.addAll(fmtr.formatBean(indent + stepIndent, stepIndent)));
             });
+        }
+        //special processing for FunctionalInterface
+        if (classInfo.isFunctionalInterface()) {
+            Optional<MethodInfo> fnTargets = classInfo
+                .getMethodInfo()
+                .stream()
+                .filter(MethodInfo::isAbstract)
+                .findFirst();
+            if (fnTargets.isPresent()) {
+                FormatterMethod fnFormatter = new FormatterMethod(fnTargets.get());
+                DocumentMethod doc = fnFormatter.document;
+                formatted.add(
+                    String.format(
+                        "(%s): %s;",
+                        fnFormatter.formatParams(
+                            CommentUtil.getRenames(doc == null ? null : doc.getComment()),
+                            true
+                        ),
+                        fnFormatter.formatReturn()
+                    )
+                );
+            }
         }
 
         // constructors

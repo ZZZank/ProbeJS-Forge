@@ -185,10 +185,11 @@ public class SpecialTypes {
         return formatValueOrType(njo.unwrap());
     }
 
+    
     /**
      * add type alias for Functional Interfaces
-     * @param classes
      */
+    /*
     public static void processFnIntfs(Collection<Class<?>> classes) {
         for (Class<?> clazz : classes) {
             ClassInfo cInfo = ClassInfo.CLASS_CACHE.get(clazz);
@@ -217,6 +218,7 @@ public class SpecialTypes {
             }
         }
     }
+    */
 
     public static <T> void assignRegistry(Class<T> clazz, ResourceKey<Registry<T>> registry) {
         NameResolver.putSpecialAssignments(
