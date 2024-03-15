@@ -61,7 +61,6 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             .stream()
             .map(t -> t.transform(IType.underscoreTransformer))
             .collect(Collectors.toList());
-        Manager.typesAssignable.get("").add(null);
 
         if (classInfo.isEnum()) {
             //TODO: add special processing for KubeJS
