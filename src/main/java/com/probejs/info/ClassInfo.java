@@ -6,15 +6,12 @@ import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ClassInfo {
@@ -59,7 +56,9 @@ public class ClassInfo {
         name = clazzRaw.getName();
         modifiers = clazzRaw.getModifiers();
         isInterface = clazzRaw.isInterface();
-        isFunctionalInterface = clazzRaw.isAnnotationPresent(FunctionalInterface.class);
+        isFunctionalInterface =
+            isInterface &&
+            Arrays.stream(clazzRaw.getAnnotations()).anyMatch(a -> a instanceof FunctionalInterface);
         constructorInfo =
             Arrays.stream(clazzRaw.getConstructors()).map(ConstructorInfo::new).collect(Collectors.toList());
         superClass = ofCache(clazzRaw.getSuperclass());
@@ -72,28 +71,21 @@ public class ClassInfo {
                 .map(InfoTypeResolver::resolveType)
                 .collect(Collectors.toList());
 
-        // declared methods include public/protected/private methods, but exclude inherited ones
-        Set<Method> declaredMethods = new HashSet<>();
-        if (ProbeConfig.INSTANCE.trimming) {
-            declaredMethods.addAll(Arrays.asList(clazzRaw.getDeclaredMethods()));
-        }
         methodInfo =
             Arrays
                 .stream(clazzRaw.getMethods())
-                .filter(method -> !ProbeConfig.INSTANCE.trimming || declaredMethods.contains(method))
+                .filter(method ->
+                    !hasIdenticalParentMethod(method, clazzRaw) || !ProbeConfig.INSTANCE.trimming
+                )
                 .map(m -> new MethodInfo(m, clazz))
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
                 .filter(m -> !m.shouldHide())
                 .collect(Collectors.toList());
 
-        Set<Field> declaredFields = new HashSet<>();
-        if (ProbeConfig.INSTANCE.trimming) {
-            declaredFields.addAll(Arrays.asList(clazzRaw.getDeclaredFields()));
-        }
         fieldInfo =
             Arrays
                 .stream(clazzRaw.getFields())
-                .filter(field -> !ProbeConfig.INSTANCE.trimming || declaredFields.contains(field))
+                .filter(field -> !ProbeConfig.INSTANCE.trimming || field.getDeclaringClass() == clazzRaw)
                 .map(FieldInfo::new)
                 .filter(f -> ClassResolver.acceptField(f.getName()))
                 .filter(f -> !f.shouldHide())
@@ -238,5 +230,25 @@ public class ClassInfo {
 
     public String getName() {
         return name;
+    }
+
+    private boolean hasIdenticalParentMethod(Method method, Class<?> clazz) {
+        if (method.isDefault()) {
+            return false;
+        }
+        Class<?> parent = clazz.getSuperclass();
+        if (parent == null) {
+            return false;
+        }
+        while (parent != null) {
+            try {
+                Method parentMethod = parent.getMethod(method.getName(), method.getParameterTypes());
+                // Check if the generic return type is the same
+                return parentMethod.getGenericReturnType().equals(method.getGenericReturnType());
+            } catch (NoSuchMethodException e) {
+                parent = parent.getSuperclass();
+            }
+        }
+        return false;
     }
 }
