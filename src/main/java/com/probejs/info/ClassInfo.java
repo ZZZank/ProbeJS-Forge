@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -71,11 +72,17 @@ public class ClassInfo {
                 .map(InfoTypeResolver::resolveType)
                 .collect(Collectors.toList());
 
+        // "declare" means it can be protected/private, but will not be directly inherited
+        HashSet<Method> declaredMethod = new HashSet<>();
+        if (ProbeConfig.INSTANCE.trimming) {
+            declaredMethod.addAll(Arrays.asList(clazzRaw.getDeclaredMethods()));
+        }
         methodInfo =
             Arrays
                 .stream(clazzRaw.getMethods())
                 .filter(method ->
-                    !hasIdenticalParentMethod(method, clazzRaw) || !ProbeConfig.INSTANCE.trimming
+                    (hasIdenticalParentMethod(method, clazzRaw) && declaredMethod.contains(method)) ||
+                    !ProbeConfig.INSTANCE.trimming
                 )
                 .map(m -> new MethodInfo(m, clazz))
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
