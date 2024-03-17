@@ -3,6 +3,7 @@ package com.probejs.compiler;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.formatter.formatter.FormatterNamespace;
+import com.probejs.formatter.formatter.FormatterRawTS;
 import com.probejs.formatter.formatter.IFormatter;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -10,44 +11,51 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 //TODO: import dev.latvian.mods.kubejs.RegistryObjectBuilderTypes
 public class RegistryCompiler {
 
-    public static Map<ResourceLocation, List<String>> tryGet() {
-        // RegistryHolder h;
-        // net.minecraft.core.RegistryAccess.builtin();
+    public static class RegistryInfo {
 
-        // Registry.REGISTRY.entrySet();
-        // Registry.REGISTRY
-        //     .entrySet()
-        //     .forEach(e -> {
-        //         ResourceKey<? extends Registry<?>> k = e.getKey();
-        //         Registry<?> registry = e.getValue();
-        //         registry
-        //             .entrySet()
-        //             .forEach(entry -> {
-        //                 ResourceKey<?> key = entry.getKey();
-        //                 Object value = entry.getValue();
-        //             });
-        //     });
-        return Registry.REGISTRY
-            .entrySet()
-            .stream()
-            .collect(
-                Collectors.toMap(
-                    e -> e.getKey().location(),
-                    e ->
-                        e
-                            .getValue()
-                            .keySet()
-                            .stream()
-                            .map(rl -> ProbeJS.GSON.toJson(rl.toString()))
-                            .collect(Collectors.toList()),
-                    (a, b) -> a
-                )
-            );
+        private final Registry<?> raw;
+        private final ResourceKey<? extends Registry<?>> resKey;
+        private final ResourceLocation parentId;
+        private final ResourceLocation id;
+        private final Set<ResourceLocation> names;
+
+        public RegistryInfo(Registry<?> registry) {
+            this.raw = registry;
+            this.resKey = raw.key();
+            this.parentId = resKey.getRegistryName();
+            this.id = resKey.location();
+            this.names = raw.keySet();
+        }
+
+        public Registry<?> raw() {
+            return this.raw;
+        }
+
+        public ResourceKey<? extends Registry<?>> resKey() {
+            return this.resKey;
+        }
+
+        public ResourceLocation parentId() {
+            return this.parentId;
+        }
+
+        public ResourceLocation id() {
+            return this.id;
+        }
+
+        public Set<ResourceLocation> names() {
+            return this.names;
+        }
+    }
+
+    public static List<RegistryInfo> getAll() {
+        return Registry.REGISTRY.stream().map(RegistryInfo::new).collect(Collectors.toList());
     }
 
     /*
@@ -89,6 +97,37 @@ public class RegistryCompiler {
     }
     */
 
+    public static List<IFormatter> info2Formatters(Collection<RegistryInfo> infos) {
+        Map<String, List<RegistryInfo>> infoByMods = new HashMap<>();
+        for (RegistryInfo info : infos) {
+            infoByMods.computeIfAbsent(info.id.getNamespace(), k -> new ArrayList<>()).add(info);
+        }
+        List<IFormatter> formatters = new ArrayList<>();
+        infoByMods.forEach((namespace, rInfos) -> {
+            List<IFormatter> formattersInside = rInfos
+                .stream()
+                .map(rInfo ->
+                    String.format(
+                        "type %s = %s;",
+                        rInfo.id.getPath().replace('/', '$'),
+                        rInfo
+                            .names()
+                            .stream()
+                            .map(rl -> ProbeJS.GSON.toJson(rl.toString()))
+                            .collect(Collectors.joining("|"))
+                    )
+                )
+                .map(str -> {
+                    FormatterRawTS rawFmtr = new FormatterRawTS(Arrays.asList(str));
+                    rawFmtr.setCommentMark(false);
+                    return rawFmtr;
+                })
+                .collect(Collectors.toList());
+            formatters.add(new FormatterNamespace(namespace, formattersInside));
+        });
+        return formatters;
+    }
+
     public static void compileRegistries() throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("registries.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
@@ -99,39 +138,11 @@ public class RegistryCompiler {
             //     .stream()
             //     .map(FormatterRegistry::new)
             //     .collect(Collectors.toList())
-            tryGet()
-                .entrySet()
-                .stream()
-                .map(e -> new DummyFormatter(e.getKey(), e.getValue()))
-                .collect(Collectors.toList())
+            info2Formatters(getAll())
         );
         writer.write(String.join("\n", namespace.format(0, 4)));
         writer.flush();
         writer.close();
-    }
-
-    private static class DummyFormatter implements IFormatter {
-
-        private ResourceLocation registry;
-        private Collection<String> names;
-
-        public DummyFormatter(ResourceLocation registry, Collection<String> names) {
-            this.registry = registry;
-            this.names = names;
-        }
-
-        @Override
-        public List<String> format(int indent, int stepIndent) {
-            List<String> lines = new ArrayList<>();
-            lines.add(
-                String.format(
-                    "type %s = %s;",
-                    registry.toString().replaceFirst(":", "_"),
-                    String.join(" | ", names)
-                )
-            );
-            return lines;
-        }
     }
     /*
     private static class FormatterRegistry implements IFormatter {
