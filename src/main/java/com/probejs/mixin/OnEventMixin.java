@@ -13,15 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EventJS.class)
 public class OnEventMixin {
 
-    private final boolean enabled = !ProbeJS.CONFIG.disabled;
-
     @Inject(
         method = "post(Ldev/latvian/kubejs/script/ScriptType;Ljava/lang/String;)Z",
         at = @At("HEAD"),
         remap = false
     )
     private void post(ScriptType t, String id, CallbackInfoReturnable<Boolean> returns) {
-        if (enabled && !CapturedClasses.isEventIgnored(this.getClass())) {
+        if (ProbeJS.ENABLED && !CapturedClasses.isEventIgnored(this.getClass())) {
             if (!CapturedClasses.capturedEvents.containsKey(id)) {
                 CapturedClasses.capturedEvents.put(id, new EventInfo(t, (EventJS) (Object) this, id, null));
             } else {
@@ -36,7 +34,7 @@ public class OnEventMixin {
         remap = false
     )
     private void post(ScriptType t, String id, String sub, CallbackInfoReturnable<Boolean> returns) {
-        if (enabled && !CapturedClasses.isEventIgnored(this.getClass())) {
+        if (ProbeJS.ENABLED && !CapturedClasses.isEventIgnored(this.getClass())) {
             if (!CapturedClasses.capturedEvents.containsKey(id)) {
                 CapturedClasses.capturedEvents.put(
                     id + "." + sub,

@@ -24,11 +24,12 @@ public class ProbeJS {
         .disableHtmlEscaping()
         .create();
     public static final ProbeConfig CONFIG = ProbeConfig.getInstance();
+    public static final boolean ENABLED = !CONFIG.disabled;
 
     public ProbeJS() {
         CommandRegistrationEvent.EVENT.register(ProbeCommands::register);
 
-        if (!ProbeJS.CONFIG.disabled) {
+        if (ENABLED) {
             ProbeJS.LOGGER.info("Listening to EVERY forge event. ");
             MinecraftForge.EVENT_BUS.addListener(
                 EventPriority.NORMAL,
