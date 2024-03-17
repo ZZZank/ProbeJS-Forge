@@ -23,6 +23,12 @@ public class FormatterRaw implements IFormatter {
 
     public FormatterRaw(List<String> docs) {
         this.docs = docs;
+        this.commentMark = true;
+    }
+
+    public FormatterRaw(List<String> docs, boolean commentMark) {
+        this.docs = docs;
+        this.commentMark = commentMark;
     }
 
     @Override
