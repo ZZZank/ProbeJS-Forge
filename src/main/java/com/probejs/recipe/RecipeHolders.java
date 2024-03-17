@@ -42,7 +42,7 @@ public abstract class RecipeHolders {
                 base.add(String.format("%sreadonly %s: stub.probejs.%s", step, namespace, namespace));
             }
             base.add("}");
-            namespecedFmtr.add(new FormatterRaw(base));
+            namespecedFmtr.add(new FormatterRaw(base, false));
         }
 
         for (Entry<String, List<Pair<String, String>>> entry : namespace2Method.entrySet()) {
@@ -59,7 +59,7 @@ public abstract class RecipeHolders {
             }
             //close
             lines.add("}");
-            namespecedFmtr.add(new FormatterRaw(lines));
+            namespecedFmtr.add(new FormatterRaw(lines, false));
         }
 
         return new FormatterNamespace("stub.probejs", namespecedFmtr).format(indent, stepIndent);

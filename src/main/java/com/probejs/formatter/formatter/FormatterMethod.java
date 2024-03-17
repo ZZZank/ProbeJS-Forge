@@ -262,8 +262,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 )
             );
         } else if (methodName.startsWith("set")) {
-            MethodInfo.ParamInfo info = methodInfo.getParams().get(0);
-            String name = info.getName();
+            // MethodInfo.ParamInfo info = methodInfo.getParams().get(0);
+            // String name = info.getName();
             formatted.add(idnt + String.format("set %s(%s);", getBean(), formatParams(new HashMap<>())));
         }
         return formatted;

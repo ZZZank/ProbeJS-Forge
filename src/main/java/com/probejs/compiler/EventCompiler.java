@@ -37,7 +37,7 @@ public class EventCompiler {
     ) throws IOException {
         EventCompiler.cachedEvents = cachedEvents;
         EventCompiler.cachedForgeEvents = cachedForgeEvents;
-        EventCompiler.wildcards = new TreeMap<>();
+        EventCompiler.wildcards = new HashMap<>();
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
 
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
