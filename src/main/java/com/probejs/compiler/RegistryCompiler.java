@@ -3,7 +3,7 @@ package com.probejs.compiler;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.formatter.formatter.FormatterNamespace;
-import com.probejs.formatter.formatter.FormatterRawTS;
+import com.probejs.formatter.formatter.FormatterRaw;
 import com.probejs.formatter.formatter.IFormatter;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -118,7 +118,7 @@ public class RegistryCompiler {
                     )
                 )
                 .map(str -> {
-                    FormatterRawTS rawFmtr = new FormatterRawTS(Arrays.asList(str));
+                    FormatterRaw rawFmtr = new FormatterRaw(Arrays.asList(str));
                     rawFmtr.setCommentMark(false);
                     return rawFmtr;
                 })

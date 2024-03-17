@@ -5,10 +5,9 @@ import com.probejs.document.DocumentClass;
 import com.probejs.document.Manager;
 import com.probejs.formatter.ClassResolver;
 import com.probejs.formatter.NameResolver;
-import com.probejs.formatter.SpecialTypes;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.formatter.formatter.FormatterNamespace;
-import com.probejs.formatter.formatter.FormatterRawTS;
+import com.probejs.formatter.formatter.FormatterRaw;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.EventInfo;
@@ -124,7 +123,7 @@ public class TypingCompiler {
             writer.write("\n");
         }
         //no namespace
-        for (String line : new FormatterRawTS(Manager.rawTSDoc).format(0, 4)) {
+        for (String line : new FormatterRaw(Manager.rawTSDoc).format(0, 4)) {
             writer.write(line);
             writer.write("\n");
         }
@@ -230,7 +229,7 @@ public class TypingCompiler {
 
         compileGlobal(bindingEvent, globalClasses);
         compileRecipeHolder(typeMap);
-        // RegistryCompiler.compileRegistries();
+        RegistryCompiler.compileRegistries();
         EventCompiler.compileEvents(cachedEvents, cachedForgeEvents);
         compileConstants(bindingEvent);
         compileJava(globalClasses);

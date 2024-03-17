@@ -24,6 +24,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     public FormatterMethod(MethodInfo methodInfo) {
         this.methodInfo = methodInfo;
+        modifiersCache = null;
     }
 
     public MethodInfo getMethodInfo() {

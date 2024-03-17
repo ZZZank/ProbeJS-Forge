@@ -4,12 +4,12 @@ import com.probejs.util.PUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FormatterRawTS implements IFormatter {
+public class FormatterRaw implements IFormatter {
 
     private final List<String> docs;
     private boolean commentMark;
 
-    public boolean willCommentMark() {
+    public boolean isCommentMark() {
         return commentMark;
     }
 
@@ -21,7 +21,7 @@ public class FormatterRawTS implements IFormatter {
         this.commentMark = commentMark;
     }
 
-    public FormatterRawTS(List<String> docs) {
+    public FormatterRaw(List<String> docs) {
         this.docs = docs;
     }
 
