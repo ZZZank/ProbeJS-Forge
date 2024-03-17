@@ -27,28 +27,35 @@ public class EventCompiler {
     private static final Path EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(EVENT_CACHE_FILENAME);
     private static final Path FORGE_EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(FORGE_EVENT_CACHE_FILENAME);
 
+    private static Map<String, EventInfo> cachedEvents;
+    private static Map<String, EventInfo> wildcards;
+    private static Map<String, Class<?>> cachedForgeEvents;
+
     public static void compileEvents(
         Map<String, EventInfo> cachedEvents,
         Map<String, Class<?>> cachedForgeEvents
     ) throws IOException {
+        EventCompiler.cachedEvents = cachedEvents;
+        EventCompiler.cachedForgeEvents = cachedForgeEvents;
+        EventCompiler.wildcards = new TreeMap<>();
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
+
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
         // writer.write("/// <reference path=\"./registries.d.ts\" />\n");
-        Map<String, EventInfo> wildcards = new HashMap<>();
-        writeEvents(cachedEvents, writer, wildcards);
-        writeWildcardEvents(writer, wildcards);
-        writeForgeEvents(cachedForgeEvents, writer);
+        writeEvents(writer);
+        writeWildcardEvents(writer);
+        writeForgeEvents(writer);
         // RegistryCompiler.compileEventRegistries(writer);
         writer.flush();
         writer.close();
     }
 
-    private static void writeForgeEvents(Map<String, Class<?>> cachedForgeEvents, BufferedWriter writer)
-        throws IOException {
+    private static void writeForgeEvents(BufferedWriter writer) throws IOException {
+        final List<String> lines = new ArrayList<>();
         for (Map.Entry<String, Class<?>> entry : (new TreeMap<>(cachedForgeEvents)).entrySet()) {
             String name = entry.getKey();
             Class<?> event = entry.getValue();
-            writer.write(
+            lines.add(
                 String.format(
                     "declare function onForgeEvent(name: \"%s\", handler: (event: %s) => void);\n",
                     name,
@@ -56,22 +63,15 @@ public class EventCompiler {
                 )
             );
         }
-        writer.write("\n");
+        lines.add("\n");
+        for (final String line : lines) {
+            writer.write(line);
+            writer.write("\n");
+        }
     }
 
-    private static void writeWildcardEvents(BufferedWriter writer, Map<String, EventInfo> wildcards)
-        throws IOException {
+    private static void writeWildcardEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
-        lines.add("/**");
-        lines.add(
-            " * This is the general representation of wildcarded event, you should replace `${string}` with actual id."
-        );
-        lines.add(" * ");
-        lines.add(" * E.g. `player.data_from_server.reload`, `ftbquests.completed.123456`");
-        lines.add(" */");
-        lines.add(
-            "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void);"
-        );
         for (EventInfo wildcard : (new TreeMap<>(wildcards)).values()) {
             String id = wildcard.id;
             lines.addAll(wildcard.getBuiltinPropAsComment());
@@ -83,25 +83,25 @@ public class EventCompiler {
                 )
             );
         }
+        lines.add("/**");
+        lines.add(
+            " * This is the general representation of wildcarded event, you should replace `${string}` with actual id."
+        );
+        lines.add(" * ");
+        lines.add(" * E.g. `player.data_from_server.reload`, `ftbquests.completed.123456`");
+        lines.add(" */");
+        lines.add(
+            "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void);"
+        );
         lines.add("");
-        for (String line : lines) {
+        for (final String line : lines) {
             writer.write(line);
             writer.write("\n");
         }
     }
 
-    private static void writeEvents(
-        Map<String, EventInfo> cachedEvents,
-        BufferedWriter writer,
-        Map<String, EventInfo> wildcards
-    ) throws IOException {
+    private static void writeEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
-        lines.add("/**");
-        lines.add(
-            " * General representation of `onEvent()`, seeing this comment usually indicates that such event does not exist, or is unknown to ProbeJS yet"
-        );
-        lines.add(" */");
-        lines.add("declare function onEvent(name: string, handler: (event: Internal.EventJS) => void);");
         for (Map.Entry<String, EventInfo> entry : (new TreeMap<>(cachedEvents)).entrySet()) {
             EventInfo captured = entry.getValue();
             String id = captured.id;
@@ -119,8 +119,14 @@ public class EventCompiler {
                 )
             );
         }
+        lines.add("/**");
+        lines.add(
+            " * General representation of `onEvent()`, seeing this comment usually indicates that such event does not exist, or is unknown to ProbeJS yet"
+        );
+        lines.add(" */");
+        lines.add("declare function onEvent(name: string, handler: (event: Internal.EventJS) => void);");
         lines.add("");
-        for (String line : lines) {
+        for (final String line : lines) {
             writer.write(line);
             writer.write("\n");
         }
