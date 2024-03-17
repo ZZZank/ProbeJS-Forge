@@ -47,6 +47,10 @@ public class EventCompiler {
         writeForgeEvents(writer);
         // RegistryCompiler.compileEventRegistries(writer);
         writer.flush();
+
+        EventCompiler.cachedEvents = null;
+        EventCompiler.cachedForgeEvents = null;
+        EventCompiler.wildcards = null;
         writer.close();
     }
 
