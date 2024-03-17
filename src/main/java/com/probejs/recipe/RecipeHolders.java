@@ -1,6 +1,9 @@
 package com.probejs.recipe;
 
 import com.probejs.formatter.NameResolver;
+import com.probejs.formatter.formatter.FormatterNamespace;
+import com.probejs.formatter.formatter.FormatterRaw;
+import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
@@ -29,38 +32,36 @@ public abstract class RecipeHolders {
     }
 
     public static List<String> format(int indent, int stepIndent) {
-        List<String> formatted = new ArrayList<>();
-        // head
-        formatted.add(PUtil.indent(indent) + "declare namespace stub.probejs {");
+        List<IFormatter> namespecedFmtr = new ArrayList<>();
+        String step = PUtil.indent(stepIndent);
 
-        indent += stepIndent;
-        // a base class for indexing other classes
-        formatted.add(PUtil.indent(indent) + "class RecipeHolder {");
-        for (String namespace : namespace2Method.keySet()) {
-            formatted.add(
-                PUtil.indent(indent + stepIndent) +
-                String.format("readonly %s: stub.probejs.%s", namespace, namespace)
-            );
+        indexing:{
+            List<String> base = new ArrayList<>();
+            base.add("class RecipeHolder {");
+            for (String namespace : namespace2Method.keySet()) {
+                base.add(String.format("%sreadonly %s: stub.probejs.%s", step, namespace, namespace));
+            }
+            base.add("}");
+            namespecedFmtr.add(new FormatterRaw(base));
         }
-        formatted.add(PUtil.indent(indent) + "}");
 
-        // recipeHolder classes
         for (Entry<String, List<Pair<String, String>>> entry : namespace2Method.entrySet()) {
-            formatted.add(String.format(PUtil.indent(indent) + "class %s {", entry.getKey()));
-            // methods inside recipeHolder classes
+            String name = entry.getKey();
+            List<String> lines = new ArrayList<>();
+            //name
+            lines.add(String.format("class %s {", name));
+            //methods inside recipeHolder classes
             for (Pair<String, String> pair : entry.getValue()) {
                 // we dont know how a Recipe Serializer actually works, so only `...args`
-                formatted.add(
-                    PUtil.indent(indent + stepIndent) +
-                    String.format("%s(...args: object): %s", pair.getFirst(), pair.getSecond())
+                lines.add(
+                    String.format("%s%s(...args: object): %s", step, pair.getFirst(), pair.getSecond())
                 );
             }
-            formatted.add(PUtil.indent(indent) + "}");
+            //close
+            lines.add("}");
+            namespecedFmtr.add(new FormatterRaw(lines));
         }
-        indent -= stepIndent;
 
-        // end
-        formatted.add(PUtil.indent(indent) + "}");
-        return formatted;
+        return new FormatterNamespace("stub.probejs", namespecedFmtr).format(indent, stepIndent);
     }
 }
