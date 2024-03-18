@@ -214,7 +214,7 @@ public class ProbeCommands {
         packRepository.reload();
         Collection<String> disabledDatapacks = worldData.getDataPackConfig().getDisabled();
         
-        Collection<String> selected = Lists.newArrayList(selectedPackIds);
+        Collection<String> selected = new ArrayList<>(selectedPackIds);
         for (String string : packRepository.getAvailableIds()) {
             if (!disabledDatapacks.contains(string) && !selected.contains(string)) {
                 selected.add(string);

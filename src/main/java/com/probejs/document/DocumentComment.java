@@ -32,6 +32,7 @@ public class DocumentComment implements IDecorative, IFormatter {
         return abstractComments.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     public <T> List<T> getSpecialComments(Class<? extends T> clazz) {
         return abstractComments
             .getOrDefault(clazz, new ArrayList<>())

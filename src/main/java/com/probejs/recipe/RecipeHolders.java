@@ -35,7 +35,7 @@ public abstract class RecipeHolders {
         List<IFormatter> namespecedFmtr = new ArrayList<>();
         String step = PUtil.indent(stepIndent);
 
-        indexing:{
+        {
             List<String> base = new ArrayList<>();
             base.add("class RecipeHolder {");
             for (String namespace : namespace2Method.keySet()) {

@@ -235,17 +235,13 @@ public class ClassInfo {
             return false;
         }
         Class<?> parent = clazz.getSuperclass();
-        if (parent == null) {
-            return false;
-        }
         while (parent != null) {
             try {
                 Method parentMethod = parent.getMethod(method.getName(), method.getParameterTypes());
                 // Check if the generic return type is the same
                 return parentMethod.getGenericReturnType().equals(method.getGenericReturnType());
-            } catch (NoSuchMethodException e) {
-                parent = parent.getSuperclass();
-            }
+            } catch (NoSuchMethodException ignored) {}
+            parent = parent.getSuperclass();
         }
         return false;
     }
