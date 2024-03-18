@@ -19,11 +19,11 @@ public class RegistryCompiler {
 
     public static class RegistryInfo {
 
-        private final Registry<?> raw;
-        private final ResourceKey<? extends Registry<?>> resKey;
-        private final ResourceLocation parentId;
-        private final ResourceLocation id;
-        private final Set<ResourceLocation> names;
+        public final Registry<?> raw;
+        public final ResourceKey<? extends Registry<?>> resKey;
+        public final ResourceLocation parentId;
+        public final ResourceLocation id;
+        public final Set<ResourceLocation> names;
 
         public RegistryInfo(Registry<?> registry) {
             this.raw = registry;
@@ -104,26 +104,20 @@ public class RegistryCompiler {
         }
         List<IFormatter> formatters = new ArrayList<>();
         infoByMods.forEach((namespace, rInfos) -> {
-            List<IFormatter> formattersInside = rInfos
+            List<String> lines = rInfos
                 .stream()
                 .map(rInfo ->
                     String.format(
                         "type %s = %s;",
                         rInfo.id.getPath().replace('/', '$'),
-                        rInfo
-                            .names()
+                        rInfo.names
                             .stream()
                             .map(rl -> ProbeJS.GSON.toJson(rl.toString()))
                             .collect(Collectors.joining("|"))
                     )
                 )
-                .map(str -> {
-                    FormatterRaw rawFmtr = new FormatterRaw(Arrays.asList(str));
-                    rawFmtr.setCommentMark(false);
-                    return rawFmtr;
-                })
                 .collect(Collectors.toList());
-            formatters.add(new FormatterNamespace(namespace, formattersInside));
+            formatters.add(new FormatterNamespace(namespace, Arrays.asList(new FormatterRaw(lines))));
         });
         return formatters;
     }
