@@ -39,7 +39,7 @@ public class RegistryCompiler {
                     )
                 )
                 .collect(Collectors.toList());
-            formatters.add(new FormatterNamespace(namespace, Arrays.asList(new FormatterRaw(lines))));
+            formatters.add(new FormatterNamespace(namespace, Arrays.asList(new FormatterRaw(lines, false))));
         });
         return formatters;
     }
