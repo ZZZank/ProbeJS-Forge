@@ -1,21 +1,36 @@
 package com.probejs.compiler;
 
+import com.mojang.brigadier.context.CommandContext;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.RegistryInfo;
+import com.probejs.mixin.RegistryAccessMixin;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistryAccess.RegistryData;
+import net.minecraft.resources.ResourceKey;
 
 public class RegistryCompiler {
 
+    private static Map<ResourceKey<? extends Registry<?>>, RegistryData<?>> registries;
+
+    public static void init(CommandContext<CommandSourceStack> context) {
+        RegistryAccess access = context.getSource().getServer().registryAccess();
+        RegistryCompiler.registries = ((RegistryAccessMixin) (Object) access).GET_REGISTRIES();
+    }
+
     public static List<RegistryInfo> getAll() {
+        // RegistryCompiler.registries.keySet();
         return Registry.REGISTRY.stream().map(RegistryInfo::new).collect(Collectors.toList());
     }
 
