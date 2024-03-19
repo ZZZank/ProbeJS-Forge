@@ -1,5 +1,7 @@
 package com.probejs.compiler;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.mojang.brigadier.context.CommandContext;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
@@ -7,31 +9,47 @@ import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.RegistryInfo;
-import com.probejs.mixin.RegistryAccessMixin;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.RegistryAccess.RegistryData;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegistryManager;
 
 public class RegistryCompiler {
 
-    private static Map<ResourceKey<? extends Registry<?>>, RegistryData<?>> registries;
+    private static Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> registries;
 
+    @SuppressWarnings("unchecked")
     public static void init(CommandContext<CommandSourceStack> context) {
-        RegistryAccess access = context.getSource().getServer().registryAccess();
-        RegistryCompiler.registries = ((RegistryAccessMixin) (Object) access).GET_REGISTRIES();
+        BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> m = null;
+        try {
+            Field f = RegistryManager.class.getDeclaredField("registries");
+            f.setAccessible(true);
+
+            m =
+                (BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>>) f.get(
+                    RegistryManager.ACTIVE
+                );
+        } catch (Exception e) {
+            e.printStackTrace();
+            m = HashBiMap.create();
+        }
+        RegistryCompiler.registries = m;
     }
 
     public static List<RegistryInfo> getAll() {
-        // RegistryCompiler.registries.keySet();
-        return Registry.REGISTRY.stream().map(RegistryInfo::new).collect(Collectors.toList());
+        return RegistryCompiler.registries
+            .values()
+            .stream()
+            .map(RegistryInfo::new)
+            .collect(Collectors.toList());
+        // return Registry.REGISTRY.stream().map(RegistryInfo::new).collect(Collectors.toList());
     }
 
     public static List<IFormatter> info2Formatters(Collection<RegistryInfo> infos) {
@@ -43,6 +61,7 @@ public class RegistryCompiler {
         infoByMods.forEach((namespace, rInfos) -> {
             List<String> lines = rInfos
                 .stream()
+                .filter(rInfo -> !rInfo.names.isEmpty())
                 .map(rInfo ->
                     String.format(
                         "type %s = %s;",
