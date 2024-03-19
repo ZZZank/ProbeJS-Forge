@@ -25,13 +25,13 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
 
     @Override
     public List<String> format(int indent, int stepIndent) {
-        List<String> formatted = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         DocumentComment comment = document != null ? document.getComment() : null;
         if (comment != null) {
             if (comment.getSpecialComment(CommentHidden.class) != null) {
-                return formatted;
+                return lines;
             }
-            formatted.addAll(comment.format(indent, stepIndent));
+            lines.addAll(comment.format(indent, stepIndent));
         }
 
         StringBuilder builder = new StringBuilder(PUtil.indent(indent));
@@ -61,8 +61,8 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
             );
         }
         builder.append(';');
-        formatted.add(builder.toString());
-        return formatted;
+        lines.add(builder.toString());
+        return lines;
     }
 
     public FieldInfo getFieldInfo() {

@@ -9,7 +9,7 @@ public interface IType {
      * @return the provided string itself
      */
     BiFunction<IType, String, String> dummyTransformer = (type, raw) -> raw;
-    BiFunction<IType, String, String> underscoreTransformer = (type, raw) -> {
+    BiFunction<IType, String, String> defaultTransformer = (type, raw) -> {
         if (!(type instanceof TypeNamed)) {
             return raw;
         }
@@ -29,7 +29,7 @@ public interface IType {
      * NOTE: Complex types will and should have every sub-type transformed
      * @param transformer A fn that accepts one IType and raw String, and returns transformed String
      * @return The transformed name after being processed by {@code transformer}
-     * @see com.probejs.document.type.IType#underscoreTransformer
+     * @see com.probejs.document.type.IType#defaultTransformer
      * @see com.probejs.document.type.IType#dummyTransformer
      */
     default String transform(BiFunction<IType, String, String> transformer) {

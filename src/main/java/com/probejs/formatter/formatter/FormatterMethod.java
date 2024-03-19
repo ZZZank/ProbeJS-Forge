@@ -19,32 +19,32 @@ import javax.annotation.Nullable;
 
 public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements IFormatter {
 
-    private final MethodInfo methodInfo;
+    private final MethodInfo info;
     private Pair<Map<String, IType>, IType> modifiersCache;
 
     public FormatterMethod(MethodInfo methodInfo) {
-        this.methodInfo = methodInfo;
+        this.info = methodInfo;
         modifiersCache = null;
     }
 
-    public MethodInfo getMethodInfo() {
-        return methodInfo;
+    public MethodInfo getInfo() {
+        return info;
     }
 
     @Nullable
     public String getBean() {
-        String methodName = methodInfo.getName();
+        String methodName = info.getName();
         if (methodName.equals("is") || methodName.equals("get") || methodName.equals("set")) {
             return null;
         }
-        int paramSize = methodInfo.getParams().size();
+        int paramSize = info.getParams().size();
         if (
             methodName.startsWith("is") &&
             paramSize == 0 &&
             (
                 //TODO: it seems that we can't pre-calculate the Boolean TypeInfoClass, why
-                methodInfo.getReturnType().assignableFrom(new TypeInfoClass(Boolean.class)) ||
-                methodInfo.getReturnType().assignableFrom(new TypeInfoClass(Boolean.TYPE))
+                info.getReturnType().assignableFrom(new TypeInfoClass(Boolean.class)) ||
+                info.getReturnType().assignableFrom(new TypeInfoClass(Boolean.TYPE))
             )
         ) {
             return PUtil.withLowerCaseHead(methodName.substring(2));
@@ -63,13 +63,13 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
      * @return True if method name is `isXXX` or `getXX`
      */
     public boolean isGetter() {
-        return !methodInfo.getName().startsWith("set");
+        return !info.getName().startsWith("set");
     }
 
     public String getBeanTypeString() {
         return isGetter()
-            ? methodInfo.getReturnType().getTypeName()
-            : methodInfo.getParams().get(0).getType().getTypeName();
+            ? info.getReturnType().getTypeName()
+            : info.getParams().get(0).getType().getTypeName();
     }
 
     public Pair<Map<String, IType>, IType> getModifiers() {
@@ -111,7 +111,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         if (returnModifier != null) {
             return returnModifier.getTypeName();
         }
-        return formatTypeParameterized(methodInfo.getReturnType(), false);
+        return formatTypeParameterized(info.getReturnType(), false);
     }
 
     private String formatParamUnderscore(ITypeInfo info) {
@@ -162,22 +162,22 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
      * Get a `a: string, b: number` style String representation of params of this method
      */
     public String formatParams(Map<String, String> renames, boolean forceNoUnderscore) {
-        BiFunction<IType, String, String> typeTransformer = forceNoUnderscore
+        final BiFunction<IType, String, String> typeTransformer = forceNoUnderscore
             ? IType.dummyTransformer
-            : IType.underscoreTransformer;
+            : IType.defaultTransformer;
         Map<String, IType> modifiers = getModifiers().getFirst();
         // modifiers = getModifiers().getFirst();
-        return methodInfo
+        return info
             .getParams()
             .stream()
-            .map(paramInfo -> {
-                String paramNameRaw = paramInfo.getName();
-                String paramType = modifiers.containsKey(paramNameRaw)
-                    ? modifiers.get(paramNameRaw).transform(typeTransformer)
-                    : formatParamUnderscore(paramInfo.getType(), forceNoUnderscore);
+            .map(pInfo -> {
+                String nameRaw = pInfo.getName();
+                String paramType = modifiers.containsKey(nameRaw)
+                    ? modifiers.get(nameRaw).transform(typeTransformer)
+                    : formatParamUnderscore(pInfo.getType(), forceNoUnderscore);
                 return String.format(
                     "%s: %s",
-                    NameResolver.getNameSafe(renames.getOrDefault(paramNameRaw, paramNameRaw)),
+                    NameResolver.getNameSafe(renames.getOrDefault(nameRaw, nameRaw)),
                     paramType
                 );
             })
@@ -205,15 +205,15 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
         StringBuilder builder = new StringBuilder(PUtil.indent(indent));
 
-        if (methodInfo.isStatic()) {
+        if (info.isStatic()) {
             builder.append("static ");
         }
-        builder.append(methodInfo.getName());
-        if (methodInfo.getTypeVariables().size() != 0) {
+        builder.append(info.getName());
+        if (info.getTypeVariables().size() != 0) {
             builder
                 .append('<')
                 .append(
-                    methodInfo
+                    info
                         .getTypeVariables()
                         .stream()
                         .map(ITypeInfo::getTypeName)
@@ -236,36 +236,28 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     public List<String> formatBean(int indent, int stepIndent) {
-        List<String> formatted = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
 
-        String methodName = methodInfo.getName();
-        Pair<Map<String, IType>, IType> modifierPair = getModifiers();
+        String methodName = info.getName();
+        // Pair<Map<String, IType>, IType> modifierPair = getModifiers();
         // Map<String, IType> paramModifiers = modifierPair.getFirst();
-        IType returnModifier = modifierPair.getSecond();
+        // IType returnModifier = modifierPair.getSecond();
 
         if (document != null) {
             DocumentComment comment = document.getComment();
-            if (CommentUtil.isHidden(comment)) return formatted;
-            if (comment != null) formatted.addAll(comment.format(indent, stepIndent));
+            if (CommentUtil.isHidden(comment)) return lines;
+            if (comment != null) lines.addAll(comment.format(indent, stepIndent));
         }
 
         String idnt = PUtil.indent(indent);
+        String beaned = getBean();
         if (methodName.startsWith("is")) {
-            formatted.add(idnt + String.format("get %s(): boolean;", getBean()));
+            lines.add(idnt + String.format("get %s(): boolean;", beaned));
         } else if (methodName.startsWith("get")) {
-            formatted.add(
-                idnt +
-                String.format(
-                    "get %s(): %s;",
-                    getBean(),
-                    returnModifier == null ? formatReturn() : returnModifier.getTypeName()
-                )
-            );
+            lines.add(idnt + String.format("get %s(): %s;", beaned, formatReturn()));
         } else if (methodName.startsWith("set")) {
-            // MethodInfo.ParamInfo info = methodInfo.getParams().get(0);
-            // String name = info.getName();
-            formatted.add(idnt + String.format("set %s(%s);", getBean(), formatParams(new HashMap<>())));
+            lines.add(idnt + String.format("set %s(%s);", beaned, formatParams(new HashMap<>())));
         }
-        return formatted;
+        return lines;
     }
 }

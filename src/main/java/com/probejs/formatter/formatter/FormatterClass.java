@@ -49,17 +49,17 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
     @Override
     public List<String> format(int indent, int stepIndent) {
-        List<String> formatted = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         DocumentComment comment = document == null ? null : document.getComment();
         if (comment != null) {
-            if (comment.getSpecialComment(CommentHidden.class) != null) return formatted;
-            formatted.addAll(comment.format(indent, stepIndent));
+            if (comment.getSpecialComment(CommentHidden.class) != null) return lines;
+            lines.addAll(comment.format(indent, stepIndent));
         }
 
         List<String> assignableTypes = Manager.typesAssignable
             .getOrDefault(classInfo.getClazzRaw().getName(), new ArrayList<>())
             .stream()
-            .map(t -> t.transform(IType.underscoreTransformer))
+            .map(t -> t.transform(IType.defaultTransformer))
             .collect(Collectors.toList());
 
         if (classInfo.isEnum()) {
@@ -131,7 +131,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             );
         }
         firstLine.add("{");
-        formatted.add(PUtil.indent(indent) + String.join(" ", firstLine));
+        lines.add(PUtil.indent(indent) + String.join(" ", firstLine));
         // first line processing, end
 
         // methods
@@ -148,10 +148,10 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                     )
                     .filter(fmtrMethod ->
                         //not static interface in namespace `Internal`
-                        !(classInfo.isInterface() && fmtrMethod.getMethodInfo().isStatic() && internal)
+                        !(classInfo.isInterface() && fmtrMethod.getInfo().isStatic() && internal)
                     )
                     .forEach(fmtrMethod ->
-                        formatted.addAll(fmtrMethod.format(indent + stepIndent, stepIndent))
+                        lines.addAll(fmtrMethod.format(indent + stepIndent, stepIndent))
                     )
             );
         //fields
@@ -162,7 +162,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             .filter(f -> !(classInfo.isInterface() && f.getValue().getFieldInfo().isStatic() && internal))
             .forEach(f -> {
                 f.getValue().setInterface(classInfo.isInterface());
-                formatted.addAll(f.getValue().format(indent + stepIndent, stepIndent));
+                lines.addAll(f.getValue().format(indent + stepIndent, stepIndent));
             });
 
         // beans
@@ -188,7 +188,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 }
             }
 
-            getterMap.forEach((k, v) -> formatted.addAll(v.formatBean(indent + stepIndent, stepIndent)));
+            getterMap.forEach((k, v) -> lines.addAll(v.formatBean(indent + stepIndent, stepIndent)));
             setterMap.forEach((k, v) -> {
                 v
                     .stream()
@@ -197,7 +197,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                         getterMap.get(m.getBean()).getBeanTypeString().equals(m.getBeanTypeString())
                     )
                     .findFirst()
-                    .ifPresent(fmtr -> formatted.addAll(fmtr.formatBean(indent + stepIndent, stepIndent)));
+                    .ifPresent(fmtr -> lines.addAll(fmtr.formatBean(indent + stepIndent, stepIndent)));
             });
         }
         //special processing for FunctionalInterface
@@ -210,7 +210,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             if (fnTargets.isPresent()) {
                 FormatterMethod fnFormatter = new FormatterMethod(fnTargets.get());
                 DocumentMethod doc = fnFormatter.document;
-                formatted.add(
+                lines.add(
                     String.format(
                         "%s(%s): %s;",
                         PUtil.indent(indent + stepIndent),
@@ -228,25 +228,25 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         if (!classInfo.isInterface()) {
             if (internal && !classInfo.getConstructorInfo().isEmpty()) {
                 String indnt = PUtil.indent(indent + stepIndent);
-                formatted.add(indnt + "/**");
-                formatted.add(indnt + " * Internal constructor, not callable unless via `java()`.");
-                formatted.add(indnt + " */");
+                lines.add(indnt + "/**");
+                lines.add(indnt + " * Internal constructor, not callable unless via `java()`.");
+                lines.add(indnt + " */");
             }
             classInfo
                 .getConstructorInfo()
                 .stream()
                 .map(FormatterConstructor::new)
-                .forEach(f -> formatted.addAll(f.format(indent + stepIndent, stepIndent)));
+                .forEach(f -> lines.addAll(f.format(indent + stepIndent, stepIndent)));
         }
         // additions
         for (DocumentField fieldDoc : fieldAdditions) {
-            formatted.addAll(fieldDoc.format(indent + stepIndent, stepIndent));
+            lines.addAll(fieldDoc.format(indent + stepIndent, stepIndent));
         }
         for (DocumentMethod methodDoc : methodAdditions) {
-            formatted.addAll(methodDoc.format(indent + stepIndent, stepIndent));
+            lines.addAll(methodDoc.format(indent + stepIndent, stepIndent));
         }
         //end
-        formatted.add(PUtil.indent(indent) + "}");
+        lines.add(PUtil.indent(indent) + "}");
         //type conversion
         String origName = NameResolver.getResolvedName(classInfo.getName()).getLastName();
         String underName = origName + "_";
@@ -272,11 +272,11 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         }
 
         assignableTypes.add(origName);
-        formatted.add(
+        lines.add(
             PUtil.indent(indent) +
             String.format("type %s = %s;", underName, String.join(" | ", assignableTypes))
         );
-        return formatted;
+        return lines;
     }
 
     @Override
@@ -299,7 +299,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                     methodFormatters
                         .get(documentMethod.getName())
                         .forEach(formatterMethod -> {
-                            if (documentMethod.testMethod(formatterMethod.getMethodInfo())) {
+                            if (documentMethod.testMethod(formatterMethod.getInfo())) {
                                 formatterMethod.addDocument(documentMethod);
                             }
                         });

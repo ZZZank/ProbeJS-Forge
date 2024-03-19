@@ -37,7 +37,7 @@ public class DocumentMethod
                 String.format(
                     "%s: %s",
                     documentParam.getName(),
-                    documentParam.getType().transform(IType.underscoreTransformer)
+                    documentParam.getType().transform(IType.defaultTransformer)
                 )
             )
             .collect(Collectors.joining(", "));
