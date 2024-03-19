@@ -26,16 +26,27 @@ public class RegistryCompiler {
     private static Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> registries;
 
     @SuppressWarnings("unchecked")
+    private static BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> castedGet(
+        Field f,
+        Object o
+    ) {
+        try {
+            return (BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>>) f.get(o);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return HashBiMap.create();
+    }
+
     public static void init(CommandContext<CommandSourceStack> context) {
         BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> m = null;
         try {
             Field f = RegistryManager.class.getDeclaredField("registries");
             f.setAccessible(true);
 
-            m =
-                (BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>>) f.get(
-                    RegistryManager.ACTIVE
-                );
+            m = castedGet(f, RegistryManager.ACTIVE);
+            castedGet(f, RegistryManager.VANILLA).forEach(m::putIfAbsent);
+            castedGet(f, RegistryManager.FROZEN).forEach(m::putIfAbsent);
         } catch (Exception e) {
             e.printStackTrace();
             m = HashBiMap.create();
