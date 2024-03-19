@@ -1,5 +1,6 @@
 package com.probejs.info;
 
+import java.util.HashMap;
 import java.util.Set;
 
 import net.minecraft.core.Registry;
@@ -21,8 +22,8 @@ public class RegistryInfo {
         this.raw = null;
         this.forgeRaw = forgeRegistry;
         this.resKey = forgeRaw.getRegistryKey();
-        this.parentId = forgeRaw.getDefaultKey();
-        this.id = forgeRaw.getRegistryName();
+        this.parentId = resKey.getRegistryName();
+        this.id = resKey.location();
         this.names = forgeRaw.getKeys();
     }
 
