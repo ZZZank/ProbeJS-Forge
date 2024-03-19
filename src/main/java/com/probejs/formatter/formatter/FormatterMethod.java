@@ -2,7 +2,7 @@ package com.probejs.formatter.formatter;
 
 import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentMethod;
-import com.probejs.document.Manager;
+import com.probejs.document.DocManager;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentReturns;
 import com.probejs.document.type.IType;
@@ -121,7 +121,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     private String formatParamUnderscore(ITypeInfo info, boolean forceNoUnderscore) {
         Class<?> resolvedClass = info.getResolvedClass();
         //No assigned types, and not enum, use normal route.
-        if (!Manager.typesAssignable.containsKey(resolvedClass.getName()) && !resolvedClass.isEnum()) {
+        if (!DocManager.typesAssignable.containsKey(resolvedClass.getName()) && !resolvedClass.isEnum()) {
             return formatTypeParameterized(info, true);
         }
 

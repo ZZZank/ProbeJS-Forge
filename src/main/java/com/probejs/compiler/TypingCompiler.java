@@ -2,7 +2,7 @@ package com.probejs.compiler;
 
 import com.probejs.ProbePaths;
 import com.probejs.document.DocumentClass;
-import com.probejs.document.Manager;
+import com.probejs.document.DocManager;
 import com.probejs.formatter.ClassResolver;
 import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.SpecialTypes;
@@ -75,7 +75,7 @@ public class TypingCompiler {
 
         for (Class<?> clazz : globalClasses) {
             FormatterClass formatter = new FormatterClass(ClassInfo.ofCache(clazz));
-            Manager.classDocuments
+            DocManager.classDocuments
                 .getOrDefault(clazz.getName(), new ArrayList<>())
                 .forEach(formatter::addDocument);
 
@@ -103,7 +103,7 @@ public class TypingCompiler {
             writer.write(String.join("\n", namespace.format(0, 4)) + "\n");
         }
 
-        for (Map.Entry<String, List<DocumentClass>> entry : Manager.classAdditions.entrySet()) {
+        for (Map.Entry<String, List<DocumentClass>> entry : DocManager.classAdditions.entrySet()) {
             List<DocumentClass> document = entry.getValue();
             DocumentClass start = document.get(0);
             document.subList(1, document.size()).forEach(start::merge);
@@ -112,19 +112,19 @@ public class TypingCompiler {
         //namespace::Document
         for (String line : new FormatterNamespace(
             "Document",
-            Manager.classAdditions.values().stream().map(l -> l.get(0)).collect(Collectors.toList())
+            DocManager.classAdditions.values().stream().map(l -> l.get(0)).collect(Collectors.toList())
         )
             .format(0, 4)) {
             writer.write(line);
             writer.write("\n");
         }
         //namespace::Type
-        for (String line : new FormatterNamespace("Type", Manager.typeDocuments).format(0, 4)) {
+        for (String line : new FormatterNamespace("Type", DocManager.typeDocuments).format(0, 4)) {
             writer.write(line);
             writer.write("\n");
         }
         //no namespace
-        for (String line : new FormatterRaw(Manager.rawTSDoc).format(0, 4)) {
+        for (String line : new FormatterRaw(DocManager.rawTSDoc).format(0, 4)) {
             writer.write(line);
             writer.write("\n");
         }

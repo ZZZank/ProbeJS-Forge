@@ -18,7 +18,7 @@ import java.util.zip.ZipFile;
 import me.shedaniel.architectury.platform.Mod;
 import me.shedaniel.architectury.platform.Platform;
 
-public class Manager {
+public class DocManager {
 
     public static final Map<String, List<DocumentClass>> classDocuments = new HashMap<>();
     public static final Map<String, List<IType>> typesAssignable = new HashMap<>();

@@ -5,7 +5,7 @@ import com.probejs.document.DocumentClass;
 import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
-import com.probejs.document.Manager;
+import com.probejs.document.DocManager;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.document.type.IType;
@@ -56,7 +56,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             lines.addAll(comment.format(indent, stepIndent));
         }
 
-        List<String> assignableTypes = Manager.typesAssignable
+        List<String> assignableTypes = DocManager.typesAssignable
             .getOrDefault(classInfo.getClazzRaw().getName(), new ArrayList<>())
             .stream()
             .map(t -> t.transform(IType.defaultTransformer))

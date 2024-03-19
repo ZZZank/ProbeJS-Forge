@@ -1,6 +1,5 @@
 package com.probejs.info;
 
-import java.util.HashMap;
 import java.util.Set;
 
 import net.minecraft.core.Registry;
