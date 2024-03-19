@@ -1,10 +1,10 @@
 package com.probejs;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.probejs.compiler.RegistryCompiler;
 import com.probejs.compiler.SnippetCompiler;
 import com.probejs.compiler.TypingCompiler;
 import com.probejs.document.Manager;
@@ -16,6 +16,7 @@ import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.server.ServerSettings;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -43,12 +44,14 @@ public class ProbeCommands {
                                 if (ProbeJS.CONFIG.autoExport) {
                                     export(context.getSource());
                                 }
-                                SnippetCompiler.compile();
                                 DocumentProviderHandler.init();
                                 CommentHandler.init();
                                 Manager.init();
                                 ClassResolver.init();
                                 NameResolver.init();
+                                RegistryCompiler.init();
+
+                                SnippetCompiler.compile();
                                 TypingCompiler.compile();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -102,10 +105,7 @@ public class ProbeCommands {
                                     ProbeJS.CONFIG.save();
                                     return sendSuccess(
                                         context,
-                                        String.format(
-                                            "Dump trimming set to: %s",
-                                            ProbeJS.CONFIG.trimming
-                                        )
+                                        String.format("Dump trimming set to: %s", ProbeJS.CONFIG.trimming)
                                     );
                                 })
                         )
@@ -143,8 +143,7 @@ public class ProbeCommands {
                             Commands
                                 .literal("toggle_classname_snippets")
                                 .executes(context -> {
-                                    ProbeJS.CONFIG.exportClassNames =
-                                        !ProbeJS.CONFIG.exportClassNames;
+                                    ProbeJS.CONFIG.exportClassNames = !ProbeJS.CONFIG.exportClassNames;
                                     ProbeJS.CONFIG.save();
                                     return sendSuccess(
                                         context,
@@ -213,7 +212,7 @@ public class ProbeCommands {
         Collection<String> selectedPackIds = packRepository.getSelectedIds();
         packRepository.reload();
         Collection<String> disabledDatapacks = worldData.getDataPackConfig().getDisabled();
-        
+
         Collection<String> selected = new ArrayList<>(selectedPackIds);
         for (String string : packRepository.getAvailableIds()) {
             if (!disabledDatapacks.contains(string) && !selected.contains(string)) {

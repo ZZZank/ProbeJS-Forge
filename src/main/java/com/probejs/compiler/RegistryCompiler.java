@@ -2,7 +2,6 @@ package com.probejs.compiler;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.mojang.brigadier.context.CommandContext;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.formatter.formatter.FormatterNamespace;
@@ -15,7 +14,6 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -38,7 +36,7 @@ public class RegistryCompiler {
         return HashBiMap.create();
     }
 
-    public static void init(CommandContext<CommandSourceStack> context) {
+    public static void init() {
         BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> m = null;
         try {
             Field f = RegistryManager.class.getDeclaredField("registries");
