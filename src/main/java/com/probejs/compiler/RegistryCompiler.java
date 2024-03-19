@@ -52,7 +52,7 @@ public class RegistryCompiler {
         RegistryCompiler.registries = m;
     }
 
-    public static List<RegistryInfo> getAll() {
+    public static List<RegistryInfo> getInfos() {
         return RegistryCompiler.registries
             .values()
             .stream()
@@ -70,17 +70,16 @@ public class RegistryCompiler {
         infoByMods.forEach((namespace, rInfos) -> {
             List<String> lines = rInfos
                 .stream()
-                .filter(rInfo -> !rInfo.names.isEmpty())
-                .map(rInfo ->
-                    String.format(
-                        "type %s = %s;",
-                        rInfo.id.getPath().replace('/', '$'),
-                        rInfo.names
-                            .stream()
-                            .map(rl -> ProbeJS.GSON.toJson(rl.toString()))
-                            .collect(Collectors.joining("|"))
-                    )
-                )
+                .map(rInfo -> {
+                    String names = rInfo.names
+                        .stream()
+                        .map(rl -> ProbeJS.GSON.toJson(rl.toString()))
+                        .collect(Collectors.joining("|"));
+                    if (names.isEmpty()) {
+                        names = "never";
+                    }
+                    return String.format("type %s = %s;", rInfo.id.getPath().replace('/', '$'), names);
+                })
                 .collect(Collectors.toList());
             formatters.add(new FormatterNamespace(namespace, Arrays.asList(new FormatterRaw(lines, false))));
         });
@@ -97,7 +96,7 @@ public class RegistryCompiler {
             //     .stream()
             //     .map(FormatterRegistry::new)
             //     .collect(Collectors.toList())
-            info2Formatters(getAll())
+            info2Formatters(getInfos())
         );
         writer.write(String.join("\n", namespace.format(0, 4)));
         writer.flush();
