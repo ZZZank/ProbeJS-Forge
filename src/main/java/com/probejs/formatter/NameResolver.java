@@ -13,17 +13,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
 
 public class NameResolver {
 
@@ -256,28 +246,19 @@ public class NameResolver {
                 List<String> result = new ArrayList<>();
                 try {
                     for (Field field : DamageSource.class.getDeclaredFields()) {
-                        field.setAccessible(true);
                         if (
-                            Modifier.isStatic(field.getModifiers()) && field.getType() == DamageSource.class
+                            !Modifier.isStatic(field.getModifiers()) ||
+                            field.getType() != DamageSource.class ||
+                            !Modifier.isPublic(field.getModifiers())
                         ) {
-                            result.add(((DamageSource) field.get(null)).getMsgId());
+                            continue;
                         }
+                        field.setAccessible(true);
+                        result.add(((DamageSource) field.get(null)).getMsgId());
                     }
                 } catch (Exception ignored) {}
                 return result;
             }
-        );
-
-        SpecialTypes.assignRegistry(Enchantment.class, Registry.ENCHANTMENT_REGISTRY);
-        SpecialTypes.assignRegistry(Attribute.class, Registry.ATTRIBUTE_REGISTRY);
-        SpecialTypes.assignRegistry(MobEffect.class, Registry.MOB_EFFECT_REGISTRY);
-        SpecialTypes.assignRegistry(Block.class, Registry.BLOCK_REGISTRY);
-        SpecialTypes.assignRegistry(Item.class, Registry.ITEM_REGISTRY);
-        SpecialTypes.assignRegistry(SoundEvent.class, Registry.SOUND_EVENT_REGISTRY);
-        SpecialTypes.assignRegistry(Fluid.class, Registry.FLUID_REGISTRY);
-        SpecialTypes.assignRegistry(
-            RecipeSerializer.class,
-            ((ResourceKey<Registry<RecipeSerializer>>) ((Object) Registry.RECIPE_SERIALIZER_REGISTRY))
         );
 
         // putTypeGuard(true, Class.class, ClassWrapper.class);

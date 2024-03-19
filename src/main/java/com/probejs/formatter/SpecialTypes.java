@@ -1,12 +1,10 @@
 package com.probejs.formatter;
 
-import com.probejs.ProbeJS;
 import com.probejs.compiler.RegistryCompiler;
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeNamed;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.info.type.TypeInfoClass;
-import dev.latvian.kubejs.KubeJSRegistries;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
 import dev.latvian.mods.rhino.Scriptable;
@@ -14,59 +12,10 @@ import dev.latvian.mods.rhino.ScriptableObject;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 
 public class SpecialTypes {
 
     public static final Set<Class<?>> skippedSpecials = new HashSet<>();
-
-    /*
-    private static class FormatterLambda {
-
-        private final MethodInfo info;
-
-        private FormatterLambda(MethodInfo info) {
-            this.info = info;
-        }
-
-        public String format(ITypeInfo typeInfo) {
-            Map<String, ITypeInfo> variableMap = new HashMap<>();
-            if (typeInfo instanceof TypeInfoParameterized) {
-                TypeInfoParameterized parameterized = (TypeInfoParameterized) typeInfo;
-                List<ITypeInfo> concreteTypes = new ArrayList<>(parameterized.getParamTypes());
-                for (ITypeInfo variable : info.getFrom().getParameters()) {
-                    variableMap.put(
-                        variable.getTypeName(),
-                        concreteTypes.isEmpty() ? new TypeInfoClass(Object.class) : concreteTypes.remove(0)
-                    );
-                }
-            }
-
-            List<String> formattedParam = new ArrayList<>();
-            for (MethodInfo.ParamInfo param : info.getParams()) {
-                ITypeInfo resolvedType = param.getType();
-                if (resolvedType instanceof TypeInfoVariable) {
-                    resolvedType =
-                        variableMap.getOrDefault(resolvedType.getTypeName(), new TypeInfoClass(Object.class));
-                }
-                formattedParam.add(
-                    String.format("%s: %s", param.getName(), new FormatterType(resolvedType).format(0, 0))
-                );
-            }
-            ITypeInfo resolvedReturn = info.getReturnType();
-            if (resolvedReturn instanceof TypeInfoVariable) {
-                resolvedReturn =
-                    variableMap.getOrDefault(resolvedReturn.getTypeName(), new TypeInfoClass(Object.class));
-            }
-            return String.format(
-                "((%s)=>%s)",
-                String.join(", ", formattedParam),
-                new FormatterType(resolvedReturn).format(0, 0)
-            );
-        }
-    }
-    */
 
     private static String formatValueOrType(Object obj) {
         String formattedValue = NameResolver.formatValue(obj);
@@ -197,24 +146,5 @@ public class SpecialTypes {
                     .computeIfAbsent(registrySuperType.getName(), k -> new ArrayList<>())
                     .add(new TypeNamed(name));
             });
-    }
-
-    public static <T> void assignRegistry(Class<T> clazz, ResourceKey<Registry<T>> registry) {
-        NameResolver.putSpecialAssignments(
-            clazz,
-            () -> {
-                List<String> result = new ArrayList<>();
-                KubeJSRegistries
-                    .genericRegistry(registry)
-                    .getIds()
-                    .forEach(r -> {
-                        if (r.getNamespace().equals("minecraft")) {
-                            result.add(ProbeJS.GSON.toJson(r.getPath()));
-                        }
-                        result.add(ProbeJS.GSON.toJson(r.toString()));
-                    });
-                return result;
-            }
-        );
     }
 }
