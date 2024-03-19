@@ -2,6 +2,8 @@ package com.probejs.formatter;
 
 import com.probejs.ProbeJS;
 import com.probejs.compiler.RegistryCompiler;
+import com.probejs.document.DocManager;
+import com.probejs.document.type.TypeNamed;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.info.type.TypeInfoClass;
 import dev.latvian.kubejs.KubeJSRegistries;
@@ -191,7 +193,9 @@ public class SpecialTypes {
                     info.id.getNamespace(),
                     info.id.getPath().replace('/', '$')
                 );
-                NameResolver.putSpecialAssignments(registrySuperType, () -> Arrays.asList(name));
+                DocManager.typesAssignable
+                    .computeIfAbsent(registrySuperType.getName(), k -> new ArrayList<>())
+                    .add(new TypeNamed(name));
             });
     }
 
