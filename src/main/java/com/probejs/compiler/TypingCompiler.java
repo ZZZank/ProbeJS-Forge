@@ -5,6 +5,7 @@ import com.probejs.document.DocumentClass;
 import com.probejs.document.Manager;
 import com.probejs.formatter.ClassResolver;
 import com.probejs.formatter.NameResolver;
+import com.probejs.formatter.SpecialTypes;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
@@ -226,6 +227,7 @@ public class TypingCompiler {
         Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
 
         globalClasses.removeIf(ClassResolver.skipped::contains);
+        SpecialTypes.assignForgeRegistries();
 
         compileGlobal(bindingEvent, globalClasses);
         compileRecipeHolder(typeMap);

@@ -1,6 +1,7 @@
 package com.probejs.formatter;
 
 import com.probejs.ProbeJS;
+import com.probejs.compiler.RegistryCompiler;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.info.type.TypeInfoClass;
 import dev.latvian.kubejs.KubeJSRegistries;
@@ -176,6 +177,22 @@ public class SpecialTypes {
         }
         NativeJavaObject njo = (NativeJavaObject) obj;
         return formatValueOrType(njo.unwrap());
+    }
+
+    public static void assignForgeRegistries() {
+        RegistryCompiler
+            .getInfos()
+            .stream()
+            .filter(info -> !info.names.isEmpty())
+            .forEach(info -> {
+                Class<?> registrySuperType = info.forgeRaw.getRegistrySuperType();
+                String name = String.format(
+                    "Registry.%s.%s",
+                    info.id.getNamespace(),
+                    info.id.getPath().replace('/', '$')
+                );
+                NameResolver.putSpecialAssignments(registrySuperType, () -> Arrays.asList(name));
+            });
     }
 
     public static <T> void assignRegistry(Class<T> clazz, ResourceKey<Registry<T>> registry) {
