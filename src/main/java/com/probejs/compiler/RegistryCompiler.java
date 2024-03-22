@@ -58,10 +58,9 @@ public class RegistryCompiler {
             .stream()
             .map(RegistryInfo::new)
             .collect(Collectors.toList());
-        // return Registry.REGISTRY.stream().map(RegistryInfo::new).collect(Collectors.toList());
     }
 
-    public static List<IFormatter> info2Formatters(Collection<RegistryInfo> infos) {
+    private static List<IFormatter> info2Formatters(Collection<RegistryInfo> infos) {
         Map<String, List<RegistryInfo>> infoByMods = new HashMap<>();
         for (RegistryInfo info : infos) {
             infoByMods.computeIfAbsent(info.id.getNamespace(), k -> new ArrayList<>()).add(info);
@@ -89,16 +88,11 @@ public class RegistryCompiler {
     public static void compileRegistries() throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("registries.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
-        IFormatter namespace = new FormatterNamespace(
-            "Registry",
-            // RegistryObjectBuilderTypes.MAP
-            //     .values()
-            //     .stream()
-            //     .map(FormatterRegistry::new)
-            //     .collect(Collectors.toList())
-            info2Formatters(getInfos())
-        );
-        writer.write(String.join("\n", namespace.format(0, 4)));
+        IFormatter namespaced = new FormatterNamespace("Registry", info2Formatters(getInfos()));
+        for (String line : namespaced.format(0, 4)) {
+            writer.write(line);
+            writer.write('\n');
+        }
         writer.flush();
         writer.close();
     }
