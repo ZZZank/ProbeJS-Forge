@@ -1,6 +1,5 @@
 package com.probejs;
 
-import com.google.gson.JsonObject;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -13,18 +12,11 @@ import com.probejs.document.parser.processor.DocumentProviderHandler;
 import com.probejs.formatter.ClassResolver;
 import com.probejs.formatter.NameResolver;
 import dev.latvian.kubejs.KubeJSPaths;
-import dev.latvian.kubejs.server.ServerSettings;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.commands.ReloadCommand;
-import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.world.level.storage.WorldData;
 
 public class ProbeCommands {
 
@@ -41,9 +33,6 @@ public class ProbeCommands {
                         .requires(source -> source.getServer().isSingleplayer())
                         .executes(context -> {
                             try {
-                                if (ProbeJS.CONFIG.autoExport) {
-                                    export(context.getSource());
-                                }
                                 DocumentProviderHandler.init();
                                 CommentHandler.init();
                                 DocManager.init();
@@ -154,21 +143,6 @@ public class ProbeCommands {
                                     );
                                 })
                         )
-                        .then(
-                            Commands
-                                .literal("toggle_autoexport")
-                                .executes(context -> {
-                                    ProbeJS.CONFIG.autoExport = !ProbeJS.CONFIG.autoExport;
-                                    ProbeJS.CONFIG.save();
-                                    return sendSuccess(
-                                        context,
-                                        String.format(
-                                            "Auto-export for KubeJS set to: %s",
-                                            ProbeJS.CONFIG.autoExport
-                                        )
-                                    );
-                                })
-                        )
                 )
         );
     }
@@ -195,31 +169,5 @@ public class ProbeCommands {
      */
     private static int sendSuccess(CommandContext<CommandSourceStack> context, String message) {
         return sendSuccess(context, message, false);
-    }
-
-    private static void export(CommandSourceStack source) {
-        if (ServerSettings.dataExport != null) {
-            return;
-        }
-
-        ServerSettings.source = source;
-        ServerSettings.dataExport = new JsonObject();
-        source.sendSuccess(new TextComponent("Reloading server and exporting data..."), false);
-
-        MinecraftServer server = source.getServer();
-        PackRepository packRepository = server.getPackRepository();
-        WorldData worldData = server.getWorldData();
-        Collection<String> selectedPackIds = packRepository.getSelectedIds();
-        packRepository.reload();
-        Collection<String> disabledDatapacks = worldData.getDataPackConfig().getDisabled();
-
-        Collection<String> selected = new ArrayList<>(selectedPackIds);
-        for (String string : packRepository.getAvailableIds()) {
-            if (!disabledDatapacks.contains(string) && !selected.contains(string)) {
-                selected.add(string);
-            }
-        }
-
-        ReloadCommand.reloadPacks(selected, source);
     }
 }
