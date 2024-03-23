@@ -75,8 +75,11 @@ public class ClassInfo {
             Arrays
                 .stream(clazzRaw.getMethods())
                 .filter(method -> {
+                    if (!ProbeJS.CONFIG.trimming) {
+                        return true;
+                    }
                     if (isInterface) {
-                        return method.getDeclaringClass() == clazzRaw || !ProbeJS.CONFIG.trimming;
+                        return method.getDeclaringClass() == clazzRaw;
                     }
                     return !hasIdenticalParentMethod(method);
                 })
