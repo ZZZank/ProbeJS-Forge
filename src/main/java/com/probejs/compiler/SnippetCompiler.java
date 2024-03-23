@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -27,11 +26,11 @@ public class SnippetCompiler {
     public static class KubeDump {
 
         public final Map<String, Collection<ResourceLocation>> tags;
-        public final Map<String, List<String>> registries;
+        public final Map<String, Collection<ResourceLocation>> registries;
 
         public KubeDump(
             Map<String, Collection<ResourceLocation>> tags,
-            Map<String, List<String>> registries
+            Map<String, Collection<ResourceLocation>> registries
         ) {
             this.tags = tags;
             this.registries = registries;
@@ -46,28 +45,20 @@ public class SnippetCompiler {
         }
 
         private static <T> void putRegistry(
-            Map<String, List<String>> target,
+            Map<String, Collection<ResourceLocation>> target,
             String type,
             ResourceKey<Registry<T>> registryKey
         ) {
-            target.put(
-                type,
-                KubeJSRegistries
-                    .genericRegistry(registryKey)
-                    .getIds()
-                    .stream()
-                    .map(ResourceLocation::toString)
-                    .collect(Collectors.toList())
-            );
+            target.put(type, KubeJSRegistries.genericRegistry(registryKey).getIds());
         }
 
         public static KubeDump fetch() {
             Map<String, Collection<ResourceLocation>> tags = new HashMap<>();
-            Map<String, List<String>> registries = new HashMap<>();
             putTag(tags, "items", Tags.items());
             putTag(tags, "blocks", Tags.blocks());
             putTag(tags, "fluids", Tags.fluids());
             putTag(tags, "entity_types", Tags.entityTypes());
+            Map<String, Collection<ResourceLocation>> registries = new HashMap<>();
             putRegistry(registries, "items", Registry.ITEM_REGISTRY);
             putRegistry(registries, "blocks", Registry.BLOCK_REGISTRY);
             putRegistry(registries, "fluids", Registry.FLUID_REGISTRY);
@@ -83,14 +74,16 @@ public class SnippetCompiler {
         public JsonObject toSnippet() {
             JsonObject resultJson = new JsonObject();
             // Compile normal entries to snippet
-            for (Map.Entry<String, List<String>> entry : this.registries.entrySet()) {
+            for (Map.Entry<String, Collection<ResourceLocation>> entry : this.registries.entrySet()) {
                 String type = entry.getKey();
                 Map<String, List<String>> byModMembers = new HashMap<>();
                 entry
                     .getValue()
-                    .stream()
-                    .map(rl -> rl.split(":", 2))
-                    .forEach(rl -> byModMembers.computeIfAbsent(rl[0], k -> new ArrayList<>()).add(rl[1]));
+                    .forEach(rl ->
+                        byModMembers
+                            .computeIfAbsent(rl.getNamespace(), k -> new ArrayList<>())
+                            .add(rl.getPath())
+                    );
                 byModMembers.forEach((mod, modMembers) -> {
                     JsonObject modMembersJson = new JsonObject();
                     JsonArray prefixes = new JsonArray();
@@ -114,7 +107,6 @@ public class SnippetCompiler {
                 Map<String, List<String>> byModMembers = new HashMap<>();
                 entry
                     .getValue()
-                    .stream()
                     .forEach(rl ->
                         byModMembers
                             .computeIfAbsent(rl.getNamespace(), k -> new ArrayList<>())
