@@ -74,7 +74,15 @@ public class ClassInfo {
         methodInfo =
             Arrays
                 .stream(clazzRaw.getMethods())
-                .filter(method -> method.getDeclaringClass() == clazzRaw || !ProbeJS.CONFIG.trimming)
+                .filter(method -> {
+                    if (!ProbeJS.CONFIG.trimming) {
+                        return true;
+                    }
+                    if (isInterface) {
+                        return method.getDeclaringClass() == clazzRaw;
+                    }
+                    return !hasIdenticalParentMethod(method);
+                })
                 .map(m -> new MethodInfo(m, clazz))
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
                 .filter(m -> !m.shouldHide())
@@ -88,7 +96,6 @@ public class ClassInfo {
                 .filter(f -> ClassResolver.acceptField(f.getName()))
                 .filter(f -> !f.shouldHide())
                 .collect(Collectors.toList());
-
         //Resolve types - rollback everything till Object
         applySuperGenerics(methodInfo, fieldInfo);
     }
@@ -230,18 +237,24 @@ public class ClassInfo {
         return name;
     }
 
-    private boolean hasIdenticalParentMethod(Method method, Class<?> clazz) {
+    /**
+     * seems not working for parameterized interfaces
+     */
+    private boolean hasIdenticalParentMethod(Method method) {
         if (method.isDefault()) {
             return false;
         }
-        Class<?> parent = clazz.getSuperclass();
-        while (parent != null) {
+        for (
+            Class<?> parent = this.clazzRaw.getSuperclass();
+            parent != null;
+            parent = parent.getSuperclass()
+        ) {
             try {
                 Method parentMethod = parent.getMethod(method.getName(), method.getParameterTypes());
                 // Check if the generic return type is the same
+                // seems not working for interfaces, e.g. RecipeFilter
                 return parentMethod.getGenericReturnType().equals(method.getGenericReturnType());
             } catch (NoSuchMethodException ignored) {}
-            parent = parent.getSuperclass();
         }
         return false;
     }
