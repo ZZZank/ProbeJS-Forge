@@ -86,8 +86,7 @@ public class RegistryCompiler {
     }
 
     public static void compileRegistries() throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("registries.d.ts"));
-        writer.write("/// <reference path=\"./globals.d.ts\" />\n");
+        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("data.d.ts"));
         IFormatter namespaced = new FormatterNamespace("Registry", info2Formatters(getInfos()));
         for (String line : namespaced.format(0, 4)) {
             writer.write(line);

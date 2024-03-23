@@ -41,7 +41,7 @@ public class EventCompiler {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
 
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
-        // writer.write("/// <reference path=\"./registries.d.ts\" />\n");
+        writer.write("/// <reference path=\"./data.d.ts\" />\n");
         writeEvents(writer);
         writeWildcardEvents(writer);
         writeForgeEvents(writer);
