@@ -1,11 +1,27 @@
+# ProbeJS Legacy 2.5.0 -> 2.6.0
+
+Registry Dumping
+
+## What's new?
+
+-   Registry Dumping!
+    -   Registries, whether from vanilla(e.g. items, blocks) or mods(e.g. Mekanism Slurries), can now be dumped into `registries.d.ts`.
+    -   Registries will be resolved into types, showing every avaliable names under such registry. e.g. `type schedule = "minecraft:empty"|"minecraft:simple"|"minecraft:villager_baby"|"minecraft:villager_default";`
+    -   Types that are registry entries will now take cooresponding registry as its assignables, like `type Attribute_ = Registry.minecraft.attribute | Attribute;`
+    -   This means in some cases, like `item.enchant(..., 1)`, using string in `...` will no longer confuses your IDE, if you enable type checks.
+-   Minor performance tweaks to allow event listening mixin runs a little bit faster. After this change, changing config `disabled` will actually require a game restart to take effects
+-   move generalized representation of `onEvent` and `onForgeEvent` lower to prefer sepcialized ones
+
+---
+
 # ProbeJS Legacy 2.4.1 -> 2.5.0
 
-RecipeFilter_ & FunctionalInterfaces
+RecipeFilter\_ & FunctionalInterfaces
 
 ## What's new?
 
 -   Functional Interfaces(Interfaces that accept Lambda as their instances) can now also display their original type, thus accepting document
-    -  e.g. `event.replaceInput(filter, toReplace, replaceWith)` in RecipeEvent, where `filter` used to be a only lambda function, but now accepts Lambda, original type, and objects like `{mod: "minecraft", type: "minecraft:blasting"}`
+    -   e.g. `event.replaceInput(filter, toReplace, replaceWith)` in RecipeEvent, where `filter` used to be a only lambda function, but now accepts Lambda, original type, and objects like `{mod: "minecraft", type: "minecraft:blasting"}`
 -   Detailed doc for `RecipeFilter`, `ItemStackJS`, `IngredientJS`, and much more
 -   Event doc will now have a generalized variant displayed, to handle events that are not exported by ProbeJS yet
 
