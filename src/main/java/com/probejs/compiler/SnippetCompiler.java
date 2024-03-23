@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,46 +26,34 @@ public class SnippetCompiler {
 
     public static class KubeDump {
 
-        public final Map<String, Map<String, List<String>>> tags;
+        public final Map<String, Collection<ResourceLocation>> tags;
         public final Map<String, List<String>> registries;
 
-        public KubeDump(Map<String, Map<String, List<String>>> tags, Map<String, List<String>> registries) {
+        public KubeDump(
+            Map<String, Collection<ResourceLocation>> tags,
+            Map<String, List<String>> registries
+        ) {
             this.tags = tags;
             this.registries = registries;
         }
 
         private static void putTag(
-            Map<String, Map<String, List<String>>> tags,
+            Map<String, Collection<ResourceLocation>> target,
             String type,
             TagCollection<?> tagCollection
         ) {
-            // tags.put(
-            //     type,
-            //     /* List<String> */
-            //     FormatterTag
-            //         .getTagsFromRegistry(tagCollection)
-            //         .stream()
-            //         .collect(Collectors.toMap(s -> s, s -> new ArrayList<>()))
-            // );
-            tags.put(
-                type,
-                tagCollection
-                    .getAvailableTags()
-                    .stream()
-                    .map(ResourceLocation::toString)
-                    .collect(Collectors.toMap(name -> name, name -> new ArrayList<>()))
-            );
+            target.put(type, tagCollection.getAvailableTags());
         }
 
         private static <T> void putRegistry(
-            Map<String, List<String>> registries,
+            Map<String, List<String>> target,
             String type,
-            ResourceKey<Registry<T>> registry
+            ResourceKey<Registry<T>> registryKey
         ) {
-            registries.put(
+            target.put(
                 type,
                 KubeJSRegistries
-                    .genericRegistry(registry)
+                    .genericRegistry(registryKey)
                     .getIds()
                     .stream()
                     .map(ResourceLocation::toString)
@@ -73,7 +62,7 @@ public class SnippetCompiler {
         }
 
         public static KubeDump fetch() {
-            Map<String, Map<String, List<String>>> tags = new HashMap<>();
+            Map<String, Collection<ResourceLocation>> tags = new HashMap<>();
             Map<String, List<String>> registries = new HashMap<>();
             putTag(tags, "items", Tags.items());
             putTag(tags, "blocks", Tags.blocks());
@@ -120,15 +109,17 @@ public class SnippetCompiler {
             }
 
             // Compile tag entries to snippet
-            for (Map.Entry<String, Map<String, List<String>>> entry : this.tags.entrySet()) {
+            for (Map.Entry<String, Collection<ResourceLocation>> entry : this.tags.entrySet()) {
                 String type = entry.getKey();
                 Map<String, List<String>> byModMembers = new HashMap<>();
                 entry
                     .getValue()
-                    .keySet()
                     .stream()
-                    .map(rl -> rl.split(":", 2))
-                    .forEach(rl -> byModMembers.computeIfAbsent(rl[0], k -> new ArrayList<>()).add(rl[1]));
+                    .forEach(rl ->
+                        byModMembers
+                            .computeIfAbsent(rl.getNamespace(), k -> new ArrayList<>())
+                            .add(rl.getPath())
+                    );
                 byModMembers.forEach((mod, modMembers) -> {
                     JsonObject modMembersJson = new JsonObject();
                     JsonArray prefixes = new JsonArray();
