@@ -3,10 +3,21 @@ package com.probejs.util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StringUtil {
+public abstract class StringUtil {
 
     public static final String PUSH_INDICATOR = "({[<";
     public static final String POP_INDICATOR = ">]})";
+
+    /**
+     * "snake_to_camel" -> "SnakeToCamel"
+     */
+    public static String snakeToCamel(String s) {
+        String[] split = s.split("_");
+        for (int i = 0; i < split.length; i++) {
+            split[i] = withUpperCaseHead(split[i]);
+        }
+        return String.join("", split);
+    }
 
     /**
      * Get the index of {@code delimiter} in {@code str}, with "nested" one ignored.
@@ -78,5 +89,35 @@ public class StringUtil {
      */
     public static List<String> splitLayer(String s, String delimiter) {
         return splitLayer(s, PUSH_INDICATOR, POP_INDICATOR, delimiter);
+    }
+
+    /**
+     * Gets a String with its first char set to lower case, like `AABB`->`aABB`
+     * @param text The original string
+     * @return The original string if it's already lower case in first char, or a
+     * new, processed string
+     */
+    public static String withLowerCaseHead(String text) {
+        if (text.isEmpty() || Character.isLowerCase(text.charAt(0))) {
+            return text;
+        }
+        char[] arr = text.toCharArray();
+        arr[0] = Character.toLowerCase(arr[0]);
+        return new String(arr);
+    }
+
+    /**
+     * Gets a String with its first char set to lower case, like `AABB`->`aABB`
+     * @param text The original string
+     * @return The original string if it's already lower case in first char, or a
+     * new, processed string
+     */
+    public static String withUpperCaseHead(String text) {
+        if (text.isEmpty() || Character.isUpperCase(text.charAt(0))) {
+            return text;
+        }
+        char[] arr = text.toCharArray();
+        arr[0] = Character.toUpperCase(arr[0]);
+        return new String(arr);
     }
 }
