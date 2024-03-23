@@ -12,11 +12,11 @@ public class ProbeConfig {
 
     private static ProbeConfig reference = null;
     private static final Path CONFIG = KubeJSPaths.CONFIG.resolve("probejs.json");
-    public boolean keepBeaned;
-    public boolean disabled;
-    public boolean vanillaOrder;
-    public boolean exportClassNames;
-    public boolean trimming;
+    public boolean keepBeaned = true;
+    public boolean disabled = false;
+    public boolean vanillaOrder = true;
+    public boolean exportClassNames = false;
+    public boolean trimming = true;
 
     private static <E> E fetchPropertyOrDefault(Object key, Map<?, ?> values, E defaultValue) {
         Object v = values.get(key);
