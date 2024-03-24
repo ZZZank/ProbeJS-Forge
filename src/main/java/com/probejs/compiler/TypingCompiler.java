@@ -1,6 +1,7 @@
 package com.probejs.compiler;
 
 import com.probejs.ProbePaths;
+import com.probejs.compiler.special.RecipeHoldersComplier;
 import com.probejs.document.DocumentClass;
 import com.probejs.document.DocManager;
 import com.probejs.formatter.ClassResolver;
@@ -17,7 +18,6 @@ import com.probejs.info.Walker;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.plugin.CapturedClasses;
 import com.probejs.plugin.DummyBindingEvent;
-import com.probejs.recipe.RecipeHolders;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
@@ -26,7 +26,6 @@ import dev.latvian.kubejs.util.KubeJSPlugins;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 import net.minecraft.resources.ResourceLocation;
@@ -170,20 +169,6 @@ public class TypingCompiler {
         writer.close();
     }
 
-    public static void compileRecipeHolder(Map<ResourceLocation, RecipeTypeJS> typeMap) throws IOException {
-        RecipeHolders.init(typeMap);
-        BufferedWriter writer = Files.newBufferedWriter(
-            ProbePaths.GENERATED.resolve("globals.d.ts"),
-            StandardOpenOption.APPEND
-        );
-        for (String line : RecipeHolders.format(0, 4)) {
-            writer.write(line);
-            writer.write('\n');
-        }
-        writer.flush();
-        writer.close();
-    }
-
     public static void compileJSConfig() throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(KubeJSPaths.DIRECTORY.resolve("jsconfig.json"));
         String lines = String
@@ -231,7 +216,7 @@ public class TypingCompiler {
         SpecialTypes.assignForgeRegistries();
 
         compileGlobal(bindingEvent, globalClasses);
-        compileRecipeHolder(typeMap);
+        RecipeHoldersComplier.compileRecipeHolder(typeMap);
         RegistryCompiler.compileRegistries();
         EventCompiler.compileEvents(cachedEvents, cachedForgeEvents);
         compileConstants(bindingEvent);

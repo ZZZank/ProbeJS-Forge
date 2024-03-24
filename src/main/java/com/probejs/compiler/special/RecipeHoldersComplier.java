@@ -1,5 +1,6 @@
-package com.probejs.recipe;
+package com.probejs.compiler.special;
 
+import com.probejs.ProbePaths;
 import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
@@ -7,6 +8,11 @@ import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class RecipeHolders {
+public abstract class RecipeHoldersComplier {
 
-    static Map<String, List<Pair<String, String>>> namespace2Method = new HashMap<>();
+    private static Map<String, List<Pair<String, String>>> namespace2Method = new HashMap<>();
 
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
         namespace2Method.clear();
@@ -63,5 +69,20 @@ public abstract class RecipeHolders {
         }
 
         return new FormatterNamespace("stub.probejs", namespecedFmtr).format(indent, stepIndent);
+    }
+
+    public static void compileRecipeHolder(Map<ResourceLocation, RecipeTypeJS> typeMap) throws IOException {
+        init(typeMap);
+        BufferedWriter writer = Files.newBufferedWriter(
+            ProbePaths.GENERATED.resolve("special.d.ts"),
+            StandardOpenOption.APPEND
+        );
+        for (String line : format(0, 4)) {
+            writer.write(line);
+            writer.write('\n');
+        }
+        writer.write('\n');
+        writer.flush();
+        writer.close();
     }
 }

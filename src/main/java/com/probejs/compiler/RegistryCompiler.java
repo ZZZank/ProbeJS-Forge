@@ -86,12 +86,13 @@ public class RegistryCompiler {
     }
 
     public static void compileRegistries() throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("data.d.ts"));
+        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("special.d.ts"));
         IFormatter namespaced = new FormatterNamespace("Registry", info2Formatters(getInfos()));
         for (String line : namespaced.format(0, 4)) {
             writer.write(line);
             writer.write('\n');
         }
+        writer.write('\n');
         writer.flush();
         writer.close();
     }
