@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.formatter.NameResolver;
+import com.probejs.info.RegistryInfo;
 import com.probejs.info.SpecialData;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -22,14 +23,15 @@ public class SnippetCompiler {
     public static JsonObject toSnippet(SpecialData dump) {
         JsonObject resultJson = new JsonObject();
         // Compile normal entries to snippet
-        for (Map.Entry<String, Collection<ResourceLocation>> entry : dump.registries.entrySet()) {
-            String type = entry.getKey();
-            Map<String, List<String>> byModMembers = new HashMap<>();
-            entry
-                .getValue()
-                .forEach(rl ->
-                    byModMembers.computeIfAbsent(rl.getNamespace(), k -> new ArrayList<>()).add(rl.getPath())
-                );
+        for (RegistryInfo info : dump.registries) {
+            final ResourceLocation id = info.id;
+            final String type = id.getNamespace().equals("minecraft")
+                ? id.getPath()
+                : id.getNamespace() + '_' + id.getPath();
+            final Map<String, List<String>> byModMembers = new HashMap<>();
+            info.names.forEach(rl ->
+                byModMembers.computeIfAbsent(rl.getNamespace(), k -> new ArrayList<>()).add(rl.getPath())
+            );
             byModMembers.forEach((mod, modMembers) -> {
                 JsonObject modMembersJson = new JsonObject();
                 JsonArray prefixes = new JsonArray();
