@@ -68,9 +68,9 @@ public class ClassInfo {
                     .map(ConstructorInfo::new)
                     .collect(Collectors.toList())
             );
-        } catch (Exception e) {
+        } catch (NoClassDefFoundError e) {
             // https://github.com/ZZZank/ProbeJS-Forge/issues/2
-            ProbeJS.LOGGER.error("Unable to fetch constructor info for class '{}'", clazzRaw.getName());
+            ProbeJS.LOGGER.error("Unable to fetch infos for class '{}'", clazzRaw.getName());
         }
         superClass = ofCache(clazzRaw.getSuperclass());
         interfaces =
