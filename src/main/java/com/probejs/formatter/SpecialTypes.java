@@ -2,7 +2,7 @@ package com.probejs.formatter;
 
 import com.probejs.compiler.RegistryCompiler;
 import com.probejs.document.DocManager;
-import com.probejs.document.type.TypeNamed;
+import com.probejs.document.type.TypeRaw;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.info.type.TypeInfoClass;
 import dev.latvian.mods.rhino.BaseFunction;
@@ -142,9 +142,7 @@ public class SpecialTypes {
                     info.id.getNamespace(),
                     info.id.getPath().replace('/', '$')
                 );
-                DocManager.typesAssignable
-                    .computeIfAbsent(registrySuperType.getName(), k -> new ArrayList<>())
-                    .add(new TypeNamed(name));
+                DocManager.addAssignable(registrySuperType.getName(), new TypeRaw(name));
             });
     }
 }

@@ -26,6 +26,14 @@ public class DocManager {
     public static final List<String> rawTSDoc = new ArrayList<>();
     public static final List<DocumentType> typeDocuments = new ArrayList<>();
 
+    public static final void addAssignable(String className, IType type) {
+        DocManager.typesAssignable.computeIfAbsent(className, k -> new ArrayList<>()).add(type);
+    }
+
+    public static final void addAdditions(String className, DocumentClass addition) {
+        DocManager.classAdditions.computeIfAbsent(className, k -> new ArrayList<>()).add(addition);
+    }
+
     public static void fromPath(Document document) throws IOException {
         File[] files = ProbePaths.DOCS.toFile().listFiles();
         if (files == null) {
@@ -86,16 +94,16 @@ public class DocManager {
                         docName = docName.substring(i + 1);
                     }
                     ZipEntry docEntry = file.getEntry(docName);
-                    if (docEntry != null) {
-                        ProbeJS.LOGGER.info("Loading document inside jar - {}", docName);
-                        InputStream docStream = file.getInputStream(docEntry);
-                        BufferedReader docReader = new BufferedReader(
-                            new InputStreamReader(new BufferedInputStream(docStream), StandardCharsets.UTF_8)
-                        );
-                        docReader.lines().forEach(rawTSDoc::add);
-                    } else {
+                    if (docEntry == null) {
                         ProbeJS.LOGGER.warn("Document from file not found - {}", docName);
+                        continue;
                     }
+                    ProbeJS.LOGGER.info("Loading document inside jar - {}", docName);
+                    InputStream docStream = file.getInputStream(docEntry);
+                    BufferedReader docReader = new BufferedReader(
+                        new InputStreamReader(new BufferedInputStream(docStream), StandardCharsets.UTF_8)
+                    );
+                    rawTSDoc.addAll(docReader.lines().collect(Collectors.toList()));
                 } else {
                     ZipEntry docEntry = file.getEntry(docName);
                     if (docEntry == null) {
@@ -142,16 +150,17 @@ public class DocManager {
                         classDocuments
                             .computeIfAbsent(target.getTargetName(), s -> new ArrayList<>())
                             .add(classDoc);
-                        List<CommentAssign> assignable = comment.getSpecialComments(CommentAssign.class);
-                        typesAssignable
-                            .computeIfAbsent(target.getTargetName(), s -> new ArrayList<>())
-                            .addAll(
-                                assignable.stream().map(CommentAssign::getType).collect(Collectors.toList())
-                            );
+                        comment
+                            .getSpecialComments(CommentAssign.class)
+                            .stream()
+                            .map(CommentAssign::getType)
+                            .forEach(type -> {
+                                addAssignable(target.getTargetName(), type);
+                            });
                         continue;
                     }
                 }
-                classAdditions.computeIfAbsent(classDoc.getName(), s -> new ArrayList<>()).add(classDoc);
+                addAdditions(classDoc.getName(), classDoc);
             } else if (doc instanceof DocumentType) {
                 DocumentType typeDoc = (DocumentType) doc;
                 if (CommentUtil.isLoaded(typeDoc.getComment())) {
