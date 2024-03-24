@@ -41,12 +41,12 @@ public class KubeDump {
     }
 
     public static KubeDump fetch() {
-        Map<String, Collection<ResourceLocation>> tags = new HashMap<>();
+        final Map<String, Collection<ResourceLocation>> tags = new HashMap<>();
         putTag(tags, "items", Tags.items());
         putTag(tags, "blocks", Tags.blocks());
         putTag(tags, "fluids", Tags.fluids());
         putTag(tags, "entity_types", Tags.entityTypes());
-        Map<String, Collection<ResourceLocation>> registries = new HashMap<>();
+        final Map<String, Collection<ResourceLocation>> registries = new HashMap<>();
         putRegistry(registries, "items", Registry.ITEM_REGISTRY);
         putRegistry(registries, "blocks", Registry.BLOCK_REGISTRY);
         putRegistry(registries, "fluids", Registry.FLUID_REGISTRY);

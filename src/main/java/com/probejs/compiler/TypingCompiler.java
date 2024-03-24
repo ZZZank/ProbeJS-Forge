@@ -9,6 +9,7 @@ import com.probejs.formatter.SpecialTypes;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
+import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.EventInfo;
@@ -143,7 +144,7 @@ public class TypingCompiler {
             Object value = entry.getValue();
             String resolved = NameResolver.formatValue(value);
             if (resolved == null) {
-                resolved = FormatterClass.formatTypeParameterized(new TypeInfoClass(value.getClass()));
+                resolved = FormatterType.formatParameterized(new TypeInfoClass(value.getClass()));
             }
             writer.write(String.format("declare const %s: %s;\n", name, resolved));
         }
@@ -160,7 +161,7 @@ public class TypingCompiler {
                     String.format(
                         "declare function java(name: \"%s\"): typeof %s;\n",
                         c.getName(),
-                        FormatterClass.formatTypeParameterized(new TypeInfoClass(c))
+                        FormatterType.formatParameterized(new TypeInfoClass(c))
                     )
                 );
             }

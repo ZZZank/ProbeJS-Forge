@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
-import com.probejs.formatter.formatter.FormatterClass;
+import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.info.EventInfo;
 import com.probejs.info.type.TypeInfoClass;
 import dev.latvian.kubejs.event.EventJS;
@@ -63,7 +63,7 @@ public class EventCompiler {
                 String.format(
                     "declare function onForgeEvent(name: \"%s\", handler: (event: %s) => void);\n",
                     name,
-                    FormatterClass.formatTypeParameterized(new TypeInfoClass(event))
+                    FormatterType.formatParameterized(new TypeInfoClass(event))
                 )
             );
         }
@@ -83,7 +83,7 @@ public class EventCompiler {
                 String.format(
                     "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void);",
                     id,
-                    FormatterClass.formatTypeParameterized(new TypeInfoClass(wildcard.clazzRaw))
+                    FormatterType.formatParameterized(new TypeInfoClass(wildcard.clazzRaw))
                 )
             );
         }
@@ -119,7 +119,7 @@ public class EventCompiler {
                 String.format(
                     "declare function onEvent(name: \"%s\", handler: (event: %s) => void);",
                     id,
-                    FormatterClass.formatTypeParameterized(new TypeInfoClass(event))
+                    FormatterType.formatParameterized(new TypeInfoClass(event))
                 )
             );
         }

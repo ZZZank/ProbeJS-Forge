@@ -3,7 +3,7 @@ package com.probejs.formatter;
 import com.probejs.compiler.RegistryCompiler;
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeRaw;
-import com.probejs.formatter.formatter.FormatterClass;
+import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.info.type.TypeInfoClass;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
@@ -26,7 +26,7 @@ public class SpecialTypes {
             ) {
                 NameResolver.resolveName(obj.getClass());
             }
-            formattedValue = FormatterClass.formatTypeParameterized(new TypeInfoClass(obj.getClass()));
+            formattedValue = FormatterType.formatParameterized(new TypeInfoClass(obj.getClass()));
         }
         return formattedValue;
     }
