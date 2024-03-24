@@ -129,7 +129,6 @@ public class TypingCompiler {
             writer.write("\n");
         }
 
-        writer.flush();
         writer.close();
     }
 
@@ -147,7 +146,6 @@ public class TypingCompiler {
             }
             writer.write(String.format("declare const %s: %s;\n", name, resolved));
         }
-        writer.flush();
         writer.close();
     }
 
@@ -165,7 +163,6 @@ public class TypingCompiler {
                 );
             }
         }
-        writer.flush();
         writer.close();
     }
 
@@ -183,7 +180,6 @@ public class TypingCompiler {
             )
             .replace("'", "\"");
         writer.write(lines);
-        writer.flush();
         writer.close();
     }
 

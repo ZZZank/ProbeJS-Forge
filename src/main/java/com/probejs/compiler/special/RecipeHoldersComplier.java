@@ -82,7 +82,6 @@ public abstract class RecipeHoldersComplier {
             writer.write('\n');
         }
         writer.write('\n');
-        writer.flush();
         writer.close();
     }
 }

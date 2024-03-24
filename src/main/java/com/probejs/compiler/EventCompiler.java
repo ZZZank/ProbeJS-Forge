@@ -46,7 +46,6 @@ public class EventCompiler {
         writeWildcardEvents(writer);
         writeForgeEvents(writer);
         // RegistryCompiler.compileEventRegistries(writer);
-        writer.flush();
 
         EventCompiler.cachedEvents = null;
         EventCompiler.cachedForgeEvents = null;
@@ -170,7 +169,7 @@ public class EventCompiler {
             outJson.add(eventName, eventClass.toJson());
         }
         ProbeJS.GSON.toJson(outJson, cacheWriter);
-        cacheWriter.flush();
+        cacheWriter.close();
     }
 
     public static Map<String, Class<?>> readCachedForgeEvents() throws IOException {
@@ -213,6 +212,6 @@ public class EventCompiler {
             outJson.addProperty(eventName, eventClass.getName());
         }
         ProbeJS.GSON.toJson(outJson, cacheWriter);
-        cacheWriter.flush();
+        cacheWriter.close();
     }
 }

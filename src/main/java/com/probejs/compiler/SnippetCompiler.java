@@ -89,7 +89,6 @@ public class SnippetCompiler {
 
         BufferedWriter writer = Files.newBufferedWriter(codeFile);
         writer.write(ProbeJS.GSON.toJson(toSnippet(kubeDump)));
-        writer.flush();
         writer.close();
     }
 
@@ -109,6 +108,6 @@ public class SnippetCompiler {
         Path codeFile = ProbePaths.SNIPPET.resolve("classNames.code-snippets");
         BufferedWriter writer = Files.newBufferedWriter(codeFile);
         ProbeJS.GSON.toJson(resultJson, writer);
-        writer.flush();
+        writer.close();
     }
 }
