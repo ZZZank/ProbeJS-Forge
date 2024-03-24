@@ -24,10 +24,7 @@ public class SnippetCompiler {
         JsonObject resultJson = new JsonObject();
         // Compile normal entries to snippet
         for (RegistryInfo info : dump.registries) {
-            final ResourceLocation id = info.id;
-            final String type = id.getNamespace().equals("minecraft")
-                ? id.getPath()
-                : id.getNamespace() + '_' + id.getPath();
+            final String type = info.id.getPath();
             final Map<String, List<String>> byModMembers = new HashMap<>();
             info.names.forEach(rl ->
                 byModMembers.computeIfAbsent(rl.getNamespace(), k -> new ArrayList<>()).add(rl.getPath())
