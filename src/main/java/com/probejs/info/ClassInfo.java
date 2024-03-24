@@ -60,7 +60,14 @@ public class ClassInfo {
         isFunctionalInterface =
             isInterface &&
             Arrays.stream(clazzRaw.getAnnotations()).anyMatch(a -> a instanceof FunctionalInterface);
+        superClass = ofCache(clazzRaw.getSuperclass());
+        interfaces =
+            Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::ofCache).collect(Collectors.toList());
+
         constructorInfo = new ArrayList<>();
+        parameters = new ArrayList<>();
+        methodInfo = new ArrayList<>();
+        fieldInfo = new ArrayList<>();
         try {
             constructorInfo.addAll(
                 Arrays
@@ -68,37 +75,34 @@ public class ClassInfo {
                     .map(ConstructorInfo::new)
                     .collect(Collectors.toList())
             );
+            parameters.addAll(
+                Arrays
+                    .stream(clazzRaw.getTypeParameters())
+                    .map(InfoTypeResolver::resolveType)
+                    .collect(Collectors.toList())
+            );
+            methodInfo.addAll(
+                Arrays
+                    .stream(clazzRaw.getMethods())
+                    .filter(method -> method.getDeclaringClass() == clazzRaw || !ProbeJS.CONFIG.trimming)
+                    .map(m -> new MethodInfo(m, clazz))
+                    .filter(m -> ClassResolver.acceptMethod(m.getName()))
+                    .filter(m -> !m.shouldHide())
+                    .collect(Collectors.toList())
+            );
+            fieldInfo.addAll(
+                Arrays
+                    .stream(clazzRaw.getFields())
+                    .filter(field -> !ProbeJS.CONFIG.trimming || field.getDeclaringClass() == clazzRaw)
+                    .map(FieldInfo::new)
+                    .filter(f -> ClassResolver.acceptField(f.getName()))
+                    .filter(f -> !f.shouldHide())
+                    .collect(Collectors.toList())
+            );
         } catch (NoClassDefFoundError e) {
             // https://github.com/ZZZank/ProbeJS-Forge/issues/2
             ProbeJS.LOGGER.error("Unable to fetch infos for class '{}'", clazzRaw.getName());
         }
-        superClass = ofCache(clazzRaw.getSuperclass());
-        interfaces =
-            Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::ofCache).collect(Collectors.toList());
-
-        parameters =
-            Arrays
-                .stream(clazzRaw.getTypeParameters())
-                .map(InfoTypeResolver::resolveType)
-                .collect(Collectors.toList());
-
-        methodInfo =
-            Arrays
-                .stream(clazzRaw.getMethods())
-                .filter(method -> method.getDeclaringClass() == clazzRaw || !ProbeJS.CONFIG.trimming)
-                .map(m -> new MethodInfo(m, clazz))
-                .filter(m -> ClassResolver.acceptMethod(m.getName()))
-                .filter(m -> !m.shouldHide())
-                .collect(Collectors.toList());
-
-        fieldInfo =
-            Arrays
-                .stream(clazzRaw.getFields())
-                .filter(field -> !ProbeJS.CONFIG.trimming || field.getDeclaringClass() == clazzRaw)
-                .map(FieldInfo::new)
-                .filter(f -> ClassResolver.acceptField(f.getName()))
-                .filter(f -> !f.shouldHide())
-                .collect(Collectors.toList());
 
         //Resolve types - rollback everything till Object
         applySuperGenerics(methodInfo, fieldInfo);
