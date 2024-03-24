@@ -1,6 +1,6 @@
 package com.probejs.formatter;
 
-import com.probejs.compiler.RegistryCompiler;
+import com.probejs.compiler.special.RegistryCompiler;
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeRaw;
 import com.probejs.formatter.formatter.FormatterType;

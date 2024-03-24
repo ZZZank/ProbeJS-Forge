@@ -211,9 +211,10 @@ public class TypingCompiler {
         globalClasses.removeIf(ClassResolver.skipped::contains);
         SpecialTypes.assignForgeRegistries();
 
+        RecipeHoldersComplier.init(typeMap);
+
         compileGlobal(bindingEvent, globalClasses);
-        RecipeHoldersComplier.compileRecipeHolder(typeMap);
-        RegistryCompiler.compileRegistries();
+        SpecialComplier.compile();
         EventCompiler.compileEvents(cachedEvents, cachedForgeEvents);
         compileConstants(bindingEvent);
         compileJava(globalClasses);

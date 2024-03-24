@@ -1,9 +1,8 @@
-package com.probejs.compiler;
+package com.probejs.compiler.special;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.probejs.ProbeJS;
-import com.probejs.ProbePaths;
 import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
 import com.probejs.formatter.formatter.IFormatter;
@@ -11,7 +10,6 @@ import com.probejs.info.RegistryInfo;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 import net.minecraft.resources.ResourceLocation;
@@ -85,8 +83,7 @@ public class RegistryCompiler {
         return formatters;
     }
 
-    public static void compileRegistries() throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("special.d.ts"));
+    public static void compileRegistries(BufferedWriter writer) throws IOException {
         IFormatter namespaced = new FormatterNamespace("Registry", info2Formatters(getInfos()));
         for (String line : namespaced.format(0, 4)) {
             writer.write(line);
