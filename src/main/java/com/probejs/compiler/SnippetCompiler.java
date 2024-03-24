@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.formatter.NameResolver;
-import com.probejs.info.KubeDump;
+import com.probejs.info.SpecialData;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SnippetCompiler {
 
-    public static JsonObject toSnippet(KubeDump dump) {
+    public static JsonObject toSnippet(SpecialData dump) {
         JsonObject resultJson = new JsonObject();
         // Compile normal entries to snippet
         for (Map.Entry<String, Collection<ResourceLocation>> entry : dump.registries.entrySet()) {
@@ -85,7 +85,7 @@ public class SnippetCompiler {
 
     private static void writeDumpSnippets() throws IOException {
         Path codeFile = ProbePaths.SNIPPET.resolve("probe.code-snippets");
-        KubeDump kubeDump = KubeDump.fetch();
+        SpecialData kubeDump = SpecialData.fetch();
 
         BufferedWriter writer = Files.newBufferedWriter(codeFile);
         writer.write(ProbeJS.GSON.toJson(toSnippet(kubeDump)));

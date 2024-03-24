@@ -1,27 +1,31 @@
 package com.probejs.info;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.probejs.compiler.special.RegistryCompiler;
 import dev.latvian.kubejs.KubeJSRegistries;
 import dev.latvian.kubejs.util.Tags;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagCollection;
 
-public class KubeDump {
+public class SpecialData {
 
     public final Map<String, Collection<ResourceLocation>> tags;
     public final Map<String, Collection<ResourceLocation>> registries;
+    public final Collection<RegistryInfo> infos;
 
-    public KubeDump(
+    public SpecialData(
         Map<String, Collection<ResourceLocation>> tags,
         Map<String, Collection<ResourceLocation>> registries
     ) {
         this.tags = tags;
         this.registries = registries;
+        this.infos = null;
     }
 
     private static void putTag(
@@ -40,7 +44,7 @@ public class KubeDump {
         target.put(type, KubeJSRegistries.genericRegistry(registryKey).getIds());
     }
 
-    public static KubeDump fetch() {
+    public static SpecialData fetch() {
         final Map<String, Collection<ResourceLocation>> tags = new HashMap<>();
         putTag(tags, "items", Tags.items());
         putTag(tags, "blocks", Tags.blocks());
@@ -51,11 +55,19 @@ public class KubeDump {
         putRegistry(registries, "blocks", Registry.BLOCK_REGISTRY);
         putRegistry(registries, "fluids", Registry.FLUID_REGISTRY);
         putRegistry(registries, "entity_types", Registry.ENTITY_TYPE_REGISTRY);
-        return new KubeDump(tags, registries);
+        return new SpecialData(tags, registries);
     }
 
     @Override
     public String toString() {
         return "KubeDump{" + "tags=" + tags + ", registries=" + registries + '}';
+    }
+
+    public static List<RegistryInfo> getInfos() {
+        return RegistryCompiler.registries
+            .values()
+            .stream()
+            .map(RegistryInfo::new)
+            .collect(Collectors.toList());
     }
 }

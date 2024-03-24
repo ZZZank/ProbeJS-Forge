@@ -1,9 +1,9 @@
 package com.probejs.formatter;
 
-import com.probejs.compiler.special.RegistryCompiler;
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeRaw;
 import com.probejs.formatter.formatter.FormatterType;
+import com.probejs.info.SpecialData;
 import com.probejs.info.type.TypeInfoClass;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
@@ -131,7 +131,7 @@ public class SpecialTypes {
     }
 
     public static void assignForgeRegistries() {
-        RegistryCompiler
+        SpecialData
             .getInfos()
             .stream()
             .filter(info -> !info.names.isEmpty())

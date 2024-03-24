@@ -7,6 +7,7 @@ import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.RegistryInfo;
+import com.probejs.info.SpecialData;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -19,7 +20,7 @@ import net.minecraftforge.registries.RegistryManager;
 
 public class RegistryCompiler {
 
-    private static Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> registries;
+    public static final Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> registries = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     private static BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> castedGet(
@@ -35,27 +36,17 @@ public class RegistryCompiler {
     }
 
     public static void init() {
-        BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> m = null;
+        registries.clear();
         try {
             Field f = RegistryManager.class.getDeclaredField("registries");
             f.setAccessible(true);
 
-            m = castedGet(f, RegistryManager.ACTIVE);
-            castedGet(f, RegistryManager.VANILLA).forEach(m::putIfAbsent);
-            castedGet(f, RegistryManager.FROZEN).forEach(m::putIfAbsent);
+            registries.putAll(castedGet(f, RegistryManager.FROZEN));
+            registries.putAll(castedGet(f, RegistryManager.VANILLA));
+            registries.putAll(castedGet(f, RegistryManager.ACTIVE));
         } catch (Exception e) {
             e.printStackTrace();
-            m = HashBiMap.create();
         }
-        RegistryCompiler.registries = m;
-    }
-
-    public static List<RegistryInfo> getInfos() {
-        return RegistryCompiler.registries
-            .values()
-            .stream()
-            .map(RegistryInfo::new)
-            .collect(Collectors.toList());
     }
 
     private static List<IFormatter> info2Formatters(Collection<RegistryInfo> infos) {
@@ -84,7 +75,7 @@ public class RegistryCompiler {
     }
 
     public static void compileRegistries(BufferedWriter writer) throws IOException {
-        IFormatter namespaced = new FormatterNamespace("Registry", info2Formatters(getInfos()));
+        IFormatter namespaced = new FormatterNamespace("Registry", info2Formatters(SpecialData.getInfos()));
         for (String line : namespaced.format(0, 4)) {
             writer.write(line);
             writer.write('\n');
