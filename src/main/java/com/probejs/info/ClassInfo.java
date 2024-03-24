@@ -8,6 +8,7 @@ import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -59,8 +60,18 @@ public class ClassInfo {
         isFunctionalInterface =
             isInterface &&
             Arrays.stream(clazzRaw.getAnnotations()).anyMatch(a -> a instanceof FunctionalInterface);
-        constructorInfo =
-            Arrays.stream(clazzRaw.getConstructors()).map(ConstructorInfo::new).collect(Collectors.toList());
+        constructorInfo = new ArrayList<>();
+        try {
+            constructorInfo.addAll(
+                Arrays
+                    .stream(clazzRaw.getConstructors())
+                    .map(ConstructorInfo::new)
+                    .collect(Collectors.toList())
+            );
+        } catch (Exception e) {
+            // https://github.com/ZZZank/ProbeJS-Forge/issues/2
+            ProbeJS.LOGGER.error("Unable to fetch constructor info for class '{}'", clazzRaw.getName());
+        }
         superClass = ofCache(clazzRaw.getSuperclass());
         interfaces =
             Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::ofCache).collect(Collectors.toList());
