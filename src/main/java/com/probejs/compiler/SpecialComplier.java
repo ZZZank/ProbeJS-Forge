@@ -18,5 +18,7 @@ public abstract class SpecialComplier {
 
         RegistryCompiler.compileRegistries(writer);
         RecipeHoldersComplier.compileRecipeHolder(writer);
+
+        writer.close();
     }
 }

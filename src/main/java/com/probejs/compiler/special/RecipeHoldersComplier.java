@@ -55,9 +55,7 @@ public abstract class RecipeHoldersComplier {
             //methods inside recipeHolder classes
             for (Pair<String, String> pair : entry.getValue()) {
                 // we dont know how a Recipe Serializer actually works, so only `...args`
-                lines.add(
-                    String.format("%s%s(...args: object): %s", step, pair.getFirst(), pair.getSecond())
-                );
+                lines.add(String.format("%s%s(...args: any): %s;", step, pair.getFirst(), pair.getSecond()));
             }
             //close
             lines.add("}");
@@ -73,6 +71,5 @@ public abstract class RecipeHoldersComplier {
             writer.write('\n');
         }
         writer.write('\n');
-        writer.close();
     }
 }
