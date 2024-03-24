@@ -37,8 +37,8 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
             }
         }
         Pair<String, String> parts = StringUtil.splitFirst(line, ":");
-        name = parts.getFirst().trim();
-        type = TypeResolver.resolve(parts.getSecond().trim());
+        name = parts.first.trim();
+        type = TypeResolver.resolve(parts.second.trim());
 
         isFinal = f;
         isStatic = s;

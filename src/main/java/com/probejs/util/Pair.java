@@ -1,19 +1,25 @@
 package com.probejs.util;
 
 public class Pair<F, S> {
-    private final F first;
-    private final S second;
+    public final F first;
+    public final S second;
 
     public Pair(F first, S second) {
         this.first = first;
         this.second = second;
     }
 
-    public F getFirst() {
+    /**
+     * get the first element in such pair
+     */
+    public F first() {
         return first;
     }
 
-    public S getSecond() {
+    /**
+     * get the second element in such pair
+     */
+    public S second() {
         return second;
     }
 }

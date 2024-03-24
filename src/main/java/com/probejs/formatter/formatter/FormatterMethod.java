@@ -108,7 +108,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     public String formatReturn() {
-        IType returnModifier = getModifiers().getSecond();
+        IType returnModifier = getModifiers().second;
         if (returnModifier != null) {
             return returnModifier.getTypeName();
         }
@@ -166,7 +166,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         final BiFunction<IType, String, String> typeTransformer = forceNoUnderscore
             ? IType.dummyTransformer
             : IType.defaultTransformer;
-        Map<String, IType> modifiers = getModifiers().getFirst();
+        Map<String, IType> modifiers = getModifiers().first;
         // modifiers = getModifiers().getFirst();
         return info
             .getParams()

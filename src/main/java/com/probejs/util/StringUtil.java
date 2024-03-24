@@ -75,8 +75,8 @@ public abstract class StringUtil {
         List<String> splits = new ArrayList<>();
         Pair<String, String> splitResult = splitFirst(s, push, pop, delimiter);
         while (splitResult != null) {
-            splits.add(splitResult.getFirst());
-            s = splitResult.getSecond();
+            splits.add(splitResult.first);
+            s = splitResult.second;
             splitResult = splitFirst(s, push, pop, delimiter);
         }
         splits.add(s);
