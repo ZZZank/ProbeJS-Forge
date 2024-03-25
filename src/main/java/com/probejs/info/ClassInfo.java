@@ -61,14 +61,16 @@ public class ClassInfo {
             isInterface &&
             Arrays.stream(clazzRaw.getAnnotations()).anyMatch(a -> a instanceof FunctionalInterface);
         superClass = ofCache(clazzRaw.getSuperclass());
-        interfaces =
-            Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::ofCache).collect(Collectors.toList());
 
+        interfaces = new ArrayList<>(0);
         constructorInfo = new ArrayList<>(0);
         parameters = new ArrayList<>(0);
         methodInfo = new ArrayList<>(0);
         fieldInfo = new ArrayList<>(0);
         try {
+            interfaces.addAll(
+                Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::ofCache).collect(Collectors.toList())
+            );
             constructorInfo.addAll(
                 Arrays
                     .stream(clazzRaw.getConstructors())
