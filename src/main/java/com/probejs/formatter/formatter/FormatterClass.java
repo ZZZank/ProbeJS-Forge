@@ -1,11 +1,11 @@
 package com.probejs.formatter.formatter;
 
 import com.probejs.ProbeJS;
+import com.probejs.document.DocManager;
 import com.probejs.document.DocumentClass;
 import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
-import com.probejs.document.DocManager;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.document.type.IType;
@@ -82,56 +82,57 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         }
 
         // First line
-        List<String> firstLine = new ArrayList<>();
+        StringBuilder firstLine = new StringBuilder(PUtil.indent(indent));
         if (!internal) {
-            firstLine.add("declare");
+            firstLine.append("declare ");
         }
         if (classInfo.isInterface()) {
-            firstLine.add("interface");
+            firstLine.append("interface ");
         } else if (classInfo.isAbstract()) {
-            firstLine.add("abstract class");
+            firstLine.append("abstract class ");
         } else {
-            firstLine.add("class");
+            firstLine.append("class ");
         }
-        firstLine.add(NameResolver.getResolvedName(classInfo.getName()).getLastName());
+        firstLine.append(NameResolver.getResolvedName(classInfo.getName()).getLastName());
         if (classInfo.getClazzRaw().getTypeParameters().length != 0) {
-            firstLine.add(
-                String.format(
-                    "<%s>",
-                    Arrays
-                        .stream(classInfo.getClazzRaw().getTypeParameters())
-                        .map(TypeVariable::getName)
-                        .collect(Collectors.joining(", "))
-                )
+            firstLine.append('<');
+            firstLine.append(
+                Arrays
+                    .stream(classInfo.getClazzRaw().getTypeParameters())
+                    .map(TypeVariable::getName)
+                    .collect(Collectors.joining(", "))
             );
+            firstLine.append("> ");
         }
         // super class
         if (classInfo.getSuperClass() != null) {
-            firstLine.add("extends");
+            firstLine.append("extends ");
             if (classInfo.getSuperClass().getClazzRaw() == Object.class) {
                 // redirect to another `Object` so that we can bypass replacement of original `Object`
-                firstLine.add("Document.Object");
+                firstLine.append("Document.Object");
             } else {
-                firstLine.add(
+                firstLine.append(
                     FormatterType.formatParameterized(
                         InfoTypeResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
                     )
                 );
             }
+            firstLine.append(' ');
         }
         // interface
         if (!classInfo.getInterfaces().isEmpty()) {
-            firstLine.add(classInfo.isInterface() ? "extends" : "implements");
-            firstLine.add(
+            firstLine.append(classInfo.isInterface() ? "extends " : "implements ");
+            firstLine.append(
                 Arrays
                     .stream(classInfo.getClazzRaw().getGenericInterfaces())
                     .map(InfoTypeResolver::resolveType)
                     .map(FormatterType::formatParameterized)
                     .collect(Collectors.joining(", "))
             );
+            firstLine.append(' ');
         }
-        firstLine.add("{");
-        lines.add(PUtil.indent(indent) + String.join(" ", firstLine));
+        firstLine.append("{");
+        lines.add(firstLine.toString());
         // first line processing, end
 
         // methods
@@ -150,9 +151,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                         //not static interface in namespace `Internal`
                         !(classInfo.isInterface() && fmtrMethod.getInfo().isStatic() && internal)
                     )
-                    .forEach(fmtrMethod ->
-                        lines.addAll(fmtrMethod.format(indent + stepIndent, stepIndent))
-                    )
+                    .forEach(fmtrMethod -> lines.addAll(fmtrMethod.format(indent + stepIndent, stepIndent)))
             );
         //fields
         fieldFormatters

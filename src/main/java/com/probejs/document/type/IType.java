@@ -8,8 +8,15 @@ public interface IType {
      * performs NO processing
      * @return the provided string itself
      */
-    BiFunction<IType, String, String> dummyTransformer = (type, raw) -> raw;
-    BiFunction<IType, String, String> defaultTransformer = (type, raw) -> {
+    public static BiFunction<IType, String, String> dummyTransformer = (type, raw) -> raw;
+    /**
+     * Add an underscore to string {@code raw} if:<p>
+     * 1. type is an instance of TypeNamed, and<p>
+     * 2. name of this type is resolved ,and<p>
+     * 1. this type is not primitive type that should be skipped<p>
+     * otherwise, return {@code raw} itself
+     */
+    public static BiFunction<IType, String, String> defaultTransformer = (type, raw) -> {
         if (!(type instanceof TypeNamed)) {
             return raw;
         }
