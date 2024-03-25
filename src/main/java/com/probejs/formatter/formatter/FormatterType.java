@@ -2,6 +2,7 @@ package com.probejs.formatter.formatter;
 
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.type.*;
+import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -82,5 +83,27 @@ public class FormatterType {
             );
         }
         return "any";
+    }
+
+    /**
+     * similar to {@code new FormatterType(info,false).format(0,4)}, but with additional
+     * processing for TypeInfoClass. If its getTypeVariables() is not returning an empty
+     * list, a {@code <any,any,...>} style type variable representation will be added to
+     * the end of formatted string
+     */
+    public static String formatParameterized(ITypeInfo info) {
+        StringBuilder sb = new StringBuilder(new FormatterType(info, false).format(0, 0));
+        if (info instanceof TypeInfoClass) {
+            TypeInfoClass clazz = (TypeInfoClass) info;
+            if (clazz.getTypeVariables().size() != 0) {
+                sb.append(
+                    String.format(
+                        "<%s>",
+                        String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any"))
+                    )
+                );
+            }
+        }
+        return sb.toString();
     }
 }

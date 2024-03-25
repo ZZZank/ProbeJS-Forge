@@ -12,6 +12,7 @@ import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
+import com.probejs.util.StringUtil;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -47,13 +48,13 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 info.getReturnType().assignableFrom(new TypeInfoClass(Boolean.TYPE))
             )
         ) {
-            return PUtil.withLowerCaseHead(methodName.substring(2));
+            return StringUtil.withLowerCaseHead(methodName.substring(2));
         }
         if (methodName.startsWith("get") && paramSize == 0) {
-            return PUtil.withLowerCaseHead(methodName.substring(3));
+            return StringUtil.withLowerCaseHead(methodName.substring(3));
         }
         if (methodName.startsWith("set") && paramSize == 1) {
-            return PUtil.withLowerCaseHead(methodName.substring(3));
+            return StringUtil.withLowerCaseHead(methodName.substring(3));
         }
         return null;
     }
@@ -107,7 +108,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     public String formatReturn() {
-        IType returnModifier = getModifiers().getSecond();
+        IType returnModifier = getModifiers().second;
         if (returnModifier != null) {
             return returnModifier.getTypeName();
         }
@@ -165,7 +166,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         final BiFunction<IType, String, String> typeTransformer = forceNoUnderscore
             ? IType.dummyTransformer
             : IType.defaultTransformer;
-        Map<String, IType> modifiers = getModifiers().getFirst();
+        Map<String, IType> modifiers = getModifiers().first;
         // modifiers = getModifiers().getFirst();
         return info
             .getParams()

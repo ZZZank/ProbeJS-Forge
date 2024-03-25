@@ -1,9 +1,9 @@
 package com.probejs.formatter;
 
-import com.probejs.compiler.RegistryCompiler;
 import com.probejs.document.DocManager;
-import com.probejs.document.type.TypeNamed;
-import com.probejs.formatter.formatter.FormatterClass;
+import com.probejs.document.type.TypeRaw;
+import com.probejs.formatter.formatter.FormatterType;
+import com.probejs.info.SpecialData;
 import com.probejs.info.type.TypeInfoClass;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
@@ -26,7 +26,7 @@ public class SpecialTypes {
             ) {
                 NameResolver.resolveName(obj.getClass());
             }
-            formattedValue = FormatterClass.formatTypeParameterized(new TypeInfoClass(obj.getClass()));
+            formattedValue = FormatterType.formatParameterized(new TypeInfoClass(obj.getClass()));
         }
         return formattedValue;
     }
@@ -131,7 +131,7 @@ public class SpecialTypes {
     }
 
     public static void assignForgeRegistries() {
-        RegistryCompiler
+        SpecialData
             .getInfos()
             .stream()
             .filter(info -> !info.names.isEmpty())
@@ -142,9 +142,7 @@ public class SpecialTypes {
                     info.id.getNamespace(),
                     info.id.getPath().replace('/', '$')
                 );
-                DocManager.typesAssignable
-                    .computeIfAbsent(registrySuperType.getName(), k -> new ArrayList<>())
-                    .add(new TypeNamed(name));
+                DocManager.addAssignable(registrySuperType.getName(), new TypeRaw(name));
             });
     }
 }

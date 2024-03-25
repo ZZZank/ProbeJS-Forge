@@ -1,6 +1,7 @@
 package com.probejs.compiler;
 
 import com.probejs.ProbePaths;
+import com.probejs.compiler.special.RecipeHoldersComplier;
 import com.probejs.document.DocumentClass;
 import com.probejs.document.DocManager;
 import com.probejs.formatter.ClassResolver;
@@ -9,6 +10,7 @@ import com.probejs.formatter.SpecialTypes;
 import com.probejs.formatter.formatter.FormatterClass;
 import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
+import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.EventInfo;
@@ -16,7 +18,6 @@ import com.probejs.info.Walker;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.plugin.CapturedClasses;
 import com.probejs.plugin.DummyBindingEvent;
-import com.probejs.recipe.RecipeHolders;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
@@ -25,7 +26,6 @@ import dev.latvian.kubejs.util.KubeJSPlugins;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 import net.minecraft.resources.ResourceLocation;
@@ -129,7 +129,6 @@ public class TypingCompiler {
             writer.write("\n");
         }
 
-        writer.flush();
         writer.close();
     }
 
@@ -143,11 +142,10 @@ public class TypingCompiler {
             Object value = entry.getValue();
             String resolved = NameResolver.formatValue(value);
             if (resolved == null) {
-                resolved = FormatterClass.formatTypeParameterized(new TypeInfoClass(value.getClass()));
+                resolved = FormatterType.formatParameterized(new TypeInfoClass(value.getClass()));
             }
             writer.write(String.format("declare const %s: %s;\n", name, resolved));
         }
-        writer.flush();
         writer.close();
     }
 
@@ -160,26 +158,11 @@ public class TypingCompiler {
                     String.format(
                         "declare function java(name: \"%s\"): typeof %s;\n",
                         c.getName(),
-                        FormatterClass.formatTypeParameterized(new TypeInfoClass(c))
+                        FormatterType.formatParameterized(new TypeInfoClass(c))
                     )
                 );
             }
         }
-        writer.flush();
-        writer.close();
-    }
-
-    public static void compileRecipeHolder(Map<ResourceLocation, RecipeTypeJS> typeMap) throws IOException {
-        RecipeHolders.init(typeMap);
-        BufferedWriter writer = Files.newBufferedWriter(
-            ProbePaths.GENERATED.resolve("globals.d.ts"),
-            StandardOpenOption.APPEND
-        );
-        for (String line : RecipeHolders.format(0, 4)) {
-            writer.write(line);
-            writer.write('\n');
-        }
-        writer.flush();
         writer.close();
     }
 
@@ -197,7 +180,6 @@ public class TypingCompiler {
             )
             .replace("'", "\"");
         writer.write(lines);
-        writer.flush();
         writer.close();
     }
 
@@ -229,9 +211,10 @@ public class TypingCompiler {
         globalClasses.removeIf(ClassResolver.skipped::contains);
         SpecialTypes.assignForgeRegistries();
 
+        RecipeHoldersComplier.init(typeMap);
+
         compileGlobal(bindingEvent, globalClasses);
-        compileRecipeHolder(typeMap);
-        RegistryCompiler.compileRegistries();
+        SpecialComplier.compile();
         EventCompiler.compileEvents(cachedEvents, cachedForgeEvents);
         compileConstants(bindingEvent);
         compileJava(globalClasses);

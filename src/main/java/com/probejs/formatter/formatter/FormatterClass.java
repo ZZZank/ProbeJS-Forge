@@ -113,7 +113,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 firstLine.add("Document.Object");
             } else {
                 firstLine.add(
-                    formatTypeParameterized(
+                    FormatterType.formatParameterized(
                         InfoTypeResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
                     )
                 );
@@ -126,7 +126,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 Arrays
                     .stream(classInfo.getClazzRaw().getGenericInterfaces())
                     .map(InfoTypeResolver::resolveType)
-                    .map(FormatterClass::formatTypeParameterized)
+                    .map(FormatterType::formatParameterized)
                     .collect(Collectors.joining(", "))
             );
         }
@@ -307,21 +307,5 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                     methodAdditions.add(documentMethod);
                 }
             });
-    }
-
-    public static String formatTypeParameterized(ITypeInfo info) {
-        StringBuilder sb = new StringBuilder(new FormatterType(info, false).format(0, 0));
-        if (info instanceof TypeInfoClass) {
-            TypeInfoClass clazz = (TypeInfoClass) info;
-            if (clazz.getTypeVariables().size() != 0) {
-                sb.append(
-                    String.format(
-                        "<%s>",
-                        String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any"))
-                    )
-                );
-            }
-        }
-        return sb.toString();
     }
 }

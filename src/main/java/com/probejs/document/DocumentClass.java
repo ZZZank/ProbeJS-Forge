@@ -74,14 +74,14 @@ public class DocumentClass implements IConcrete, IFormatter {
     @Override
     public List<String> format(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
-        StringBuilder builder = new StringBuilder(PUtil.indent(indent))
+        StringBuilder firstLine = new StringBuilder(PUtil.indent(indent))
             .append("class ")
             .append(this.name)
             .append(' ');
         if (this.superClass != null) {
-            builder.append("extends ").append(superClass).append(' ');
+            firstLine.append("extends ").append(superClass).append(' ');
         }
-        formatted.add(builder.append('{').toString());
+        formatted.add(firstLine.append('{').toString());
         getFields().forEach(f -> formatted.addAll(f.format(indent + stepIndent, stepIndent)));
         getMethods().forEach(m -> formatted.addAll(m.format(indent + stepIndent, stepIndent)));
         formatted.add(PUtil.indent(indent) + "}");

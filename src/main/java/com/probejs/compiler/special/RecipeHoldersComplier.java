@@ -1,4 +1,4 @@
-package com.probejs.recipe;
+package com.probejs.compiler.special;
 
 import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.formatter.FormatterNamespace;
@@ -7,6 +7,8 @@ import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +16,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class RecipeHolders {
+public abstract class RecipeHoldersComplier {
 
-    static Map<String, List<Pair<String, String>>> namespace2Method = new HashMap<>();
+    private static Map<String, List<Pair<String, String>>> namespace2Method = new HashMap<>();
 
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
         namespace2Method.clear();
@@ -53,9 +55,7 @@ public abstract class RecipeHolders {
             //methods inside recipeHolder classes
             for (Pair<String, String> pair : entry.getValue()) {
                 // we dont know how a Recipe Serializer actually works, so only `...args`
-                lines.add(
-                    String.format("%s%s(...args: object): %s", step, pair.getFirst(), pair.getSecond())
-                );
+                lines.add(String.format("%s%s(...args: any): %s;", step, pair.first, pair.second));
             }
             //close
             lines.add("}");
@@ -63,5 +63,13 @@ public abstract class RecipeHolders {
         }
 
         return new FormatterNamespace("stub.probejs", namespecedFmtr).format(indent, stepIndent);
+    }
+
+    public static void compileRecipeHolder(BufferedWriter writer) throws IOException {
+        for (String line : format(0, 4)) {
+            writer.write(line);
+            writer.write('\n');
+        }
+        writer.write('\n');
     }
 }
