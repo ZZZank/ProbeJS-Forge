@@ -64,10 +64,10 @@ public class ClassInfo {
         interfaces =
             Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::ofCache).collect(Collectors.toList());
 
-        constructorInfo = new ArrayList<>();
-        parameters = new ArrayList<>();
-        methodInfo = new ArrayList<>();
-        fieldInfo = new ArrayList<>();
+        constructorInfo = new ArrayList<>(0);
+        parameters = new ArrayList<>(0);
+        methodInfo = new ArrayList<>(0);
+        fieldInfo = new ArrayList<>(0);
         try {
             constructorInfo.addAll(
                 Arrays
