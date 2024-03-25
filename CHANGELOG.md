@@ -1,3 +1,14 @@
+# ProbeJS Legacy 2.6.0 -> 2.6.1
+
+Fix optional class dumping crash
+
+## What's new?
+
+-   ProbeJS will now catch error thrown when classes to be looked into is missing.
+    -   This means that "Optional" classes, like classes intended for cross-mod compatibility, should be able to be dumped without crashing the whole game
+
+---
+
 # ProbeJS Legacy 2.5.0 -> 2.6.0
 
 Registry Dumping

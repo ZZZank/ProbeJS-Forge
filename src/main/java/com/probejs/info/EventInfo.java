@@ -85,20 +85,26 @@ public class EventInfo {
 
     @SuppressWarnings("unchecked")
     public static Optional<EventInfo> fromJson(JsonObject json) {
+        //id
         String id = json.get("id").getAsString();
+        //class
         Class<?> clazz;
         try {
             clazz = Class.forName(json.get("class").getAsString());
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
             return Optional.empty();
         }
+        //type
         EnumSet<ScriptType> types = EnumSet.noneOf(ScriptType.class);
         if (json.has("type")) {
             JsonArray jArray = json.get("type").getAsJsonArray();
             jArray.forEach(jElement -> types.add(ScriptType.valueOf(jElement.getAsString())));
         }
+        //sub
         String sub = json.has("sub") ? json.get("sub").getAsString() : null;
+        //cancellable
         boolean cancellable = json.has("cancellable") && json.get("cancellable").getAsBoolean();
+
         return Optional.of(new EventInfo((Class<? extends EventJS>) clazz, id, sub, types, cancellable));
     }
 }
