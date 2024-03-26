@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class TagComplier {
+public abstract class TagCompiler {
 
     private static Map<String, Collection<ResourceLocation>> tags;
 
     public static void init(SpecialData data) {
-        TagComplier.tags = data.tags;
+        TagCompiler.tags = data.tags;
     }
 
     public static List<String> format(int indent, int stepIndent) {
@@ -42,7 +42,7 @@ public abstract class TagComplier {
     }
 
     public static void compile(BufferedWriter writer) throws IOException {
-        for (String line : TagComplier.format(0, 4)) {
+        for (String line : TagCompiler.format(0, 4)) {
             writer.write(line);
             writer.write('\n');
         }

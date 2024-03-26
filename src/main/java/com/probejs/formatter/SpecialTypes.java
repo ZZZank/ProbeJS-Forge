@@ -132,7 +132,7 @@ public class SpecialTypes {
 
     public static void assignForgeRegistries() {
         SpecialData
-            .getInfos()
+            .computeRegistryInfos()
             .stream()
             .filter(info -> !info.names.isEmpty())
             .forEach(info -> {

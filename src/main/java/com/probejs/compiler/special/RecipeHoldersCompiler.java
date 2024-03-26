@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class RecipeHoldersComplier {
+public abstract class RecipeHoldersCompiler {
 
     private static Map<String, List<Pair<String, String>>> namespace2Method = new HashMap<>();
 
