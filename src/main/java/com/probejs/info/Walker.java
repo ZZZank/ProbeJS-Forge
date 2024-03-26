@@ -1,5 +1,6 @@
 package com.probejs.info;
 
+import com.probejs.info.MethodInfo.ParamInfo;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
@@ -36,14 +37,16 @@ public class Walker {
         this.walkType = walkType;
     }
 
-    private Set<Class<?>> walkType(ITypeInfo type) {
+    private Set<Class<?>> walkType(ITypeInfo tInfo) {
         Set<Class<?>> result = new HashSet<>();
-        if (type instanceof TypeInfoParameterized && walkType) {
-            TypeInfoParameterized parType = (TypeInfoParameterized) type;
-            parType.getParamTypes().forEach(info -> result.addAll(walkType(info)));
+        if (tInfo instanceof TypeInfoParameterized && walkType) {
+            TypeInfoParameterized parType = (TypeInfoParameterized) tInfo;
+            for (ITypeInfo info : parType.getParamTypes()) {
+                result.addAll(walkType(info));
+            }
         }
-        if (!(type instanceof TypeInfoVariable)) {
-            result.add(type.getResolvedClass());
+        if (!(tInfo instanceof TypeInfoVariable)) {
+            result.add(tInfo.getResolvedClass());
         }
         result.removeIf(Objects::isNull);
         return result;
@@ -56,19 +59,25 @@ public class Walker {
 
             if (walkSuper) {
                 ClassInfo superclass = info.getSuperClass();
-                if (superclass != null) result.add(superclass.getClazzRaw());
-                info.getInterfaces().stream().map(ClassInfo::getClazzRaw).forEach(result::add);
+                if (superclass != null) {
+                    result.add(superclass.getClazzRaw());
+                }
+                for (ClassInfo cInfo : info.getInterfaces()) {
+                    result.add(cInfo.getClazzRaw());
+                }
             }
             if (walkField) {
-                info.getFieldInfo().forEach(f -> result.addAll(walkType(f.getType())));
+                for (FieldInfo fInfo : info.getFieldInfo()) {
+                    result.addAll(walkType(fInfo.getType()));
+                }
             }
             if (walkMethod) {
-                info
-                    .getMethodInfo()
-                    .forEach(m -> {
-                        result.addAll(walkType(m.getReturnType()));
-                        m.getParams().forEach(p -> result.addAll(walkType(p.getType())));
-                    });
+                for (MethodInfo mInfo : info.getMethodInfo()) {
+                    result.addAll(walkType(mInfo.getReturnType()));
+                    for (ParamInfo pInfo : mInfo.getParams()) {
+                        result.addAll(walkType(pInfo.getType()));
+                    }
+                }
             }
         }
         result.removeIf(Objects::isNull);
@@ -81,8 +90,7 @@ public class Walker {
 
         while (!current.isEmpty()) {
             result.addAll(current);
-            current =
-                touch(current).parallelStream().filter(c -> !result.contains(c)).collect(Collectors.toSet());
+            current = touch(current).stream().filter(c -> !result.contains(c)).collect(Collectors.toSet());
         }
         return result;
     }
