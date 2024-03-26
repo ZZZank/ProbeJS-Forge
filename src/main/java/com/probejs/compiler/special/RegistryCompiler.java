@@ -41,9 +41,8 @@ public class RegistryCompiler {
             Field f = RegistryManager.class.getDeclaredField("registries");
             f.setAccessible(true);
 
-            registries.putAll(castedGet(f, RegistryManager.FROZEN));
-            registries.putAll(castedGet(f, RegistryManager.VANILLA));
             registries.putAll(castedGet(f, RegistryManager.ACTIVE));
+            registries.putAll(castedGet(f, RegistryManager.FROZEN));
         } catch (Exception e) {
             e.printStackTrace();
         }
