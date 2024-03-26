@@ -29,6 +29,7 @@ public abstract class SpecialCompiler {
         BufferedWriter writer = Files.newBufferedWriter(PATH);
 
         RegistryCompiler.compileRegistries(writer);
+        TagCompiler.compile(writer);
         RecipeHoldersCompiler.compileRecipeHolder(writer);
 
         writer.close();
