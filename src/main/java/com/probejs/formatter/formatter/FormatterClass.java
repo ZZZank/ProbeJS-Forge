@@ -82,57 +82,56 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         }
 
         // First line
-        StringBuilder firstLine = new StringBuilder(PUtil.indent(indent));
+        List<String> firstLine = new ArrayList<>();
         if (!internal) {
-            firstLine.append("declare ");
+            firstLine.add("declare");
         }
         if (classInfo.isInterface()) {
-            firstLine.append("interface ");
+            firstLine.add("interface");
         } else if (classInfo.isAbstract()) {
-            firstLine.append("abstract class ");
+            firstLine.add("abstract class");
         } else {
-            firstLine.append("class ");
+            firstLine.add("class");
         }
-        firstLine.append(NameResolver.getResolvedName(classInfo.getName()).getLastName());
+        firstLine.add(NameResolver.getResolvedName(classInfo.getName()).getLastName());
         if (classInfo.getClazzRaw().getTypeParameters().length != 0) {
-            firstLine.append('<');
-            firstLine.append(
-                Arrays
-                    .stream(classInfo.getClazzRaw().getTypeParameters())
-                    .map(TypeVariable::getName)
-                    .collect(Collectors.joining(", "))
+            firstLine.add(
+                String.format(
+                    "<%s>",
+                    Arrays
+                        .stream(classInfo.getClazzRaw().getTypeParameters())
+                        .map(TypeVariable::getName)
+                        .collect(Collectors.joining(", "))
+                )
             );
-            firstLine.append("> ");
         }
         // super class
         if (classInfo.getSuperClass() != null) {
-            firstLine.append("extends ");
+            firstLine.add("extends");
             if (classInfo.getSuperClass().getClazzRaw() == Object.class) {
                 // redirect to another `Object` so that we can bypass replacement of original `Object`
-                firstLine.append("Document.Object");
+                firstLine.add("Document.Object");
             } else {
-                firstLine.append(
+                firstLine.add(
                     FormatterType.formatParameterized(
                         InfoTypeResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
                     )
                 );
             }
-            firstLine.append(' ');
         }
         // interface
         if (!classInfo.getInterfaces().isEmpty()) {
-            firstLine.append(classInfo.isInterface() ? "extends " : "implements ");
-            firstLine.append(
+            firstLine.add(classInfo.isInterface() ? "extends" : "implements");
+            firstLine.add(
                 Arrays
                     .stream(classInfo.getClazzRaw().getGenericInterfaces())
                     .map(InfoTypeResolver::resolveType)
                     .map(FormatterType::formatParameterized)
                     .collect(Collectors.joining(", "))
             );
-            firstLine.append(' ');
         }
-        firstLine.append("{");
-        lines.add(firstLine.toString());
+        firstLine.add("{");
+        lines.add(PUtil.indent(indent) + String.join(" ", firstLine));
         // first line processing, end
 
         // methods
