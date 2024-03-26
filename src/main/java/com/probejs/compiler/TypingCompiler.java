@@ -1,7 +1,6 @@
 package com.probejs.compiler;
 
 import com.probejs.ProbePaths;
-import com.probejs.compiler.special.RecipeHoldersComplier;
 import com.probejs.document.DocumentClass;
 import com.probejs.document.DocManager;
 import com.probejs.formatter.ClassResolver;
@@ -210,8 +209,7 @@ public class TypingCompiler {
 
         globalClasses.removeIf(ClassResolver.skipped::contains);
         SpecialTypes.assignForgeRegistries();
-
-        RecipeHoldersComplier.init(typeMap);
+        SpecialComplier.init(typeMap);
 
         compileGlobal(bindingEvent, globalClasses);
         SpecialComplier.compile();
