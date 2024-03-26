@@ -28,7 +28,7 @@ public abstract class RecipeHoldersCompiler {
             String recipeJSName = NameResolver.resolveName(value.factory.get().getClass()).getFullName();
 
             namespace2Method
-                .computeIfAbsent(namespace, k -> new ArrayList<Pair<String, String>>())
+                .computeIfAbsent(namespace, k -> new ArrayList<>())
                 .add(new Pair<>(invoke, recipeJSName));
         });
     }

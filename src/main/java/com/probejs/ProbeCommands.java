@@ -5,7 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.probejs.compiler.SnippetCompiler;
 import com.probejs.compiler.TypingCompiler;
-import com.probejs.compiler.special.RegistryCompiler;
 import com.probejs.document.DocManager;
 import com.probejs.document.comment.CommentHandler;
 import com.probejs.document.parser.processor.DocumentProviderHandler;
@@ -38,7 +37,6 @@ public class ProbeCommands {
                                 DocManager.init();
                                 ClassResolver.init();
                                 NameResolver.init();
-                                RegistryCompiler.init();
 
                                 SnippetCompiler.compile();
                                 TypingCompiler.compile();

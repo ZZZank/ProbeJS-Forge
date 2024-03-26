@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,17 +87,17 @@ public class EventCompiler {
                 )
             );
         }
-        lines.add("/**");
-        lines.add(
-            " * This is the general representation of wildcarded event, you should replace `${string}` with actual id."
+        lines.addAll(
+            Arrays.asList(
+                "/**",
+                " * This is the general representation of wildcarded event, you should replace `${string}` with actual id.",
+                " * ",
+                " * E.g. `player.data_from_server.reload`, `ftbquests.completed.123456`",
+                " */",
+                "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void);",
+                ""
+            )
         );
-        lines.add(" * ");
-        lines.add(" * E.g. `player.data_from_server.reload`, `ftbquests.completed.123456`");
-        lines.add(" */");
-        lines.add(
-            "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void);"
-        );
-        lines.add("");
         for (final String line : lines) {
             writer.write(line);
             writer.write("\n");
@@ -122,13 +123,15 @@ public class EventCompiler {
                 )
             );
         }
-        lines.add("/**");
-        lines.add(
-            " * General representation of `onEvent()`, seeing this comment usually indicates that such event does not exist, or is unknown to ProbeJS yet"
+        lines.addAll(
+            Arrays.asList(
+                "/**",
+                " * General representation of `onEvent()`, seeing this comment usually indicates that such event does not exist, or is unknown to ProbeJS yet",
+                " */",
+                "declare function onEvent(name: string, handler: (event: Internal.EventJS) => void);",
+                ""
+            )
         );
-        lines.add(" */");
-        lines.add("declare function onEvent(name: string, handler: (event: Internal.EventJS) => void);");
-        lines.add("");
         for (final String line : lines) {
             writer.write(line);
             writer.write("\n");

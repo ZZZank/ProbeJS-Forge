@@ -46,5 +46,6 @@ public abstract class TagCompiler {
             writer.write(line);
             writer.write('\n');
         }
+        writer.write('\n');
     }
 }
