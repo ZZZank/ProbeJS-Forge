@@ -208,7 +208,7 @@ public class TypingCompiler {
         final Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
 
         globalClasses.removeIf(ClassResolver.skipped::contains);
-        SpecialTypes.assignForgeRegistries();
+        SpecialTypes.assignRegistries();
         SpecialCompiler.init(typeMap);
 
         compileGlobal(bindingEvent, globalClasses);

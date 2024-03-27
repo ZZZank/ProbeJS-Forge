@@ -130,7 +130,17 @@ public class SpecialTypes {
         return formatValueOrType(njo.unwrap());
     }
 
-    public static void assignForgeRegistries() {
+    public static void assignRegistries() {
+        NameResolver.specialClassAssigner.forEach((clazzName, assignProvider) -> {
+            String name = clazzName.getName();
+            assignProvider
+                .get()
+                .stream()
+                .map(TypeRaw::new)
+                .forEach(type -> {
+                    DocManager.addAssignable(name, type);
+                });
+        });
         SpecialData
             .computeRegistryInfos()
             .stream()
