@@ -6,7 +6,6 @@ import com.probejs.formatter.formatter.FormatterRaw;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import me.shedaniel.architectury.platform.Platform;
@@ -22,8 +21,9 @@ public class PlatformDataComplier {
             .map(ProbeJS.GSON::toJson)
             .collect(Collectors.joining("|"));
         lines.add(String.format("type modids = %s;", modids));
+        //empty line to seperate different namespaces in dumped docs
         lines.add("");
 
-        new FormatterNamespace("platform", Arrays.asList(new FormatterRaw(lines)));
+        new FormatterNamespace("platform", new FormatterRaw(lines));
     }
 }

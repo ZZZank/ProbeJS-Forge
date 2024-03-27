@@ -5,7 +5,6 @@ import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ public abstract class TagCompiler {
                 )
             )
             .collect(Collectors.toList());
-        return new FormatterNamespace("Tag", Arrays.asList(new FormatterRaw(lines, false)))
+        return new FormatterNamespace("Tag", new FormatterRaw(lines, false))
             .format(indent, stepIndent);
     }
 

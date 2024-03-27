@@ -2,6 +2,7 @@ package com.probejs.formatter.formatter;
 
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,6 +14,11 @@ public class FormatterNamespace implements IFormatter {
     public FormatterNamespace(String path, Collection<? extends IFormatter> formatters) {
         this.path = path;
         this.formatters = formatters;
+    }
+
+    public FormatterNamespace(String path, IFormatter ...formatters) {
+        this.path = path;
+        this.formatters = Arrays.asList(formatters);
     }
 
     @Override

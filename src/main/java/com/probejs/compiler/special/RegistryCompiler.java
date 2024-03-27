@@ -38,7 +38,7 @@ public class RegistryCompiler {
                     return String.format("type %s = %s;", rInfo.id.getPath().replace('/', '$'), names);
                 })
                 .collect(Collectors.toList());
-            formatters.add(new FormatterNamespace(namespace, Arrays.asList(new FormatterRaw(lines, false))));
+            formatters.add(new FormatterNamespace(namespace, new FormatterRaw(lines, false)));
         });
         return formatters;
     }
