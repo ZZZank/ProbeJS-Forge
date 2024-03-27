@@ -133,13 +133,9 @@ public class SpecialTypes {
     public static void assignRegistries() {
         NameResolver.specialClassAssigner.forEach((clazzName, assignProvider) -> {
             String name = clazzName.getName();
-            assignProvider
-                .get()
-                .stream()
-                .map(TypeRaw::new)
-                .forEach(type -> {
-                    DocManager.addAssignable(name, type);
-                });
+            for (String assignTo : assignProvider.get()) {
+                DocManager.addAssignable(name, new TypeRaw(assignTo));
+            }
         });
         SpecialData
             .computeRegistryInfos()

@@ -18,6 +18,7 @@ public class ProbeConfig {
     public boolean exportClassNames = false;
     public boolean trimming = true;
 
+    @SuppressWarnings("unchecked")
     private static <E> E fetchPropertyOrDefault(Object key, Map<?, ?> values, E defaultValue) {
         Object v = values.get(key);
         return v == null ? defaultValue : (E) v;

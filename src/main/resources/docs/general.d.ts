@@ -1,8 +1,8 @@
 
 /**
 * @target dev.latvian.kubejs.item.ItemStackJS
-* @assign string
-* @assign `${string}x ${string}`
+* @assign Registry.minecraft.item
+* @assign `${number}x ${Registry.minecraft.item}`
 * @assign object
 */
 class ItemStackJS {
@@ -16,7 +16,7 @@ class ItemStackJS {
  * @assign "" | "-" | "air" | "minecraft:air"
  * @assign `%${string}`
  * @assign `@${string}`
- * @assign `#${string}`
+ * @assign `#${Tag.items}`
  * @assign RegExp
  * @assign Internal.Ingredient
  * @assign dev.latvian.kubejs.item.ingredient.IngredientJS[]
@@ -85,10 +85,10 @@ class Text {
 }
 
 /**
+ * @target java.lang.Class
  * Represents the base Java Class
  * 
  * In JavaScript, `Class<T>`can be considered as `typeof T`
- * @target java.lang.Class
  */
 class Class {
 }
@@ -98,7 +98,7 @@ class Class {
  * Every class has `Object` as a superclass. All objects,
  * including arrays, implement the methods of this class.
  * 
- * Any JavaScript object can be considered as `Object`
+ * Any Java object can be considered as `Object`
  */
 class Object {
     getClass(): Internal.Class<Document.Object>;
@@ -111,13 +111,6 @@ class Object {
     toString(): string;
     notify(): void;
     get class(): Internal.Class<Document.Object>;
-}
-
-/**
- * @target net.minecraft.world.item.enchantment.Enchantment
- * @assign string
- */
-class Enchantment {
 }
 
 /**
@@ -144,7 +137,7 @@ class AttachedData {
 
 /**
  * @target dev.latvian.kubejs.fluid.FluidStackJS
- * @assign string
+ * @assign Registry.minecraft.fluid
  */
 class FluidStackJS {
 }
