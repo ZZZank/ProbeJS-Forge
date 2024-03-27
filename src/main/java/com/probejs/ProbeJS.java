@@ -2,7 +2,7 @@ package com.probejs;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.probejs.plugin.ForgeEventListener;
+import com.probejs.plugin.CapturedClasses;
 import me.shedaniel.architectury.event.events.CommandRegistrationEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
@@ -35,7 +35,9 @@ public class ProbeJS {
                 EventPriority.NORMAL,
                 true,
                 Event.class,
-                ForgeEventListener::onEvent
+                event -> {
+                    CapturedClasses.capturedRawEvents.put(event.getClass().getName(), event.getClass());
+                }
             );
         }
     }
