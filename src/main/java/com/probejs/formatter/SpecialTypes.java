@@ -1,5 +1,6 @@
 package com.probejs.formatter;
 
+import com.probejs.ProbeJS;
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeRaw;
 import com.probejs.formatter.formatter.FormatterType;
@@ -134,7 +135,7 @@ public class SpecialTypes {
         NameResolver.specialClassAssigner.forEach((clazzName, assignProvider) -> {
             String name = clazzName.getName();
             for (String assignTo : assignProvider.get()) {
-                DocManager.addAssignable(name, new TypeRaw(assignTo));
+                DocManager.addAssignable(name, new TypeRaw(ProbeJS.GSON.toJson(assignTo)));
             }
         });
         SpecialData
