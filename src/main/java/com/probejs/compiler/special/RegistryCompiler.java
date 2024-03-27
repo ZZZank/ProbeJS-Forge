@@ -5,7 +5,6 @@ import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.RegistryInfo;
-import com.probejs.info.SpecialData;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
@@ -15,8 +14,8 @@ public class RegistryCompiler {
 
     private static Collection<RegistryInfo> rInfos;
 
-    public static void init(SpecialData data) {
-        rInfos = data.registries;
+    public static void init(Collection<RegistryInfo> registries) {
+        rInfos = registries;
     }
 
     private static List<IFormatter> info2Formatters(Collection<RegistryInfo> infos) {
@@ -51,5 +50,6 @@ public class RegistryCompiler {
             writer.write('\n');
         }
         writer.write('\n');
+        rInfos = null;
     }
 }

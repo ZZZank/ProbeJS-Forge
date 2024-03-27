@@ -20,6 +20,12 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SnippetCompiler {
 
+    private static SpecialData data;
+
+    public static void init(SpecialData data){
+        SnippetCompiler.data = data;
+    }
+
     public static JsonObject toSnippet(SpecialData dump) {
         JsonObject resultJson = new JsonObject();
         // Compile normal entries to snippet
@@ -31,6 +37,7 @@ public class SnippetCompiler {
             );
             byModMembers.forEach((mod, modMembers) -> {
                 JsonObject modMembersJson = new JsonObject();
+                //prefix
                 JsonArray prefixes = new JsonArray();
                 if (ProbeJS.CONFIG.vanillaOrder) {
                     prefixes.add(String.format("@%s.%s", mod, type));
@@ -38,10 +45,12 @@ public class SnippetCompiler {
                     prefixes.add(String.format("@%s.%s", type, mod));
                 }
                 modMembersJson.add("prefix", prefixes);
+                //body
                 modMembersJson.addProperty(
                     "body",
                     String.format("\"%s:${1|%s|}\"", mod, String.join(",", modMembers))
                 );
+                //type as name, e.g. "fluid_minecraft"
                 resultJson.add(String.format("%s_%s", type, mod), modMembersJson);
             });
         }
@@ -79,16 +88,12 @@ public class SnippetCompiler {
         if (ProbeJS.CONFIG.exportClassNames) {
             compileClassNames();
         }
-        writeDumpSnippets();
-    }
-
-    private static void writeDumpSnippets() throws IOException {
         Path codeFile = ProbePaths.SNIPPET.resolve("probe.code-snippets");
-        SpecialData kubeDump = SpecialData.fetch();
 
         BufferedWriter writer = Files.newBufferedWriter(codeFile);
-        writer.write(ProbeJS.GSON.toJson(toSnippet(kubeDump)));
+        ProbeJS.GSON.toJson(toSnippet(SnippetCompiler.data), writer);
         writer.close();
+        SnippetCompiler.data = null;
     }
 
     private static void compileClassNames() throws IOException {

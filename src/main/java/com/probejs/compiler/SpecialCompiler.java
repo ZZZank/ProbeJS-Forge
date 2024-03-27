@@ -20,8 +20,9 @@ public abstract class SpecialCompiler {
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
         SpecialData data = SpecialData.fetch();
 
-        RegistryCompiler.init(data);
-        TagCompiler.init(data);
+        SnippetCompiler.init(data);
+        RegistryCompiler.init(data.registries);
+        TagCompiler.init(data.tags);
         RecipeHoldersCompiler.init(recipeHandlers);
     }
 

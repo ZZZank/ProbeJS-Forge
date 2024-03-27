@@ -18,7 +18,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public abstract class RecipeHoldersCompiler {
 
-    private static Map<String, List<Pair<String, String>>> namespace2Method = new HashMap<>();
+    /**
+     * mod -> {functionName, returnName}
+     */
+    private static final Map<String, List<Pair<String, String>>> namespace2Method = new HashMap<>();
 
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
         namespace2Method.clear();
@@ -71,5 +74,6 @@ public abstract class RecipeHoldersCompiler {
             writer.write('\n');
         }
         writer.write('\n');
+        namespace2Method.clear();
     }
 }

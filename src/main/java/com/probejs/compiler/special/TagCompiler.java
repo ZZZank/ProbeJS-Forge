@@ -3,7 +3,6 @@ package com.probejs.compiler.special;
 import com.probejs.ProbeJS;
 import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
-import com.probejs.info.SpecialData;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,8 +16,8 @@ public abstract class TagCompiler {
 
     private static Map<String, Collection<ResourceLocation>> tags;
 
-    public static void init(SpecialData data) {
-        TagCompiler.tags = data.tags;
+    public static void init(Map<String, Collection<ResourceLocation>> tags) {
+        TagCompiler.tags = tags;
     }
 
     public static List<String> format(int indent, int stepIndent) {
@@ -47,5 +46,6 @@ public abstract class TagCompiler {
             writer.write('\n');
         }
         writer.write('\n');
+        tags.clear();
     }
 }
