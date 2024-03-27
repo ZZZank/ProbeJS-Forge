@@ -36,9 +36,9 @@ public class SnippetCompiler {
                 byModMembers.computeIfAbsent(rl.getNamespace(), k -> new ArrayList<>()).add(rl.getPath())
             );
             byModMembers.forEach((mod, modMembers) -> {
-                JsonObject modMembersJson = new JsonObject();
+                final JsonObject modMembersJson = new JsonObject();
                 //prefix
-                JsonArray prefixes = new JsonArray();
+                final JsonArray prefixes = new JsonArray();
                 if (ProbeJS.CONFIG.vanillaOrder) {
                     prefixes.add(String.format("@%s.%s", mod, type));
                 } else {
@@ -65,8 +65,8 @@ public class SnippetCompiler {
                     byModMembers.computeIfAbsent(rl.getNamespace(), k -> new ArrayList<>()).add(rl.getPath())
                 );
             byModMembers.forEach((mod, modMembers) -> {
-                JsonObject modMembersJson = new JsonObject();
-                JsonArray prefixes = new JsonArray();
+                final JsonObject modMembersJson = new JsonObject();
+                final JsonArray prefixes = new JsonArray();
                 if (ProbeJS.CONFIG.vanillaOrder) {
                     prefixes.add(String.format("@%s.tags.%s", mod, type));
                 } else {
@@ -99,10 +99,10 @@ public class SnippetCompiler {
     private static void compileClassNames() throws IOException {
         JsonObject resultJson = new JsonObject();
         for (Map.Entry<String, NameResolver.ResolvedName> entry : NameResolver.resolvedNames.entrySet()) {
-            String className = entry.getKey();
-            NameResolver.ResolvedName resolvedName = entry.getValue();
-            JsonObject classJson = new JsonObject();
-            JsonArray prefix = new JsonArray();
+            final String className = entry.getKey();
+            final NameResolver.ResolvedName resolvedName = entry.getValue();
+            final JsonObject classJson = new JsonObject();
+            final JsonArray prefix = new JsonArray();
             prefix.add(String.format("!%s", resolvedName.getFullName()));
             classJson.add("prefix", prefix);
             classJson.addProperty("body", className);

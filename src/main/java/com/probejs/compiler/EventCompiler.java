@@ -57,17 +57,17 @@ public class EventCompiler {
     private static void writeForgeEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
         for (Map.Entry<String, Class<?>> entry : (new TreeMap<>(cachedForgeEvents)).entrySet()) {
-            String name = entry.getKey();
-            Class<?> event = entry.getValue();
+            final String name = entry.getKey();
+            final Class<?> event = entry.getValue();
             lines.add(
                 String.format(
-                    "declare function onForgeEvent(name: \"%s\", handler: (event: %s) => void);\n",
+                    "declare function onForgeEvent(name: \"%s\", handler: (event: %s) => void);",
                     name,
                     FormatterType.formatParameterized(new TypeInfoClass(event))
                 )
             );
         }
-        lines.add("\n");
+        lines.add("");
         for (final String line : lines) {
             writer.write(line);
             writer.write("\n");
@@ -107,9 +107,9 @@ public class EventCompiler {
     private static void writeEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
         for (Map.Entry<String, EventInfo> entry : (new TreeMap<>(cachedEvents)).entrySet()) {
-            EventInfo captured = entry.getValue();
+            final EventInfo captured = entry.getValue();
+            final Class<?> event = captured.clazzRaw;
             String id = captured.id;
-            Class<?> event = captured.clazzRaw;
             if (captured.hasSub()) {
                 wildcards.put(id, captured);
                 id = id + "." + captured.sub;
@@ -139,18 +139,18 @@ public class EventCompiler {
     }
 
     public static Map<String, EventInfo> readCachedEvents() throws IOException {
-        Map<String, EventInfo> cachedEvents = new HashMap<>();
+        final Map<String, EventInfo> cachedEvents = new HashMap<>();
         if (!Files.exists(EVENT_CACHE_PATH)) {
             return cachedEvents;
         }
         try {
-            JsonObject cachedMap = ProbeJS.GSON.fromJson(
+            final JsonObject cachedMap = ProbeJS.GSON.fromJson(
                 Files.newBufferedReader(EVENT_CACHE_PATH),
                 JsonObject.class
             );
             for (Map.Entry<String, JsonElement> entry : cachedMap.entrySet()) {
-                String key = entry.getKey();
-                JsonElement value = entry.getValue();
+                final String key = entry.getKey();
+                final JsonElement value = entry.getValue();
                 if (!value.isJsonObject()) {
                     //old cache is string, which means JsonElement, so not JsonObject
                     break;
@@ -164,11 +164,11 @@ public class EventCompiler {
     }
 
     public static void compileEventsCache(Map<String, EventInfo> events) throws IOException {
-        BufferedWriter cacheWriter = Files.newBufferedWriter(EVENT_CACHE_PATH);
-        JsonObject outJson = new JsonObject();
-        for (Map.Entry<String, EventInfo> entry : events.entrySet()) {
-            String eventName = entry.getKey();
-            EventInfo eventClass = entry.getValue();
+        final BufferedWriter cacheWriter = Files.newBufferedWriter(EVENT_CACHE_PATH);
+        final JsonObject outJson = new JsonObject();
+        for (final Map.Entry<String, EventInfo> entry : events.entrySet()) {
+            final String eventName = entry.getKey();
+            final EventInfo eventClass = entry.getValue();
             outJson.add(eventName, eventClass.toJson());
         }
         ProbeJS.GSON.toJson(outJson, cacheWriter);
@@ -176,13 +176,13 @@ public class EventCompiler {
     }
 
     public static Map<String, Class<?>> readCachedForgeEvents() throws IOException {
-        Map<String, Class<?>> cachedEvents = new HashMap<>();
+        final Map<String, Class<?>> cachedEvents = new HashMap<>();
         if (!Files.exists(FORGE_EVENT_CACHE_PATH)) {
             ProbeJS.LOGGER.warn("No event cache file: {}", FORGE_EVENT_CACHE_FILENAME);
             return cachedEvents;
         }
         try {
-            Map<?, ?> fileCache = ProbeJS.GSON.fromJson(
+            final Map<?, ?> fileCache = ProbeJS.GSON.fromJson(
                 Files.newBufferedReader(FORGE_EVENT_CACHE_PATH),
                 Map.class
             );
@@ -192,7 +192,7 @@ public class EventCompiler {
                     return;
                 }
                 try {
-                    Class<?> clazz = Class.forName((String) v);
+                    final Class<?> clazz = Class.forName((String) v);
                     if (EventJS.class.isAssignableFrom(clazz)) {
                         cachedEvents.put((String) k, clazz);
                     }
@@ -207,11 +207,11 @@ public class EventCompiler {
     }
 
     public static void comileForgeEventsCache(Map<String, Class<?>> events) throws IOException {
-        BufferedWriter cacheWriter = Files.newBufferedWriter(FORGE_EVENT_CACHE_PATH);
-        JsonObject outJson = new JsonObject();
+        final BufferedWriter cacheWriter = Files.newBufferedWriter(FORGE_EVENT_CACHE_PATH);
+        final JsonObject outJson = new JsonObject();
         for (Map.Entry<String, Class<?>> entry : events.entrySet()) {
-            String eventName = entry.getKey();
-            Class<?> eventClass = entry.getValue();
+            final String eventName = entry.getKey();
+            final Class<?> eventClass = entry.getValue();
             outJson.addProperty(eventName, eventClass.getName());
         }
         ProbeJS.GSON.toJson(outJson, cacheWriter);

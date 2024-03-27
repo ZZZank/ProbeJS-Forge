@@ -183,20 +183,20 @@ public class TypingCompiler {
     }
 
     public static void compile() throws IOException {
-        DummyBindingEvent bindingEvent = new DummyBindingEvent(ServerScriptManager.instance.scriptManager);
-        Map<ResourceLocation, RecipeTypeJS> typeMap = new HashMap<>();
-        RegisterRecipeHandlersEvent recipeEvent = new RegisterRecipeHandlersEvent(typeMap);
+        final DummyBindingEvent bindingEvent = new DummyBindingEvent(ServerScriptManager.instance.scriptManager);
+        final Map<ResourceLocation, RecipeTypeJS> typeMap = new HashMap<>();
+        final RegisterRecipeHandlersEvent recipeEvent = new RegisterRecipeHandlersEvent(typeMap);
 
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
 
         //event cache
-        Map<String, EventInfo> cachedEvents = EventCompiler.readCachedEvents();
-        Map<String, Class<?>> cachedForgeEvents = EventCompiler.readCachedForgeEvents();
+        final Map<String, EventInfo> cachedEvents = EventCompiler.readCachedEvents();
+        final Map<String, Class<?>> cachedForgeEvents = EventCompiler.readCachedForgeEvents();
         cachedEvents.putAll(CapturedClasses.capturedEvents);
         cachedForgeEvents.putAll(CapturedClasses.capturedRawEvents);
 
-        Set<Class<?>> cachedClasses = cachedEvents
+        final Set<Class<?>> cachedClasses = cachedEvents
             .values()
             .stream()
             .map(eventInfo -> eventInfo.clazzRaw)
@@ -205,7 +205,7 @@ public class TypingCompiler {
         // cachedClasses.addAll(RegistryCompiler.getRegistryClasses());
 
         //global class
-        Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
+        final Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
 
         globalClasses.removeIf(ClassResolver.skipped::contains);
         SpecialTypes.assignForgeRegistries();

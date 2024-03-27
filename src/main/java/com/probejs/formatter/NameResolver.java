@@ -151,8 +151,8 @@ public class NameResolver {
     public static ResolvedName resolveName(Class<?> clazz) {
         // String remappedName = MethodInfo.RUNTIME.getMappedClass(clazz);
         // ResolvedName resolved = new ResolvedName(Arrays.asList(remappedName.split("\\.")));
-        ResolvedName resolved = new ResolvedName(Arrays.asList(clazz.getName().split("\\.")));
-        ResolvedName internal = new ResolvedName(Arrays.asList("Internal", resolved.getLastName()));
+        final ResolvedName resolved = new ResolvedName(Arrays.asList(clazz.getName().split("\\.")));
+        final ResolvedName internal = new ResolvedName(Arrays.asList("Internal", resolved.getLastName()));
         if (resolvedNames.containsValue(internal)) {
             return putResolvedName(clazz.getName(), resolved);
         } else {

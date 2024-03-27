@@ -1,8 +1,8 @@
 package com.probejs.formatter.formatter;
 
+import com.probejs.document.DocManager;
 import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentMethod;
-import com.probejs.document.DocManager;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentReturns;
 import com.probejs.document.type.IType;
@@ -34,11 +34,11 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     @Nullable
     public String getBean() {
-        String methodName = info.getName();
+        final String methodName = info.getName();
         if (methodName.equals("is") || methodName.equals("get") || methodName.equals("set")) {
             return null;
         }
-        int paramSize = info.getParams().size();
+        final int paramSize = info.getParams().size();
         if (
             methodName.startsWith("is") &&
             paramSize == 0 &&
@@ -77,10 +77,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         if (modifiersCache != null) {
             return modifiersCache;
         }
-        Map<String, IType> modifiers = new HashMap<>();
+        final Map<String, IType> modifiers = new HashMap<>();
         IType returns = null;
         if (document != null) {
-            DocumentComment comment = document.getComment();
+            final DocumentComment comment = document.getComment();
             if (comment != null) {
                 modifiers.putAll(CommentUtil.getTypeModifiers(comment));
                 CommentReturns r = comment.getSpecialComment(CommentReturns.class);
@@ -97,8 +97,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         if (!(info instanceof TypeInfoClass)) {
             return new FormatterType(info, useSpecial).format(0, 0);
         }
-        TypeInfoClass clazz = (TypeInfoClass) info;
-        StringBuilder sb = new StringBuilder(new FormatterType(info, useSpecial).format(0, 0));
+        final TypeInfoClass clazz = (TypeInfoClass) info;
+        final StringBuilder sb = new StringBuilder(new FormatterType(info, useSpecial).format(0, 0));
         if (!NameResolver.isTypeSpecial(clazz.getResolvedClass()) && clazz.getTypeVariables().size() != 0) {
             sb.append('<');
             sb.append(String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any")));
@@ -120,13 +120,14 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     private String formatParamUnderscore(ITypeInfo info, boolean forceNoUnderscore) {
-        Class<?> resolvedClass = info.getResolvedClass();
+        final Class<?> resolvedClass = info.getResolvedClass();
         //No assigned types, and not enum, use normal route.
         if (!DocManager.typesAssignable.containsKey(resolvedClass.getName()) && !resolvedClass.isEnum()) {
             return formatTypeParameterized(info, true);
         }
 
-        StringBuilder sb = new StringBuilder(
+        final StringBuilder sb = new StringBuilder();
+        sb.append(
             new FormatterType(
                 info,
                 false,
@@ -143,8 +144,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 .format(0, 0)
         );
         if (info instanceof TypeInfoClass) {
-            TypeInfoClass classInfo = (TypeInfoClass) info;
-            int typeCount = classInfo.getTypeVariables().size();
+            final TypeInfoClass classInfo = (TypeInfoClass) info;
+            final int typeCount = classInfo.getTypeVariables().size();
             if (typeCount != 0) {
                 sb.append('<').append(String.join(", ", Collections.nCopies(typeCount, "any"))).append('>');
             }
