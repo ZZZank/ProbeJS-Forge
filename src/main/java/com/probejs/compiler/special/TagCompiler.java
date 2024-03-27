@@ -37,7 +37,7 @@ public abstract class TagCompiler {
                 )
             )
             .collect(Collectors.toList());
-        return new FormatterNamespace("Tag", Arrays.asList(new FormatterRaw(lines)))
+        return new FormatterNamespace("Tag", Arrays.asList(new FormatterRaw(lines, false)))
             .format(indent, stepIndent);
     }
 
