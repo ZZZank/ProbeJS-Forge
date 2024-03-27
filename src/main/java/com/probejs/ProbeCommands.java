@@ -21,7 +21,7 @@ public class ProbeCommands {
 
     public static void register(
         CommandDispatcher<CommandSourceStack> dispatcher,
-        net.minecraft.commands.Commands.CommandSelection selection
+        Commands.CommandSelection selection
     ) {
         dispatcher.register(
             Commands
@@ -32,19 +32,25 @@ public class ProbeCommands {
                         .requires(source -> source.getServer().isSingleplayer())
                         .executes(context -> {
                             try {
+                                sendSuccess(context, "ProbeJS initializing...");
                                 DocumentProviderHandler.init();
                                 CommentHandler.init();
                                 DocManager.init();
                                 ClassResolver.init();
                                 NameResolver.init();
-
-                                SnippetCompiler.compile();
+                                sendSuccess(context, "Generating docs...");
                                 TypingCompiler.compile();
+                                sendSuccess(context, "Generating code snippets...");
+                                SnippetCompiler.compile();
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 sendSuccess(
                                     context,
-                                    "Uncaught exception happened in wrapper, please report to the Github issue with complete latest.log."
+                                    "[ERROR]Uncaught exception happened, terminating typing generation..."
+                                );
+                                sendSuccess(
+                                    context,
+                                    "Please report this error to ProbeJS Github with complete latest.log."
                                 );
                             }
                             return sendSuccess(context, "ProbeJS typing generation finished.");
@@ -105,7 +111,7 @@ public class ProbeCommands {
                                     return sendSuccess(
                                         context,
                                         String.format(
-                                            "OnEvent mixin wrapper set to: %s. Changes will be applied next time you start the game",
+                                            "Event listening set to: %s. Changes will be applied next time you start the game",
                                             ProbeJS.CONFIG.disabled ? "disabled" : "enabled"
                                         )
                                     );
@@ -135,7 +141,7 @@ public class ProbeCommands {
                                     return sendSuccess(
                                         context,
                                         String.format(
-                                            "Export class name as snippets set to: %s",
+                                            "Export class name to snippets set to: %s",
                                             ProbeJS.CONFIG.exportClassNames
                                         )
                                     );
