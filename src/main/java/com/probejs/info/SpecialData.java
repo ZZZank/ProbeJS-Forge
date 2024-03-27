@@ -30,7 +30,7 @@ public class SpecialData {
         String type,
         TagCollection<?> tagCollection
     ) {
-        target.put(type, tagCollection.getAvailableTags());
+        target.put(type, tagCollection.getAvailableTags().stream().sorted().collect(Collectors.toList()));
     }
 
     public static SpecialData fetch() {
