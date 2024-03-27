@@ -13,17 +13,20 @@ import me.shedaniel.architectury.platform.Platform;
 public class PlatformDataComplier {
 
     public static void compile(BufferedWriter writer) throws IOException {
-        List<String> lines = new ArrayList<>();
+        final List<String> lines = new ArrayList<>();
         //modids
-        String modids = Platform
+        final String modids = Platform
             .getModIds()
             .stream()
             .map(ProbeJS.GSON::toJson)
             .collect(Collectors.joining("|"));
         lines.add(String.format("type modids = %s;", modids));
-        //empty line to seperate different namespaces in dumped docs
-        lines.add("");
+        //more?
 
-        new FormatterNamespace("platform", new FormatterRaw(lines));
+        for (final String line : new FormatterNamespace("platform", new FormatterRaw(lines)).format(0, 4)) {
+            writer.write(line);
+            writer.write('\n');
+        }
+        writer.write('\n');
     }
 }

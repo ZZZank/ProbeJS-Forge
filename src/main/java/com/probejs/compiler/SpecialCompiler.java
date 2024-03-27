@@ -1,6 +1,7 @@
 package com.probejs.compiler;
 
 import com.probejs.ProbePaths;
+import com.probejs.compiler.special.PlatformDataComplier;
 import com.probejs.compiler.special.RecipeHoldersCompiler;
 import com.probejs.compiler.special.RegistryCompiler;
 import com.probejs.compiler.special.TagCompiler;
@@ -18,7 +19,7 @@ public abstract class SpecialCompiler {
     public static final Path PATH = ProbePaths.GENERATED.resolve("special.d.ts");
 
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
-        SpecialData data = SpecialData.fetch();
+        final SpecialData data = SpecialData.fetch();
 
         SnippetCompiler.init(data);
         RegistryCompiler.init(data.registries);
@@ -27,11 +28,12 @@ public abstract class SpecialCompiler {
     }
 
     public static void compile() throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(PATH);
+        final BufferedWriter writer = Files.newBufferedWriter(PATH);
 
         RegistryCompiler.compileRegistries(writer);
         TagCompiler.compile(writer);
         RecipeHoldersCompiler.compileRecipeHolder(writer);
+        PlatformDataComplier.compile(writer);
 
         writer.close();
     }
