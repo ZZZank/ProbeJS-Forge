@@ -2,15 +2,11 @@ package com.probejs.compiler.rich.item;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import dev.latvian.kubejs.core.TagCollectionKJS;
-import dev.latvian.kubejs.util.Tags;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
 import net.minecraft.world.item.Item;
 
 public class ItemTagAttribute {
