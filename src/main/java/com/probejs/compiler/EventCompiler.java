@@ -23,10 +23,10 @@ import java.util.TreeMap;
 
 public class EventCompiler {
 
-    private static final String EVENT_CACHE_FILENAME = "cachedEvents.json";
-    private static final String FORGE_EVENT_CACHE_FILENAME = "cachedForgeEvents.json";
-    private static final Path EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(EVENT_CACHE_FILENAME);
-    private static final Path FORGE_EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(FORGE_EVENT_CACHE_FILENAME);
+    public static final String EVENT_CACHE_NAME = "cachedEvents.json";
+    public static final String FORGE_EVENT_CACHE_NAME = "cachedForgeEvents.json";
+    public static final Path EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(EVENT_CACHE_NAME);
+    public static final Path FORGE_EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(FORGE_EVENT_CACHE_NAME);
 
     private static Map<String, EventInfo> cachedEvents;
     private static Map<String, EventInfo> wildcards;
@@ -178,7 +178,7 @@ public class EventCompiler {
     public static Map<String, Class<?>> readCachedForgeEvents() throws IOException {
         final Map<String, Class<?>> cachedEvents = new HashMap<>();
         if (!Files.exists(FORGE_EVENT_CACHE_PATH)) {
-            ProbeJS.LOGGER.warn("No event cache file: {}", FORGE_EVENT_CACHE_FILENAME);
+            ProbeJS.LOGGER.warn("No event cache file: {}", FORGE_EVENT_CACHE_NAME);
             return cachedEvents;
         }
         try {

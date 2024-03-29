@@ -3,6 +3,7 @@ package com.probejs;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.probejs.compiler.EventCompiler;
 import com.probejs.compiler.SnippetCompiler;
 import com.probejs.compiler.TypingCompiler;
 import com.probejs.compiler.rich.fluid.RichFluidCompiler;
@@ -68,15 +69,24 @@ public class ProbeCommands {
                         .literal("clear_cache")
                         .requires(source -> source.getServer().isSingleplayer())
                         .executes(context -> {
-                            Path path = KubeJSPaths.EXPORTED.resolve("cachedEvents.json");
-                            if (!Files.exists(path)) {
-                                return sendSuccess(context, "No cached files to be cleared.");
+                            String[] cacheNames = new String[] {
+                                EventCompiler.EVENT_CACHE_NAME,
+                                EventCompiler.FORGE_EVENT_CACHE_NAME,
+                            };
+                            for (String cacheName : cacheNames) {
+                                String wrapped = String.format("Cache file '%s'", cacheName);
+                                Path path = KubeJSPaths.EXPORTED.resolve(cacheName);
+                                if (!Files.exists(path)) {
+                                    sendSuccess(context, wrapped + " not found, skipping. ");
+                                    continue;
+                                }
+                                boolean deleted = path.toFile().delete();
+                                if (!deleted) {
+                                    sendSuccess(context, wrapped + " unable to delete. ");
+                                    continue;
+                                }
                             }
-                            boolean deleted = path.toFile().delete();
-                            if (!deleted) {
-                                return sendSuccess(context, "Failed to remove cache files.");
-                            }
-                            return sendSuccess(context, "Cache files removed.");
+                            return sendSuccess(context, "Cache files removing process finished.");
                         })
                 )
                 .then(
