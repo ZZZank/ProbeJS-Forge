@@ -1,6 +1,8 @@
 package com.probejs.compiler.rich.item;
 
 import com.google.gson.JsonObject;
+
+import net.minecraft.core.Registry;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.CropBlock;
@@ -49,7 +51,7 @@ public class ItemAttribute {
         Item itemRepr = item.getItem();
         try {
             prop = new JsonObject();
-            prop.addProperty("id", Item.getId(itemRepr));
+            prop.addProperty("id", Registry.ITEM.getKey(itemRepr).toString());
             prop.addProperty("localized", item.getHoverName().getString());
             prop.addProperty("maxDamage", item.getMaxDamage());
             prop.addProperty("maxStackSize", item.getMaxStackSize());
