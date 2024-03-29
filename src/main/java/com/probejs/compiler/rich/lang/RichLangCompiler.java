@@ -1,16 +1,9 @@
 package com.probejs.compiler.rich.lang;
 
-import com.mojang.datafixers.util.Pair;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
-import com.probejs.specials.special.FormatterLang;
-import com.probejs.util.json.JArray;
-import com.probejs.util.json.JObject;
-import com.probejs.util.json.JPrimitive;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.language.LanguageInfo;
-import net.minecraft.client.resources.language.LanguageManager;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,60 +11,79 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.LanguageInfo;
+import net.minecraft.client.resources.language.LanguageManager;
 
 public class RichLangCompiler {
+
     public static void compile() throws IOException {
-        JArray langKeyArray = JArray.create();
+        JsonArray langKeyArray = new JsonArray();
 
         LanguageManager languageManager = Minecraft.getInstance().getLanguageManager();
 
-        var selected = languageManager.getSelected();
-        var codeRegion = selected.contains("_") ? selected.split("_")[0] : selected.substring(0, 2);
-        List<LanguageInfo> sameRegionLang = languageManager.getLanguages().entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(codeRegion))
-                .map(Map.Entry::getValue)
-                .toList();
+        String selected = languageManager.getSelected().getCode();
+        String codeRegion = selected.contains("_") ? selected.split("_")[0] : selected.substring(0, 2);
+        List<LanguageInfo> sameRegionLang = languageManager
+            .getLanguages()
+            .stream()
+            .filter(entry -> entry.getCode().startsWith(codeRegion))
+            .collect(Collectors.toList());
 
         Map<String, Map<String, String>> storage = new HashMap<>();
 
-        FormatterLang.getLangKeys(LanguageManager.DEFAULT_LANGUAGE_CODE)
-                .forEach(entry ->
-                        storage.computeIfAbsent(entry.getKey(), key -> new HashMap<>())
-                                .put(languageManager.getLanguage(LanguageManager.DEFAULT_LANGUAGE_CODE).name(), entry.getValue())
-                );
+        FormatterLang
+            .getLangKeys(FormatterLang.DEFAULT_LANGUAGE.getCode())
+            .forEach(entry ->
+                storage
+                    .computeIfAbsent(entry.getKey(), key -> new HashMap<>())
+                    .put(
+                        languageManager.getLanguage(FormatterLang.DEFAULT_LANGUAGE.getCode()).getName(),
+                        entry.getValue()
+                    )
+            );
 
-        if (!selected.equals(LanguageManager.DEFAULT_LANGUAGE_CODE)) {
-            FormatterLang.getLangKeys(selected)
-                    .forEach(entry ->
-                            storage.computeIfAbsent(entry.getKey(), key -> new HashMap<>())
-                                    .put(languageManager.getLanguage(selected).name(), entry.getValue())
-                    );
+        if (!selected.equals(FormatterLang.DEFAULT_LANGUAGE.getCode())) {
+            FormatterLang
+                .getLangKeys(selected)
+                .forEach(entry ->
+                    storage
+                        .computeIfAbsent(entry.getKey(), key -> new HashMap<>())
+                        .put(languageManager.getLanguage(selected).getName(), entry.getValue())
+                );
         }
 
         for (LanguageInfo lang : sameRegionLang) {
-            FormatterLang.getLangKeys(lang)
-                    .forEach(entry ->
-                            storage.computeIfAbsent(entry.getKey(), key -> new HashMap<>())
-                                    .put(lang.name(), entry.getValue())
-                    );
+            FormatterLang
+                .getLangKeys(lang)
+                .forEach(entry ->
+                    storage
+                        .computeIfAbsent(entry.getKey(), key -> new HashMap<>())
+                        .put(lang.getName(), entry.getValue())
+                );
         }
 
-        langKeyArray.addAll(
-                storage.entrySet().stream().map(entry ->
-                        JObject.create()
-                                .add("key", JPrimitive.create(entry.getKey()))
-                                .add("languages", JObject.create()
-                                        .addAll(entry.getValue()
-                                                .entrySet()
-                                                .stream()
-                                                .map(e -> new Pair<>(e.getKey(), JPrimitive.create(e.getValue())))))
-                                .add("selected", JPrimitive.create(languageManager.getLanguage(selected).name()))
-                )
-        );
-
-        Path richFile = ProbePaths.WORKSPACE_SETTINGS.resolve("lang-keys.json");
+        storage
+            .entrySet()
+            .stream()
+            .map(entry -> {
+                JsonObject langObj = new JsonObject();
+                langObj.addProperty("key", entry.getKey());
+                JsonObject langs = new JsonObject();
+                entry
+                    .getValue()
+                    .entrySet()
+                    .stream()
+                    .forEach(e -> langs.addProperty(e.getKey(), e.getValue()));
+                langObj.add("languages", langs);
+                langObj.addProperty("selected", languageManager.getLanguage(selected).getName());
+                return langObj;
+            })
+            .forEach(langKeyArray::add);
+        Path richFile = ProbePaths.WORKSPACE.resolve("lang-keys.json");
         BufferedWriter writer = Files.newBufferedWriter(richFile);
-        writer.write(ProbeJS.GSON.toJson(langKeyArray.serialize()));
+        writer.write(ProbeJS.GSON.toJson(langKeyArray));
         writer.close();
     }
 }
