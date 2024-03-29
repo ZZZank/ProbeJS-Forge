@@ -38,10 +38,7 @@ public class RichLangCompiler {
             .forEach(entry ->
                 storage
                     .computeIfAbsent(entry.getKey(), key -> new HashMap<>())
-                    .put(
-                        languageManager.getLanguage(FormatterLang.DEFAULT_LANGUAGE.getCode()).getName(),
-                        entry.getValue()
-                    )
+                    .put(FormatterLang.DEFAULT_LANGUAGE.getName(), entry.getValue())
             );
 
         if (!selected.equals(FormatterLang.DEFAULT_LANGUAGE.getCode())) {

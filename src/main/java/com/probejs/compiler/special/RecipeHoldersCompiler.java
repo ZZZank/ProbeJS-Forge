@@ -68,7 +68,7 @@ public abstract class RecipeHoldersCompiler {
         return new FormatterNamespace("stub.probejs", namespecedFmtr).format(indent, stepIndent);
     }
 
-    public static void compileRecipeHolder(BufferedWriter writer) throws IOException {
+    public static void compile(BufferedWriter writer) throws IOException {
         for (String line : format(0, 4)) {
             writer.write(line);
             writer.write('\n');

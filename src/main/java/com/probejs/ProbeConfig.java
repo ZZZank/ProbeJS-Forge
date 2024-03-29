@@ -42,9 +42,9 @@ public class ProbeConfig {
                 exportClassNames = fetchPropertyOrDefault("exportClassNames", obj, false);
                 trimming = fetchPropertyOrDefault("trimming", obj, false);
 
-                Object disabled = obj.get("disabled");
-                if (disabled != null) {
-                    this.enabled = !(boolean) disabled;
+                Object cfgDisabled = obj.get("disabled");
+                if (cfgDisabled != null) {
+                    this.enabled = !(boolean) cfgDisabled;
                 }
             } catch (IOException e) {
                 ProbeJS.LOGGER.warn("Cannot read config properties, falling back to defaults.");

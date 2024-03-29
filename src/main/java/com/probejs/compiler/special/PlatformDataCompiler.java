@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import me.shedaniel.architectury.platform.Platform;
 
-public class PlatformDataComplier {
+public class PlatformDataCompiler {
 
     public static void compile(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();

@@ -4,7 +4,7 @@ import com.probejs.ProbePaths;
 import com.probejs.compiler.rich.fluid.RichFluidCompiler;
 import com.probejs.compiler.rich.item.RichItemCompiler;
 import com.probejs.compiler.rich.lang.RichLangCompiler;
-import com.probejs.compiler.special.PlatformDataComplier;
+import com.probejs.compiler.special.PlatformDataCompiler;
 import com.probejs.compiler.special.RecipeHoldersCompiler;
 import com.probejs.compiler.special.RegistryCompiler;
 import com.probejs.compiler.special.TagCompiler;
@@ -33,10 +33,10 @@ public abstract class SpecialCompiler {
     public static void compile() throws IOException {
         final BufferedWriter writer = Files.newBufferedWriter(PATH);
 
-        RegistryCompiler.compileRegistries(writer);
+        RegistryCompiler.compile(writer);
         TagCompiler.compile(writer);
-        RecipeHoldersCompiler.compileRecipeHolder(writer);
-        PlatformDataComplier.compile(writer);
+        RecipeHoldersCompiler.compile(writer);
+        PlatformDataCompiler.compile(writer);
 
         RichFluidCompiler.compile();
         RichItemCompiler.compile();

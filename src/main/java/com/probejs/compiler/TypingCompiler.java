@@ -70,6 +70,7 @@ public class TypingCompiler {
         NameResolver.resolveNames(globalClasses);
 
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("globals.d.ts"));
+        writer.write("/// <reference path=\"./special.d.ts\" />\n");
         Map<String, List<IFormatter>> namespaced = new HashMap<>();
 
         for (Class<?> clazz : globalClasses) {

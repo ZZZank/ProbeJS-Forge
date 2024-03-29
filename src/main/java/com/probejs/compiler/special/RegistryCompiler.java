@@ -43,7 +43,7 @@ public class RegistryCompiler {
         return formatters;
     }
 
-    public static void compileRegistries(BufferedWriter writer) throws IOException {
+    public static void compile(BufferedWriter writer) throws IOException {
         IFormatter namespaced = new FormatterNamespace("Registry", info2Formatters(RegistryCompiler.rInfos));
         for (String line : namespaced.format(0, 4)) {
             writer.write(line);

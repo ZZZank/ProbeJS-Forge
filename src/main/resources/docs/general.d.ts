@@ -1,8 +1,8 @@
 
 /**
 * @target dev.latvian.kubejs.item.ItemStackJS
-* @assign Registry.minecraft.item
-* @assign `${number}x ${Registry.minecraft.item}`
+* @assign net.minecraft.world.item.Item
+* @assign `${number}x ${string}`
 * @assign object
 */
 class ItemStackJS {
@@ -10,12 +10,13 @@ class ItemStackJS {
 
 /**
  * @target dev.latvian.kubejs.item.ingredient.IngredientJS
+ * 
  * @assign dev.latvian.kubejs.item.ItemStackJS
  * @assign dev.latvian.kubejs.fluid.FluidStackJS
  * @assign "*"
  * @assign "" | "-" | "air" | "minecraft:air"
  * @assign `%${string}`
- * @assign `@${string}`
+ * @assign `@${platform.modids}`
  * @assign `#${Tag.items}`
  * @assign RegExp
  * @assign Internal.Ingredient
