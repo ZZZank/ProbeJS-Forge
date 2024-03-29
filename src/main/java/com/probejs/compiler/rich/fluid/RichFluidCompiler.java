@@ -31,38 +31,4 @@ public class RichFluidCompiler {
         writer.write(ProbeJS.GSON.toJson(fluidArray.serialize()));
         writer.close();
     }
-
-    public static void render(List<Pair<Fluid, Path>> fluids) throws IOException {
-        RenderTarget frameBuffer = ImageHelper.init();
-        for (Pair<Fluid, Path> pair : fluids) {
-            NativeImage image = ImageHelper.getFromFluid(pair.getFirst(), frameBuffer);
-            image.writeToFile(pair.getSecond());
-            image.close();
-            frameBuffer.clear(false);
-        }
-        frameBuffer.destroyBuffers();
-
-    }
-
-    public static List<Pair<Fluid, Path>> resolve() {
-        ArrayList<Pair<Fluid, Path>> fluids = new ArrayList<>();
-        var registry = RegistryInfo.FLUID.getVanillaRegistry();
-        for (Fluid fluid : registry) {
-            ResourceLocation id = registry.getKey(fluid);
-            if (id == null) continue;
-            Path path = ProbePaths.RICH_FLUID.resolve(id.getNamespace());
-            if (!Files.exists(path)) {
-                try {
-                    Files.createDirectories(path);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            String name = id.getPath().replace("/", "_");
-            if (path.resolve(name + ".png").toFile().exists()) continue;
-            fluids.add(Pair.of(fluid, path.resolve(name + ".png")));
-        }
-        return fluids;
-    }
 }
