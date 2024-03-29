@@ -88,7 +88,7 @@ public class SnippetCompiler {
         if (ProbeJS.CONFIG.exportClassNames) {
             compileClassNames();
         }
-        Path codeFile = ProbePaths.SNIPPET.resolve("probe.code-snippets");
+        Path codeFile = ProbePaths.WORKSPACE.resolve("probe.code-snippets");
 
         BufferedWriter writer = Files.newBufferedWriter(codeFile);
         ProbeJS.GSON.toJson(toSnippet(SnippetCompiler.data), writer);
@@ -109,7 +109,7 @@ public class SnippetCompiler {
             resultJson.add(resolvedName.getFullName(), classJson);
         }
 
-        Path codeFile = ProbePaths.SNIPPET.resolve("classNames.code-snippets");
+        Path codeFile = ProbePaths.WORKSPACE.resolve("classNames.code-snippets");
         BufferedWriter writer = Files.newBufferedWriter(codeFile);
         ProbeJS.GSON.toJson(resultJson, writer);
         writer.close();
