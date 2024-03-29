@@ -5,6 +5,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.probejs.compiler.SnippetCompiler;
 import com.probejs.compiler.TypingCompiler;
+import com.probejs.compiler.rich.fluid.RichFluidCompiler;
+import com.probejs.compiler.rich.item.RichItemCompiler;
+import com.probejs.compiler.rich.lang.RichLangCompiler;
 import com.probejs.document.DocManager;
 import com.probejs.document.comment.CommentHandler;
 import com.probejs.document.parser.processor.DocumentProviderHandler;
@@ -42,6 +45,10 @@ public class ProbeCommands {
                                 TypingCompiler.compile();
                                 sendSuccess(context, "Generating code snippets...");
                                 SnippetCompiler.compile();
+                                sendSuccess(context, "Generating rich display informations...");
+                                RichFluidCompiler.compile();
+                                RichItemCompiler.compile();
+                                RichLangCompiler.compile();
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 sendSuccess(

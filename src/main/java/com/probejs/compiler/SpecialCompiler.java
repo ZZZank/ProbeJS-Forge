@@ -1,9 +1,6 @@
 package com.probejs.compiler;
 
 import com.probejs.ProbePaths;
-import com.probejs.compiler.rich.fluid.RichFluidCompiler;
-import com.probejs.compiler.rich.item.RichItemCompiler;
-import com.probejs.compiler.rich.lang.RichLangCompiler;
 import com.probejs.compiler.special.PlatformDataCompiler;
 import com.probejs.compiler.special.RecipeHoldersCompiler;
 import com.probejs.compiler.special.RegistryCompiler;
@@ -37,10 +34,6 @@ public abstract class SpecialCompiler {
         TagCompiler.compile(writer);
         RecipeHoldersCompiler.compile(writer);
         PlatformDataCompiler.compile(writer);
-
-        RichFluidCompiler.compile();
-        RichItemCompiler.compile();
-        RichLangCompiler.compile();
 
         writer.close();
     }
