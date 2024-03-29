@@ -11,9 +11,9 @@ import java.util.Map;
 public class ProbeConfig {
 
     private static ProbeConfig reference = null;
-    private static final Path CONFIG = KubeJSPaths.CONFIG.resolve("probejs.json");
+    public static final Path PATH = KubeJSPaths.CONFIG.resolve("probejs.json");
     public boolean keepBeaned = true;
-    public boolean disabled = false;
+    public boolean enabled = true;
     public boolean vanillaOrder = true;
     public boolean exportClassNames = false;
     public boolean trimming = true;
@@ -37,10 +37,15 @@ public class ProbeConfig {
             try {
                 Map<?, ?> obj = ProbeJS.GSON.fromJson(Files.newBufferedReader(cfg), Map.class);
                 keepBeaned = fetchPropertyOrDefault("keepBeaned", obj, true);
-                disabled = fetchPropertyOrDefault("disabled", obj, false);
+                enabled = fetchPropertyOrDefault("disabled", obj, true);
                 vanillaOrder = fetchPropertyOrDefault("vanillaOrder", obj, true);
                 exportClassNames = fetchPropertyOrDefault("exportClassNames", obj, false);
                 trimming = fetchPropertyOrDefault("trimming", obj, false);
+
+                Object disabled = obj.get("disabled");
+                if (disabled != null) {
+                    this.enabled = !(boolean) disabled;
+                }
             } catch (IOException e) {
                 ProbeJS.LOGGER.warn("Cannot read config properties, falling back to defaults.");
             }
@@ -48,7 +53,7 @@ public class ProbeConfig {
     }
 
     public void save() {
-        try (BufferedWriter writer = Files.newBufferedWriter(CONFIG)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(PATH)) {
             new GsonBuilder().setPrettyPrinting().create().toJson(this, writer);
         } catch (IOException e) {
             ProbeJS.LOGGER.warn("Cannot write config, settings are not saved.");

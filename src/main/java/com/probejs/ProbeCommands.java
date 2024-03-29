@@ -106,13 +106,13 @@ public class ProbeCommands {
                             Commands
                                 .literal("toggle_mixin")
                                 .executes(context -> {
-                                    ProbeJS.CONFIG.disabled = !ProbeJS.CONFIG.disabled;
+                                    ProbeJS.CONFIG.enabled = !ProbeJS.CONFIG.enabled;
                                     ProbeJS.CONFIG.save();
                                     return sendSuccess(
                                         context,
                                         String.format(
                                             "Event listening set to: %s. Changes will be applied next time you start the game",
-                                            ProbeJS.CONFIG.disabled ? "disabled" : "enabled"
+                                            ProbeJS.CONFIG.enabled ? "enabled" : "disabled"
                                         )
                                     );
                                 })

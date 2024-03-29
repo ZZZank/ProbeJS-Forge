@@ -24,7 +24,7 @@ public class ProbeJS {
         .disableHtmlEscaping()
         .create();
     public static final ProbeConfig CONFIG = ProbeConfig.getInstance();
-    public static final boolean ENABLED = !CONFIG.disabled;
+    public static final boolean ENABLED = CONFIG.enabled;
 
     public ProbeJS() {
         CommandRegistrationEvent.EVENT.register(ProbeCommands::register);
