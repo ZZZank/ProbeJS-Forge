@@ -37,7 +37,7 @@ public class ProbeConfig {
             try {
                 Map<?, ?> obj = ProbeJS.GSON.fromJson(Files.newBufferedReader(cfg), Map.class);
                 keepBeaned = fetchPropertyOrDefault("keepBeaned", obj, true);
-                enabled = fetchPropertyOrDefault("disabled", obj, true);
+                enabled = fetchPropertyOrDefault("enabled", obj, true);
                 vanillaOrder = fetchPropertyOrDefault("vanillaOrder", obj, true);
                 exportClassNames = fetchPropertyOrDefault("exportClassNames", obj, false);
                 trimming = fetchPropertyOrDefault("trimming", obj, false);
