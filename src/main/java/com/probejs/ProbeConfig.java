@@ -45,6 +45,7 @@ public class ProbeConfig {
                 Object cfgDisabled = obj.get("disabled");
                 if (cfgDisabled != null) {
                     this.enabled = !(boolean) cfgDisabled;
+                    save();
                 }
             } catch (IOException e) {
                 ProbeJS.LOGGER.warn("Cannot read config properties, falling back to defaults.");
