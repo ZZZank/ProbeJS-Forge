@@ -11,9 +11,6 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * @author Prunoideae
- */
 @Mod(ProbeJS.MOD_ID)
 public class ProbeJS {
 
@@ -36,7 +33,8 @@ public class ProbeJS {
                 true,
                 Event.class,
                 event -> {
-                    CapturedClasses.capturedRawEvents.put(event.getClass().getName(), event.getClass());
+                    Class<? extends Event> clazz = event.getClass();
+                    CapturedClasses.capturedRawEvents.putIfAbsent(clazz.getName(), clazz);
                 }
             );
         }

@@ -8,6 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+/**
+ * Implementations of ProbeJS config system. For config instance ProbeJS is using,
+ * see {@code ProbeJS.CONFIG}
+ * @see com.probejs.ProbeJS#CONFIG
+ */
 public class ProbeConfig {
 
     private static ProbeConfig reference = null;

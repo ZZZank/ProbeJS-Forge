@@ -85,6 +85,7 @@ public class ProbeCommands {
                                     sendSuccess(context, wrapped + " unable to delete. ");
                                     continue;
                                 }
+                                sendSuccess(context, wrapped + " deleted. ");
                             }
                             return sendSuccess(context, "Cache files removing process finished.");
                         })
