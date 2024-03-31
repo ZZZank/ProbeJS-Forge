@@ -17,7 +17,6 @@ import com.probejs.info.Walker;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.plugin.CapturedClasses;
 import com.probejs.plugin.DummyBindingEvent;
-import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
 import dev.latvian.kubejs.server.ServerScriptManager;
@@ -167,7 +166,7 @@ public class TypingCompiler {
     }
 
     public static void compileJSConfig() throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(KubeJSPaths.DIRECTORY.resolve("jsconfig.json"));
+        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GAME_FOLDER.resolve("jsconfig.json"));
         String lines = String
             .join(
                 "\n",

@@ -14,7 +14,8 @@ public class ProbePaths {
     public static final Path DOCS = PROBE.resolve("docs");
     public static final Path GENERATED = PROBE.resolve("generated");
     public static final Path USER_DEFINED = PROBE.resolve("user");
-    public static final Path WORKSPACE = Platform.getGameFolder().resolve(".vscode");
+    public static final Path GAME_FOLDER = Platform.getGameFolder();
+    public static final Path WORKSPACE = GAME_FOLDER.resolve(".vscode");
 
     public static void init() {
         if (Files.notExists(PROBE, new LinkOption[0])) {
