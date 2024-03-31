@@ -1,8 +1,9 @@
 package com.probejs.compiler;
 
+import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
-import com.probejs.document.DocumentClass;
 import com.probejs.document.DocManager;
+import com.probejs.document.DocumentClass;
 import com.probejs.formatter.ClassResolver;
 import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.SpecialTypes;
@@ -150,17 +151,24 @@ public class TypingCompiler {
 
     public static void compileJava(Set<Class<?>> globalClasses) throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("java.d.ts"));
-        writer.write("/// <reference path=\"./globals.d.ts\" />\n");
-        for (Class<?> c : globalClasses) {
-            if (ServerScriptManager.instance.scriptManager.isClassAllowed(c.getName())) {
-                writer.write(
-                    String.format(
-                        "declare function java(name: \"%s\"): typeof %s;\n",
-                        c.getName(),
-                        FormatterType.formatParameterized(new TypeInfoClass(c))
-                    )
-                );
-            }
+        List<String> lines = new ArrayList<>(100);
+        lines.add("/// <reference path=\"./globals.d.ts\" />");
+        lines.add("");
+        globalClasses
+            .stream()
+            .filter(c -> ServerScriptManager.instance.scriptManager.isClassAllowed(c.getName()))
+            .sorted(Comparator.comparing(c -> c.getName()))
+            .map(c ->
+                String.format(
+                    "declare function java(name: %s): typeof %s;",
+                    ProbeJS.GSON.toJson(c.getName()),
+                    FormatterType.formatParameterized(new TypeInfoClass(c))
+                )
+            )
+            .forEach(lines::add);
+        for (String line : lines) {
+            writer.write(line);
+            writer.write('\n');
         }
         writer.close();
     }
@@ -183,7 +191,9 @@ public class TypingCompiler {
     }
 
     public static void compile() throws IOException {
-        final DummyBindingEvent bindingEvent = new DummyBindingEvent(ServerScriptManager.instance.scriptManager);
+        final DummyBindingEvent bindingEvent = new DummyBindingEvent(
+            ServerScriptManager.instance.scriptManager
+        );
         final Map<ResourceLocation, RecipeTypeJS> typeMap = new HashMap<>();
         final RegisterRecipeHandlersEvent recipeEvent = new RegisterRecipeHandlersEvent(typeMap);
 
