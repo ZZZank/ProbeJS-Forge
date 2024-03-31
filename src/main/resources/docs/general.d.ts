@@ -1,7 +1,7 @@
 
 /**
 * @target dev.latvian.kubejs.item.ItemStackJS
-* @assign net.minecraft.world.item.Item
+* @assign net.minecraft.item.Item
 * @assign `${number}x ${string}`
 * @assign object
 */
