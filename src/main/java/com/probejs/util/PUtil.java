@@ -26,7 +26,7 @@ public class PUtil {
     }
 
     public static String indent(int indentLength) {
-        if (indentLength < 12) {
+        if (indentLength < INDENT_CACHE.length) {
             return INDENT_CACHE[indentLength];
         }
         return String.join("", Collections.nCopies(indentLength, " "));
