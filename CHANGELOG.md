@@ -1,3 +1,17 @@
+# ProbeJS Legacy 3.0.0 -> 3.0.1
+
+Fix `Internal.ItemStackJS_`
+
+## What's new?
+
+-   fix class assignment for ItemStackJS.
+    -   use MCP class name instead of Official mapping class name.
+    -   i hate inconsistent mapping, so much trouble.
+-   entries in `java.d.ts` are now naturally sorted.
+-   js config is tweaked to avoid triggering probe typing when not in `kubejs/{...}_script` folder.
+
+---
+
 # ProbeJS Legacy 2.6.1 -> 3.0.0
 
 Rich display info dumping
@@ -19,16 +33,14 @@ Rich display info dumping
     -   for lang kays, it can display:
         -   all valid localization under similar locale, and `en_us`
     -   it's really hard to name them all, please try it by yourself.
-
-![rich_info_example](https://private-user-images.githubusercontent.com/24620047/253791747-04675c98-3d6e-412e-b3b2-44f8819e8af7.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTE4MTU2MDUsIm5iZiI6MTcxMTgxNTMwNSwicGF0aCI6Ii8yNDYyMDA0Ny8yNTM3OTE3NDctMDQ2NzVjOTgtM2Q2ZS00MTJlLWIzYjItNDRmODgxOWU4YWY3LmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDAzMzAlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwMzMwVDE2MTUwNVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTVjYTJmYjkyZTJhYWM5ZTY3NjcwODAwNTQ3Mjg1NWEyMDM3ZDUzZTI0YTIxYzliZWNiOWFlZWMyMDhlZGQ1ZWImWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.7ZfTtDpTVZXgzfC-6VC3b8ipa2lAsLo-fDkHEKtjkBM)
-
--   "disabled" config is now replaced by "enabled", to make ProbeJS VSCode extension happy.
+-   config "disabled" is now replaced by "enabled", to make ProbeJS VSCode extension happy.
     -   Old config will be automatically upgraded.
 -   `.vscode` now will be generated at `.minecraft/` folder, aka game folder, making workspace more useful.
+-   Snippets of registries now support all avaliable registry types, e.g. potion and enchantment
 -   ProbeJS now fetch registries and tags from Minecraft internals, instead of relying on an external json file.
     -   This change prevents reloading and exporting data when `/probejs dump` is triggered, which makes dumping much much FASTER, especially on a large modded instance.
     -   Also, `autoExport` config is removed because of this.
--   Use different method filtering approaches for classes and interfaces, so we should be able to filter out methods more completely.
+-   Use different method filtering approaches for classes and interfaces, so we should be able to filter out duplicated methods more completely.
 -   Set default values for configs, so that first-time users will not get a all-disabled config
 -   ProbeJS Legacy now dump registries into `special.d.ts` instead of `registries.d.ts`
 -   More datas, including tags and platform data, will be dumped into `special.d.ts`
