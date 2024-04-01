@@ -28,14 +28,20 @@ public class RegistryCompiler {
             List<String> lines = rInfos
                 .stream()
                 .map(rInfo -> {
-                    String names = rInfo.names
+                    List<String> names = rInfo.names
                         .stream()
                         .map(rl -> ProbeJS.GSON.toJson(rl.toString()))
-                        .collect(Collectors.joining("|"));
+                        .collect(Collectors.toList());
                     if (names.isEmpty()) {
-                        names = "never";
+                        names.add("never");
+                    } else {
+                        names.add(ProbeJS.GSON.toJson("string"));
                     }
-                    return String.format("type %s = %s;", rInfo.id.getPath().replace('/', '$'), names);
+                    return String.format(
+                        "type %s = %s;",
+                        rInfo.id.getPath().replace('/', '$'),
+                        String.join("|", names)
+                    );
                 })
                 .collect(Collectors.toList());
             formatters.add(new FormatterNamespace(namespace, new FormatterRaw(lines, false)));
