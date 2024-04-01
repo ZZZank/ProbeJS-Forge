@@ -33,9 +33,11 @@ public class RegistryCompiler {
                         .map(rl -> ProbeJS.GSON.toJson(rl.toString()))
                         .collect(Collectors.toList());
                     if (names.isEmpty()) {
+                        //for empty registry
                         names.add("never");
                     } else {
-                        names.add(ProbeJS.GSON.toJson("string"));
+                        //fallback for general registry
+                        names.add("string");
                     }
                     return String.format(
                         "type %s = %s;",
