@@ -179,7 +179,11 @@ public class NameResolver {
         resolvedPrimitives.add(clazz.getName());
     }
 
-    public static void putSpecialAssignments(Class<?> clazz, Supplier<List<String>> assigns) {
+    /**
+     * note: this will not overwrite original assignments, if you want naw assigns to overwrite
+     * existed assigns, call specialClassAssigner#put instead
+     */
+    public static void addSpecialAssignments(Class<?> clazz, Supplier<List<String>> assigns) {
         Supplier<List<String>> concated = assigns;
         if (specialClassAssigner.containsKey(clazz)) {
             Supplier<List<String>> lastSupplier = specialClassAssigner.get(clazz);
@@ -250,7 +254,7 @@ public class NameResolver {
         putValueFormatter(SpecialTypes::formatNJO, NativeJavaObject.class);
         putValueFormatter(SpecialTypes::formatScriptable, Scriptable.class);
 
-        putSpecialAssignments(
+        addSpecialAssignments(
             DamageSource.class,
             () -> {
                 List<String> result = new ArrayList<>();

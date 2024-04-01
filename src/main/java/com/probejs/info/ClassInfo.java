@@ -114,13 +114,13 @@ public class ClassInfo {
         }
         //Resolve types - rollback everything till Object
         applySuperGenerics(methodInfo, fieldInfo);
-        //type alias for fnInterfaces
+        //Functional Interfaces
         List<MethodInfo> abstracts =
             this.methodInfo.stream().filter(MethodInfo::isAbstract).collect(Collectors.toList());
         this.isFunctionalInterface = isInterface && abstracts.size() == 1;
-        if (isFunctionalInterface) {
+        if (false && isFunctionalInterface) {
             MethodInfo lmbdaInfo = abstracts.get(0);
-            NameResolver.putSpecialAssignments(
+            NameResolver.addSpecialAssignments(
                 this.clazzRaw,
                 () -> {
                     FormatterMethod formatterLmbda = new FormatterMethod(lmbdaInfo);
