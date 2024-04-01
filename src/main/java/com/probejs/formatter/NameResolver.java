@@ -254,7 +254,8 @@ public class NameResolver {
                             continue;
                         }
                         field.setAccessible(true);
-                        result.add(((DamageSource) field.get(null)).getMsgId());
+                        String id = ((DamageSource) field.get(null)).getMsgId();
+                        result.add(ProbeJS.GSON.toJson(id));
                     }
                 } catch (Exception ignored) {}
                 return result;

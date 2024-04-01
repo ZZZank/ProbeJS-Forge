@@ -131,11 +131,11 @@ public class SpecialTypes {
         return formatValueOrType(njo.unwrap());
     }
 
-    public static void assignRegistries() {
+    public static void processSpecialAssignments() {
         NameResolver.specialClassAssigner.forEach((clazzName, assignProvider) -> {
             String name = clazzName.getName();
             for (String assignTo : assignProvider.get()) {
-                DocManager.addAssignable(name, new TypeRaw(ProbeJS.GSON.toJson(assignTo)));
+                DocManager.addAssignable(name, new TypeRaw(assignTo));
             }
         });
         SpecialData
