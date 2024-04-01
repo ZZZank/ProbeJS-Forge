@@ -59,9 +59,6 @@ public class ClassInfo {
         name = clazzRaw.getName();
         modifiers = clazzRaw.getModifiers();
         isInterface = clazzRaw.isInterface();
-        isFunctionalInterface =
-            isInterface &&
-            Arrays.stream(clazzRaw.getAnnotations()).anyMatch(a -> a instanceof FunctionalInterface);
         superClass = ofCache(clazzRaw.getSuperclass());
 
         interfaces = new ArrayList<>(0);
@@ -118,8 +115,11 @@ public class ClassInfo {
         //Resolve types - rollback everything till Object
         applySuperGenerics(methodInfo, fieldInfo);
         //type alias for fnInterfaces
+        List<MethodInfo> abstracts =
+            this.methodInfo.stream().filter(MethodInfo::isAbstract).collect(Collectors.toList());
+        this.isFunctionalInterface = isInterface && abstracts.size() == 1;
         if (isFunctionalInterface) {
-            MethodInfo lmbdaInfo = this.methodInfo.stream().filter(MethodInfo::isAbstract).findAny().get();
+            MethodInfo lmbdaInfo = abstracts.get(0);
             NameResolver.putSpecialAssignments(
                 this.clazzRaw,
                 () -> {
