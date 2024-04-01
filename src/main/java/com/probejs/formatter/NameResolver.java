@@ -180,7 +180,17 @@ public class NameResolver {
     }
 
     public static void putSpecialAssignments(Class<?> clazz, Supplier<List<String>> assigns) {
-        specialClassAssigner.put(clazz, assigns);
+        Supplier<List<String>> concated = assigns;
+        if (specialClassAssigner.containsKey(clazz)) {
+            Supplier<List<String>> lastSupplier = specialClassAssigner.get(clazz);
+            concated =
+                () -> {
+                    List<String> last = lastSupplier.get();
+                    last.addAll(assigns.get());
+                    return last;
+                };
+        }
+        specialClassAssigner.put(clazz, concated);
     }
 
     public static List<String> getClassAssignments(Class<?> clazz) {
