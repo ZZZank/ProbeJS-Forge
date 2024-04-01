@@ -67,9 +67,6 @@ public class TypingCompiler {
 
     public static void compileGlobal(DummyBindingEvent bindingEvent, Set<Class<?>> globalClasses)
         throws IOException {
-        bindingEvent.getClassDumpMap().forEach((s, c) -> NameResolver.putResolvedName(c, s));
-        NameResolver.resolveNames(globalClasses);
-
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("globals.d.ts"));
         writer.write("/// <reference path=\"./special.d.ts\" />\n");
         Map<String, List<IFormatter>> namespaced = new HashMap<>();
@@ -217,8 +214,11 @@ public class TypingCompiler {
 
         //global class
         final Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
-
         globalClasses.removeIf(ClassResolver.skipped::contains);
+
+        bindingEvent.getClassDumpMap().forEach((s, c) -> NameResolver.putResolvedName(c, s));
+        NameResolver.resolveNames(globalClasses);
+
         SpecialTypes.processSpecialAssignments();
         SpecialCompiler.init(typeMap);
 
