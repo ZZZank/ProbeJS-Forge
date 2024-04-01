@@ -12,29 +12,43 @@ import java.util.stream.Collectors;
 public class Walker {
 
     private final Set<Class<?>> initial;
-    private boolean walkMethod = true;
-    private boolean walkField = true;
-    private boolean walkSuper = true;
-    private boolean walkType = true;
+    private final boolean walkMethod;
+    private final boolean walkField;
+    private final boolean walkSuper;
+    private final boolean walkType;
+
+    public Walker(
+        Set<Class<?>> initial,
+        boolean walkMethod,
+        boolean walkField,
+        boolean walkSuper,
+        boolean walkType
+    ) {
+        this.initial = initial;
+        this.walkMethod = walkMethod;
+        this.walkField = walkField;
+        this.walkSuper = walkSuper;
+        this.walkType = walkType;
+    }
 
     public Walker(Set<Class<?>> initial) {
-        this.initial = initial;
+        this(initial, true, true, true, true);
     }
 
-    public void setWalkField(boolean walkField) {
-        this.walkField = walkField;
+    public Walker withWalkMethod(boolean walkMethod) {
+        return new Walker(initial, walkMethod, walkField, walkSuper, walkType);
     }
 
-    public void setWalkMethod(boolean walkMethod) {
-        this.walkMethod = walkMethod;
+    public Walker withWalkField(boolean walkField) {
+        return new Walker(initial, walkMethod, walkField, walkSuper, walkType);
     }
 
-    public void setWalkSuper(boolean walkSuper) {
-        this.walkSuper = walkSuper;
+    public Walker withWalkSuper(boolean walkSuper) {
+        return new Walker(initial, walkMethod, walkField, walkSuper, walkType);
     }
 
-    public void setWalkType(boolean walkType) {
-        this.walkType = walkType;
+    public Walker withWalkType(boolean walkType) {
+        return new Walker(initial, walkMethod, walkField, walkSuper, walkType);
     }
 
     private Set<Class<?>> walkType(ITypeInfo tInfo) {
