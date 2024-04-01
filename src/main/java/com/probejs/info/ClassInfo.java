@@ -2,6 +2,8 @@ package com.probejs.info;
 
 import com.probejs.ProbeJS;
 import com.probejs.formatter.ClassResolver;
+import com.probejs.formatter.NameResolver;
+import com.probejs.formatter.formatter.FormatterMethod;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.InfoTypeResolver;
 import com.probejs.info.type.TypeInfoParameterized;
@@ -115,6 +117,22 @@ public class ClassInfo {
         }
         //Resolve types - rollback everything till Object
         applySuperGenerics(methodInfo, fieldInfo);
+        //type alias for fnInterfaces
+        if (isFunctionalInterface) {
+            MethodInfo lmbdaInfo = this.methodInfo.stream().filter(MethodInfo::isAbstract).findAny().get();
+            NameResolver.putSpecialAssignments(
+                this.clazzRaw,
+                () -> {
+                    FormatterMethod formatterLmbda = new FormatterMethod(lmbdaInfo);
+                    String lmbda = String.format(
+                        "((%s)=>%s)",
+                        formatterLmbda.formatParams(new HashMap<>(0), true),
+                        formatterLmbda.formatReturn()
+                    );
+                    return Arrays.asList(lmbda);
+                }
+            );
+        }
     }
 
     private static Map<String, ITypeInfo> resolveTypeOverrides(ITypeInfo typeInfo) {
