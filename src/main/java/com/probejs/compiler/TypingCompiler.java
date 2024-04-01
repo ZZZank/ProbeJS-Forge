@@ -46,6 +46,7 @@ public class TypingCompiler {
             .map(eventInfo -> eventInfo.clazzRaw)
             .forEach(touchableClasses::add);
         touchableClasses.addAll(CapturedClasses.capturedRawEvents.values());
+        touchableClasses.addAll(CapturedClasses.capturedJavaClasses);
         //recipe type
         recipeTypeMap
             .values()
