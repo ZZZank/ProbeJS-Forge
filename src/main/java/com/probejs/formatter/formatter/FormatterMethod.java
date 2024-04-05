@@ -115,10 +115,6 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         return formatTypeParameterized(info.getReturnType(), false);
     }
 
-    private String formatParamUnderscore(ITypeInfo info) {
-        return formatParamUnderscore(info, false);
-    }
-
     private String formatParamUnderscore(ITypeInfo info, boolean forceNoUnderscore) {
         final Class<?> resolvedClass = info.getResolvedClass();
         //No assigned types, and not enum, use normal route.

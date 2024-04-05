@@ -31,9 +31,9 @@ public class ProbeConfig {
 
     public static ProbeConfig getInstance() {
         if (reference == null) {
-            reference = new ProbeConfig();
+            ProbeConfig.reference = new ProbeConfig();
         }
-        return reference;
+        return ProbeConfig.reference;
     }
 
     private ProbeConfig() {

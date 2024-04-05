@@ -1,9 +1,9 @@
 package com.probejs.info;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import dev.latvian.kubejs.util.Tags;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,9 @@ public class SpecialData {
         String type,
         TagCollection<?> tagCollection
     ) {
-        target.put(type, tagCollection.getAvailableTags().stream().sorted().collect(Collectors.toList()));
+        List<ResourceLocation> tagIds = new ArrayList<>(tagCollection.getAvailableTags());
+        tagIds.sort(null);
+        target.put(type, tagIds);
     }
 
     public static SpecialData fetch() {
@@ -48,7 +50,12 @@ public class SpecialData {
     }
 
     public static List<RegistryInfo> computeRegistryInfos() {
-        return fetchRawRegistries().values().stream().map(RegistryInfo::new).collect(Collectors.toList());
+        return SpecialData
+            .fetchRawRegistries()
+            .values()
+            .stream()
+            .map(RegistryInfo::new)
+            .collect(Collectors.toList());
     }
 
     private static Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> fetchRawRegistries() {
@@ -57,8 +64,10 @@ public class SpecialData {
             Field f = RegistryManager.class.getDeclaredField("registries");
             f.setAccessible(true);
 
-            registries.putAll(castedGet(f, RegistryManager.ACTIVE));
-            registries.putAll(castedGet(f, RegistryManager.FROZEN));
+            Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> def = HashBiMap.create();
+
+            registries.putAll(castedGetField(f, RegistryManager.ACTIVE, def));
+            registries.putAll(castedGetField(f, RegistryManager.FROZEN, def));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,15 +75,12 @@ public class SpecialData {
     }
 
     @SuppressWarnings("unchecked")
-    private static BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> castedGet(
-        Field f,
-        Object o
-    ) {
+    public static <T> T castedGetField(Field f, Object o, T defaultVal) {
         try {
-            return (BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>>) f.get(o);
+            return (T) f.get(o);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return HashBiMap.create();
+        return defaultVal;
     }
 }

@@ -18,16 +18,14 @@ public abstract class SpecialCompiler {
 
     public static final Path PATH = ProbePaths.GENERATED.resolve("special.d.ts");
 
-    public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
+    public static void compile(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) throws IOException {
         final SpecialData data = SpecialData.fetch();
 
         SnippetCompiler.init(data);
         RegistryCompiler.init(data.registries);
         TagCompiler.init(data.tags);
         RecipeHoldersCompiler.init(recipeHandlers);
-    }
 
-    public static void compile() throws IOException {
         final BufferedWriter writer = Files.newBufferedWriter(PATH);
 
         RegistryCompiler.compile(writer);

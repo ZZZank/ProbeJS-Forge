@@ -1,6 +1,5 @@
 package com.probejs.formatter;
 
-import com.probejs.ProbeJS;
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeRaw;
 import com.probejs.formatter.formatter.FormatterType;

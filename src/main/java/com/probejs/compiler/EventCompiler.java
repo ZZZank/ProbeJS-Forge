@@ -32,7 +32,7 @@ public class EventCompiler {
     private static Map<String, EventInfo> wildcards;
     private static Map<String, Class<?>> cachedForgeEvents;
 
-    public static void compileEvents(
+    public static void compile(
         Map<String, EventInfo> cachedEvents,
         Map<String, Class<?>> cachedForgeEvents
     ) throws IOException {

@@ -75,7 +75,7 @@ public class TypingCompiler {
         for (Class<?> clazz : globalClasses) {
             FormatterClass formatter = new FormatterClass(ClassInfo.ofCache(clazz));
             DocManager.classDocuments
-                .getOrDefault(clazz.getName(), new ArrayList<>())
+                .getOrDefault(clazz.getName(), new ArrayList<>(0))
                 .forEach(formatter::addDocument);
 
             NameResolver.ResolvedName name = NameResolver.getResolvedName(clazz.getName());
@@ -85,9 +85,8 @@ public class TypingCompiler {
                     writer.write("\n");
                 }
                 if (clazz.isInterface()) {
-                    writer.write(
-                        String.format("declare const %s: %s;\n", name.getFullName(), name.getFullName())
-                    );
+                    String fullName = name.getFullName();
+                    writer.write(String.format("declare const %s: %s;\n", fullName, fullName));
                 }
             } else {
                 formatter.setInternal(true);
@@ -99,7 +98,10 @@ public class TypingCompiler {
             String path = entry.getKey();
             List<IFormatter> formatters = entry.getValue();
             FormatterNamespace namespace = new FormatterNamespace(path, formatters);
-            writer.write(String.join("\n", namespace.format(0, 4)) + "\n");
+            for (String line : namespace.format(0, 4)) {
+                writer.write(line);
+                writer.write('\n');
+            }
         }
 
         for (Map.Entry<String, List<DocumentClass>> entry : DocManager.classAdditions.entrySet()) {
@@ -221,11 +223,10 @@ public class TypingCompiler {
         NameResolver.resolveNames(globalClasses);
 
         SpecialTypes.processSpecialAssignments();
-        SpecialCompiler.init(typeMap);
 
         compileGlobal(bindingEvent, globalClasses);
-        SpecialCompiler.compile();
-        EventCompiler.compileEvents(cachedEvents, cachedForgeEvents);
+        SpecialCompiler.compile(typeMap);
+        EventCompiler.compile(cachedEvents, cachedForgeEvents);
         compileConstants(bindingEvent);
         compileJava(globalClasses);
         compileJSConfig();
