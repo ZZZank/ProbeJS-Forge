@@ -35,9 +35,9 @@ public class RegistryCompiler {
                     if (names.isEmpty()) {
                         //for empty registry
                         names.add("never");
-                    } else {
-                        //fallback for general registry
-                        names.add("string");
+                    // } else {
+                    //     //fallback for general registry, to make data-driven style scripts happy
+                    //     names.add("string");
                     }
                     return String.format(
                         "type %s = %s;",
