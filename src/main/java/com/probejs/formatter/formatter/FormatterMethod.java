@@ -22,49 +22,71 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     private final MethodInfo info;
     private Pair<Map<String, IType>, IType> modifiersCache;
+    private final BeanType beanType;
 
     public FormatterMethod(MethodInfo methodInfo) {
         this.info = methodInfo;
-        modifiersCache = null;
+        this.modifiersCache = null;
+        this.beanType = getBeanType();
     }
 
     public MethodInfo getInfo() {
         return info;
     }
 
-    @Nullable
-    public String getBean() {
+    public static enum BeanType {
+        NONE,
+        GETTER,
+        GETTER_IS,
+        SETTER,
+    }
+
+    public BeanType getBeanType() {
         final String methodName = info.getName();
         if (methodName.equals("is") || methodName.equals("get") || methodName.equals("set")) {
-            return null;
+            return BeanType.NONE;
         }
-        final int paramSize = info.getParams().size();
+        final int paramCount = info.getParams().size();
         if (
+            paramCount == 0 &&
             methodName.startsWith("is") &&
-            paramSize == 0 &&
             (
                 //TODO: it seems that we can't pre-calculate the Boolean TypeInfoClass, why
                 info.getReturnType().assignableFrom(new TypeInfoClass(Boolean.class)) ||
                 info.getReturnType().assignableFrom(new TypeInfoClass(Boolean.TYPE))
             )
         ) {
+            return BeanType.GETTER_IS;
+        }
+        if (paramCount == 0 && methodName.startsWith("get")) {
+            return BeanType.GETTER;
+        }
+        if (paramCount == 1 && methodName.startsWith("set")) {
+            return BeanType.SETTER;
+        }
+        return BeanType.NONE;
+    }
+
+    @Nullable
+    public String getBean() {
+        if (this.beanType.equals(BeanType.NONE)) {
+            return null;
+        }
+        String methodName = info.getName();
+        if (this.beanType.equals(BeanType.GETTER_IS)) {
             return StringUtil.withLowerCaseHead(methodName.substring(2));
         }
-        if (methodName.startsWith("get") && paramSize == 0) {
+        if (this.beanType.equals(BeanType.GETTER)) {
             return StringUtil.withLowerCaseHead(methodName.substring(3));
         }
-        if (methodName.startsWith("set") && paramSize == 1) {
+        if (this.beanType.equals(BeanType.SETTER)) {
             return StringUtil.withLowerCaseHead(methodName.substring(3));
         }
         return null;
     }
 
-    /**
-     * Warning: This method assumes that the method is knowned to be either getter or setter
-     * @return True if method name is `isXXX` or `getXX`
-     */
     public boolean isGetter() {
-        return !info.getName().startsWith("set");
+        return this.beanType.equals(BeanType.GETTER) || this.beanType.equals(BeanType.GETTER_IS);
     }
 
     public String getBeanTypeString() {
