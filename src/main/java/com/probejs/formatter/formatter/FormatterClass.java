@@ -159,7 +159,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             .filter(e -> !methodFormatters.containsKey(e.getKey()))
             .filter(f -> !(classInfo.isInterface() && f.getValue().getFieldInfo().isStatic() && internal))
             .forEach(f -> {
-                f.getValue().setInterface(classInfo.isInterface());
+                f.getValue().setFromInterface(classInfo.isInterface());
                 lines.addAll(f.getValue().format(indent + stepIndent, stepIndent));
             });
 

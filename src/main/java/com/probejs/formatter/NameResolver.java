@@ -184,16 +184,19 @@ public class NameResolver {
      * existed assigns, call specialClassAssigner#put instead
      */
     public static void addSpecialAssignments(Class<?> clazz, Supplier<List<String>> assigns) {
-        Supplier<List<String>> concated = assigns;
-        if (specialClassAssigner.containsKey(clazz)) {
-            Supplier<List<String>> lastSupplier = specialClassAssigner.get(clazz);
-            concated =
-                () -> {
+        Supplier<List<String>> concated = specialClassAssigner.containsKey(clazz)
+            ? new Supplier<List<String>>() {
+                private Supplier<List<String>> lastSupplier = specialClassAssigner.get(clazz);
+                private Supplier<List<String>> thenSupplier = assigns;
+
+                @Override
+                public List<String> get() {
                     List<String> last = lastSupplier.get();
-                    last.addAll(assigns.get());
+                    last.addAll(thenSupplier.get());
                     return last;
-                };
-        }
+                }
+            }
+            : assigns;
         specialClassAssigner.put(clazz, concated);
     }
 

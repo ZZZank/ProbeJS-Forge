@@ -11,7 +11,6 @@ import com.probejs.info.MethodInfo;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.util.PUtil;
-import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -21,13 +20,15 @@ import javax.annotation.Nullable;
 public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements IFormatter {
 
     private final MethodInfo info;
-    private Pair<Map<String, IType>, IType> modifiersCache;
+    private Map<String, IType> paramNameModifiers;
+    private IType returnModifiers;
     private final BeanType beanType;
 
     public FormatterMethod(MethodInfo methodInfo) {
         this.info = methodInfo;
-        this.modifiersCache = null;
-        this.beanType = getBeanType();
+        this.paramNameModifiers = null;
+        this.returnModifiers = null;
+        this.beanType = caculateBeanType(this.info);
     }
 
     public MethodInfo getInfo() {
@@ -42,6 +43,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     public BeanType getBeanType() {
+        return this.beanType;
+    }
+
+    public static BeanType caculateBeanType(MethodInfo info) {
         final String methodName = info.getName();
         if (methodName.equals("is") || methodName.equals("get") || methodName.equals("set")) {
             return BeanType.NONE;
@@ -69,24 +74,22 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     @Nullable
     public String getBean() {
-        if (this.beanType.equals(BeanType.NONE)) {
-            return null;
-        }
         String methodName = info.getName();
-        if (this.beanType.equals(BeanType.GETTER_IS)) {
-            return StringUtil.withLowerCaseHead(methodName.substring(2));
-        }
-        if (this.beanType.equals(BeanType.GETTER)) {
-            return StringUtil.withLowerCaseHead(methodName.substring(3));
-        }
-        if (this.beanType.equals(BeanType.SETTER)) {
-            return StringUtil.withLowerCaseHead(methodName.substring(3));
+        switch (this.beanType) {
+            case NONE:
+                return null;
+            case GETTER:
+                return StringUtil.withLowerCaseHead(methodName.substring(2));
+            case GETTER_IS:
+                return StringUtil.withLowerCaseHead(methodName.substring(2));
+            case SETTER:
+                return StringUtil.withLowerCaseHead(methodName.substring(2));
         }
         return null;
     }
 
     public boolean isGetter() {
-        return this.beanType.equals(BeanType.GETTER) || this.beanType.equals(BeanType.GETTER_IS);
+        return this.beanType == BeanType.GETTER || this.beanType == BeanType.GETTER_IS;
     }
 
     public String getBeanTypeString() {
@@ -95,24 +98,33 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             : info.getParams().get(0).getType().getTypeName();
     }
 
-    public Pair<Map<String, IType>, IType> getModifiers() {
-        if (modifiersCache != null) {
-            return modifiersCache;
+    public Map<String, IType> getParamNameModifiers() {
+        if (this.paramNameModifiers == null) {
+            refreshModifiers();
         }
-        final Map<String, IType> modifiers = new HashMap<>();
-        IType returns = null;
+        return paramNameModifiers;
+    }
+
+    public IType getReturnModifiers() {
+        if (this.returnModifiers == null) {
+            refreshModifiers();
+        }
+        return returnModifiers;
+    }
+
+    private void refreshModifiers() {
+        this.paramNameModifiers = new HashMap<>();
+        this.returnModifiers = null;
         if (document != null) {
             final DocumentComment comment = document.getComment();
             if (comment != null) {
-                modifiers.putAll(CommentUtil.getTypeModifiers(comment));
+                paramNameModifiers.putAll(CommentUtil.getTypeModifiers(comment));
                 CommentReturns r = comment.getSpecialComment(CommentReturns.class);
                 if (r != null) {
-                    returns = r.getReturnType();
+                    returnModifiers = r.getReturnType();
                 }
             }
         }
-        modifiersCache = new Pair<>(modifiers, returns);
-        return modifiersCache;
     }
 
     private static String formatTypeParameterized(ITypeInfo info, boolean useSpecial) {
@@ -130,7 +142,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     public String formatReturn() {
-        IType returnModifier = getModifiers().second;
+        IType returnModifier = getReturnModifiers();
         if (returnModifier != null) {
             return returnModifier.getTypeName();
         }
@@ -185,8 +197,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         final BiFunction<IType, String, String> typeTransformer = forceNoUnderscore
             ? IType.dummyTransformer
             : IType.defaultTransformer;
-        Map<String, IType> modifiers = getModifiers().first;
-        // modifiers = getModifiers().getFirst();
+        Map<String, IType> modifiers = getParamNameModifiers();
         return info
             .getParams()
             .stream()

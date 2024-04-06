@@ -13,14 +13,14 @@ import java.util.List;
 public class FormatterField extends DocumentReceiver<DocumentField> implements IFormatter {
 
     private final FieldInfo fieldInfo;
-    private boolean isInterface = false;
+    private boolean isFromInterface = false;
 
     public FormatterField(FieldInfo fieldInfo) {
         this.fieldInfo = fieldInfo;
     }
 
-    public void setInterface(boolean anInterface) {
-        isInterface = anInterface;
+    public void setFromInterface(boolean anInterface) {
+        isFromInterface = anInterface;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
         }
 
         StringBuilder builder = new StringBuilder(PUtil.indent(indent));
-        if (fieldInfo.isStatic() && !isInterface) {
+        if (fieldInfo.isStatic() && !isFromInterface) {
             builder.append("static ");
         }
         if (fieldInfo.isFinal()) {

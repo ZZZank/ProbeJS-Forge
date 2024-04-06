@@ -9,6 +9,16 @@ public class FormatterRaw implements IFormatter {
     private final List<String> docs;
     private boolean commentMark;
 
+    public FormatterRaw(List<String> docs) {
+        this.docs = docs;
+        this.commentMark = true;
+    }
+
+    public FormatterRaw(List<String> docs, boolean commentMark) {
+        this.docs = docs;
+        this.commentMark = commentMark;
+    }
+
     public boolean isCommentMark() {
         return commentMark;
     }
@@ -18,16 +28,6 @@ public class FormatterRaw implements IFormatter {
      * that can mark the start and end of raw doc
      */
     public void setCommentMark(boolean commentMark) {
-        this.commentMark = commentMark;
-    }
-
-    public FormatterRaw(List<String> docs) {
-        this.docs = docs;
-        this.commentMark = true;
-    }
-
-    public FormatterRaw(List<String> docs, boolean commentMark) {
-        this.docs = docs;
         this.commentMark = commentMark;
     }
 
