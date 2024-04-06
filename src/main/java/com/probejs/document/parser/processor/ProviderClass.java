@@ -73,7 +73,7 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
         }
 
         for (Pair<Predicate<String>, BiFunction<String, ProviderClass, IStateHandler<String>>> multiHandler : handlers) {
-            if (multiHandler.first.test(element)) {
+            if (multiHandler.first().test(element)) {
                 IStateHandler<String> layer = multiHandler.second().apply(element, this);
                 if (layer != null) {
                     layer.trial(element, stack);

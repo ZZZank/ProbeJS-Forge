@@ -26,8 +26,8 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
             line = line.substring(0, line.length() - 1);
         }
         Pair<String, String> nameType = StringUtil.splitFirst(line, "=");
-        name = nameType.first.trim();
-        type = TypeResolver.resolve(nameType.second.trim());
+        name = nameType.first().trim();
+        type = TypeResolver.resolve(nameType.second().trim());
     }
 
     @Override

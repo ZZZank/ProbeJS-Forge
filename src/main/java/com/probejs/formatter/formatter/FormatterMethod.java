@@ -48,10 +48,14 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     public static BeanType caculateBeanType(MethodInfo info) {
         final String methodName = info.getName();
-        if (methodName.equals("is") || methodName.equals("get") || methodName.equals("set")) {
+        if (
+            methodName.length() < 4 &&
+            (methodName.equals("is") || methodName.equals("get") || methodName.equals("set"))
+        ) {
             return BeanType.NONE;
         }
         final int paramCount = info.getParams().size();
+
         if (
             paramCount == 0 &&
             methodName.startsWith("is") &&
@@ -73,7 +77,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     @Nullable
-    public String getBean() {
+    public String getBeanedName() {
         String methodName = info.getName();
         switch (this.beanType) {
             case NONE:
@@ -281,7 +285,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         }
 
         String idnt = PUtil.indent(indent);
-        String beaned = getBean();
+        String beaned = getBeanedName();
         if (methodName.startsWith("is")) {
             lines.add(idnt + String.format("get %s(): boolean;", beaned));
         } else if (methodName.startsWith("get")) {

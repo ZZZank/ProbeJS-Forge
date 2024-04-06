@@ -54,7 +54,7 @@ public class DocumentHandler implements IStateHandler<String> {
     public void trial(String element, List<IStateHandler<String>> stack) {
         element = element.trim();
         for (Pair<Predicate<String>, BiFunction<String, DocumentHandler, IStateHandler<String>>> multiHandler : handlers) {
-            if (multiHandler.first.test(element)) {
+            if (multiHandler.first().test(element)) {
                 IStateHandler<String> layer = multiHandler.second().apply(element, this);
                 if (layer != null) {
                     layer.trial(element, stack);

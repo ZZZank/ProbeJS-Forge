@@ -19,14 +19,14 @@ public class TypeResolver {
 
         Pair<String, String> splitUnion = StringUtil.splitFirst(type, "<", ">", "|");
         if (splitUnion != null) {
-            return new TypeUnion(resolve(splitUnion.first), resolve(splitUnion.second));
+            return new TypeUnion(resolve(splitUnion.first()), resolve(splitUnion.second()));
         }
 
         Pair<String, String> splitIntersection = StringUtil.splitFirst(type, "<", ">", "&");
         if (splitIntersection != null) {
             return new TypeIntersection(
-                resolve(splitIntersection.first),
-                resolve(splitIntersection.second)
+                resolve(splitIntersection.first()),
+                resolve(splitIntersection.second())
             );
         }
 

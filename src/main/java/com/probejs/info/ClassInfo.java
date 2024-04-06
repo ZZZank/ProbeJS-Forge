@@ -118,7 +118,7 @@ public class ClassInfo {
         List<MethodInfo> abstracts =
             this.methodInfo.stream().filter(MethodInfo::isAbstract).collect(Collectors.toList());
         this.isFunctionalInterface = isInterface && abstracts.size() == 1;
-        if (isFunctionalInterface) {
+        if (this.isFunctionalInterface) {
             MethodInfo lmbdaInfo = abstracts.get(0);
             NameResolver.addSpecialAssignments(
                 this.clazzRaw,

@@ -124,18 +124,19 @@ public class DocManager {
 
     public static void init() {
         Document documentState = new Document();
+
         rawTSDoc.clear();
+        classDocuments.clear();
+        classAdditions.clear();
+        typeDocuments.clear();
+        typesAssignable.clear();
+
         try {
             fromFiles(documentState);
             fromPath(documentState);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        classDocuments.clear();
-        classAdditions.clear();
-        typeDocuments.clear();
-        typesAssignable.clear();
 
         for (IDocument doc : documentState.getDocument().getDocuments()) {
             if (doc instanceof DocumentClass) {

@@ -142,9 +142,9 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                     .stream()
                     .filter(fmtrMethod ->
                         ProbeJS.CONFIG.keepBeaned || //want to keep, or
-                        fmtrMethod.getBean() == null || //cannot be beaned when not wanting to keep
-                        fieldFormatters.containsKey(fmtrMethod.getBean()) || //beaning will cause conflict
-                        methodFormatters.containsKey(fmtrMethod.getBean()) //also conflict
+                        fmtrMethod.getBeanedName() == null || //cannot be beaned when not wanting to keep
+                        fieldFormatters.containsKey(fmtrMethod.getBeanedName()) || //beaning will cause conflict
+                        methodFormatters.containsKey(fmtrMethod.getBeanedName()) //also conflict
                     )
                     .filter(fmtrMethod ->
                         //not static interface in namespace `Internal`
@@ -170,7 +170,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
             for (List<FormatterMethod> ml : methodFormatters.values()) {
                 for (FormatterMethod m : ml) {
-                    String beanName = m.getBean();
+                    String beanName = m.getBeanedName();
                     if (
                         beanName != null &&
                         Character.isAlphabetic(beanName.charAt(0)) &&
@@ -191,8 +191,8 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 v
                     .stream()
                     .filter(m ->
-                        !getterMap.containsKey(m.getBean()) ||
-                        getterMap.get(m.getBean()).getBeanTypeString().equals(m.getBeanTypeString())
+                        !getterMap.containsKey(m.getBeanedName()) ||
+                        getterMap.get(m.getBeanedName()).getBeanTypeString().equals(m.getBeanTypeString())
                     )
                     .findFirst()
                     .ifPresent(fmtr -> lines.addAll(fmtr.formatBean(indent + stepIndent, stepIndent)));
@@ -260,7 +260,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             );
         }
         List<ITypeInfo> params = classInfo.getParameters();
-        if (params.size() > 0) {
+        if (!params.isEmpty()) {
             String paramString = String.format(
                 "<%s>",
                 params.stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", "))
