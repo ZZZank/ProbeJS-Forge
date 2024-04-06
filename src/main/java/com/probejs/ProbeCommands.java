@@ -11,7 +11,7 @@ import com.probejs.compiler.rich.item.RichItemCompiler;
 import com.probejs.compiler.rich.lang.RichLangCompiler;
 import com.probejs.document.DocManager;
 import com.probejs.document.comment.CommentHandler;
-import com.probejs.document.parser.processor.DocumentProviderHandler;
+import com.probejs.document.parser.processor.DocumentProviderManager;
 import com.probejs.formatter.ClassResolver;
 import com.probejs.formatter.NameResolver;
 import dev.latvian.kubejs.KubeJSPaths;
@@ -41,7 +41,7 @@ public class ProbeCommands {
                         .executes(context -> {
                             try {
                                 sendSuccess(context, "ProbeJS initializing...");
-                                DocumentProviderHandler.init();
+                                DocumentProviderManager.init();
                                 CommentHandler.init();
                                 DocManager.init();
                                 ClassResolver.init();

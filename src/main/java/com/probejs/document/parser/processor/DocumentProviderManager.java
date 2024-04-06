@@ -4,14 +4,15 @@ import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.DocumentType;
 
-public class DocumentProviderHandler {
+public class DocumentProviderManager {
 
     public static void init() {
-        DocumentHandler.handlers.clear();
+        DocumentHandler.handlerCandidates.clear();
         ProviderClass.handlers.clear();
 
         //doc
-        DocumentHandler.addMultiHandler(
+        DocumentHandler.addHandlerCandidate(line -> line.trim().isEmpty(), (line, doc) -> null);
+        DocumentHandler.addHandlerCandidate(
             c -> {
                 String cs = c.trim();
                 return cs.startsWith("class ") && cs.endsWith("{");
@@ -22,7 +23,7 @@ public class DocumentProviderHandler {
                 return clazz;
             }
         );
-        DocumentHandler.addMultiHandler(
+        DocumentHandler.addHandlerCandidate(
             c -> c.trim().startsWith("/**"),
             (s, d) -> {
                 ProviderComment comment = new ProviderComment();
@@ -30,9 +31,12 @@ public class DocumentProviderHandler {
                 return comment;
             }
         );
-        DocumentHandler.addSingleHandler(
+        DocumentHandler.addHandlerCandidate(
             c -> c.trim().startsWith("type "),
-            (s, d) -> d.addElement(DocumentType.of(s))
+            (s, d) -> {
+                d.addElement(DocumentType.of(s));
+                return null;
+            }
         );
 
         //class
