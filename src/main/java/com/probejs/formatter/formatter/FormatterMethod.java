@@ -83,11 +83,11 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             case NONE:
                 return null;
             case GETTER:
-                return StringUtil.withLowerCaseHead(methodName.substring(2));
+                return StringUtil.withLowerCaseHead(methodName.substring(3));
             case GETTER_IS:
                 return StringUtil.withLowerCaseHead(methodName.substring(2));
             case SETTER:
-                return StringUtil.withLowerCaseHead(methodName.substring(2));
+                return StringUtil.withLowerCaseHead(methodName.substring(3));
         }
         return null;
     }
@@ -291,7 +291,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         } else if (methodName.startsWith("get")) {
             lines.add(idnt + String.format("get %s(): %s;", beaned, formatReturn()));
         } else if (methodName.startsWith("set")) {
-            lines.add(idnt + String.format("set %s(%s);", beaned, formatParams(new HashMap<>())));
+            lines.add(idnt + String.format("set %s(%s);", beaned, formatParams(new HashMap<>(0))));
         }
         return lines;
     }
