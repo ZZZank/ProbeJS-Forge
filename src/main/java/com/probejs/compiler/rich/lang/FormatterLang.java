@@ -62,20 +62,6 @@ public class FormatterLang implements IFormatter {
             ? Arrays.asList(english)
             : Arrays.asList(english, language);
 
-        // HashMap<LanguageInfo, String> reversedMap = new HashMap<>();
-        // manager.getLanguages().forEach(lang -> reversedMap.put(lang, lang.getCode()));
-        // // manager.getLanguages().forEach((key, value) -> reversedMap.put(value, key));
-        // List<String> langFiles = languages
-        //     .stream()
-        //     .map(reversedMap::get)
-        //     .filter(Objects::nonNull)
-        //     .collect(Collectors.toList());
-
-        // ClientLanguage clientLanguage = ClientLanguage.loadFrom(
-        //     mc.getResourceManager(),
-        //     langFiles,
-        //     english.isBidirectional()
-        // );
         ClientLanguage clientLanguage = ClientLanguage.loadFrom(mc.getResourceManager(), languages);
         Map<String, String> storage = clientLanguage.getLanguageData();
 

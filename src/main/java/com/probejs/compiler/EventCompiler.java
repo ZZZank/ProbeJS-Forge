@@ -42,11 +42,9 @@ public class EventCompiler {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
 
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
-        // writer.write("/// <reference path=\"./special.d.ts\" />\n");
         writeEvents(writer);
         writeWildcardEvents(writer);
         writeForgeEvents(writer);
-        // RegistryCompiler.compileEventRegistries(writer);
 
         EventCompiler.cachedEvents = null;
         EventCompiler.cachedForgeEvents = null;

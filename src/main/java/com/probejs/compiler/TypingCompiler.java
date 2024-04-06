@@ -217,7 +217,7 @@ public class TypingCompiler {
 
         //global class
         final Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
-        globalClasses.removeIf(ClassResolver.skipped::contains);
+        globalClasses.removeIf(ClassResolver::shouldSkip);
 
         bindingEvent.getClassDumpMap().forEach((s, c) -> NameResolver.putResolvedName(c, s));
         NameResolver.resolveNames(globalClasses);

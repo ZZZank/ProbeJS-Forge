@@ -23,7 +23,7 @@ public class RichFluidCompiler {
             .forEach(fluidArray::add);
         Path richFile = ProbePaths.WORKSPACE.resolve("fluid-attributes.json");
         BufferedWriter writer = Files.newBufferedWriter(richFile);
-        writer.write(ProbeJS.GSON.toJson(fluidArray));
+        ProbeJS.GSON.toJson(fluidArray, writer);
         writer.close();
     }
 }

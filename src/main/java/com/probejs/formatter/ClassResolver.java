@@ -9,6 +9,10 @@ public class ClassResolver {
 
     public static final Set<Class<?>> skipped = new HashSet<>();
 
+    public static boolean shouldSkip(Class<?> clazz) {
+        return skipped.contains(clazz);
+    }
+
     public static void skipClass(Class<?>... clazz) {
         skipped.addAll(Arrays.asList(clazz));
     }

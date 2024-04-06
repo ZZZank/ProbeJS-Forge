@@ -131,12 +131,14 @@ public class SpecialTypes {
     }
 
     public static void processSpecialAssignments() {
+        //lambda
         NameResolver.specialClassAssigner.forEach((clazzName, assignProvider) -> {
             String name = clazzName.getName();
             for (String assignTo : assignProvider.get()) {
                 DocManager.addAssignable(name, new TypeRaw(assignTo));
             }
         });
+        //registry
         SpecialData
             .computeRegistryInfos()
             .stream()

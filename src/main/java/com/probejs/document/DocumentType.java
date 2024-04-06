@@ -20,14 +20,18 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
     private final String name;
     private final IType type;
 
-    public DocumentType(String line) {
+    public DocumentType(String name, IType type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    public static DocumentType of(String line) {
         line = line.trim().substring("type ".length()).trim();
         if (line.endsWith(";")) {
             line = line.substring(0, line.length() - 1);
         }
         Pair<String, String> nameType = StringUtil.splitFirst(line, "=");
-        name = nameType.first().trim();
-        type = TypeResolver.resolve(nameType.second().trim());
+        return new DocumentType(nameType.first().trim(), TypeResolver.resolve(nameType.second().trim()));
     }
 
     @Override

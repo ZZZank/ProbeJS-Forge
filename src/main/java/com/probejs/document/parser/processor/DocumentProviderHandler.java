@@ -10,6 +10,7 @@ public class DocumentProviderHandler {
         DocumentHandler.handlers.clear();
         ProviderClass.handlers.clear();
 
+        //doc
         DocumentHandler.addMultiHandler(
             c -> {
                 String cs = c.trim();
@@ -29,12 +30,12 @@ public class DocumentProviderHandler {
                 return comment;
             }
         );
-
         DocumentHandler.addSingleHandler(
             c -> c.trim().startsWith("type "),
-            (s, d) -> d.addElement(new DocumentType(s))
+            (s, d) -> d.addElement(DocumentType.of(s))
         );
 
+        //class
         ProviderClass.addMultiHandler(
             s -> s.trim().startsWith("/**"),
             (s, d) -> {
@@ -43,7 +44,6 @@ public class DocumentProviderHandler {
                 return comment;
             }
         );
-
         ProviderClass.addSingleHandler(
             s -> s.contains(":") && !s.contains("("),
             (s, d) -> {

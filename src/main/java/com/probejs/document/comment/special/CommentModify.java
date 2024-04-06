@@ -12,10 +12,10 @@ public class CommentModify extends AbstractComment {
 
     public CommentModify(String line) {
         super(line);
-        String sub = line.substring(MARK_LEN);
-        int idx = sub.indexOf(" ");
-        name = sub.substring(0, idx).trim();
-        type = TypeResolver.resolve(sub.substring(idx + 1));
+        String[] split = line.split(" ");
+        // nameTo[0] is `@modify`
+        this.name = split[1];
+        this.type = TypeResolver.resolve(split[2]);
     }
 
     public String getName() {
