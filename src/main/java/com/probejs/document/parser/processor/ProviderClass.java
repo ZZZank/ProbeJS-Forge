@@ -70,9 +70,11 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
                 anchors.add(indexImpl + " implements ".length());
             }
             anchors.sort(null);
+            //0->"class ".length(), 
+            this.name = line.substring(anchors.get(0), anchors.get(1));
             if (indexImpl != -1) {
                 int i = anchors.indexOf(indexImpl);
-                //i==impl, i+1==end of impl, i+2==start of next part
+                //i->impl, i+1->end of impl, i+2->start of next part
                 this.interfaces =
                     Arrays
                         .stream(line.substring(anchors.get(i + 1), anchors.get(i + 2)).split(","))
