@@ -11,6 +11,7 @@ public class DocumentClass implements IConcrete, IFormatter {
     private DocumentComment comment;
     private String name;
     private String superClass;
+    private List<String> interfaces;
     private final List<DocumentField> fields = new ArrayList<>();
     private final List<DocumentMethod> methods = new ArrayList<>();
 
@@ -24,6 +25,10 @@ public class DocumentClass implements IConcrete, IFormatter {
 
     public void setSuperClass(String superClass) {
         this.superClass = superClass;
+    }
+
+    public void setInterfaces(List<String> interfaces) {
+        this.interfaces = interfaces;
     }
 
     public void acceptProperty(IDocument document) {
@@ -80,6 +85,9 @@ public class DocumentClass implements IConcrete, IFormatter {
             .append(' ');
         if (this.superClass != null) {
             firstLine.append("extends ").append(superClass).append(' ');
+        }
+        if (this.interfaces != null && !this.interfaces.isEmpty()) {
+            firstLine.append("implements ").append(String.join(", ", this.interfaces)).append(' ');
         }
         formatted.add(firstLine.append('{').toString());
         getFields().forEach(f -> formatted.addAll(f.format(indent + stepIndent, stepIndent)));

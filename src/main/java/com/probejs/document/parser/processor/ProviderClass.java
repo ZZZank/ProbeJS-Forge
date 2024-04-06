@@ -1,6 +1,5 @@
 package com.probejs.document.parser.processor;
 
-import com.probejs.ProbeJS;
 import com.probejs.document.DocumentClass;
 import com.probejs.document.IConcrete;
 import com.probejs.document.IDecorative;
@@ -8,6 +7,7 @@ import com.probejs.document.IDocument;
 import com.probejs.document.parser.handler.IStateHandler;
 import com.probejs.util.Pair;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -20,6 +20,7 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
     private final List<IDocumentProvider<?>> elements = new ArrayList<>();
     private String name;
     private String superClass;
+    private List<String> interfaces;
 
     public static void addMultiHandler(
         Predicate<String> condition,
@@ -48,35 +49,49 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
     }
 
     @Override
-    public void trial(String element, List<IStateHandler<String>> stack) {
-        element = element.trim();
-        if (element.isEmpty()) {
-            return;
-        }
-        if (element.startsWith("class ") && element.endsWith("{")) {
-            int start = "class ".length();
-            int end = element.length() - 1; // `-1` because we dont need "{"
-            int indexExtd = element.indexOf(" extends ");
-            int indexImpl = element.indexOf(" implements ");
+    public void trial(String line, List<IStateHandler<String>> stack) {
+        // "    class A implements List, Wow extends B {"
+        line = line.trim();
+        if (line.startsWith("class ")) {
+            final int indexExtd = line.indexOf(" extends ");
+            final int indexImpl = line.indexOf(" implements ");
+            /**
+             * holds some critical indexes that marks start/end of certain parts
+             */
+            List<Integer> anchors = new ArrayList<>();
+            anchors.add("class ".length()); //start
+            anchors.add(line.length() - (line.endsWith("{") ? 1 : 0)); //end
+            if (indexExtd != -1) {
+                anchors.add(indexExtd);
+                anchors.add(indexExtd + " extends ".length());
+            }
             if (indexImpl != -1) {
-                ProbeJS.LOGGER.error("'implements' not supported yet!");
+                anchors.add(indexImpl);
+                anchors.add(indexImpl + " implements ".length());
+            }
+            anchors.sort(null);
+            if (indexImpl != -1) {
+                int i = anchors.indexOf(indexImpl);
+                //i==impl, i+1==end of impl, i+2==start of next part
+                this.interfaces =
+                    Arrays
+                        .stream(line.substring(anchors.get(i + 1), anchors.get(i + 2)).split(","))
+                        .map(String::trim)
+                        .collect(Collectors.toList());
             }
             if (indexExtd != -1) {
-                superClass = element.substring(indexExtd + " extends ".length(), end).trim();
-                name = element.substring(start, indexExtd).trim();
-            } else {
-                superClass = null;
-                name = element.substring(start, end).trim();
+                int i = anchors.indexOf(indexExtd);
+                this.superClass = line.substring(anchors.get(i + 1), anchors.get(i + 2)).trim();
             }
-        } else if (element.equals("}")) {
+        } else if (line.equals("}")) {
             stack.remove(this);
         }
 
         for (Pair<Predicate<String>, BiFunction<String, ProviderClass, IStateHandler<String>>> multiHandler : handlers) {
-            if (multiHandler.first().test(element)) {
-                IStateHandler<String> layer = multiHandler.second().apply(element, this);
+            if (multiHandler.first().test(line)) {
+                IStateHandler<String> layer = multiHandler.second().apply(line, this);
                 if (layer != null) {
-                    layer.trial(element, stack);
+                    layer.trial(line, stack);
                     stack.add(layer);
                 }
                 return;
@@ -91,6 +106,7 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
         document.setName(name);
         if (this.superClass != null) {
             document.setSuperClass(this.superClass);
+            document.setInterfaces(this.interfaces);
         }
         List<IDecorative> decos = new ArrayList<>();
         for (IDocumentProvider<?> provider : elements) {
