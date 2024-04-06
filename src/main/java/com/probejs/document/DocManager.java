@@ -26,102 +26,6 @@ public class DocManager {
     public static final List<String> rawTSDoc = new ArrayList<>();
     public static final List<DocumentType> typeDocuments = new ArrayList<>();
 
-    public static final void addAssignable(String className, IType type) {
-        DocManager.typesAssignable.computeIfAbsent(className, k -> new ArrayList<>()).add(type);
-    }
-
-    public static final void addAdditions(String className, DocumentClass addition) {
-        DocManager.classAdditions.computeIfAbsent(className, k -> new ArrayList<>()).add(addition);
-    }
-
-    public static void fromPath(Document document) throws IOException {
-        File[] files = ProbePaths.DOCS.toFile().listFiles();
-        if (files == null) {
-            return;
-        }
-        List<File> filesSorted = Arrays
-            .stream(files)
-            .sorted(Comparator.comparing(File::getName))
-            .collect(Collectors.toList());
-        for (File f : filesSorted) {
-            if (!f.getName().endsWith(".d.ts") || f.isDirectory()) {
-                continue;
-                //return?
-            }
-            BufferedReader reader = Files.newBufferedReader(f.toPath());
-            if (!f.getName().startsWith("!")) {
-                reader.lines().forEach(document::step);
-            } else {
-                reader.lines().forEach(rawTSDoc::add);
-            }
-            reader.close();
-        }
-    }
-
-    public static void fromFiles(Document document) throws IOException {
-        for (Mod mod : Platform.getMods()) {
-            Path filePath = mod.getFilePath();
-            if (
-                // doc appearently should be readable regular file
-                !Files.isRegularFile(filePath) ||
-                (
-                    // let's assume docs are only inside jar/zip
-                    !filePath.getFileName().toString().endsWith(".jar") &&
-                    !filePath.getFileName().toString().endsWith(".zip")
-                )
-            ) {
-                continue;
-            }
-            ZipFile file = new ZipFile(filePath.toFile());
-            ZipEntry entry = file.getEntry("probejs.documents.txt");
-            if (entry == null) {
-                continue;
-            }
-            ProbeJS.LOGGER.info("Found documents list from {}", mod.getName());
-            InputStream stream = file.getInputStream(entry);
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new BufferedInputStream(stream), StandardCharsets.UTF_8)
-            );
-            List<String> docNames = reader.lines().collect(Collectors.toList());
-            for (String docName : docNames) {
-                if (docName.startsWith("!")) {
-                    docName = docName.substring(1);
-                    int i = docName.indexOf(" ");
-                    if (i != -1) {
-                        if (!Platform.isModLoaded(docName.substring(0, i))) {
-                            continue;
-                        }
-                        docName = docName.substring(i + 1);
-                    }
-                    ZipEntry docEntry = file.getEntry(docName);
-                    if (docEntry == null) {
-                        ProbeJS.LOGGER.warn("Document from file not found - {}", docName);
-                        continue;
-                    }
-                    ProbeJS.LOGGER.info("Loading document inside jar - {}", docName);
-                    InputStream docStream = file.getInputStream(docEntry);
-                    BufferedReader docReader = new BufferedReader(
-                        new InputStreamReader(new BufferedInputStream(docStream), StandardCharsets.UTF_8)
-                    );
-                    rawTSDoc.addAll(docReader.lines().collect(Collectors.toList()));
-                } else {
-                    ZipEntry docEntry = file.getEntry(docName);
-                    if (docEntry == null) {
-                        ProbeJS.LOGGER.warn("Document from file not found - {}", docName);
-                        continue;
-                    }
-                    ProbeJS.LOGGER.info("Loading document inside jar - {}", docName);
-                    InputStream docStream = file.getInputStream(docEntry);
-                    BufferedReader docReader = new BufferedReader(
-                        new InputStreamReader(new BufferedInputStream(docStream), StandardCharsets.UTF_8)
-                    );
-                    docReader.lines().forEach(document::step);
-                }
-            }
-            file.close();
-        }
-    }
-
     public static void init() {
         Document documentState = new Document();
 
@@ -132,6 +36,7 @@ public class DocManager {
         typesAssignable.clear();
 
         try {
+            // fromFilesJson(documentState);
             fromFiles(documentState);
             fromPath(documentState);
         } catch (IOException e) {
@@ -170,6 +75,107 @@ public class DocManager {
             } else {
                 //maybe we can add more doc type
             }
+        }
+    }
+
+    public static final void addAssignable(String className, IType type) {
+        DocManager.typesAssignable.computeIfAbsent(className, k -> new ArrayList<>()).add(type);
+    }
+
+    public static final void addAdditions(String className, DocumentClass addition) {
+        DocManager.classAdditions.computeIfAbsent(className, k -> new ArrayList<>()).add(addition);
+    }
+
+    public static void fromPath(Document document) throws IOException {
+        File[] files = ProbePaths.DOCS.toFile().listFiles();
+        if (files == null) {
+            return;
+        }
+        List<File> filesSorted = Arrays
+            .stream(files)
+            .filter(f -> f.getName().endsWith(".d.ts") && !f.isDirectory())
+            .sorted(Comparator.comparing(File::getName))
+            .collect(Collectors.toList());
+        for (File f : filesSorted) {
+            BufferedReader reader = Files.newBufferedReader(f.toPath());
+            if (f.getName().startsWith("!")) {
+                reader.lines().forEach(rawTSDoc::add);
+            } else {
+                reader.lines().forEach(document::step);
+            }
+            reader.close();
+        }
+    }
+
+    public static void fromFiles(Document document) throws IOException {
+        List<ZipFile> validFiles = Platform
+            .getMods()
+            .stream()
+            .map(Mod::getFilePath)
+            .filter(path -> {
+                String pathName = path.getFileName().toString();
+                return Files.isRegularFile(path) && (pathName.endsWith(".jar") || pathName.endsWith(".zip"));
+            })
+            .map(Path::toFile)
+            .map(file -> {
+                try {
+                    return new ZipFile(file);
+                } catch (IOException ignored) {
+                    ProbeJS.LOGGER.error("Unable to open file - {}", file.getName());
+                }
+                return null;
+            })
+            .filter(zipFile -> zipFile != null)
+            .collect(Collectors.toList());
+        for (ZipFile file : validFiles) {
+            ZipEntry entry = file.getEntry("probejs.documents.txt");
+            if (entry == null) {
+                continue;
+            }
+            ProbeJS.LOGGER.info("Found documents list from {}", file.getName());
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                    new BufferedInputStream(file.getInputStream(entry)),
+                    StandardCharsets.UTF_8
+                )
+            );
+            List<String> docNames = reader.lines().collect(Collectors.toList());
+            for (String docName : docNames) {
+                boolean isRawDoc = docName.startsWith("!");
+                if (isRawDoc) {
+                    //remove "raw" indicator
+                    docName = docName.substring(1);
+                }
+                //check mod installing condition
+                int i = docName.indexOf(" ");
+                if (
+                    i != -1 &&
+                    !Arrays
+                        .stream(docName.substring(0, i).split("&"))
+                        .allMatch(modid -> Platform.isModLoaded(modid))
+                ) {
+                    continue;
+                }
+                //read doc
+                ZipEntry docEntry = file.getEntry(docName);
+                if (docEntry == null) {
+                    ProbeJS.LOGGER.warn("Document from file not found - {}", docName);
+                    continue;
+                }
+                ProbeJS.LOGGER.info("Loading document inside jar - {}", docName);
+                BufferedReader docReader = new BufferedReader(
+                    new InputStreamReader(
+                        new BufferedInputStream(file.getInputStream(docEntry)),
+                        StandardCharsets.UTF_8
+                    )
+                );
+                if (isRawDoc) {
+                    rawTSDoc.addAll(docReader.lines().collect(Collectors.toList()));
+                } else {
+                    docReader.lines().forEach(document::step);
+                }
+            }
+            file.close();
         }
     }
 }
