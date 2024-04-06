@@ -1,6 +1,7 @@
 package com.probejs.util;
 
 import java.util.Collections;
+import java.util.Map;
 
 public class PUtil {
 
@@ -30,5 +31,11 @@ public class PUtil {
             return INDENT_CACHE[indentLength];
         }
         return String.join("", Collections.nCopies(indentLength, " "));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <E> E castedGetOrDef(Object key, Map<?, ?> values, E defaultValue) {
+        Object v = values.get(key);
+        return v == null ? defaultValue : (E) v;
     }
 }

@@ -1,6 +1,7 @@
 package com.probejs;
 
 import com.google.gson.GsonBuilder;
+import com.probejs.util.PUtil;
 import dev.latvian.kubejs.KubeJSPaths;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -23,12 +24,6 @@ public class ProbeConfig {
     public boolean exportClassNames = false;
     public boolean trimming = true;
 
-    @SuppressWarnings("unchecked")
-    private static <E> E fetchPropertyOrDefault(Object key, Map<?, ?> values, E defaultValue) {
-        Object v = values.get(key);
-        return v == null ? defaultValue : (E) v;
-    }
-
     public static ProbeConfig getInstance() {
         if (reference == null) {
             ProbeConfig.reference = new ProbeConfig();
@@ -41,11 +36,11 @@ public class ProbeConfig {
         if (Files.exists(cfg)) {
             try {
                 Map<?, ?> obj = ProbeJS.GSON.fromJson(Files.newBufferedReader(cfg), Map.class);
-                keepBeaned = fetchPropertyOrDefault("keepBeaned", obj, true);
-                enabled = fetchPropertyOrDefault("enabled", obj, true);
-                vanillaOrder = fetchPropertyOrDefault("vanillaOrder", obj, true);
-                exportClassNames = fetchPropertyOrDefault("exportClassNames", obj, false);
-                trimming = fetchPropertyOrDefault("trimming", obj, false);
+                keepBeaned = PUtil.castedGetOrDef("keepBeaned", obj, true);
+                enabled = PUtil.castedGetOrDef("enabled", obj, true);
+                vanillaOrder = PUtil.castedGetOrDef("vanillaOrder", obj, true);
+                exportClassNames = PUtil.castedGetOrDef("exportClassNames", obj, false);
+                trimming = PUtil.castedGetOrDef("trimming", obj, false);
 
                 Object cfgDisabled = obj.get("disabled");
                 if (cfgDisabled != null) {
