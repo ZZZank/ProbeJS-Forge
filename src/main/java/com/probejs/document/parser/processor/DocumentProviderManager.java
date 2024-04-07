@@ -70,7 +70,7 @@ public class DocumentProviderManager {
                 if (!line.contains("(")) {
                     return true;
                 }
-                return StringUtil.indexLayer(line, "(") > StringUtil.indexLayer(line, ":");
+                return line.indexOf("(") > StringUtil.indexLayer(line, ":");
             },
             (line, doc) -> {
                 doc.addElement(new DocumentField(line));
@@ -82,7 +82,7 @@ public class DocumentProviderManager {
                 if (!line.contains(":")) {
                     return false;
                 }
-                return StringUtil.indexLayer("(", line) < StringUtil.indexLayer(":", line);
+                return line.indexOf("(") < StringUtil.indexLayer(line, ":");
             },
             (line, doc) -> {
                 doc.addElement(new DocumentMethod(line));
