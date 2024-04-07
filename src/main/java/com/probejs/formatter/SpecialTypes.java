@@ -4,7 +4,9 @@ import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeRaw;
 import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.info.SpecialData;
+import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
+import com.probejs.info.type.TypeInfoParameterized;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaObject;
 import dev.latvian.mods.rhino.Scriptable;
@@ -16,6 +18,21 @@ import java.util.stream.IntStream;
 public class SpecialTypes {
 
     public static final Set<Class<?>> skippedSpecials = new HashSet<>();
+
+    public static String formatClassLike(ITypeInfo obj) {
+        ITypeInfo inner = null;
+        if (obj instanceof TypeInfoParameterized) {
+            TypeInfoParameterized cls = (TypeInfoParameterized) obj;
+            inner = cls.getParamTypes().get(0);
+        } else if (obj instanceof TypeInfoClass) {
+            TypeInfoClass cls = (TypeInfoClass) obj;
+            inner = cls;
+        }
+        if (inner == null) {
+            return "any";
+        }
+        return String.format("typeof %s", new FormatterType(inner.getBaseType(), false).format(0, 0));
+    }
 
     private static String formatValueOrType(Object obj) {
         String formattedValue = NameResolver.formatValue(obj);

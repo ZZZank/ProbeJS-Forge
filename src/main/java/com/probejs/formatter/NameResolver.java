@@ -4,6 +4,7 @@ import com.probejs.ProbeJS;
 import com.probejs.info.type.ITypeInfo;
 import dev.latvian.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.mods.rhino.BaseFunction;
+import dev.latvian.mods.rhino.NativeJavaClass;
 import dev.latvian.mods.rhino.NativeJavaObject;
 import dev.latvian.mods.rhino.NativeObject;
 import dev.latvian.mods.rhino.Scriptable;
@@ -282,6 +283,9 @@ public class NameResolver {
         // putTypeGuard(true, Class.class, ClassWrapper.class);
         putTypeGuard(true, Class.class);
         putTypeGuard(false, IngredientJS.class);
+
+        putTypeFormatter(Class.class, SpecialTypes::formatClassLike);
+        putTypeFormatter(NativeJavaClass.class, SpecialTypes::formatClassLike);
 
         addKeyword("function");
         addKeyword("debugger");
