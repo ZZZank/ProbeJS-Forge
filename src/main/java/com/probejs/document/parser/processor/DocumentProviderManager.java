@@ -3,6 +3,7 @@ package com.probejs.document.parser.processor;
 import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.DocumentType;
+import com.probejs.util.StringUtil;
 
 public class DocumentProviderManager {
 
@@ -11,12 +12,16 @@ public class DocumentProviderManager {
         ProviderClass.handlers.clear();
 
         //doc
-        DocumentHandler.addHandlerCandidate(line -> line.trim().isEmpty(), (line, doc) -> null);
         DocumentHandler.addHandlerCandidate(
-            c -> {
-                String cs = c.trim();
-                return cs.startsWith("class ") && cs.endsWith("{");
+            //empty line or single-line comment
+            line -> {
+                line = line.trim();
+                return line.isEmpty() || line.startsWith("//");
             },
+            (line, doc) -> null
+        );
+        DocumentHandler.addHandlerCandidate(
+            line -> line.trim().startsWith("class "),
             (s, d) -> {
                 ProviderClass clazz = new ProviderClass();
                 d.addElement(clazz);
@@ -40,24 +45,47 @@ public class DocumentProviderManager {
         );
 
         //class
+        ProviderClass.addSingleHandler(
+            //empty line or single-line comment
+            line -> {
+                line = line.trim();
+                return line.isEmpty() || line.startsWith("//");
+            },
+            (line, doc) -> {}
+        );
         ProviderClass.addMultiHandler(
-            s -> s.trim().startsWith("/**"),
-            (s, d) -> {
+            line -> line.trim().startsWith("/**"),
+            (line, doc) -> {
                 ProviderComment comment = new ProviderComment();
-                d.addElement(comment);
+                doc.addElement(comment);
                 return comment;
             }
         );
         ProviderClass.addSingleHandler(
-            s -> s.contains(":") && !s.contains("("),
-            (s, d) -> {
-                d.addElement(new DocumentField(s));
+            //field, like: "static event: {raw: Internal.Class, lmbda: (a: number)=>boolean}"
+            line -> {
+                if (!line.contains(":")) {
+                    return false;
+                }
+                if (!line.contains("(")) {
+                    return true;
+                }
+                return StringUtil.indexLayer(line, "(") > StringUtil.indexLayer(line, ":");
+            },
+            (line, doc) -> {
+                doc.addElement(new DocumentField(line));
             }
         );
         ProviderClass.addSingleHandler(
-            s -> s.contains("("),
-            (s, d) -> {
-                d.addElement(new DocumentMethod(s));
+            //methods, like: "static get(a: number, b: string): string;"
+            line -> {
+                if (!line.contains(":")) {
+                    return false;
+                }
+                return StringUtil.indexLayer("(", line) < StringUtil.indexLayer(":", line);
+            },
+            (line, doc) -> {
+                doc.addElement(new DocumentMethod(line));
             }
         );
     }
