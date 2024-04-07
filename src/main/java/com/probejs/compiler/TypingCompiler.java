@@ -58,8 +58,8 @@ public class TypingCompiler {
             .getConstantDumpMap()
             .values()
             .stream()
-            .map(Object::getClass)
-            .forEach(touchableClasses::add);
+            .map(DummyBindingEvent::getConstantClassRecursive)
+            .forEach(touchableClasses::addAll);
         bindingEvent.getClassDumpMap().values().forEach(touchableClasses::add);
 
         Walker walker = new Walker(touchableClasses);

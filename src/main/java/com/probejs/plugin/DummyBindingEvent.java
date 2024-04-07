@@ -3,7 +3,13 @@ package com.probejs.plugin;
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.BaseFunction;
+import dev.latvian.mods.rhino.ScriptableObject;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class DummyBindingEvent extends BindingsEvent {
 
@@ -36,5 +42,30 @@ public class DummyBindingEvent extends BindingsEvent {
 
     public HashMap<String, Object> getConstantDumpMap() {
         return constantDumpMap;
+    }
+
+    public static Set<Class<?>> getConstantClassRecursive(Object constantDump) {
+        Set<Class<?>> result = new HashSet<>();
+        if (constantDump == null) {
+            return result;
+        }
+        if (constantDump instanceof ScriptableObject) {
+            ScriptableObject scriptable = (ScriptableObject) constantDump;
+            Arrays
+                .stream(scriptable.getIds())
+                .map(scriptable::get)
+                .map(DummyBindingEvent::getConstantClassRecursive)
+                .forEach(result::addAll);
+        } else if (constantDump instanceof Map<?, ?>) {
+            Map<?, ?> map = (Map<?, ?>) constantDump;
+            map.keySet().stream().map(DummyBindingEvent::getConstantClassRecursive).forEach(result::addAll);
+            map.values().stream().map(DummyBindingEvent::getConstantClassRecursive).forEach(result::addAll);
+        } else if (constantDump instanceof Collection<?>) {
+            Collection<?> collection = (Collection<?>) constantDump;
+            collection.stream().map(DummyBindingEvent::getConstantClassRecursive).forEach(result::addAll);
+        } else {
+            result.add(constantDump.getClass());
+        }
+        return result;
     }
 }
