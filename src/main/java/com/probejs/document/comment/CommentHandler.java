@@ -15,13 +15,9 @@ public class CommentHandler {
      * @return true if this line may be recongnized by special comment handlers
      * @see com.probejs.document.comment.CommentHandler#specialCommentHandler
      */
-    public static boolean isCommentLineSecial(String line) {
+    public static boolean isCommentLineSpecial(String line) {
         line = CommentUtil.removeStarMark(line);
-        int end = line.indexOf(" ");
-        if (end == -1) {
-            return false;
-        }
-        return specialCommentHandler.containsKey(line.substring(0, end));
+        return specialCommentHandler.containsKey(line.split(" ", 2)[0]);
     }
 
     public static void init() {

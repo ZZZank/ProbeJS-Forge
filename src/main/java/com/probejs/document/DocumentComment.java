@@ -20,7 +20,7 @@ public class DocumentComment implements IDecorative, IFormatter {
         this.documentText = documentText.stream().map(String::trim).collect(Collectors.toList());
         this.documentText.stream()
             .map(CommentUtil::removeStarMark)
-            .filter(CommentHandler::isCommentLineSecial)
+            .filter(CommentHandler::isCommentLineSpecial)
             .map(t -> CommentHandler.specialCommentHandler.get(t.split(" ", 2)[0]).apply(t))
             .forEach(c -> abstractComments.computeIfAbsent(c.getClass(), s -> new ArrayList<>()).add(c));
     }
@@ -54,7 +54,7 @@ public class DocumentComment implements IDecorative, IFormatter {
     public List<String> getDocumentText() {
         return documentText
             .stream()
-            .filter(text -> !CommentHandler.isCommentLineSecial(text))
+            .filter(text -> !CommentHandler.isCommentLineSpecial(text))
             .collect(Collectors.toList());
     }
 
