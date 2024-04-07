@@ -1,7 +1,7 @@
 package com.probejs.info;
 
 import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.InfoTypeResolver;
+import com.probejs.info.type.TypeInfoResolver;
 // import dev.latvian.mods.rhino.mod.util.RemappingHelper;
 import dev.latvian.mods.rhino.util.HideFromJS;
 // import dev.latvian.mods.rhino.util.Remapper;
@@ -37,12 +37,12 @@ public class MethodInfo {
         this.shouldHide = method.getAnnotation(HideFromJS.class) != null;
         this.from = from;
         this.modifiers = method.getModifiers();
-        this.returnType = InfoTypeResolver.resolveType(method.getGenericReturnType());
+        this.returnType = TypeInfoResolver.resolveType(method.getGenericReturnType());
         this.params = Arrays.stream(method.getParameters()).map(ParamInfo::new).collect(Collectors.toList());
         this.typeVariables =
             Arrays
                 .stream(method.getTypeParameters())
-                .map(InfoTypeResolver::resolveType)
+                .map(TypeInfoResolver::resolveType)
                 .collect(Collectors.toList());
     }
 
@@ -97,7 +97,7 @@ public class MethodInfo {
 
         public ParamInfo(Parameter parameter) {
             this.name = parameter.getName();
-            this.type = InfoTypeResolver.resolveType(parameter.getParameterizedType());
+            this.type = TypeInfoResolver.resolveType(parameter.getParameterizedType());
         }
 
         public String getName() {

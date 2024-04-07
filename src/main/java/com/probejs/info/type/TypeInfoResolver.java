@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class InfoTypeResolver {
+public class TypeInfoResolver {
 
     public static ITypeInfo resolveType(Type type) {
         if (TypeInfoArray.test(type)) return new TypeInfoArray(type);
@@ -34,7 +34,7 @@ public class InfoTypeResolver {
 
         if (typeInfo instanceof TypeInfoArray) {
             TypeInfoArray array = (TypeInfoArray) typeInfo;
-            array.setType(mutateTypeMap(array.getBaseType(), toMutate));
+            array.setBase(mutateTypeMap(array.getBaseType(), toMutate));
         }
 
         if (typeInfo instanceof TypeInfoParameterized) {

@@ -5,7 +5,7 @@ import com.probejs.document.DocumentField;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.FieldInfo;
-import com.probejs.info.type.InfoTypeResolver;
+import com.probejs.info.type.TypeInfoResolver;
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
                 new FormatterType(
                     fieldInfo.getType(),
                     NameResolver.specialTypeGuards.getOrDefault(
-                        InfoTypeResolver.getContainedTypeOrSelf(fieldInfo.getType()).getResolvedClass(),
+                        TypeInfoResolver.getContainedTypeOrSelf(fieldInfo.getType()).getResolvedClass(),
                         true
                     )
                 )

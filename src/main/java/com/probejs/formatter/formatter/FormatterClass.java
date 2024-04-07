@@ -7,12 +7,11 @@ import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.comment.CommentUtil;
-import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.document.type.IType;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.*;
 import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.InfoTypeResolver;
+import com.probejs.info.type.TypeInfoResolver;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.util.PUtil;
@@ -52,7 +51,9 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         List<String> lines = new ArrayList<>();
         DocumentComment comment = document == null ? null : document.getComment();
         if (comment != null) {
-            if (comment.getSpecialComment(CommentHidden.class) != null) return lines;
+            if (CommentUtil.isHidden(comment)) {
+                return lines;
+            }
             lines.addAll(comment.format(indent, stepIndent));
         }
 
@@ -114,7 +115,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             } else {
                 firstLine.add(
                     FormatterType.formatParameterized(
-                        InfoTypeResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
+                        TypeInfoResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
                     )
                 );
             }
@@ -125,7 +126,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             firstLine.add(
                 Arrays
                     .stream(classInfo.getClazzRaw().getGenericInterfaces())
-                    .map(InfoTypeResolver::resolveType)
+                    .map(TypeInfoResolver::resolveType)
                     .map(FormatterType::formatParameterized)
                     .collect(Collectors.joining(", "))
             );
@@ -281,7 +282,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
     public void addDocument(DocumentClass document) {
         super.addDocument(document);
         document
-            .getFields()
+            .getFieldDocs()
             .forEach(documentField -> {
                 if (fieldFormatters.containsKey(documentField.getName())) {
                     fieldFormatters.get(documentField.getName()).addDocument(documentField);
@@ -291,7 +292,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             });
 
         document
-            .getMethods()
+            .getMethodDocs()
             .forEach(documentMethod -> {
                 if (methodFormatters.containsKey(documentMethod.getName())) {
                     methodFormatters

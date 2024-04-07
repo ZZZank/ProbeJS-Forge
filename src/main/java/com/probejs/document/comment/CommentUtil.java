@@ -41,11 +41,23 @@ public class CommentUtil {
 
     public static Map<String, String> getRenames(DocumentComment comment) {
         Map<String, String> renames = new HashMap<>();
-        if (comment != null) {
-            comment
-                .getSpecialComments(CommentRename.class)
-                .forEach(rename -> renames.put(rename.getName(), rename.getTo()));
+        if (comment == null) {
+            return renames;
         }
+        comment
+            .getSpecialComments(CommentRename.class)
+            .forEach(rename -> renames.put(rename.getName(), rename.getTo()));
         return renames;
+    }
+
+    /**
+     * remove one star mark("*") at the front if any.
+     * @return processed string, or itself if it has not "*" at the front.
+     */
+    public static String removeStarMark(String line) {
+        if (!line.startsWith("*")) {
+            return line;
+        }
+        return line.substring(1).trim();
     }
 }

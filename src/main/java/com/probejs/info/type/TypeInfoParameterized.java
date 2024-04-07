@@ -20,11 +20,11 @@ public class TypeInfoParameterized implements ITypeInfo {
             throw new IllegalArgumentException("provided `type` is not an instance of ParameterizedType");
         }
         ParameterizedType parType = (ParameterizedType) type;
-        rawType = InfoTypeResolver.resolveType(parType.getRawType());
+        rawType = TypeInfoResolver.resolveType(parType.getRawType());
         paramTypes =
             Arrays
                 .stream(parType.getActualTypeArguments())
-                .map(InfoTypeResolver::resolveType)
+                .map(TypeInfoResolver::resolveType)
                 .collect(Collectors.toList());
     }
 

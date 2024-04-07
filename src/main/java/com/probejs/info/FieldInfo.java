@@ -1,7 +1,7 @@
 package com.probejs.info;
 
 import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.InfoTypeResolver;
+import com.probejs.info.type.TypeInfoResolver;
 import com.probejs.util.PUtil;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import java.lang.reflect.Field;
@@ -9,10 +9,10 @@ import java.lang.reflect.Modifier;
 
 public class FieldInfo {
     private final String name;
+    private ITypeInfo type;
     private final int modifiers;
     private final boolean shouldHide;
     private final Object value;
-    private ITypeInfo info;
 
     private static String getRemappedOrDefault(Field field) {
         // String s = MethodInfo.RUNTIME.getMappedField(field.getDeclaringClass(), field);
@@ -24,7 +24,7 @@ public class FieldInfo {
         name = getRemappedOrDefault(field);
         modifiers = field.getModifiers();
         shouldHide = field.getAnnotation(HideFromJS.class) != null;
-        info = InfoTypeResolver.resolveType(field.getGenericType());
+        type = TypeInfoResolver.resolveType(field.getGenericType());
         value = PUtil.tryOrDefault(() -> isStatic() ? field.get(null) : null, null);
     }
 
@@ -45,7 +45,7 @@ public class FieldInfo {
     }
 
     public ITypeInfo getType() {
-        return info;
+        return type;
     }
 
     public Object getStaticValue() {
@@ -53,6 +53,6 @@ public class FieldInfo {
     }
 
     public void setTypeInfo(ITypeInfo info) {
-        this.info = info;
+        this.type = info;
     }
 }

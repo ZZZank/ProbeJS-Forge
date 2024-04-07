@@ -78,16 +78,15 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     @Nullable
     public String getBeanedName() {
-        String methodName = info.getName();
         switch (this.beanType) {
             case NONE:
                 return null;
             case GETTER:
-                return StringUtil.withLowerCaseHead(methodName.substring(3));
+                return StringUtil.withLowerCaseHead(info.getName().substring(3));
             case GETTER_IS:
-                return StringUtil.withLowerCaseHead(methodName.substring(2));
+                return StringUtil.withLowerCaseHead(info.getName().substring(2));
             case SETTER:
-                return StringUtil.withLowerCaseHead(methodName.substring(3));
+                return StringUtil.withLowerCaseHead(info.getName().substring(3));
         }
         return null;
     }

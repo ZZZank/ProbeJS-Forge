@@ -36,7 +36,6 @@ public class DocManager {
         typesAssignable.clear();
 
         try {
-            // fromFilesJson(documentState);
             fromFiles(documentState);
             fromPath(documentState);
         } catch (IOException e) {
@@ -91,12 +90,12 @@ public class DocManager {
         if (files == null) {
             return;
         }
-        List<File> filesSorted = Arrays
+        List<File> validFiles = Arrays
             .stream(files)
             .filter(f -> f.getName().endsWith(".d.ts") && !f.isDirectory())
             .sorted(Comparator.comparing(File::getName))
             .collect(Collectors.toList());
-        for (File f : filesSorted) {
+        for (File f : validFiles) {
             BufferedReader reader = Files.newBufferedReader(f.toPath());
             if (f.getName().startsWith("!")) {
                 reader.lines().forEach(rawTSDoc::add);
@@ -141,7 +140,7 @@ public class DocManager {
             );
             List<String> docNames = reader.lines().collect(Collectors.toList());
             for (String docName : docNames) {
-                boolean isRawDoc = docName.startsWith("!");
+                final boolean isRawDoc = docName.startsWith("!");
                 if (isRawDoc) {
                     //remove "raw" indicator
                     docName = docName.substring(1);
@@ -149,7 +148,9 @@ public class DocManager {
                 //check mod installing condition
                 int i = docName.indexOf(" ");
                 if (
+                    //has mod installation check
                     i != -1 &&
+                    //check if all mods are installed
                     !Arrays
                         .stream(docName.substring(0, i).split("&"))
                         .allMatch(modid -> Platform.isModLoaded(modid))
@@ -170,7 +171,7 @@ public class DocManager {
                     )
                 );
                 if (isRawDoc) {
-                    rawTSDoc.addAll(docReader.lines().collect(Collectors.toList()));
+                    docReader.lines().forEach(rawTSDoc::add);
                 } else {
                     docReader.lines().forEach(document::step);
                 }

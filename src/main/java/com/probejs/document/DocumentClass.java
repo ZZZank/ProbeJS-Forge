@@ -12,8 +12,8 @@ public class DocumentClass implements IConcrete, IFormatter {
     private String name;
     private String superClass;
     private List<String> interfaces;
-    private final List<DocumentField> fields = new ArrayList<>();
-    private final List<DocumentMethod> methods = new ArrayList<>();
+    private final List<DocumentField> fieldDocs = new ArrayList<>();
+    private final List<DocumentMethod> methodDocs = new ArrayList<>();
 
     public DocumentComment getComment() {
         return comment;
@@ -40,10 +40,10 @@ public class DocumentClass implements IConcrete, IFormatter {
         }
 
         if (document instanceof DocumentField) {
-            fields.add((DocumentField) document);
+            fieldDocs.add((DocumentField) document);
         }
         if (document instanceof DocumentMethod) {
-            methods.add((DocumentMethod) document);
+            methodDocs.add((DocumentMethod) document);
         }
     }
 
@@ -51,16 +51,16 @@ public class DocumentClass implements IConcrete, IFormatter {
         if (comment == null) {
             comment = other.getComment();
         }
-        fields.addAll(other.getFields());
-        methods.addAll(other.getMethods());
+        fieldDocs.addAll(other.getFieldDocs());
+        methodDocs.addAll(other.getMethodDocs());
     }
 
-    public List<DocumentField> getFields() {
-        return fields;
+    public List<DocumentField> getFieldDocs() {
+        return fieldDocs;
     }
 
-    public List<DocumentMethod> getMethods() {
-        return methods;
+    public List<DocumentMethod> getMethodDocs() {
+        return methodDocs;
     }
 
     public String getName() {
@@ -78,7 +78,7 @@ public class DocumentClass implements IConcrete, IFormatter {
 
     @Override
     public List<String> format(int indent, int stepIndent) {
-        List<String> formatted = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         StringBuilder firstLine = new StringBuilder(PUtil.indent(indent))
             .append("class ")
             .append(this.name)
@@ -89,10 +89,10 @@ public class DocumentClass implements IConcrete, IFormatter {
         if (this.interfaces != null && !this.interfaces.isEmpty()) {
             firstLine.append("implements ").append(String.join(", ", this.interfaces)).append(' ');
         }
-        formatted.add(firstLine.append('{').toString());
-        getFields().forEach(f -> formatted.addAll(f.format(indent + stepIndent, stepIndent)));
-        getMethods().forEach(m -> formatted.addAll(m.format(indent + stepIndent, stepIndent)));
-        formatted.add(PUtil.indent(indent) + "}");
-        return formatted;
+        lines.add(firstLine.append('{').toString());
+        this.fieldDocs.forEach(f -> lines.addAll(f.format(indent + stepIndent, stepIndent)));
+        this.methodDocs.forEach(m -> lines.addAll(m.format(indent + stepIndent, stepIndent)));
+        lines.add(PUtil.indent(indent) + "}");
+        return lines;
     }
 }

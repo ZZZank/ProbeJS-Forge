@@ -2,6 +2,7 @@ package com.probejs.document;
 
 import com.probejs.document.comment.AbstractComment;
 import com.probejs.document.comment.CommentHandler;
+import com.probejs.document.comment.CommentUtil;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ public class DocumentComment implements IDecorative, IFormatter {
     public DocumentComment(List<String> documentText) {
         this.documentText = documentText.stream().map(String::trim).collect(Collectors.toList());
         this.documentText.stream()
-            .map(t -> t.startsWith("*") ? t.substring(1).trim() : t)
-            .filter(t -> CommentHandler.specialCommentHandler.containsKey(t.split(" ", 2)[0]))
+            .map(CommentUtil::removeStarMark)
+            .filter(CommentHandler::isCommentLineSecial)
             .map(t -> CommentHandler.specialCommentHandler.get(t.split(" ", 2)[0]).apply(t))
             .forEach(c -> abstractComments.computeIfAbsent(c.getClass(), s -> new ArrayList<>()).add(c));
     }
@@ -53,18 +54,12 @@ public class DocumentComment implements IDecorative, IFormatter {
     public List<String> getDocumentText() {
         return documentText
             .stream()
-            .filter(text ->
-                text.startsWith("*")
-                    ? !CommentHandler.specialCommentHandler.containsKey(
-                        text.substring(1).trim().split(" ", 2)[0]
-                    )
-                    : !CommentHandler.specialCommentHandler.containsKey(text.split(" ", 2)[0])
-            )
+            .filter(text -> !CommentHandler.isCommentLineSecial(text))
             .collect(Collectors.toList());
     }
 
     @Override
     public List<String> format(int indent, int stepIndent) {
-        return getDocumentText().stream().map(s -> PUtil.indent(indent) + s).collect(Collectors.toList());
+        return getDocumentText().stream().map(PUtil.indent(indent)::concat).collect(Collectors.toList());
     }
 }

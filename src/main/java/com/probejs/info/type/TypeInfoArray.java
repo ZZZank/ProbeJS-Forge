@@ -7,6 +7,11 @@ import java.util.List;
 public class TypeInfoArray implements ITypeInfo {
 
     /**
+     * inner type, e.g. "T" in "T[]"
+     */
+    private ITypeInfo base;
+
+    /**
      * @return {@code type instanceof GenericArrayType}
      */
     public static boolean isGenericArray(Type type) {
@@ -29,25 +34,23 @@ public class TypeInfoArray implements ITypeInfo {
         return isGenericArray(type) || isClassArray(type);
     }
 
-    private ITypeInfo type;
-
     public TypeInfoArray(Type type) {
         if (isGenericArray(type)) {
-            this.type = InfoTypeResolver.resolveType(((GenericArrayType) type).getGenericComponentType());
+            this.base = TypeInfoResolver.resolveType(((GenericArrayType) type).getGenericComponentType());
         }
         if (isClassArray(type)) {
             assert type instanceof Class<?>;
-            this.type = InfoTypeResolver.resolveType(((Class<?>) type).getComponentType());
+            this.base = TypeInfoResolver.resolveType(((Class<?>) type).getComponentType());
         }
     }
 
     private TypeInfoArray(ITypeInfo inner) {
-        this.type = inner;
+        this.base = inner;
     }
 
     @Override
     public ITypeInfo getBaseType() {
-        return type;
+        return base;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class TypeInfoArray implements ITypeInfo {
 
     @Override
     public String getTypeName() {
-        return wrapTypeName(this.type.getTypeName());
+        return wrapTypeName(this.base.getTypeName());
     }
 
     @Override
@@ -65,17 +68,17 @@ public class TypeInfoArray implements ITypeInfo {
         return rawName + "[]";
     }
 
-    public void setType(ITypeInfo type) {
-        this.type = type;
+    public void setBase(ITypeInfo type) {
+        this.base = type;
     }
 
     @Override
     public ITypeInfo copy() {
-        return new TypeInfoArray(type.copy());
+        return new TypeInfoArray(base.copy());
     }
 
     @Override
     public boolean assignableFrom(ITypeInfo info) {
-        return info instanceof TypeInfoArray && info.getBaseType().assignableFrom(type);
+        return info instanceof TypeInfoArray && info.getBaseType().assignableFrom(base);
     }
 }
