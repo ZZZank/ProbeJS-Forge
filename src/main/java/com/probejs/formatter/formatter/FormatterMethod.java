@@ -210,7 +210,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                     ? modifiers.get(nameRaw).transform(typeTransformer)
                     : formatParamUnderscore(pInfo.getType(), forceNoUnderscore);
                 return String.format(
-                    "%s: %s",
+                    "%s%s: %s",
+                    pInfo.isVarArgs() ? "..." : "",
                     NameResolver.getNameSafe(renames.getOrDefault(nameRaw, nameRaw)),
                     paramType
                 );

@@ -94,10 +94,12 @@ public class MethodInfo {
 
         private final String name;
         private ITypeInfo type;
+        private final boolean isVarArgs;
 
         public ParamInfo(Parameter parameter) {
             this.name = parameter.getName();
             this.type = TypeInfoResolver.resolveType(parameter.getParameterizedType());
+            this.isVarArgs = parameter.isVarArgs();
         }
 
         public String getName() {
@@ -106,6 +108,10 @@ public class MethodInfo {
 
         public ITypeInfo getType() {
             return type;
+        }
+
+        public boolean isVarArgs() {
+            return isVarArgs;
         }
 
         public void setTypeInfo(ITypeInfo type) {
