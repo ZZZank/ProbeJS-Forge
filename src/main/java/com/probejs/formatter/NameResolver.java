@@ -2,6 +2,8 @@ package com.probejs.formatter;
 
 import com.probejs.ProbeJS;
 import com.probejs.info.type.ITypeInfo;
+import dev.latvian.kubejs.block.MaterialJS;
+import dev.latvian.kubejs.block.MaterialListJS;
 import dev.latvian.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaClass;
@@ -257,6 +259,16 @@ public class NameResolver {
         putValueFormatter(SpecialTypes::formatFunction, BaseFunction.class);
         putValueFormatter(SpecialTypes::formatNJO, NativeJavaObject.class);
         putValueFormatter(SpecialTypes::formatScriptable, Scriptable.class);
+
+        addSpecialAssignments(
+            MaterialJS.class,
+            () ->
+                MaterialListJS.INSTANCE.map
+                    .keySet()
+                    .stream()
+                    .map(ProbeJS.GSON::toJson)
+                    .collect(Collectors.toList())
+        );
 
         addSpecialAssignments(
             DamageSource.class,
