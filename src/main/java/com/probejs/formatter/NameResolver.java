@@ -6,7 +6,6 @@ import dev.latvian.kubejs.block.MaterialJS;
 import dev.latvian.kubejs.block.MaterialListJS;
 import dev.latvian.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.mods.rhino.BaseFunction;
-import dev.latvian.mods.rhino.NativeJavaClass;
 import dev.latvian.mods.rhino.NativeJavaObject;
 import dev.latvian.mods.rhino.NativeObject;
 import dev.latvian.mods.rhino.Scriptable;
@@ -296,8 +295,7 @@ public class NameResolver {
         putTypeGuard(true, Class.class);
         putTypeGuard(false, IngredientJS.class);
 
-        putTypeFormatter(Class.class, SpecialTypes::formatClassLike);
-        putTypeFormatter(NativeJavaClass.class, SpecialTypes::formatClassLike);
+        // putTypeFormatter(Class.class, SpecialTypes::formatClassLike);
 
         addKeyword("function");
         addKeyword("debugger");
