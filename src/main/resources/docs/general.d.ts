@@ -115,13 +115,6 @@ class Object {
 }
 
 /**
- * @target dev.latvian.kubejs.block.MaterialJS
- * @assign string
- */
-class MaterialJS {
-}
-
-/**
  * @target net.minecraft.nbt.CompoundNBT
  * @assign object
  */
