@@ -70,11 +70,16 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
         if (comment != null) {
             formatted.addAll(comment.format(indent, stepIndent));
         }
-        List<String> pre = new ArrayList<>();
-        if (isStatic) pre.add("static");
-        if (isFinal) pre.add("readonly");
-        pre.add(String.format("%s: %s;", name, type.getTypeName()));
-        formatted.add(PUtil.indent(indent) + String.join(" ", pre));
+        formatted.add(
+            String.format(
+                "%s%s%s%s: %s;",
+                PUtil.indent(indent),
+                isStatic ? "static " : "",
+                isFinal ? "readonly " : "",
+                name,
+                type.getTypeName()
+            )
+        );
         return formatted;
     }
 }

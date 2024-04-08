@@ -7,7 +7,7 @@ import java.util.List;
 public class FormatterComments implements IFormatter {
 
     protected final List<String> raw;
-    protected boolean isMultiLine;
+    protected boolean isBlockStyle;
 
     /**
      * construct a multi-line comment formatter, and formatted lines will be in
@@ -15,7 +15,7 @@ public class FormatterComments implements IFormatter {
      */
     public FormatterComments(List<String> lines) {
         this.raw = lines;
-        this.isMultiLine = true;
+        this.isBlockStyle = true;
     }
 
     /**
@@ -27,27 +27,15 @@ public class FormatterComments implements IFormatter {
         for (String line : lines) {
             this.raw.add(line);
         }
-        this.isMultiLine = true;
+        this.isBlockStyle = true;
     }
 
-    /**
-     * construct a single-line comment formatter, and formatted lines will be in
-     * line comment style, e.g. <p>
-     * by default the constructed formatter will use line style comment <p>
-     * {@code // single line comment example}
-     */
-    public FormatterComments(String line) {
-        this.raw = new ArrayList<>(1);
-        this.raw.add(line);
-        this.isMultiLine = false;
+    public boolean isBlockStyle() {
+        return this.isBlockStyle;
     }
 
-    public boolean isMultiLine() {
-        return this.isMultiLine;
-    }
-
-    public FormatterComments setMultiLine(boolean isMultiLine) {
-        this.isMultiLine = isMultiLine;
+    public FormatterComments setBlockStyle(boolean isMultiLine) {
+        this.isBlockStyle = isMultiLine;
         return this;
     }
 
@@ -66,15 +54,15 @@ public class FormatterComments implements IFormatter {
     @Override
     public List<String> format(int indent, int stepIndent) {
         final String idnt = PUtil.indent(indent);
-        final String commentMark = this.isMultiLine ? " * " : "// ";
+        final String commentMark = this.isBlockStyle ? " * " : "// ";
         List<String> lines = new ArrayList<>(2 + this.raw.size());
-        if (this.isMultiLine) {
+        if (this.isBlockStyle) {
             lines.add(idnt + "/**");
         }
         for (final String line : this.raw) {
             lines.add(String.format("%s%s%s", idnt, commentMark, line));
         }
-        if (this.isMultiLine) {
+        if (this.isBlockStyle) {
             lines.add(idnt + " */");
         }
         return lines;

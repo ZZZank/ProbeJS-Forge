@@ -228,7 +228,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             if (internal && !classInfo.getConstructorInfo().isEmpty()) {
                 lines.addAll(
                     new FormatterComments("Internal constructor, not callable unless via `java()`.")
-                        .setMultiLine(true)
+                        .setBlockStyle(true)
                         .format(indent + stepIndent, stepIndent)
                 );
             }
