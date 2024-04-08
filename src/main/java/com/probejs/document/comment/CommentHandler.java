@@ -6,6 +6,10 @@ import java.util.function.Function;
 
 public class CommentHandler {
 
+    /**
+     * key -> ((s: str)=>AbstractComment)
+     * , where key should starts with "@"
+     */
     public static final HashMap<String, Function<String, AbstractComment>> specialCommentHandler = new HashMap<>();
 
     /**
@@ -17,6 +21,9 @@ public class CommentHandler {
      */
     public static boolean isCommentLineSpecial(String line) {
         line = CommentUtil.removeStarMark(line);
+        if (!line.startsWith("@")) {
+            return false;
+        }
         return specialCommentHandler.containsKey(line.split(" ", 2)[0]);
     }
 
