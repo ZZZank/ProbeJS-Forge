@@ -2,9 +2,9 @@ package com.probejs.info;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.probejs.formatter.formatter.FormatterComments;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -68,7 +68,6 @@ public class EventInfo {
      * types`, and additional info for wildcarded event
      */
     public List<String> getBuiltinPropAsComment() {
-        List<String> lines = new ArrayList<>();
         String canCancel = this.cancellable ? "Yes" : "No";
         List<String> typeNames =
             this.scriptTypes.stream().map(type -> type.name).collect(Collectors.toList());
@@ -76,11 +75,8 @@ public class EventInfo {
             canCancel = "unknown";
             typeNames.add("unknown, info of this event seems fetched from an older version of cache");
         }
-        lines.add("/**");
-        lines.add(" * @cancellable " + canCancel);
-        lines.add(" * @at " + String.join(", ", typeNames));
-        lines.add(" */");
-        return lines;
+        return new FormatterComments("@cancellable " + canCancel, "@at " + String.join(", ", typeNames))
+            .format(0, 0);
     }
 
     @SuppressWarnings("unchecked")

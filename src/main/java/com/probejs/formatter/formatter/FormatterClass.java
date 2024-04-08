@@ -11,9 +11,9 @@ import com.probejs.document.type.IType;
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.*;
 import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.TypeInfoResolver;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
+import com.probejs.info.type.TypeInfoResolver;
 import com.probejs.util.PUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -226,10 +226,11 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         // constructors
         if (!classInfo.isInterface()) {
             if (internal && !classInfo.getConstructorInfo().isEmpty()) {
-                String indnt = PUtil.indent(indent + stepIndent);
-                lines.add(indnt + "/**");
-                lines.add(indnt + " * Internal constructor, not callable unless via `java()`.");
-                lines.add(indnt + " */");
+                lines.addAll(
+                    new FormatterComments("Internal constructor, not callable unless via `java()`.")
+                        .setMultiLine(true)
+                        .format(indent + stepIndent, stepIndent)
+                );
             }
             classInfo
                 .getConstructorInfo()

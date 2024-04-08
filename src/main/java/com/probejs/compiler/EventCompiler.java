@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
+import com.probejs.formatter.formatter.FormatterComments;
 import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.info.EventInfo;
 import com.probejs.info.type.TypeInfoClass;
@@ -16,10 +17,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class EventCompiler {
 
@@ -28,17 +32,16 @@ public class EventCompiler {
     public static final Path EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(EVENT_CACHE_NAME);
     public static final Path FORGE_EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(FORGE_EVENT_CACHE_NAME);
 
-    private static Map<String, EventInfo> cachedEvents;
-    private static Map<String, EventInfo> wildcards;
-    private static Map<String, Class<?>> cachedForgeEvents;
+    private static Collection<EventInfo> cachedEvents;
+    private static Set<EventInfo> wildcards;
+    private static Collection<Class<?>> cachedForgeEvents;
 
-    public static void compile(
-        Map<String, EventInfo> cachedEvents,
-        Map<String, Class<?>> cachedForgeEvents
-    ) throws IOException {
-        EventCompiler.cachedEvents = cachedEvents;
-        EventCompiler.cachedForgeEvents = cachedForgeEvents;
-        EventCompiler.wildcards = new HashMap<>();
+    public static void compile(Map<String, EventInfo> cachedEvents, Map<String, Class<?>> cachedForgeEvents)
+        throws IOException {
+        EventCompiler.cachedEvents = cachedEvents.values();
+        EventCompiler.cachedForgeEvents = cachedForgeEvents.values();
+        EventCompiler.wildcards =
+            cachedEvents.values().stream().filter(EventInfo::hasSub).collect(Collectors.toSet());
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
 
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
@@ -54,13 +57,11 @@ public class EventCompiler {
 
     private static void writeForgeEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
-        for (Map.Entry<String, Class<?>> entry : (new TreeMap<>(cachedForgeEvents)).entrySet()) {
-            final String name = entry.getKey();
-            final Class<?> event = entry.getValue();
+        for (Class<?> event : (new TreeSet<>(cachedForgeEvents))) {
             lines.add(
                 String.format(
                     "declare function onForgeEvent(name: \"%s\", handler: (event: %s) => void);",
-                    name,
+                    event.getName(),
                     FormatterType.formatParameterized(new TypeInfoClass(event))
                 )
             );
@@ -74,7 +75,7 @@ public class EventCompiler {
 
     private static void writeWildcardEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
-        for (EventInfo wildcard : (new TreeMap<>(wildcards)).values()) {
+        for (EventInfo wildcard : (new TreeSet<>(wildcards))) {
             String id = wildcard.id;
             lines.addAll(wildcard.getBuiltinPropAsComment());
             lines.add(
@@ -86,16 +87,17 @@ public class EventCompiler {
             );
         }
         lines.addAll(
-            Arrays.asList(
-                "/**",
-                " * This is the general representation of wildcarded event, you should replace `${string}` with actual id.",
-                " * ",
-                " * E.g. `player.data_from_server.reload`, `ftbquests.completed.123456`",
-                " */",
-                "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void);",
-                ""
+            new FormatterComments(
+                "This is the general representation of wildcarded event, you should replace `${string}` with actual id.",
+                "",
+                "E.g. `player.data_from_server.reload`, `ftbquests.completed.123456`"
             )
+                .format(0, 0)
         );
+        lines.add(
+            "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void);"
+        );
+        lines.add("");
         for (final String line : lines) {
             writer.write(line);
             writer.write("\n");
@@ -104,27 +106,25 @@ public class EventCompiler {
 
     private static void writeEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
-        for (Map.Entry<String, EventInfo> entry : (new TreeMap<>(cachedEvents)).entrySet()) {
-            final EventInfo captured = entry.getValue();
-            final Class<?> event = captured.clazzRaw;
-            String id = captured.id;
-            if (captured.hasSub()) {
-                wildcards.put(id, captured);
-                id = id + "." + captured.sub;
+        for (EventInfo eInfo : (new TreeSet<>(cachedEvents))) {
+            String id = eInfo.id;
+            if (eInfo.hasSub()) {
+                id = id + "." + eInfo.sub;
             }
-            lines.addAll(captured.getBuiltinPropAsComment());
+            lines.addAll(eInfo.getBuiltinPropAsComment());
             lines.add(
                 String.format(
                     "declare function onEvent(name: \"%s\", handler: (event: %s) => void);",
                     id,
-                    FormatterType.formatParameterized(new TypeInfoClass(event))
+                    FormatterType.formatParameterized(new TypeInfoClass(eInfo.clazzRaw))
                 )
             );
         }
         lines.addAll(
             Arrays.asList(
                 "/**",
-                " * General representation of `onEvent()`, seeing this comment usually indicates that such event does not exist, or is unknown to ProbeJS yet",
+                " * this is the general representation of `onEvent()`, seeing this comment usually indicates that such event does not exist,",
+                " * or is unknown to ProbeJS yet",
                 " */",
                 "declare function onEvent(name: string, handler: (event: Internal.EventJS) => void);",
                 ""

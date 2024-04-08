@@ -52,7 +52,7 @@ public class CommentUtil {
 
     /**
      * remove one star mark("*") at the front if any.
-     * @return processed string, or itself if it has not "*" at the front.
+     * @return processed string, or itself if it has no "*" at the front.
      */
     public static String removeStarMark(String line) {
         if (!line.startsWith("*")) {
