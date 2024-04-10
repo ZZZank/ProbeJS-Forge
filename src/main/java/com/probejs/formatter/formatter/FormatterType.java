@@ -1,8 +1,8 @@
 package com.probejs.formatter.formatter;
 
 import com.probejs.formatter.NameResolver;
+import com.probejs.formatter.NameResolver.ResolvedName;
 import com.probejs.info.type.*;
-import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -99,7 +99,13 @@ public class FormatterType {
                 sb.append(
                     String.format(
                         "<%s>",
-                        String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any"))
+                        clazz
+                            .getTypeVariables()
+                            .stream()
+                            .map(ITypeInfo::getTypeName)
+                            .map(NameResolver::getResolvedName)
+                            .map(ResolvedName::getFullName)
+                            .collect(Collectors.joining(","))
                     )
                 );
             }
