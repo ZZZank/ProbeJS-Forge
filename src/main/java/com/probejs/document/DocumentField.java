@@ -2,7 +2,7 @@ package com.probejs.document;
 
 import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IType;
-import com.probejs.document.type.TypeResolver;
+import com.probejs.document.type.DocTypeResolver;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
@@ -38,7 +38,7 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
         }
         Pair<String, String> parts = StringUtil.splitFirst(line, ":");
         this.name = parts.first().trim();
-        this.type = TypeResolver.resolve(parts.second().trim());
+        this.type = DocTypeResolver.resolve(parts.second().trim());
         this.isFinal = f;
         this.isStatic = s;
     }

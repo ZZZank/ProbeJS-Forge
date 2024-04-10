@@ -42,7 +42,7 @@ public class Pair<F, S> {
         if (obj == null || !(obj instanceof Pair)) {
             return false;
         }
-        Pair<F, S> p = (Pair<F, S>) obj;
+        Pair<?, ?> p = (Pair<?, ?>) obj;
         return this.first.equals(p.first) && this.second.equals(p.second);
     }
 }

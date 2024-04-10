@@ -3,7 +3,7 @@ package com.probejs.document;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IType;
-import com.probejs.document.type.TypeResolver;
+import com.probejs.document.type.DocTypeResolver;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
@@ -31,7 +31,7 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
             line = line.substring(0, line.length() - 1);
         }
         Pair<String, String> nameType = StringUtil.splitFirst(line, "=");
-        return new DocumentType(nameType.first().trim(), TypeResolver.resolve(nameType.second().trim()));
+        return new DocumentType(nameType.first().trim(), DocTypeResolver.resolve(nameType.second().trim()));
     }
 
     @Override

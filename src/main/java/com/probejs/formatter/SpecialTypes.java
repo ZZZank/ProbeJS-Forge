@@ -148,7 +148,7 @@ public class SpecialTypes {
     }
 
     public static void processSpecialAssignments() {
-        //lambda
+        //specialClassAssigner
         NameResolver.specialClassAssigner.forEach((clazzName, assignProvider) -> {
             String name = clazzName.getName();
             for (String assignTo : assignProvider.get()) {

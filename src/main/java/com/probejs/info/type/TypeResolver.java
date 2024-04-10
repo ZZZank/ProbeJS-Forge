@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 public class TypeResolver {
 
     public static ITypeInfo resolveType(Type type) {
+        if (type == null) {
+            return null;
+        }
         if (TypeInfoArray.test(type)) return new TypeInfoArray(type);
         if (TypeInfoVariable.test(type)) return new TypeInfoVariable(type);
         if (TypeInfoWildcard.test(type)) return new TypeInfoWildcard(type);

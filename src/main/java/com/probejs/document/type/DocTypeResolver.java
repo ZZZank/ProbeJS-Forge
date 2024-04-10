@@ -6,7 +6,7 @@ import com.probejs.util.StringUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TypeResolver {
+public class DocTypeResolver {
 
     public static IType resolve(String type) {
         type = type.trim();
@@ -14,7 +14,7 @@ public class TypeResolver {
         //TODO: Resolve object type
         if (type.startsWith("{")) {
             // {[x in string]: string}
-            return new TypeNamed(type);
+            return new TypeRaw(type);
         }
 
         Pair<String, String> splitUnion = StringUtil.splitFirst(type, "<", ">", "|");
@@ -41,7 +41,7 @@ public class TypeResolver {
             List<String> params = StringUtil.splitLayer(typeParams, "<", ">", ",");
             return new TypeParameterized(
                 resolve(rawType),
-                params.stream().map(TypeResolver::resolve).collect(Collectors.toList())
+                params.stream().map(DocTypeResolver::resolve).collect(Collectors.toList())
             );
         }
         return new TypeNamed(type);

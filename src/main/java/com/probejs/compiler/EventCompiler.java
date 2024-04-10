@@ -58,17 +58,17 @@ public class EventCompiler {
 
     private static void writeForgeEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
-        List<Class<?>> sortedClasses = new ArrayList<>(cachedForgeEvents);
-        sortedClasses.sort(Comparator.comparing(Class::getName));
-        for (Class<?> event : sortedClasses) {
-            lines.add(
+        cachedForgeEvents
+            .stream()
+            .sorted(Comparator.comparing(Class::getName))
+            .map(clazz ->
                 String.format(
-                    "declare function onForgeEvent(name: \"%s\", handler: (event: %s) => void);",
-                    event.getName(),
-                    FormatterType.formatParameterized(new TypeInfoClass(event))
+                    "declare function onForgeEvent(name: %s, handler: (event: %s) => void);",
+                    ProbeJS.GSON.toJson(clazz.getName()),
+                    FormatterType.formatParameterized(new TypeInfoClass(clazz))
                 )
-            );
-        }
+            )
+            .forEach(lines::add);
         lines.add("");
         for (final String line : lines) {
             writer.write(line);

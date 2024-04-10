@@ -2,7 +2,7 @@ package com.probejs.document.comment.special;
 
 import com.probejs.document.comment.AbstractComment;
 import com.probejs.document.type.IType;
-import com.probejs.document.type.TypeResolver;
+import com.probejs.document.type.DocTypeResolver;
 
 public class CommentAssign extends AbstractComment {
 
@@ -11,7 +11,7 @@ public class CommentAssign extends AbstractComment {
 
     public CommentAssign(String line) {
         super(line);
-        type = TypeResolver.resolve(line.substring(MARK_LEN));
+        type = DocTypeResolver.resolve(line.substring(MARK_LEN));
     }
 
     public IType getType() {

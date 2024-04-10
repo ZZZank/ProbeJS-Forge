@@ -2,7 +2,7 @@ package com.probejs.document.comment.special;
 
 import com.probejs.document.comment.AbstractComment;
 import com.probejs.document.type.IType;
-import com.probejs.document.type.TypeResolver;
+import com.probejs.document.type.DocTypeResolver;
 
 public class CommentModify extends AbstractComment {
 
@@ -15,7 +15,7 @@ public class CommentModify extends AbstractComment {
         String[] split = line.split(" ");
         // nameTo[0] is `@modify`
         this.name = split[1];
-        this.type = TypeResolver.resolve(split[2]);
+        this.type = DocTypeResolver.resolve(split[2]);
     }
 
     public String getName() {

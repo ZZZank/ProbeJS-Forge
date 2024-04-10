@@ -18,41 +18,33 @@ public class RegistryCompiler {
         rInfos = registries;
     }
 
-    private static List<IFormatter> info2Formatters(Collection<RegistryInfo> infos) {
+    public static void compile(BufferedWriter writer) throws IOException {
         Map<String, List<RegistryInfo>> infoByMods = new HashMap<>();
-        for (RegistryInfo info : infos) {
+        for (RegistryInfo info : RegistryCompiler.rInfos) {
             infoByMods.computeIfAbsent(info.id.getNamespace(), k -> new ArrayList<>()).add(info);
         }
         List<IFormatter> formatters = new ArrayList<>();
-        infoByMods.forEach((namespace, rInfos) -> {
-            List<String> lines = rInfos
+        infoByMods.forEach((namespace, rInfo) -> {
+            List<String> lines = rInfo
                 .stream()
-                .map(rInfo -> {
-                    List<String> names = rInfo.names
+                .map(info -> {
+                    List<String> names = info.names
                         .stream()
                         .map(rl -> ProbeJS.GSON.toJson(rl.toString()))
                         .collect(Collectors.toList());
                     if (names.isEmpty()) {
-                        //for empty registry
-                        names.add("never");
-                    // } else {
-                    //     //fallback for general registry, to make data-driven style scripts happy
-                    //     names.add("string");
+                        names.add("never"); //for empty registry
                     }
                     return String.format(
                         "type %s = %s;",
-                        rInfo.id.getPath().replace('/', '$'),
+                        info.id.getPath().replace('/', '$'),
                         String.join("|", names)
                     );
                 })
                 .collect(Collectors.toList());
             formatters.add(new FormatterNamespace(namespace, new FormatterRaw(lines, false)));
         });
-        return formatters;
-    }
-
-    public static void compile(BufferedWriter writer) throws IOException {
-        IFormatter namespaced = new FormatterNamespace("Registry", info2Formatters(RegistryCompiler.rInfos));
+        IFormatter namespaced = new FormatterNamespace("Registry", formatters);
         for (String line : namespaced.format(0, 4)) {
             writer.write(line);
             writer.write('\n');

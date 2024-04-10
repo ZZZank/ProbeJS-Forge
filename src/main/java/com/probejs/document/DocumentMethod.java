@@ -2,7 +2,7 @@ package com.probejs.document;
 
 import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IType;
-import com.probejs.document.type.TypeResolver;
+import com.probejs.document.type.DocTypeResolver;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.MethodInfo;
 import com.probejs.util.PUtil;
@@ -92,7 +92,7 @@ public class DocumentMethod
         // e.g. buildParams("(a: (string|number), b: {required: bool})")
         params = buildParams(line.substring(nameIndex, methodIndex));
         // e.g. Resolver.resolveType(" FnReturnName"), no need to trim, resolveType() will do so
-        returnType = TypeResolver.resolve(line.substring(methodIndex + 1));
+        returnType = DocTypeResolver.resolve(line.substring(methodIndex + 1));
     }
 
     /**
@@ -111,7 +111,7 @@ public class DocumentMethod
         }
         for (String paramStr : StringUtil.splitLayer(paramsStr, ",")) {
             String[] nameAndType = paramStr.trim().split(":", 2);
-            paramList.add(new DocumentParam(nameAndType[0].trim(), TypeResolver.resolve(nameAndType[1])));
+            paramList.add(new DocumentParam(nameAndType[0].trim(), DocTypeResolver.resolve(nameAndType[1])));
         }
         return paramList;
     }
@@ -144,14 +144,14 @@ public class DocumentMethod
 
         if (
             !params.keySet().equals(docParams.keySet()) ||
-            !TypeResolver.typeEquals(returnType, methodInfo.getReturnType())
+            !DocTypeResolver.typeEquals(returnType, methodInfo.getReturnType())
         ) {
             return false;
         }
 
         for (Map.Entry<String, MethodInfo.ParamInfo> e : params.entrySet()) {
             DocumentParam doc = docParams.get(e.getKey());
-            if (!TypeResolver.typeEquals(doc.getType(), e.getValue().getType())) return false;
+            if (!DocTypeResolver.typeEquals(doc.getType(), e.getValue().getType())) return false;
         }
 
         return true;
