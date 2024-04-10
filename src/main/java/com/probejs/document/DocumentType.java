@@ -42,10 +42,15 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
     @Override
     public List<String> format(int indent, int stepIndent) {
         if (!CommentUtil.isLoaded(comment) || CommentUtil.isHidden(comment)) {
-            return new ArrayList<>();
+            return new ArrayList<>(0);
         }
         return Arrays.asList(
-            String.format("%stype %s = %s;", PUtil.indent(indent), name, type.getTypeName())
+            String.format(
+                "%stype %s = %s;",
+                PUtil.indent(indent),
+                name,
+                IType.defaultTransformer.apply(type, type.getTypeName())
+            )
         );
     }
 
