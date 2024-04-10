@@ -35,13 +35,17 @@ public class SpecialData {
         target.put(type, tagIds);
     }
 
-    public static SpecialData fetch() {
+    public static Map<String, Collection<ResourceLocation>> computeTags() {
         final Map<String, Collection<ResourceLocation>> tags = new HashMap<>();
         putTag(tags, "items", Tags.items());
         putTag(tags, "blocks", Tags.blocks());
         putTag(tags, "fluids", Tags.fluids());
         putTag(tags, "entity_types", Tags.entityTypes());
-        return new SpecialData(tags, computeRegistryInfos());
+        return tags;
+    }
+
+    public static SpecialData fetch() {
+        return new SpecialData(computeTags(), computeRegistryInfos());
     }
 
     @Override

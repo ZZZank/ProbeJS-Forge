@@ -20,16 +20,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SnippetCompiler {
 
-    private static SpecialData data;
-
-    public static void init(SpecialData data){
-        SnippetCompiler.data = data;
-    }
-
-    public static JsonObject toSnippet(SpecialData dump) {
+    public static JsonObject toSnippet() {
         JsonObject resultJson = new JsonObject();
         // Compile normal entries to snippet
-        for (RegistryInfo info : dump.registries) {
+        for (RegistryInfo info : SpecialData.computeRegistryInfos()) {
             final String type = info.id.getPath();
             final Map<String, List<String>> byModMembers = new HashMap<>();
             info.names.forEach(rl ->
@@ -56,7 +50,7 @@ public class SnippetCompiler {
         }
 
         // Compile tag entries to snippet
-        for (Map.Entry<String, Collection<ResourceLocation>> entry : dump.tags.entrySet()) {
+        for (Map.Entry<String, Collection<ResourceLocation>> entry : SpecialData.computeTags().entrySet()) {
             String type = entry.getKey();
             Map<String, List<String>> byModMembers = new HashMap<>();
             entry
@@ -89,11 +83,11 @@ public class SnippetCompiler {
             compileClassNames();
         }
         Path codeFile = ProbePaths.WORKSPACE.resolve("probe.code-snippets");
-
         BufferedWriter writer = Files.newBufferedWriter(codeFile);
-        ProbeJS.GSON.toJson(toSnippet(SnippetCompiler.data), writer);
+
+        ProbeJS.GSON.toJson(toSnippet(), writer);
+
         writer.close();
-        SnippetCompiler.data = null;
     }
 
     private static void compileClassNames() throws IOException {

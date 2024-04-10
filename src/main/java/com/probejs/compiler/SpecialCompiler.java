@@ -21,7 +21,6 @@ public abstract class SpecialCompiler {
     public static void compile(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) throws IOException {
         final SpecialData data = SpecialData.fetch();
 
-        SnippetCompiler.init(data);
         RegistryCompiler.init(data.registries);
         TagCompiler.init(data.tags);
         RecipeHoldersCompiler.init(recipeHandlers);
