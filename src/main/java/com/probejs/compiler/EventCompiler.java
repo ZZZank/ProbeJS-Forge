@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,9 @@ public class EventCompiler {
 
     private static void writeForgeEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
-        for (Class<?> event : (new TreeSet<>(cachedForgeEvents))) {
+        List<Class<?>> sortedClasses = new ArrayList<>(cachedForgeEvents);
+        sortedClasses.sort(Comparator.comparing(Class::getName));
+        for (Class<?> event : sortedClasses) {
             lines.add(
                 String.format(
                     "declare function onForgeEvent(name: \"%s\", handler: (event: %s) => void);",
