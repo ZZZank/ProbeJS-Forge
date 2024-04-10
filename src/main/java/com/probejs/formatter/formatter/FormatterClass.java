@@ -13,7 +13,7 @@ import com.probejs.info.*;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
-import com.probejs.info.type.TypeInfoResolver;
+import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -115,7 +115,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             } else {
                 firstLine.add(
                     FormatterType.formatParameterized(
-                        TypeInfoResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
+                        TypeResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
                     )
                 );
             }
@@ -126,7 +126,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             firstLine.add(
                 Arrays
                     .stream(classInfo.getClazzRaw().getGenericInterfaces())
-                    .map(TypeInfoResolver::resolveType)
+                    .map(TypeResolver::resolveType)
                     .map(FormatterType::formatParameterized)
                     .collect(Collectors.joining(", "))
             );

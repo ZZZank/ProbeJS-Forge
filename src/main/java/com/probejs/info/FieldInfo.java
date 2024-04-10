@@ -1,7 +1,7 @@
 package com.probejs.info;
 
 import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.TypeInfoResolver;
+import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import java.lang.reflect.Field;
@@ -24,7 +24,7 @@ public class FieldInfo implements Comparable<FieldInfo> {
         name = getRemappedOrDefault(field);
         modifiers = field.getModifiers();
         shouldHide = field.getAnnotation(HideFromJS.class) != null;
-        type = TypeInfoResolver.resolveType(field.getGenericType());
+        type = TypeResolver.resolveType(field.getGenericType());
         value = PUtil.tryOrDefault(() -> isStatic() ? field.get(null) : null, null);
     }
 

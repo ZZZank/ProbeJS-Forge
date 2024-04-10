@@ -40,12 +40,12 @@ public class JPrimitive implements IJsonBuilder<JsonPrimitive> {
 
 
     @Override
-    public JsonPrimitive serialize() {
+    public JsonPrimitive build() {
         return value;
     }
 
     @Override
     public String toString() {
-        return serialize().toString();
+        return build().toString();
     }
 }

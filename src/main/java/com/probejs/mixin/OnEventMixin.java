@@ -18,7 +18,7 @@ public class OnEventMixin {
         at = @At("HEAD"),
         remap = false
     )
-    private void post(ScriptType t, String id, CallbackInfoReturnable<Boolean> returns) {
+    private void captureKjsEvents(ScriptType t, String id, CallbackInfoReturnable<Boolean> returns) {
         if (ProbeJS.ENABLED && !CapturedClasses.isEventIgnored(this.getClass())) {
             if (!CapturedClasses.capturedEvents.containsKey(id)) {
                 CapturedClasses.capturedEvents.put(id, new EventInfo(t, (EventJS) (Object) this, id, null));
@@ -33,7 +33,7 @@ public class OnEventMixin {
         at = @At("HEAD"),
         remap = false
     )
-    private void post(ScriptType t, String id, String sub, CallbackInfoReturnable<Boolean> returns) {
+    private void captureKjsSubEvents(ScriptType t, String id, String sub, CallbackInfoReturnable<Boolean> returns) {
         if (ProbeJS.ENABLED && !CapturedClasses.isEventIgnored(this.getClass())) {
             if (!CapturedClasses.capturedEvents.containsKey(id)) {
                 CapturedClasses.capturedEvents.put(

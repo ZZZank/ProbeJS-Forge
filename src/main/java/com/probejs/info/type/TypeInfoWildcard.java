@@ -17,11 +17,11 @@ public class TypeInfoWildcard implements ITypeInfo {
             Type[] upper = wild.getUpperBounds();
             Type[] lower = wild.getLowerBounds();
             if (upper[0] != Object.class) {
-                this.type = TypeInfoResolver.resolveType(upper[0]);
+                this.type = TypeResolver.resolveType(upper[0]);
                 return;
             }
             if (lower.length != 0) {
-                this.type = TypeInfoResolver.resolveType(lower[0]);
+                this.type = TypeResolver.resolveType(lower[0]);
                 return;
             }
         }

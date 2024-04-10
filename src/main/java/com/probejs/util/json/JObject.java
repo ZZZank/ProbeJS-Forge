@@ -78,18 +78,18 @@ public class JObject implements IJsonBuilder<JsonObject> {
     }
 
     @Override
-    public JsonObject serialize() {
+    public JsonObject build() {
         JsonObject object = base;
         for (Map.Entry<String, IJsonBuilder<?>> entry : members.entrySet()) {
             String key = entry.getKey();
             IJsonBuilder<?> value = entry.getValue();
-            object.add(key, value.serialize());
+            object.add(key, value.build());
         }
         return object;
     }
 
     @Override
     public String toString() {
-        return serialize().toString();
+        return build().toString();
     }
 }

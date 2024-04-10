@@ -58,7 +58,7 @@ public class TypeInfoClass implements ITypeInfo {
     public List<ITypeInfo> getTypeVariables() {
         return Arrays
             .stream(type.getTypeParameters())
-            .map(TypeInfoResolver::resolveType)
+            .map(TypeResolver::resolveType)
             .collect(Collectors.toList());
     }
 }

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class TypeInfoResolver {
+public class TypeResolver {
 
     public static ITypeInfo resolveType(Type type) {
         if (TypeInfoArray.test(type)) return new TypeInfoArray(type);

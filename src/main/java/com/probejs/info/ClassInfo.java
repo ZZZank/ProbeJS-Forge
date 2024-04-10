@@ -5,7 +5,7 @@ import com.probejs.formatter.ClassResolver;
 import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.formatter.FormatterMethod;
 import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.TypeInfoResolver;
+import com.probejs.info.type.TypeResolver;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
 import java.lang.reflect.Method;
@@ -79,7 +79,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
             parameters.addAll(
                 Arrays
                     .stream(clazzRaw.getTypeParameters())
-                    .map(TypeInfoResolver::resolveType)
+                    .map(TypeResolver::resolveType)
                     .collect(Collectors.toList())
             );
             methodInfo.addAll(
@@ -140,7 +140,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
             TypeInfoParameterized parType = (TypeInfoParameterized) typeInfo;
             List<ITypeInfo> rawClassNames = Arrays
                 .stream(parType.getResolvedClass().getTypeParameters())
-                .map(TypeInfoResolver::resolveType)
+                .map(TypeResolver::resolveType)
                 .collect(Collectors.toList());
             List<ITypeInfo> parTypeNames = parType.getParamTypes();
             for (int i = 0; i < parTypeNames.size(); i++) {
@@ -153,12 +153,12 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private void applySuperGenerics(List<MethodInfo> methodsToMutate, List<FieldInfo> fieldsToMutate) {
         if (superClass != null) {
             //Apply current level changes
-            ITypeInfo typeInfo = TypeInfoResolver.resolveType(clazzRaw.getGenericSuperclass());
+            ITypeInfo typeInfo = TypeResolver.resolveType(clazzRaw.getGenericSuperclass());
             Map<String, ITypeInfo> internalGenericMap = resolveTypeOverrides(typeInfo);
             applyGenerics(internalGenericMap, methodsToMutate, fieldsToMutate);
             Arrays
                 .stream(clazzRaw.getGenericInterfaces())
-                .map(TypeInfoResolver::resolveType)
+                .map(TypeResolver::resolveType)
                 .map(ClassInfo::resolveTypeOverrides)
                 .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
             //Step to next level
@@ -167,7 +167,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
             applyGenerics(internalGenericMap, methodsToMutate, fieldsToMutate);
             Arrays
                 .stream(clazzRaw.getGenericInterfaces())
-                .map(TypeInfoResolver::resolveType)
+                .map(TypeResolver::resolveType)
                 .map(ClassInfo::resolveTypeOverrides)
                 .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
         }
@@ -178,7 +178,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         //Apply current level changes
         Arrays
             .stream(clazzRaw.getGenericInterfaces())
-            .map(TypeInfoResolver::resolveType)
+            .map(TypeResolver::resolveType)
             .map(ClassInfo::resolveTypeOverrides)
             .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
         //Step to next level
@@ -186,7 +186,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         //Rewind
         Arrays
             .stream(clazzRaw.getGenericInterfaces())
-            .map(TypeInfoResolver::resolveType)
+            .map(TypeResolver::resolveType)
             .map(ClassInfo::resolveTypeOverrides)
             .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
     }
@@ -208,18 +208,18 @@ public class ClassInfo implements Comparable<ClassInfo> {
                     v.setUnderscored(true);
                 });
 
-            method.setReturnType(TypeInfoResolver.mutateTypeMap(method.getReturnType(), maskedNames));
+            method.setReturnType(TypeResolver.mutateTypeMap(method.getReturnType(), maskedNames));
             method
                 .getParams()
-                .forEach(p -> p.setTypeInfo(TypeInfoResolver.mutateTypeMap(p.getType(), maskedNames)));
+                .forEach(p -> p.setTypeInfo(TypeResolver.mutateTypeMap(p.getType(), maskedNames)));
 
-            method.setReturnType(TypeInfoResolver.mutateTypeMap(method.getReturnType(), internalGenericMap));
+            method.setReturnType(TypeResolver.mutateTypeMap(method.getReturnType(), internalGenericMap));
             method
                 .getParams()
-                .forEach(p -> p.setTypeInfo(TypeInfoResolver.mutateTypeMap(p.getType(), internalGenericMap)));
+                .forEach(p -> p.setTypeInfo(TypeResolver.mutateTypeMap(p.getType(), internalGenericMap)));
         }
         for (FieldInfo field : fieldInfo) {
-            field.setTypeInfo(TypeInfoResolver.mutateTypeMap(field.getType(), internalGenericMap));
+            field.setTypeInfo(TypeResolver.mutateTypeMap(field.getType(), internalGenericMap));
         }
     }
 

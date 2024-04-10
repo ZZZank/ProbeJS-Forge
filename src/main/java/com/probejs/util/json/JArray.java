@@ -48,16 +48,16 @@ public class JArray implements IJsonBuilder<JsonArray> {
     }
 
     @Override
-    public JsonArray serialize() {
+    public JsonArray build() {
         JsonArray array = new JsonArray();
         for (IJsonBuilder<?> member : members) {
-            array.add(member.serialize());
+            array.add(member.build());
         }
         return array;
     }
 
     @Override
     public String toString() {
-        return serialize().toString();
+        return build().toString();
     }
 }
