@@ -1,3 +1,30 @@
+# ProbeJS Legacy 3.0.1 -> 3.1.0
+
+better type recognizing
+
+## What's new?
+
+-   lambda type alias for Functional Interface
+-   recognize any interfaces with one and only one abstract method as Functional Interface
+-   fix tag snippet compiling
+-   improve error message, making it red, with links to Github issue page
+-   OnJavaMixin
+    -   result of calling `java()` will now be touched by ProbeJS, so that next time dumping is triggered, it can be dumped.
+-   "implements" keyword support for class documents
+-   better line recognizing for documents
+-   special assignment of MaterialJS
+    -   e.g. `type MaterialJS_ = "sponge" | "explosive" | "wool" | "ice" | "air" | "vegetable" | "clay" | "slime" | "rock" | "lava" | "leaves" | "web" | "grass" | "coral" | "cake" | "honey" | "plants" | "wood" | "dragon_egg" | "portal" | "organic" | "gourd" | "glass" | "metal" | "dirt" | "water" | "lantern" | "stone" | "sand" | "snow" | "plant" | "earth" | "iron" | "tnt" | "berry_bush" | MaterialJS;`
+-   touch contents of pre-defined constants
+    -   e.g. `global.jeiRuntime`
+-   var arg support for method params
+-   class touching for generics in superclass/interfaces
+    -   type hint when using PonderJS should be better now
+-   (try to) add underscore to documented type when possible
+-   generics in superclass/interfaces will now be formatted
+-   make method/constructor param typed
+
+---
+
 # ProbeJS Legacy 3.0.0 -> 3.0.1
 
 Fix `Internal.ItemStackJS_`
