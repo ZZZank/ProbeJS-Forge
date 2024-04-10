@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MethodInfo {
+public class MethodInfo implements Comparable<MethodInfo> {
 
     private final String name;
     private final boolean shouldHide;
@@ -117,5 +117,10 @@ public class MethodInfo {
         public void setTypeInfo(ITypeInfo type) {
             this.type = type;
         }
+    }
+
+    @Override
+    public int compareTo(MethodInfo o) {
+        return o.name.compareTo(name);
     }
 }

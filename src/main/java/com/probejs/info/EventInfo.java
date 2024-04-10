@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
-public class EventInfo {
+public class EventInfo implements Comparable<EventInfo> {
 
     public final Class<? extends EventJS> clazzRaw;
     public final String id;
@@ -102,5 +102,10 @@ public class EventInfo {
         boolean cancellable = json.has("cancellable") && json.get("cancellable").getAsBoolean();
 
         return Optional.of(new EventInfo((Class<? extends EventJS>) clazz, id, sub, types, cancellable));
+    }
+
+    @Override
+    public int compareTo(EventInfo o) {
+        return this.id.compareTo(o.id);
     }
 }

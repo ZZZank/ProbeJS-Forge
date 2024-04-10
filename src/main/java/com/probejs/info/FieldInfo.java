@@ -7,7 +7,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class FieldInfo {
+public class FieldInfo implements Comparable<FieldInfo> {
     private final String name;
     private ITypeInfo type;
     private final int modifiers;
@@ -54,5 +54,10 @@ public class FieldInfo {
 
     public void setTypeInfo(ITypeInfo info) {
         this.type = info;
+    }
+
+    @Override
+    public int compareTo(FieldInfo o) {
+        return this.name.compareTo(o.name);
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ClassInfo {
+public class ClassInfo implements Comparable<ClassInfo> {
 
     public static final Map<Class<?>, ClassInfo> CLASS_CACHE = new HashMap<>();
 
@@ -291,5 +291,10 @@ public class ClassInfo {
             } catch (NoSuchMethodException ignored) {}
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(ClassInfo o) {
+        return this.name.compareTo(o.name);
     }
 }
