@@ -178,9 +178,18 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         );
         if (info instanceof TypeInfoClass) {
             final TypeInfoClass classInfo = (TypeInfoClass) info;
-            final int typeCount = classInfo.getTypeVariables().size();
-            if (typeCount != 0) {
-                sb.append('<').append(String.join(", ", Collections.nCopies(typeCount, "any"))).append('>');
+            List<ITypeInfo> typeVariables = classInfo.getTypeVariables();
+            if (typeVariables.size() != 0) {
+                sb.append('<');
+                sb.append(
+                    typeVariables
+                        .stream()
+                        .map(ITypeInfo::getTypeName)
+                        .map(NameResolver::getResolvedName)
+                        .map(NameResolver.ResolvedName::getFullName)
+                        .collect(Collectors.joining(","))
+                );
+                sb.append('>');
             }
         }
         return sb.toString();

@@ -8,8 +8,8 @@ import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FormatterConstructor implements IFormatter {
 
@@ -26,7 +26,15 @@ public class FormatterConstructor implements IFormatter {
             ClassInfo classInfo = ClassInfo.ofCache(clazz.getResolvedClass());
             if (classInfo.getParameters().size() != 0) {
                 sb.append('<');
-                sb.append(String.join(", ", Collections.nCopies(classInfo.getParameters().size(), "any")));
+                sb.append(
+                    classInfo
+                        .getParameters()
+                        .stream()
+                        .map(ITypeInfo::getTypeName)
+                        .map(NameResolver::getResolvedName)
+                        .map(NameResolver.ResolvedName::getFullName)
+                        .collect(Collectors.joining(","))
+                );
                 sb.append('>');
             }
         }
