@@ -69,7 +69,12 @@ public class Walker {
                 result.addAll(walkType(info));
             }
         }
-        if (!(tInfo instanceof TypeInfoVariable)) {
+        if (tInfo instanceof TypeInfoVariable) {
+            ((TypeInfoVariable) tInfo).getBounds()
+                .stream()
+                .map(ITypeInfo::getResolvedClass)
+                .forEach(result::add);
+        } else {
             result.add(tInfo.getResolvedClass());
         }
         result.removeIf(Objects::isNull);
@@ -80,27 +85,6 @@ public class Walker {
         Set<Class<?>> result = new HashSet<>();
         for (Class<?> clazz : classes) {
             ClassInfo info = ClassInfo.ofCache(clazz);
-
-            if (this.walkSuperGenerics) {
-                Type genericSuper = info.getClazzRaw().getGenericSuperclass();
-                if (genericSuper instanceof ParameterizedType) {
-                    Arrays
-                        .stream(((ParameterizedType) genericSuper).getActualTypeArguments())
-                        .filter(t -> t instanceof Class)
-                        .map(t -> (Class<?>) t)
-                        .forEach(result::add);
-                }
-                Arrays
-                    .stream(info.getClazzRaw().getGenericInterfaces())
-                    .filter(t -> t instanceof ParameterizedType)
-                    .map(t -> (ParameterizedType) t)
-                    .map(ParameterizedType::getActualTypeArguments)
-                    .flatMap(Arrays::stream)
-                    .filter(t -> t instanceof Class)
-                    .map(t -> (Class<?>) t)
-                    .forEach(result::add);
-            }
-
             if (walkSuper) {
                 ClassInfo superclass = info.getSuperClass();
                 if (superclass != null) {
@@ -110,6 +94,7 @@ public class Walker {
                     result.add(cInfo.getClazzRaw());
                 }
             }
+
             if (walkField) {
                 for (FieldInfo fInfo : info.getFieldInfos()) {
                     result.addAll(walkType(fInfo.getType()));

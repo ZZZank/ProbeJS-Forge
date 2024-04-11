@@ -47,7 +47,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private final int modifiers;
     private final boolean isInterface;
     private final boolean isFunctionalInterface;
-    private final List<ITypeInfo> parameters;
+    private final List<TypeInfoVariable> parameters;
     /**
      * filtered view of {@link ClassInfo#allMethodInfos}
      */
@@ -89,7 +89,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
             parameters.addAll(
                 Arrays
                     .stream(clazzRaw.getTypeParameters())
-                    .map(TypeResolver::resolveType)
+                    .map(TypeInfoVariable::new)
                     .collect(Collectors.toList())
             );
             allMethodInfos.addAll(
@@ -273,7 +273,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         return methodInfos;
     }
 
-    public List<ITypeInfo> getParameters() {
+    public List<TypeInfoVariable> getParameters() {
         return parameters;
     }
 

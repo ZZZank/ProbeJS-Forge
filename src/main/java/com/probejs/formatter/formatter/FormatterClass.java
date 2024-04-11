@@ -13,6 +13,7 @@ import com.probejs.info.*;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
+import com.probejs.info.type.TypeInfoVariable;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
 import java.lang.reflect.InvocationTargetException;
@@ -261,7 +262,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                     .format(0, 0)
             );
         }
-        List<ITypeInfo> params = classInfo.getParameters();
+        List<TypeInfoVariable> params = classInfo.getParameters();
         if (!params.isEmpty()) {
             String paramString = String.format(
                 "<%s>",

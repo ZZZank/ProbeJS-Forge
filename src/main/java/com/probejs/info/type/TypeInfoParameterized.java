@@ -2,6 +2,7 @@ package com.probejs.info.type;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,9 +29,9 @@ public class TypeInfoParameterized implements ITypeInfo {
                 .collect(Collectors.toList());
     }
 
-    public TypeInfoParameterized(ITypeInfo rawType, List<ITypeInfo> paramTypes) {
+    public TypeInfoParameterized(ITypeInfo rawType, List<? extends ITypeInfo> paramTypes) {
         this.rawType = rawType;
-        this.paramTypes = paramTypes;
+        this.paramTypes = new ArrayList<>(paramTypes);
     }
 
     @Override
