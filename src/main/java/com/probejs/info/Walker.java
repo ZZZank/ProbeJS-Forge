@@ -4,6 +4,7 @@ import com.probejs.info.MethodInfo.ParamInfo;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -58,11 +59,9 @@ public class Walker {
         Set<Class<?>> result = new HashSet<>();
         if (tInfo instanceof TypeInfoParameterized) {
             TypeInfoParameterized tInfoP = (TypeInfoParameterized) tInfo;
-            for (ITypeInfo info : tInfoP.getParamTypes()) {
-                result.addAll(walkType(info));
-            }
-        }
-        if (tInfo instanceof TypeInfoVariable) {
+            result.add(tInfoP.getResolvedClass());
+            result.addAll(walkTypes(tInfoP.getParamTypes()));
+        } else if (tInfo instanceof TypeInfoVariable) {
             ((TypeInfoVariable) tInfo).getBounds()
                 .stream()
                 .map(ITypeInfo::getResolvedClass)
@@ -74,23 +73,49 @@ public class Walker {
         return result;
     }
 
+    private Set<Class<?>> walkTypes(Collection<? extends ITypeInfo> tInfos) {
+        Set<Class<?>> result = new HashSet<>();
+        for (ITypeInfo tInfo : tInfos) {
+            result.addAll(walkType(tInfo));
+        }
+        return result;
+    }
+
     private Set<Class<?>> touch(Set<Class<?>> classes) {
         Set<Class<?>> result = new HashSet<>();
         for (Class<?> clazz : classes) {
             ClassInfo info = ClassInfo.ofCache(clazz);
+            //TODO: walkSuperGenerics is not a good idea, we needs ClassInfo rewriting
+            /*
+            if (this.walkSuperGenerics) {
+                Type genericSuper = info.getClazzRaw().getGenericSuperclass();
+                if (genericSuper instanceof ParameterizedType) {
+                    Arrays
+                        .stream(((ParameterizedType) genericSuper).getActualTypeArguments())
+                        .filter(t -> t instanceof Class)
+                        .map(t -> (Class<?>) t)
+                        .forEach(result::add);
+                }
+                Arrays
+                    .stream(info.getClazzRaw().getGenericInterfaces())
+                    .filter(t -> t instanceof ParameterizedType)
+                    .map(t -> (ParameterizedType) t)
+                    .map(ParameterizedType::getActualTypeArguments)
+                    .flatMap(Arrays::stream)
+                    .filter(t -> t instanceof Class)
+                    .map(t -> (Class<?>) t)
+                    .forEach(result::add);
+            }
+             */
             if (walkSuper) {
                 ClassInfo superclass = info.getSuperClass();
                 if (superclass != null) {
                     result.add(superclass.getClazzRaw());
-                    for (TypeInfoVariable tInfo : superclass.getParameters()) {
-                        result.addAll(walkType(tInfo));
-                    }
+                    result.addAll(walkTypes(superclass.getParameters()));
                 }
                 for (ClassInfo cInfo : info.getInterfaces()) {
                     result.add(cInfo.getClazzRaw());
-                    for (TypeInfoVariable tInfo : cInfo.getParameters()) {
-                        result.addAll(walkType(tInfo));
-                    }
+                    result.addAll(walkTypes(cInfo.getParameters()));
                 }
             }
 
