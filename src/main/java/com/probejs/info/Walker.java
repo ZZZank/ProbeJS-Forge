@@ -4,9 +4,6 @@ import com.probejs.info.MethodInfo.ParamInfo;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -19,46 +16,39 @@ public class Walker {
     private final boolean walkField;
     private final boolean walkSuper;
     private final boolean walkType;
-    private final boolean walkSuperGenerics;
 
     public Walker(
         Set<Class<?>> initial,
         boolean walkMethod,
         boolean walkField,
         boolean walkSuper,
-        boolean walkType,
-        boolean walkSuperGenerics
+        boolean walkType
     ) {
         this.initial = initial;
         this.walkMethod = walkMethod;
         this.walkField = walkField;
         this.walkSuper = walkSuper;
         this.walkType = walkType;
-        this.walkSuperGenerics = walkSuperGenerics;
     }
 
     public Walker(Set<Class<?>> initial) {
-        this(initial, true, true, true, true, true);
+        this(initial, true, true, true, true);
     }
 
     public Walker withWalkMethod(boolean walkMethod) {
-        return new Walker(initial, walkMethod, walkField, walkSuper, walkType, walkSuperGenerics);
+        return new Walker(initial, walkMethod, walkField, walkSuper, walkType);
     }
 
     public Walker withWalkField(boolean walkField) {
-        return new Walker(initial, walkMethod, walkField, walkSuper, walkType, walkSuperGenerics);
+        return new Walker(initial, walkMethod, walkField, walkSuper, walkType);
     }
 
     public Walker withWalkSuper(boolean walkSuper) {
-        return new Walker(initial, walkMethod, walkField, walkSuper, walkType, walkSuperGenerics);
+        return new Walker(initial, walkMethod, walkField, walkSuper, walkType);
     }
 
     public Walker withWalkType(boolean walkType) {
-        return new Walker(initial, walkMethod, walkField, walkSuper, walkType, walkSuperGenerics);
-    }
-
-    public Walker withWalkSuperGenerics(boolean walkSuperGenerics) {
-        return new Walker(initial, walkMethod, walkField, walkSuper, walkType, walkSuperGenerics);
+        return new Walker(initial, walkMethod, walkField, walkSuper, walkType);
     }
 
     private Set<Class<?>> walkType(ITypeInfo tInfo) {
