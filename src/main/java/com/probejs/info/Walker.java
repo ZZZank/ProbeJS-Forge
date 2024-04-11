@@ -52,10 +52,13 @@ public class Walker {
     }
 
     private Set<Class<?>> walkType(ITypeInfo tInfo) {
+        if (!walkType) {
+            return new HashSet<>(0);
+        }
         Set<Class<?>> result = new HashSet<>();
-        if (tInfo instanceof TypeInfoParameterized && walkType) {
-            TypeInfoParameterized parType = (TypeInfoParameterized) tInfo;
-            for (ITypeInfo info : parType.getParamTypes()) {
+        if (tInfo instanceof TypeInfoParameterized) {
+            TypeInfoParameterized tInfoP = (TypeInfoParameterized) tInfo;
+            for (ITypeInfo info : tInfoP.getParamTypes()) {
                 result.addAll(walkType(info));
             }
         }
@@ -79,9 +82,15 @@ public class Walker {
                 ClassInfo superclass = info.getSuperClass();
                 if (superclass != null) {
                     result.add(superclass.getClazzRaw());
+                    for (TypeInfoVariable tInfo : superclass.getParameters()) {
+                        result.addAll(walkType(tInfo));
+                    }
                 }
                 for (ClassInfo cInfo : info.getInterfaces()) {
                     result.add(cInfo.getClazzRaw());
+                    for (TypeInfoVariable tInfo : cInfo.getParameters()) {
+                        result.addAll(walkType(tInfo));
+                    }
                 }
             }
 
