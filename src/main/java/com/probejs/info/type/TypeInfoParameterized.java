@@ -92,4 +92,9 @@ public class TypeInfoParameterized implements ITypeInfo {
     public void setRawType(ITypeInfo rawType) {
         this.rawType = rawType;
     }
+
+    @Override
+    public Type getRaw() {
+        return this.rawType.getRaw();
+    }
 }

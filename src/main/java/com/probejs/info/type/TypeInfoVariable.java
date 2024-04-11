@@ -9,19 +9,24 @@ public class TypeInfoVariable implements ITypeInfo {
         return type instanceof TypeVariable;
     }
 
-    private final TypeVariable<?> type;
+    private final TypeVariable<?> raw;
     private boolean underscored = false;
 
     public TypeInfoVariable(Type type) {
-        this.type = (TypeVariable<?>) type;
+        this.raw = (TypeVariable<?>) type;
     }
 
     private TypeInfoVariable(TypeVariable<?> inner) {
-        this.type = inner;
+        this.raw = inner;
     }
 
     public void setUnderscored(boolean underscored) {
         this.underscored = underscored;
+    }
+
+    @Override
+    public TypeVariable<?> getRaw() {
+        return this.raw;
     }
 
     @Override
@@ -31,7 +36,7 @@ public class TypeInfoVariable implements ITypeInfo {
 
     @Override
     public String getTypeName() {
-        return wrapTypeName(this.type.getTypeName());
+        return wrapTypeName(this.raw.getTypeName());
     }
 
     @Override
@@ -44,7 +49,7 @@ public class TypeInfoVariable implements ITypeInfo {
 
     @Override
     public ITypeInfo copy() {
-        TypeInfoVariable copied = new TypeInfoVariable(type);
+        TypeInfoVariable copied = new TypeInfoVariable(raw);
         copied.setUnderscored(underscored);
         return copied;
     }

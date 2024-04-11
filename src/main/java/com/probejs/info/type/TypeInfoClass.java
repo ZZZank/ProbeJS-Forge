@@ -11,14 +11,14 @@ public class TypeInfoClass implements ITypeInfo {
         return type instanceof Class<?>;
     }
 
-    private final Class<?> type;
+    private final Class<?> raw;
 
     public TypeInfoClass(Type type) {
-        this.type = (Class<?>) type;
+        this.raw = (Class<?>) type;
     }
 
     private TypeInfoClass(Class<?> type) {
-        this.type = type;
+        this.raw = type;
     }
 
     @Override
@@ -28,12 +28,12 @@ public class TypeInfoClass implements ITypeInfo {
 
     @Override
     public Class<?> getResolvedClass() {
-        return type;
+        return raw;
     }
 
     @Override
     public String getTypeName() {
-        return wrapTypeName(this.type.getTypeName());
+        return wrapTypeName(this.raw.getTypeName());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class TypeInfoClass implements ITypeInfo {
 
     @Override
     public ITypeInfo copy() {
-        return new TypeInfoClass(type);
+        return new TypeInfoClass(raw);
     }
 
     @Override
@@ -52,13 +52,18 @@ public class TypeInfoClass implements ITypeInfo {
             return false;
         }
         TypeInfoClass clazz = (TypeInfoClass) info;
-        return clazz.type.isAssignableFrom(type);
+        return clazz.raw.isAssignableFrom(raw);
     }
 
     public List<ITypeInfo> getTypeVariables() {
         return Arrays
-            .stream(type.getTypeParameters())
+            .stream(raw.getTypeParameters())
             .map(TypeResolver::resolveType)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public Type getRaw() {
+        return this.raw;
     }
 }

@@ -61,4 +61,9 @@ public class TypeInfoWildcard implements ITypeInfo {
     public boolean assignableFrom(ITypeInfo info) {
         return info.getBaseType().assignableFrom(type);
     }
+
+    @Override
+    public Type getRaw() {
+        return this.type.getRaw();
+    }
 }

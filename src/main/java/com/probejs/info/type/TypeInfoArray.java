@@ -81,4 +81,9 @@ public class TypeInfoArray implements ITypeInfo {
     public boolean assignableFrom(ITypeInfo info) {
         return info instanceof TypeInfoArray && info.getBaseType().assignableFrom(base);
     }
+
+    @Override
+    public Type getRaw() {
+        return this.base.getRaw();
+    }
 }
