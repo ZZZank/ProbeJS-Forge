@@ -1,6 +1,12 @@
 package com.probejs.info;
 
 import com.google.common.collect.HashBiMap;
+import com.probejs.plugin.DummyBindingEvent;
+import com.probejs.util.PUtil;
+import dev.latvian.kubejs.recipe.RecipeTypeJS;
+import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
+import dev.latvian.kubejs.server.ServerScriptManager;
+import dev.latvian.kubejs.util.KubeJSPlugins;
 import dev.latvian.kubejs.util.Tags;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -70,21 +76,27 @@ public class SpecialData {
 
             Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> def = HashBiMap.create();
 
-            registries.putAll(castedGetField(f, RegistryManager.ACTIVE, def));
-            registries.putAll(castedGetField(f, RegistryManager.FROZEN, def));
+            registries.putAll(PUtil.castedGetField(f, RegistryManager.ACTIVE, def));
+            registries.putAll(PUtil.castedGetField(f, RegistryManager.FROZEN, def));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return registries;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T castedGetField(Field f, Object o, T defaultVal) {
-        try {
-            return (T) f.get(o);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return defaultVal;
+    public static DummyBindingEvent computeBindingEvent() {
+        final DummyBindingEvent bindingEvent = new DummyBindingEvent(
+            ServerScriptManager.instance.scriptManager
+        );
+        KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
+        return bindingEvent;
+    }
+
+    public static Map<ResourceLocation, RecipeTypeJS> computeRecipeTypes() {
+        final Map<ResourceLocation, RecipeTypeJS> typeMap = new HashMap<>();
+        final RegisterRecipeHandlersEvent recipeEvent = new RegisterRecipeHandlersEvent(typeMap);
+
+        KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
+        return typeMap;
     }
 }

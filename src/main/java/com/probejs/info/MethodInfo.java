@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 public class MethodInfo {
 
+    private final Method raw;
     private final String name;
     private final boolean shouldHide;
     private final int modifiers;
@@ -33,6 +34,7 @@ public class MethodInfo {
     }
 
     public MethodInfo(Method method, Class<?> from) {
+        this.raw = method;
         this.name = getRemappedOrDefault(method, from);
         this.shouldHide = method.getAnnotation(HideFromJS.class) != null;
         this.from = from;
@@ -44,6 +46,10 @@ public class MethodInfo {
                 .stream(method.getTypeParameters())
                 .map(TypeResolver::resolveType)
                 .collect(Collectors.toList());
+    }
+
+    public Method getRaw() {
+        return raw;
     }
 
     public String getName() {

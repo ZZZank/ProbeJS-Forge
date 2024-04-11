@@ -111,12 +111,12 @@ public class Walker {
                 }
             }
             if (walkField) {
-                for (FieldInfo fInfo : info.getFieldInfo()) {
+                for (FieldInfo fInfo : info.getFieldInfos()) {
                     result.addAll(walkType(fInfo.getType()));
                 }
             }
             if (walkMethod) {
-                for (MethodInfo mInfo : info.getMethodInfo()) {
+                for (MethodInfo mInfo : info.getMethodInfos()) {
                     result.addAll(walkType(mInfo.getReturnType()));
                     for (ParamInfo pInfo : mInfo.getParams()) {
                         result.addAll(walkType(pInfo.getType()));

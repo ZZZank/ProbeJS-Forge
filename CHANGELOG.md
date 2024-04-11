@@ -4,7 +4,7 @@ better type recognizing
 
 ## What's new?
 
--   lambda type alias for Functional Interface
+-   lambda style type alias for Functional Interface
 -   recognize any interfaces with one and only one abstract method as Functional Interface
 -   fix tag snippet compiling
 -   improve error message, making it red, with links to Github issue page

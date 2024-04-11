@@ -5,9 +5,9 @@ import com.probejs.formatter.ClassResolver;
 import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.formatter.FormatterMethod;
 import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.TypeResolver;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
+import com.probejs.info.type.TypeResolver;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -48,29 +48,39 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private final boolean isInterface;
     private final boolean isFunctionalInterface;
     private final List<ITypeInfo> parameters;
-    private final List<MethodInfo> methodInfo;
-    private final List<FieldInfo> fieldInfo;
-    private final List<ConstructorInfo> constructorInfo;
+    /**
+     * filtered view of {@link ClassInfo#allMethodInfos}
+     */
+    private final List<MethodInfo> methodInfos;
+    /**
+     * filtered view of {@link ClassInfo#allFieldInfos}
+     */
+    private final List<FieldInfo> fieldInfos;
+    private final List<ConstructorInfo> constructorInfos;
     private final ClassInfo superClass;
     private final List<ClassInfo> interfaces;
+    private final List<MethodInfo> allMethodInfos;
+    private final List<FieldInfo> allFieldInfos;
 
     private ClassInfo(Class<?> clazz) {
-        clazzRaw = clazz;
-        name = clazzRaw.getName();
-        modifiers = clazzRaw.getModifiers();
-        isInterface = clazzRaw.isInterface();
-        superClass = ofCache(clazzRaw.getSuperclass());
+        this.clazzRaw = clazz;
+        this.name = clazzRaw.getName();
+        this.modifiers = clazzRaw.getModifiers();
+        this.isInterface = clazzRaw.isInterface();
+        this.superClass = ofCache(clazzRaw.getSuperclass());
 
-        interfaces = new ArrayList<>(0);
-        constructorInfo = new ArrayList<>(0);
-        parameters = new ArrayList<>(0);
-        methodInfo = new ArrayList<>(0);
-        fieldInfo = new ArrayList<>(0);
+        this.interfaces = new ArrayList<>(0);
+        this.constructorInfos = new ArrayList<>(0);
+        this.parameters = new ArrayList<>(0);
+        this.methodInfos = new ArrayList<>(0);
+        this.fieldInfos = new ArrayList<>(0);
+        this.allMethodInfos = new ArrayList<>(0);
+        this.allFieldInfos = new ArrayList<>(0);
         try {
             interfaces.addAll(
                 Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::ofCache).collect(Collectors.toList())
             );
-            constructorInfo.addAll(
+            constructorInfos.addAll(
                 Arrays
                     .stream(clazzRaw.getConstructors())
                     .map(ConstructorInfo::new)
@@ -82,28 +92,36 @@ public class ClassInfo implements Comparable<ClassInfo> {
                     .map(TypeResolver::resolveType)
                     .collect(Collectors.toList())
             );
-            methodInfo.addAll(
+            allMethodInfos.addAll(
                 Arrays
                     .stream(clazzRaw.getMethods())
-                    .filter(method -> {
+                    .map(m -> new MethodInfo(m, clazz))
+                    .collect(Collectors.toList())
+            );
+            methodInfos.addAll(
+                this.allMethodInfos.stream()
+                    .filter(mInfo -> {
                         if (!ProbeJS.CONFIG.trimming) {
                             return true;
                         }
                         if (isInterface) {
-                            return method.getDeclaringClass() == clazzRaw;
+                            return mInfo.getRaw().getDeclaringClass() == clazzRaw;
                         }
-                        return !hasIdenticalParentMethod(method);
+                        return !hasIdenticalParentMethod(mInfo);
                     })
-                    .map(m -> new MethodInfo(m, clazz))
                     .filter(m -> ClassResolver.acceptMethod(m.getName()))
                     .filter(m -> !m.shouldHide())
                     .collect(Collectors.toList())
             );
-            fieldInfo.addAll(
-                Arrays
-                    .stream(clazzRaw.getFields())
-                    .filter(field -> !ProbeJS.CONFIG.trimming || field.getDeclaringClass() == clazzRaw)
-                    .map(FieldInfo::new)
+            allFieldInfos.addAll(
+                Arrays.stream(clazzRaw.getFields()).map(FieldInfo::new).collect(Collectors.toList())
+            );
+            fieldInfos.addAll(
+                allFieldInfos
+                    .stream()
+                    .filter(fInfo ->
+                        !ProbeJS.CONFIG.trimming || fInfo.getRaw().getDeclaringClass() == clazzRaw
+                    )
                     .filter(f -> ClassResolver.acceptField(f.getName()))
                     .filter(f -> !f.shouldHide())
                     .collect(Collectors.toList())
@@ -113,10 +131,10 @@ public class ClassInfo implements Comparable<ClassInfo> {
             ProbeJS.LOGGER.error("Unable to fetch infos for class '{}'", clazzRaw.getName());
         }
         //Resolve types - rollback everything till Object
-        applySuperGenerics(methodInfo, fieldInfo);
+        applySuperGenerics(methodInfos, fieldInfos);
         //Functional Interfaces
         List<MethodInfo> abstracts =
-            this.methodInfo.stream().filter(MethodInfo::isAbstract).collect(Collectors.toList());
+            this.methodInfos.stream().filter(MethodInfo::isAbstract).collect(Collectors.toList());
         this.isFunctionalInterface = isInterface && abstracts.size() == 1;
         if (this.isFunctionalInterface) {
             NameResolver.addSpecialAssignments(
@@ -243,16 +261,16 @@ public class ClassInfo implements Comparable<ClassInfo> {
         return interfaces;
     }
 
-    public List<FieldInfo> getFieldInfo() {
-        return fieldInfo;
+    public List<FieldInfo> getFieldInfos() {
+        return fieldInfos;
     }
 
-    public List<ConstructorInfo> getConstructorInfo() {
-        return constructorInfo;
+    public List<ConstructorInfo> getConstructorInfos() {
+        return constructorInfos;
     }
 
-    public List<MethodInfo> getMethodInfo() {
-        return methodInfo;
+    public List<MethodInfo> getMethodInfos() {
+        return methodInfos;
     }
 
     public List<ITypeInfo> getParameters() {
@@ -274,15 +292,11 @@ public class ClassInfo implements Comparable<ClassInfo> {
     /**
      * seems not working for parameterized interfaces
      */
-    private boolean hasIdenticalParentMethod(Method method) {
+    private static boolean hasIdenticalParentMethod(Method method, Class<?> clazz) {
         if (method.isDefault()) {
             return false;
         }
-        for (
-            Class<?> parent = this.clazzRaw.getSuperclass();
-            parent != null;
-            parent = parent.getSuperclass()
-        ) {
+        for (Class<?> parent = clazz.getSuperclass(); parent != null; parent = parent.getSuperclass()) {
             try {
                 Method parentMethod = parent.getMethod(method.getName(), method.getParameterTypes());
                 // Check if the generic return type is the same
@@ -291,6 +305,13 @@ public class ClassInfo implements Comparable<ClassInfo> {
             } catch (NoSuchMethodException ignored) {}
         }
         return false;
+    }
+
+    /**
+     * @see com.probejs.info.ClassInfo#hasIdenticalParentMethod(Method, Class)
+     */
+    private static boolean hasIdenticalParentMethod(MethodInfo mInfo) {
+        return hasIdenticalParentMethod(mInfo.getRaw(), mInfo.getClass());
     }
 
     @Override

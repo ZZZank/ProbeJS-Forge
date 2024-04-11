@@ -32,12 +32,12 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
     public FormatterClass(ClassInfo classInfo) {
         this.classInfo = classInfo;
-        for (MethodInfo methodInfo : classInfo.getMethodInfo()) {
+        for (MethodInfo methodInfo : classInfo.getMethodInfos()) {
             methodFormatters
                 .computeIfAbsent(methodInfo.getName(), s -> new ArrayList<>())
                 .add(new FormatterMethod(methodInfo));
         }
-        for (FieldInfo fieldInfo : classInfo.getFieldInfo()) {
+        for (FieldInfo fieldInfo : classInfo.getFieldInfos()) {
             fieldFormatters.put(fieldInfo.getName(), new FormatterField(fieldInfo));
         }
     }
@@ -202,7 +202,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         //special processing for FunctionalInterface
         if (classInfo.isFunctionalInterface()) {
             Optional<MethodInfo> fnTargets = classInfo
-                .getMethodInfo()
+                .getMethodInfos()
                 .stream()
                 .filter(MethodInfo::isAbstract)
                 .findFirst();
@@ -225,7 +225,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
         // constructors
         if (!classInfo.isInterface()) {
-            if (internal && !classInfo.getConstructorInfo().isEmpty()) {
+            if (internal && !classInfo.getConstructorInfos().isEmpty()) {
                 lines.addAll(
                     new FormatterComments("Internal constructor, not callable unless via `java()`.")
                         .setBlockStyle(true)
@@ -233,7 +233,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 );
             }
             classInfo
-                .getConstructorInfo()
+                .getConstructorInfos()
                 .stream()
                 .map(FormatterConstructor::new)
                 .forEach(f -> lines.addAll(f.format(indent + stepIndent, stepIndent)));

@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 public class FieldInfo implements Comparable<FieldInfo> {
+
+    private final Field raw;
     private final String name;
     private ITypeInfo type;
     private final int modifiers;
@@ -21,11 +23,12 @@ public class FieldInfo implements Comparable<FieldInfo> {
     }
 
     public FieldInfo(Field field) {
-        name = getRemappedOrDefault(field);
-        modifiers = field.getModifiers();
-        shouldHide = field.getAnnotation(HideFromJS.class) != null;
-        type = TypeResolver.resolveType(field.getGenericType());
-        value = PUtil.tryOrDefault(() -> isStatic() ? field.get(null) : null, null);
+        this.raw = field;
+        this.name = getRemappedOrDefault(field);
+        this.modifiers = field.getModifiers();
+        this.shouldHide = field.getAnnotation(HideFromJS.class) != null;
+        this.type = TypeResolver.resolveType(field.getGenericType());
+        this.value = PUtil.tryOrDefault(() -> isStatic() ? field.get(null) : null, null);
     }
 
     public boolean isStatic() {
@@ -34,6 +37,10 @@ public class FieldInfo implements Comparable<FieldInfo> {
 
     public boolean isFinal() {
         return Modifier.isFinal(modifiers);
+    }
+
+    public Field getRaw() {
+        return raw;
     }
 
     public String getName() {

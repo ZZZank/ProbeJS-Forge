@@ -33,16 +33,16 @@ public class EventCompiler {
     public static final Path EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(EVENT_CACHE_NAME);
     public static final Path FORGE_EVENT_CACHE_PATH = ProbePaths.CACHE.resolve(FORGE_EVENT_CACHE_NAME);
 
-    private static Collection<EventInfo> cachedEvents;
+    private static Collection<EventInfo> knownEvents;
     private static Set<EventInfo> wildcards;
-    private static Collection<Class<?>> cachedForgeEvents;
+    private static Collection<Class<?>> knownForgeEvents;
 
-    public static void compile(Map<String, EventInfo> cachedEvents, Map<String, Class<?>> cachedForgeEvents)
+    public static void compile(Map<String, EventInfo> knownEvents, Map<String, Class<?>> knownForgeEvents)
         throws IOException {
-        EventCompiler.cachedEvents = cachedEvents.values();
-        EventCompiler.cachedForgeEvents = cachedForgeEvents.values();
+        EventCompiler.knownEvents = knownEvents.values();
+        EventCompiler.knownForgeEvents = knownForgeEvents.values();
         EventCompiler.wildcards =
-            cachedEvents.values().stream().filter(EventInfo::hasSub).collect(Collectors.toSet());
+            knownEvents.values().stream().filter(EventInfo::hasSub).collect(Collectors.toSet());
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
 
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
@@ -50,15 +50,15 @@ public class EventCompiler {
         writeWildcardEvents(writer);
         writeForgeEvents(writer);
 
-        EventCompiler.cachedEvents = null;
-        EventCompiler.cachedForgeEvents = null;
+        EventCompiler.knownEvents = null;
+        EventCompiler.knownForgeEvents = null;
         EventCompiler.wildcards = null;
         writer.close();
     }
 
     private static void writeForgeEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
-        cachedForgeEvents
+        knownForgeEvents
             .stream()
             .sorted(Comparator.comparing(Class::getName))
             .map(clazz ->
@@ -109,7 +109,7 @@ public class EventCompiler {
 
     private static void writeEvents(BufferedWriter writer) throws IOException {
         final List<String> lines = new ArrayList<>();
-        for (EventInfo eInfo : (new TreeSet<>(cachedEvents))) {
+        for (EventInfo eInfo : (new TreeSet<>(knownEvents))) {
             String id = eInfo.id;
             if (eInfo.hasSub()) {
                 id = id + "." + eInfo.sub;
@@ -207,7 +207,7 @@ public class EventCompiler {
         return cachedEvents;
     }
 
-    public static void comileForgeEventsCache(Map<String, Class<?>> events) throws IOException {
+    public static void compileForgeEventsCache(Map<String, Class<?>> events) throws IOException {
         final BufferedWriter cacheWriter = Files.newBufferedWriter(FORGE_EVENT_CACHE_PATH);
         final JsonObject outJson = new JsonObject();
         for (Map.Entry<String, Class<?>> entry : events.entrySet()) {

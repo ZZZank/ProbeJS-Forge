@@ -14,15 +14,14 @@ import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.EventInfo;
+import com.probejs.info.SpecialData;
 import com.probejs.info.Walker;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.plugin.CapturedClasses;
 import com.probejs.plugin.DummyBindingEvent;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
-import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
 import dev.latvian.kubejs.server.ServerScriptManager;
-import dev.latvian.kubejs.util.KubeJSPlugins;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -58,7 +57,7 @@ public class TypingCompiler {
             .getConstantDumpMap()
             .values()
             .stream()
-            .map(DummyBindingEvent::getConstantClassRecursive)
+            .map(DummyBindingEvent::touchConstantClassRecursive)
             .forEach(touchableClasses::addAll);
         bindingEvent.getClassDumpMap().values().forEach(touchableClasses::add);
 
@@ -66,8 +65,7 @@ public class TypingCompiler {
         return walker.walk();
     }
 
-    public static void compileGlobal(DummyBindingEvent bindingEvent, Set<Class<?>> globalClasses)
-        throws IOException {
+    public static void compileGlobal(Set<Class<?>> globalClasses) throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("globals.d.ts"));
         writer.write("/// <reference path=\"./special.d.ts\" />\n");
         Map<String, List<IFormatter>> namespaced = new HashMap<>();
@@ -192,28 +190,19 @@ public class TypingCompiler {
     }
 
     public static void compile() throws IOException {
-        final DummyBindingEvent bindingEvent = new DummyBindingEvent(
-            ServerScriptManager.instance.scriptManager
-        );
-        final Map<ResourceLocation, RecipeTypeJS> typeMap = new HashMap<>();
-        final RegisterRecipeHandlersEvent recipeEvent = new RegisterRecipeHandlersEvent(typeMap);
+        final DummyBindingEvent bindingEvent = SpecialData.computeBindingEvent();
+        final Map<ResourceLocation, RecipeTypeJS> typeMap = SpecialData.computeRecipeTypes();
+        final Map<String, EventInfo> knownEvents = EventCompiler.readCachedEvents();
+        knownEvents.putAll(CapturedClasses.capturedEvents);
+        final Map<String, Class<?>> knownRawEvents = EventCompiler.readCachedForgeEvents();
+        knownRawEvents.putAll(CapturedClasses.capturedRawEvents);
 
-        KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
-        KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
-
-        //event cache
-        final Map<String, EventInfo> cachedEvents = EventCompiler.readCachedEvents();
-        final Map<String, Class<?>> cachedForgeEvents = EventCompiler.readCachedForgeEvents();
-        cachedEvents.putAll(CapturedClasses.capturedEvents);
-        cachedForgeEvents.putAll(CapturedClasses.capturedRawEvents);
-
-        final Set<Class<?>> cachedClasses = cachedEvents
+        final Set<Class<?>> cachedClasses = knownEvents
             .values()
             .stream()
             .map(eventInfo -> eventInfo.clazzRaw)
             .collect(Collectors.toSet());
-        cachedClasses.addAll(cachedForgeEvents.values());
-        // cachedClasses.addAll(RegistryCompiler.getRegistryClasses());
+        cachedClasses.addAll(knownRawEvents.values());
 
         //global class
         final Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
@@ -224,13 +213,13 @@ public class TypingCompiler {
 
         SpecialTypes.processSpecialAssignments();
 
-        compileGlobal(bindingEvent, globalClasses);
+        compileGlobal(globalClasses);
         SpecialCompiler.compile(typeMap);
-        EventCompiler.compile(cachedEvents, cachedForgeEvents);
+        EventCompiler.compile(knownEvents, knownRawEvents);
         compileConstants(bindingEvent);
         compileJava(globalClasses);
         compileJSConfig();
-        EventCompiler.compileEventsCache(cachedEvents);
-        EventCompiler.comileForgeEventsCache(cachedForgeEvents);
+        EventCompiler.compileEventsCache(knownEvents);
+        EventCompiler.compileForgeEventsCache(knownRawEvents);
     }
 }

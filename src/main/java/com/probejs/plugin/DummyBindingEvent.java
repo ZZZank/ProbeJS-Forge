@@ -44,7 +44,7 @@ public class DummyBindingEvent extends BindingsEvent {
         return constantDumpMap;
     }
 
-    public static Set<Class<?>> getConstantClassRecursive(Object constantDump) {
+    public static Set<Class<?>> touchConstantClassRecursive(Object constantDump) {
         Set<Class<?>> result = new HashSet<>();
         if (constantDump == null) {
             return result;
@@ -54,15 +54,15 @@ public class DummyBindingEvent extends BindingsEvent {
             Arrays
                 .stream(scriptable.getIds())
                 .map(scriptable::get)
-                .map(DummyBindingEvent::getConstantClassRecursive)
+                .map(DummyBindingEvent::touchConstantClassRecursive)
                 .forEach(result::addAll);
         } else if (constantDump instanceof Map<?, ?>) {
             Map<?, ?> map = (Map<?, ?>) constantDump;
-            map.keySet().stream().map(DummyBindingEvent::getConstantClassRecursive).forEach(result::addAll);
-            map.values().stream().map(DummyBindingEvent::getConstantClassRecursive).forEach(result::addAll);
+            map.keySet().stream().map(DummyBindingEvent::touchConstantClassRecursive).forEach(result::addAll);
+            map.values().stream().map(DummyBindingEvent::touchConstantClassRecursive).forEach(result::addAll);
         } else if (constantDump instanceof Collection<?>) {
             Collection<?> collection = (Collection<?>) constantDump;
-            collection.stream().map(DummyBindingEvent::getConstantClassRecursive).forEach(result::addAll);
+            collection.stream().map(DummyBindingEvent::touchConstantClassRecursive).forEach(result::addAll);
         } else {
             result.add(constantDump.getClass());
         }

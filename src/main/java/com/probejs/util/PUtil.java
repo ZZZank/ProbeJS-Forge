@@ -1,5 +1,6 @@
 package com.probejs.util;
 
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Map;
 
@@ -37,5 +38,15 @@ public class PUtil {
     public static <E> E castedGetOrDef(Object key, Map<?, ?> values, E defaultValue) {
         Object v = values.get(key);
         return v == null ? defaultValue : (E) v;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T castedGetField(Field f, Object o, T defaultVal) {
+        try {
+            return (T) f.get(o);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return defaultVal;
     }
 }
