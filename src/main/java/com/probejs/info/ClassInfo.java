@@ -104,7 +104,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
                     if (isInterface) {
                         return mInfo.getRaw().getDeclaringClass() == clazzRaw;
                     }
-                    return !hasIdenticalParentMethod(mInfo);
+                    return !hasIdenticalParentMethod(mInfo.getRaw(), clazz);
                 })
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
                 .filter(m -> !m.shouldHide())
@@ -297,13 +297,6 @@ public class ClassInfo implements Comparable<ClassInfo> {
             } catch (NoSuchMethodException ignored) {}
         }
         return false;
-    }
-
-    /**
-     * @see com.probejs.info.ClassInfo#hasIdenticalParentMethod(Method, Class)
-     */
-    private static boolean hasIdenticalParentMethod(MethodInfo mInfo) {
-        return hasIdenticalParentMethod(mInfo.getRaw(), mInfo.getFrom().clazzRaw);
     }
 
     @Override
