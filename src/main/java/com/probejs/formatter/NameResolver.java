@@ -21,7 +21,7 @@ public class NameResolver {
 
     public static class ResolvedName {
 
-        public static final ResolvedName UNRESOLVED = new ResolvedName(Arrays.asList("any"));
+        public static final ResolvedName UNRESOLVED = new ResolvedName(Arrays.asList("Unresolved"));
         private final List<String> names;
 
         private ResolvedName(List<String> names) {
