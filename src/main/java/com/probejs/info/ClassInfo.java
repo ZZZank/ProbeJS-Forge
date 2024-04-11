@@ -92,40 +92,32 @@ public class ClassInfo implements Comparable<ClassInfo> {
                     .map(TypeInfoVariable::new)
                     .collect(Collectors.toList())
             );
-            allMethodInfos.addAll(
-                Arrays
-                    .stream(clazzRaw.getMethods())
-                    .map(m -> new MethodInfo(m, clazz))
-                    .collect(Collectors.toList())
-            );
-            methodInfos.addAll(
-                this.allMethodInfos.stream()
-                    .filter(mInfo -> {
-                        if (!ProbeJS.CONFIG.trimming) {
-                            return true;
-                        }
-                        if (isInterface) {
-                            return mInfo.getRaw().getDeclaringClass() == clazzRaw;
-                        }
-                        return !hasIdenticalParentMethod(mInfo);
-                    })
-                    .filter(m -> ClassResolver.acceptMethod(m.getName()))
-                    .filter(m -> !m.shouldHide())
-                    .collect(Collectors.toList())
-            );
-            allFieldInfos.addAll(
-                Arrays.stream(clazzRaw.getFields()).map(FieldInfo::new).collect(Collectors.toList())
-            );
-            fieldInfos.addAll(
-                allFieldInfos
-                    .stream()
-                    .filter(fInfo ->
-                        !ProbeJS.CONFIG.trimming || fInfo.getRaw().getDeclaringClass() == clazzRaw
-                    )
-                    .filter(f -> ClassResolver.acceptField(f.getName()))
-                    .filter(f -> !f.shouldHide())
-                    .collect(Collectors.toList())
-            );
+            //methods
+            Arrays
+                .stream(clazzRaw.getMethods())
+                .map(m -> new MethodInfo(m, clazz))
+                .peek(allMethodInfos::add)
+                .filter(mInfo -> {
+                    if (!ProbeJS.CONFIG.trimming) {
+                        return true;
+                    }
+                    if (isInterface) {
+                        return mInfo.getRaw().getDeclaringClass() == clazzRaw;
+                    }
+                    return !hasIdenticalParentMethod(mInfo);
+                })
+                .filter(m -> ClassResolver.acceptMethod(m.getName()))
+                .filter(m -> !m.shouldHide())
+                .forEach(methodInfos::add);
+            //fields
+            Arrays
+                .stream(clazzRaw.getFields())
+                .map(FieldInfo::new)
+                .peek(allFieldInfos::add)
+                .filter(fInfo -> !ProbeJS.CONFIG.trimming || fInfo.getRaw().getDeclaringClass() == clazzRaw)
+                .filter(f -> ClassResolver.acceptField(f.getName()))
+                .filter(f -> !f.shouldHide())
+                .forEach(fieldInfos::add);
         } catch (NoClassDefFoundError e) {
             // https://github.com/ZZZank/ProbeJS-Forge/issues/2
             ProbeJS.LOGGER.error("Unable to fetch infos for class '{}'", clazzRaw.getName());
@@ -311,7 +303,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
      * @see com.probejs.info.ClassInfo#hasIdenticalParentMethod(Method, Class)
      */
     private static boolean hasIdenticalParentMethod(MethodInfo mInfo) {
-        return hasIdenticalParentMethod(mInfo.getRaw(), mInfo.getClass());
+        return hasIdenticalParentMethod(mInfo.getRaw(), mInfo.getFrom().clazzRaw);
     }
 
     @Override

@@ -23,7 +23,8 @@ public class PlatformDataCompiler {
         lines.add(String.format("type modids = %s;", modids));
         //more?
 
-        for (final String line : new FormatterNamespace("platform", new FormatterRaw(lines)).format(0, 4)) {
+        for (final String line : new FormatterNamespace("platform", new FormatterRaw(lines, false))
+            .format(0, 4)) {
             writer.write(line);
             writer.write('\n');
         }

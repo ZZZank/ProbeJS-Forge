@@ -37,15 +37,17 @@ public abstract class RecipeHoldersCompiler {
     }
 
     public static List<String> format(int indent, int stepIndent) {
-        List<IFormatter> namespecedFmtr = new ArrayList<>();
-        String step = PUtil.indent(stepIndent);
+        final List<IFormatter> namespecedFmtr = new ArrayList<>();
+        final String step = PUtil.indent(stepIndent);
 
         {
             List<String> base = new ArrayList<>();
             base.add("class RecipeHolder {");
-            for (String namespace : namespace2Method.keySet()) {
-                base.add(String.format("%sreadonly %s: stub.probejs.%s", step, namespace, namespace));
-            }
+            namespace2Method
+                .keySet()
+                .stream()
+                .map(namespace -> String.format("%sreadonly %s: stub.probejs.%s", step, namespace, namespace))
+                .forEach(base::add);
             base.add("}");
             namespecedFmtr.add(new FormatterRaw(base, false));
         }
@@ -56,10 +58,12 @@ public abstract class RecipeHoldersCompiler {
             //name
             lines.add(String.format("class %s {", name));
             //methods inside recipeHolder classes
-            for (Pair<String, String> pair : entry.getValue()) {
+            entry
+                .getValue()
+                .stream()
                 // we dont know how a Recipe Serializer actually works, so only `...args`
-                lines.add(String.format("%s%s(...args: any): %s;", step, pair.first(), pair.second()));
-            }
+                .map(p -> String.format("%s%s(...args: any): %s;", step, p.first(), p.second()))
+                .forEach(lines::add);
             //close
             lines.add("}");
             namespecedFmtr.add(new FormatterRaw(lines, false));
