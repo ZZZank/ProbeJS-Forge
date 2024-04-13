@@ -52,7 +52,8 @@ public class DocTypeResolver {
             return false;
         }
         if (docType instanceof TypeArray && param instanceof TypeInfoArray) {
-            TypeInfoArray array = (TypeInfoArray) param;
+            //TODO: sus type casting, but somehow not causing a crash
+            TypeInfoArray array = (TypeInfoArray) docType;
             return typeEquals(((TypeArray) docType).getComponent(), array.getBaseType());
         }
         if (docType instanceof TypeParameterized && param instanceof TypeInfoParameterized) {
