@@ -24,7 +24,7 @@ public class FormatterConstructor implements IFormatter {
         if (info instanceof TypeInfoClass) {
             TypeInfoClass clazz = (TypeInfoClass) info;
             ClassInfo classInfo = ClassInfo.ofCache(clazz.getResolvedClass());
-            if (classInfo.getParameters().size() != 0) {
+            if (!classInfo.getParameters().isEmpty()) {
                 sb.append('<');
                 sb.append(
                     classInfo

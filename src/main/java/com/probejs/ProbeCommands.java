@@ -197,7 +197,6 @@ public class ProbeCommands {
      * @param source The command source, usually avaliable in Command.executes() callback,
      * via {@code Command.executes(context -> context.getSource())}
      * @param message The message you want to send
-     * @param allowLogging
      * @return Will always be `Command.SINGLE_SUCCESS`
      */
     private static int sendSuccess(CommandSourceStack source, String message, boolean allowLogging) {

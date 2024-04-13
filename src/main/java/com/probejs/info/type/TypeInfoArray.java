@@ -37,11 +37,11 @@ public class TypeInfoArray implements ITypeInfo {
     public TypeInfoArray(Type type) {
         if (isGenericArray(type)) {
             this.base = TypeResolver.resolveType(((GenericArrayType) type).getGenericComponentType());
-        }
-        if (isClassArray(type)) {
+        } else if (isClassArray(type)) {
             assert type instanceof Class<?>;
             this.base = TypeResolver.resolveType(((Class<?>) type).getComponentType());
         }
+        throw new IllegalArgumentException("Argument 'type' is not array");
     }
 
     private TypeInfoArray(ITypeInfo inner) {

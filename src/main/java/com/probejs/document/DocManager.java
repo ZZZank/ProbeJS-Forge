@@ -77,11 +77,11 @@ public class DocManager {
         }
     }
 
-    public static final void addAssignable(String className, IType type) {
+    public static void addAssignable(String className, IType type) {
         DocManager.typesAssignable.computeIfAbsent(className, k -> new ArrayList<>()).add(type);
     }
 
-    public static final void addAdditions(String className, DocumentClass addition) {
+    public static void addAdditions(String className, DocumentClass addition) {
         DocManager.classAdditions.computeIfAbsent(className, k -> new ArrayList<>()).add(addition);
     }
 
@@ -124,7 +124,7 @@ public class DocManager {
                 }
                 return null;
             })
-            .filter(zipFile -> zipFile != null)
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
         for (ZipFile file : validFiles) {
             ZipEntry entry = file.getEntry("probejs.documents.txt");
@@ -153,7 +153,7 @@ public class DocManager {
                     //check if all mods are installed
                     !Arrays
                         .stream(docName.substring(0, i).split("&"))
-                        .allMatch(modid -> Platform.isModLoaded(modid))
+                        .allMatch(Platform::isModLoaded)
                 ) {
                     continue;
                 }

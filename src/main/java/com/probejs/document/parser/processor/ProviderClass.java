@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class ProviderClass implements IStateHandler<String>, IDocumentProvider<DocumentClass> {
 
-    public static List<Pair<Predicate<String>, BiFunction<String, ProviderClass, IStateHandler<String>>>> handlers = new ArrayList<>();
+    public static final List<Pair<Predicate<String>, BiFunction<String, ProviderClass, IStateHandler<String>>>> handlers = new ArrayList<>();
     private final List<IDocumentProvider<?>> elements = new ArrayList<>();
     private String name;
     private String superClass;
@@ -117,7 +117,7 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
                 decos.add((IDecorative) doc);
             } else {
                 if (doc instanceof IConcrete) {
-                    ((IConcrete) doc).acceptDeco(decos.stream().collect(Collectors.toList()));
+                    ((IConcrete) doc).acceptDeco(new ArrayList<>(decos));
                 }
                 decos.clear();
                 document.acceptProperty(doc);

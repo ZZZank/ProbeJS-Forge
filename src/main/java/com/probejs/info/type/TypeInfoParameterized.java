@@ -17,7 +17,7 @@ public class TypeInfoParameterized implements ITypeInfo {
     private List<ITypeInfo> paramTypes;
 
     public TypeInfoParameterized(Type type) {
-        if (!(type instanceof ParameterizedType)) {
+        if (!test(type)) {
             throw new IllegalArgumentException("provided `type` is not an instance of ParameterizedType");
         }
         ParameterizedType parType = (ParameterizedType) type;

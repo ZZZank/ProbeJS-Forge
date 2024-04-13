@@ -45,7 +45,7 @@ public class DocumentMethod
         return formatted;
     }
 
-    private static class DocumentParam {
+    public static class DocumentParam {
 
         private final String name;
         private final IType type;
@@ -98,7 +98,6 @@ public class DocumentMethod
     /**
      *
      * @param paramsStr E.g. "(a: (string|number), b: {required: bool})"
-     * @return
      */
     private List<DocumentParam> buildParams(String paramsStr) {
         List<DocumentParam> paramList = new ArrayList<>();

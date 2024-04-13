@@ -95,7 +95,7 @@ public class FormatterType {
         StringBuilder sb = new StringBuilder(new FormatterType(info, false).format(0, 0));
         if (info instanceof TypeInfoClass) {
             TypeInfoClass clazz = (TypeInfoClass) info;
-            if (clazz.getTypeVariables().size() != 0) {
+            if (!clazz.getTypeVariables().isEmpty()) {
                 sb.append(
                     String.format(
                         "<%s>",

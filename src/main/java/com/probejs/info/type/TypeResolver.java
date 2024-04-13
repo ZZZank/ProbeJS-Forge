@@ -60,7 +60,7 @@ public class TypeResolver {
             TypeInfoParameterized paramType = (TypeInfoParameterized) typeInfo;
             ITypeInfo baseType = paramType.getBaseType();
             if (
-                baseType.assignableFrom(resolveType(Collection.class)) && paramType.getParamTypes().size() > 0
+                baseType.assignableFrom(resolveType(Collection.class)) && !paramType.getParamTypes().isEmpty()
             ) {
                 return paramType.getParamTypes().get(0);
             }

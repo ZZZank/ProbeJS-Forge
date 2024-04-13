@@ -10,11 +10,7 @@ import com.probejs.info.type.TypeInfoVariable;
 import com.probejs.info.type.TypeResolver;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassInfo implements Comparable<ClassInfo> {
@@ -121,6 +117,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         } catch (NoClassDefFoundError e) {
             // https://github.com/ZZZank/ProbeJS-Forge/issues/2
             ProbeJS.LOGGER.error("Unable to fetch infos for class '{}'", clazzRaw.getName());
+            e.printStackTrace();
         }
         //Resolve types - rollback everything till Object
         applySuperGenerics(methodInfos, fieldInfos);
@@ -138,7 +135,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
                         formatterLmbda.formatParams(new HashMap<>(0), true),
                         formatterLmbda.formatReturn()
                     );
-                    return Arrays.asList(lmbda);
+                    return Collections.singletonList(lmbda);
                 }
             );
         }

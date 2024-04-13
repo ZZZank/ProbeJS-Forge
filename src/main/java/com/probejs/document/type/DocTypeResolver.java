@@ -52,7 +52,7 @@ public class DocTypeResolver {
             return false;
         }
         if (docType instanceof TypeArray && param instanceof TypeInfoArray) {
-            TypeInfoArray array = (TypeInfoArray) docType;
+            TypeInfoArray array = (TypeInfoArray) param;
             return typeEquals(((TypeArray) docType).getComponent(), array.getBaseType());
         }
         if (docType instanceof TypeParameterized && param instanceof TypeInfoParameterized) {

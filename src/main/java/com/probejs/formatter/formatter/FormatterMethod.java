@@ -136,7 +136,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         }
         final TypeInfoClass clazz = (TypeInfoClass) info;
         final StringBuilder sb = new StringBuilder(new FormatterType(info, useSpecial).format(0, 0));
-        if (!NameResolver.isTypeSpecial(clazz.getResolvedClass()) && clazz.getTypeVariables().size() != 0) {
+        if (!NameResolver.isTypeSpecial(clazz.getResolvedClass()) && !clazz.getTypeVariables().isEmpty()) {
             sb.append('<');
             sb.append(String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any")));
             sb.append('>');
@@ -179,7 +179,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         if (info instanceof TypeInfoClass) {
             final TypeInfoClass classInfo = (TypeInfoClass) info;
             List<ITypeInfo> typeVariables = classInfo.getTypeVariables();
-            if (typeVariables.size() != 0) {
+            if (!typeVariables.isEmpty()) {
                 sb.append('<');
                 sb.append(
                     typeVariables
@@ -253,7 +253,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             builder.append("static ");
         }
         builder.append(info.getName());
-        if (info.getTypeVariables().size() != 0) {
+        if (!info.getTypeVariables().isEmpty()) {
             builder
                 .append('<')
                 .append(

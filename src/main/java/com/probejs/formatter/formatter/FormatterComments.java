@@ -2,6 +2,7 @@ package com.probejs.formatter.formatter;
 
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FormatterComments implements IFormatter {
@@ -23,10 +24,8 @@ public class FormatterComments implements IFormatter {
      * block comment style
      */
     public FormatterComments(String... lines) {
-        this.raw = new ArrayList<String>(lines.length);
-        for (String line : lines) {
-            this.raw.add(line);
-        }
+        this.raw = new ArrayList<>(lines.length);
+        this.raw.addAll(Arrays.asList(lines));
         this.isBlockStyle = true;
     }
 

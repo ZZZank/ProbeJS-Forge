@@ -37,7 +37,7 @@ public class FormatterLang implements IFormatter {
         if (!(Language.getInstance() instanceof ClientLanguage)) {
             return new ArrayList<>(0);
         }
-        return Arrays.asList(
+        return Collections.singletonList(
             String.format(
                 "%stype LangKey = %s",
                 PUtil.indent(indent),
@@ -59,7 +59,7 @@ public class FormatterLang implements IFormatter {
         LanguageManager manager = mc.getLanguageManager();
         LanguageInfo english = manager.getLanguage(FormatterLang.DEFAULT_LANGUAGE.getCode());
         List<LanguageInfo> languages = language.equals(english)
-            ? Arrays.asList(english)
+            ? Collections.singletonList(english)
             : Arrays.asList(english, language);
 
         ClientLanguage clientLanguage = ClientLanguage.loadFrom(mc.getResourceManager(), languages);

@@ -21,7 +21,7 @@ public class NameResolver {
 
     public static class ResolvedName {
 
-        public static final ResolvedName UNRESOLVED = new ResolvedName(Arrays.asList("Unresolved"));
+        public static final ResolvedName UNRESOLVED = new ResolvedName(Collections.singletonList("Unresolved"));
         private final List<String> names;
 
         private ResolvedName(List<String> names) {
@@ -188,8 +188,8 @@ public class NameResolver {
     public static void addSpecialAssignments(Class<?> clazz, Supplier<List<String>> assigns) {
         Supplier<List<String>> concated = specialClassAssigner.containsKey(clazz)
             ? new Supplier<List<String>>() {
-                private Supplier<List<String>> lastSupplier = specialClassAssigner.get(clazz);
-                private Supplier<List<String>> thenSupplier = assigns;
+                private final Supplier<List<String>> lastSupplier = specialClassAssigner.get(clazz);
+                private final Supplier<List<String>> thenSupplier = assigns;
 
                 @Override
                 public List<String> get() {

@@ -1,5 +1,35 @@
 
 /**
+ * @target dev.latvian.kubejs.recipe.ingredientaction.IngredientActionFilter
+ * @assign number
+ * @assign dev.latvian.kubejs.item.ingredient.IngredientJS
+ * @assign {index: number, item: Internal.IngredientJS_}
+ */
+class IngredientActionFilter {
+}
+
+/**
+ * @target net.minecraft.core.Vec3i
+ * @assign [number, number, number]
+ */
+class Vec3i {
+}
+
+/**
+ * @target net.minecraft.world.item.ItemStack
+ * @assign Internal.ItemStackJS_
+ */
+class ItemStack {
+}
+
+/**
+ * @target com.google.gson.JsonObject
+ * @assign {}
+ */
+class JsonObject {
+}
+
+/**
 * @target dev.latvian.kubejs.item.ItemStackJS
 * @assign net.minecraft.item.Item
 * @assign `${number}x ${string}`
@@ -116,6 +146,8 @@ class Object {
 
 /**
  * @target net.minecraft.nbt.CompoundNBT
+ * @assign {[x in string]: (string | number | boolean | Internal.CompoundNBT_)}
+ * @assign string
  * @assign object
  */
 class CompoundNBT {
@@ -131,7 +163,7 @@ class AttachedData {
 
 /**
  * @target dev.latvian.kubejs.fluid.FluidStackJS
- * @assign Registry.minecraft.fluid
+ * @assign net.minecraft.fluid.Fluid
  */
 class FluidStackJS {
 }

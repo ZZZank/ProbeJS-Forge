@@ -10,6 +10,7 @@ import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter, IConcrete {
@@ -44,7 +45,7 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
         if (!CommentUtil.isLoaded(comment) || CommentUtil.isHidden(comment)) {
             return new ArrayList<>(0);
         }
-        return Arrays.asList(
+        return Collections.singletonList(
             String.format(
                 "%stype %s = %s;",
                 PUtil.indent(indent),

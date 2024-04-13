@@ -18,7 +18,7 @@ public class DocumentHandler implements IStateHandler<String> {
      * "condition" will be called sequentually, and will stop once one condition is met. 
      * Then cooresponding "handler" will be called
      */
-    public static List<Pair<Predicate<String>, IMultiHandler>> handlerCandidates = new ArrayList<>();
+    public static final List<Pair<Predicate<String>, IMultiHandler>> handlerCandidates = new ArrayList<>();
     private final List<IDocumentProvider<?>> elements = new ArrayList<>();
 
     public static void addHandlerCandidate(Predicate<String> condition, IMultiHandler handler) {

@@ -136,7 +136,7 @@ Event dump ++
 
 -   events dumped in `events.d.ts` are now naturally sorted(in alphabet order).
 -   dumped events will have more info displayed, e.g. if such event is cancellabe or not.
-    ```js
+    ```javascript
     /**
      * @cancellable No
      * @at startup, server
