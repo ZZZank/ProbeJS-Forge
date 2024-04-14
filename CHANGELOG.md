@@ -1,3 +1,18 @@
+# ProbeJS Legacy 3.1.0 -> 3.2.0
+
+Rhizo(not typo) support
+
+## What's new?
+
+-   Rhizo(not typo) support
+  - ProbeJS Legacy now supports Rhizo, which adds method/field remapper for 1.16.5
+  - With Rhizo, you can access methods/fields using readable MCP names like `getOpPermissionLevel()` instead of SRG names like `func_110455_j()`
+  - ProbeJS Legacy specially supports Rhizo's remapper, and can dump mapped MCP name for typing.
+  - If you're not using Rhizo, ProbeJS Legacy will automatically skip remapper accessing, so old Rhino is still compatible. 
+- ProbeJS Legacy will now walk type parameters of superclass/interfaces more completely. 
+
+---
+
 # ProbeJS Legacy 3.0.1 -> 3.1.0
 
 better type recognizing
