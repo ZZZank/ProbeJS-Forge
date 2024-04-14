@@ -3,10 +3,8 @@ package com.probejs.info;
 import com.probejs.formatter.SpecialTypes;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeResolver;
-// import dev.latvian.mods.rhino.mod.util.RemappingHelper;
+import com.probejs.util.RemapperBridge;
 import dev.latvian.mods.rhino.util.HideFromJS;
-// import dev.latvian.mods.rhino.util.Remapper;
-// 1.16 doesn't have method remapper, so
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -26,14 +24,12 @@ public class MethodInfo {
     private List<ParamInfo> params;
     private List<ITypeInfo> typeVariables;
 
-    // public static final Remapper RUNTIME = RemappingHelper.createModRemapper();
-
     private static String getRemappedOrDefault(Method method, Class<?> from) {
-        String mapped = SpecialTypes.getRemapper().getMappedMethod(from, method);
+        String mapped = RemapperBridge.getRemapper().getMappedMethod(from, method);
         if (!mapped.isEmpty()) {
             return mapped;
         }
-        // String s = RUNTIME.getMappedMethod(from, method);
+        // String s = REMAPPER.getMappedMethod(from, method);
         // return s.isEmpty() ? method.getName() : s;
         return method.getName();
     }

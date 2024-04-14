@@ -14,7 +14,7 @@ import com.probejs.document.comment.CommentHandler;
 import com.probejs.document.parser.processor.DocumentProviderManager;
 import com.probejs.formatter.ClassResolver;
 import com.probejs.formatter.NameResolver;
-import com.probejs.formatter.SpecialTypes;
+import com.probejs.util.RemapperBridge;
 import dev.latvian.kubejs.KubeJSPaths;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,7 +42,7 @@ public class ProbeCommands {
                         .executes(context -> {
                             try {
                                 sendSuccess(context, "ProbeJS initializing...");
-                                SpecialTypes.refreshRemapper();
+                                RemapperBridge.refreshRemapper();
                                 DocumentProviderManager.init();
                                 CommentHandler.init();
                                 DocManager.init();

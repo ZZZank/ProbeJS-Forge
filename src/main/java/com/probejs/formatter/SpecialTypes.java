@@ -8,56 +8,14 @@ import com.probejs.info.SpecialData;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
-import com.probejs.util.DummyIRemapper;
 import dev.latvian.mods.rhino.*;
-import me.shedaniel.architectury.platform.Platform;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class SpecialTypes {
 
-    private static DummyIRemapper remapper = null;
-    private static final DummyIRemapper dummyRemapper = new DummyIRemapper() {
-        @Override
-        public String getMappedClass(Class<?> from) {return "";}
-
-        @Override
-        public String getUnmappedClass(String from) {return "";}
-
-        @Override
-        public String getMappedField(Class<?> from, Field field) {return "";}
-
-        @Override
-        public String getMappedMethod(Class<?> from, Method method) {return "";}
-    };
-
     public static final Set<Class<?>> skippedSpecials = new HashSet<>();
-
-    public static DummyIRemapper getRemapper() {
-        return remapper;
-    }
-
-    public static void refreshRemapper()  {
-        if (!Platform.getMod("rhino").getName().equals("Rhizo")) {
-            ProbeJS.LOGGER.error("The game seems to be using Rhino instead of newer Rhizo, skipping Remapper check");
-            return;
-        }
-        ProbeJS.LOGGER.error("Refreshing Remapper reference");
-        try {
-            Field m = ContextFactory.class.getField("remapper");
-            m.setAccessible(true);
-            SpecialTypes.remapper = (DummyIRemapper) m.get(null);
-            ProbeJS.LOGGER.error("Remapper reference refreshed");
-        }catch (Exception e) {
-            ProbeJS.LOGGER.error("Unable to refresh Remapper reference");
-            e.printStackTrace();
-            SpecialTypes.remapper = SpecialTypes.dummyRemapper;
-        }
-    }
 
     public static String formatClassLike(ITypeInfo obj) {
         ITypeInfo inner = null;

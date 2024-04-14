@@ -4,6 +4,7 @@ import com.probejs.formatter.SpecialTypes;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
+import com.probejs.util.RemapperBridge;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -18,7 +19,7 @@ public class FieldInfo implements Comparable<FieldInfo> {
     private final Object value;
 
     private static String getRemappedOrDefault(Field field, Class<?> clazz) {
-        String mapped = SpecialTypes.getRemapper().getMappedField(clazz, field);
+        String mapped = RemapperBridge.getRemapper().getMappedField(clazz, field);
         if (!mapped.isEmpty()) {
             return mapped;
         }
