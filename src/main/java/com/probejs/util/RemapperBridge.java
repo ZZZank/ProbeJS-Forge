@@ -30,7 +30,7 @@ public class RemapperBridge {
             return "";
         }
     };
-    private static RemapperBridge.DummyIRemapper reference = null;
+    private static RemapperBridge.DummyIRemapper reference = dummyRemapper;
 
     public static RemapperBridge.DummyIRemapper getRemapper() {
         return RemapperBridge.reference;
@@ -45,6 +45,7 @@ public class RemapperBridge {
         try {
             Field m = ContextFactory.class.getField("remapper");
             m.setAccessible(true);
+            //TODO: correct class type
             RemapperBridge.reference = (RemapperBridge.DummyIRemapper) m.get(null);
             ProbeJS.LOGGER.error("Remapper reference refreshed");
         } catch (Exception e) {
