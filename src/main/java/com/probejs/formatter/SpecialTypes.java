@@ -10,6 +10,7 @@ import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.util.DummyIRemapper;
 import dev.latvian.mods.rhino.*;
+import me.shedaniel.architectury.platform.Platform;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -41,12 +42,19 @@ public class SpecialTypes {
     }
 
     public static void refreshRemapper()  {
+        if (!Platform.getMod("rhino").getName().equals("Rhizo")) {
+            ProbeJS.LOGGER.error("The game seems to be using Rhino instead of newer Rhizo, skipping Remapper check");
+            return;
+        }
+        ProbeJS.LOGGER.error("Refreshing Remapper reference");
         try {
             Field m = ContextFactory.class.getField("remapper");
             m.setAccessible(true);
             SpecialTypes.remapper = (DummyIRemapper) m.get(null);
+            ProbeJS.LOGGER.error("Remapper reference refreshed");
         }catch (Exception e) {
-            ProbeJS.LOGGER.error("Unable to refresh remapper reference");
+            ProbeJS.LOGGER.error("Unable to refresh Remapper reference");
+            e.printStackTrace();
             SpecialTypes.remapper = SpecialTypes.dummyRemapper;
         }
     }
