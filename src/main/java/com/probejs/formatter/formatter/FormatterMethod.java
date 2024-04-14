@@ -82,11 +82,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             case NONE:
                 return null;
             case GETTER:
+            case SETTER:
                 return StringUtil.withLowerCaseHead(info.getName().substring(3));
             case GETTER_IS:
                 return StringUtil.withLowerCaseHead(info.getName().substring(2));
-            case SETTER:
-                return StringUtil.withLowerCaseHead(info.getName().substring(3));
         }
         return null;
     }

@@ -1,5 +1,6 @@
 package com.probejs.formatter;
 
+import com.probejs.ProbeJS;
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeRaw;
 import com.probejs.formatter.formatter.FormatterType;
@@ -7,17 +8,48 @@ import com.probejs.info.SpecialData;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoParameterized;
-import dev.latvian.mods.rhino.BaseFunction;
-import dev.latvian.mods.rhino.NativeJavaObject;
-import dev.latvian.mods.rhino.Scriptable;
-import dev.latvian.mods.rhino.ScriptableObject;
+import com.probejs.util.DummyIRemapper;
+import dev.latvian.mods.rhino.*;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class SpecialTypes {
 
+    private static DummyIRemapper remapper = null;
+    private static final DummyIRemapper dummyRemapper = new DummyIRemapper() {
+        @Override
+        public String getMappedClass(Class<?> from) {return "";}
+
+        @Override
+        public String getUnmappedClass(String from) {return "";}
+
+        @Override
+        public String getMappedField(Class<?> from, Field field) {return "";}
+
+        @Override
+        public String getMappedMethod(Class<?> from, Method method) {return "";}
+    };
+
     public static final Set<Class<?>> skippedSpecials = new HashSet<>();
+
+    public static DummyIRemapper getRemapper() {
+        return remapper;
+    }
+
+    public static void refreshRemapper()  {
+        try {
+            Field m = ContextFactory.class.getField("remapper");
+            m.setAccessible(true);
+            SpecialTypes.remapper = (DummyIRemapper) m.get(null);
+        }catch (Exception e) {
+            ProbeJS.LOGGER.error("Unable to refresh remapper reference");
+            SpecialTypes.remapper = SpecialTypes.dummyRemapper;
+        }
+    }
 
     public static String formatClassLike(ITypeInfo obj) {
         ITypeInfo inner = null;

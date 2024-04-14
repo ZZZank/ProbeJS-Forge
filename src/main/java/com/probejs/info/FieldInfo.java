@@ -1,5 +1,6 @@
 package com.probejs.info;
 
+import com.probejs.formatter.SpecialTypes;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
@@ -16,15 +17,19 @@ public class FieldInfo implements Comparable<FieldInfo> {
     private final boolean shouldHide;
     private final Object value;
 
-    private static String getRemappedOrDefault(Field field) {
+    private static String getRemappedOrDefault(Field field, Class<?> clazz) {
+        String mapped = SpecialTypes.getRemapper().getMappedField(clazz, field);
+        if (!mapped.isEmpty()) {
+            return mapped;
+        }
         // String s = MethodInfo.RUNTIME.getMappedField(field.getDeclaringClass(), field);
         // return s.isEmpty() ? field.getName() : s;
         return field.getName();
     }
 
-    public FieldInfo(Field field) {
+    public FieldInfo(Field field, Class<?> clazz) {
         this.raw = field;
-        this.name = getRemappedOrDefault(field);
+        this.name = getRemappedOrDefault(field, clazz);
         this.modifiers = field.getModifiers();
         this.shouldHide = field.getAnnotation(HideFromJS.class) != null;
         this.type = TypeResolver.resolveType(field.getGenericType());

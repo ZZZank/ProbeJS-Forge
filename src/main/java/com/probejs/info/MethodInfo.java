@@ -1,5 +1,6 @@
 package com.probejs.info;
 
+import com.probejs.formatter.SpecialTypes;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeResolver;
 // import dev.latvian.mods.rhino.mod.util.RemappingHelper;
@@ -28,6 +29,10 @@ public class MethodInfo {
     // public static final Remapper RUNTIME = RemappingHelper.createModRemapper();
 
     private static String getRemappedOrDefault(Method method, Class<?> from) {
+        String mapped = SpecialTypes.getRemapper().getMappedMethod(from, method);
+        if (!mapped.isEmpty()) {
+            return mapped;
+        }
         // String s = RUNTIME.getMappedMethod(from, method);
         // return s.isEmpty() ? method.getName() : s;
         return method.getName();

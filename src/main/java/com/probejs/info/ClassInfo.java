@@ -108,7 +108,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
             //fields
             Arrays
                 .stream(clazzRaw.getFields())
-                .map(FieldInfo::new)
+                .map(f -> new FieldInfo(f, clazz))
                 .peek(allFieldInfos::add)
                 .filter(fInfo -> !ProbeJS.CONFIG.trimming || fInfo.getRaw().getDeclaringClass() == clazzRaw)
                 .filter(f -> ClassResolver.acceptField(f.getName()))
