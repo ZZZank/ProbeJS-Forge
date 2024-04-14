@@ -52,7 +52,7 @@ public class ProbeCommands {
                                 TypingCompiler.compile();
                                 sendSuccess(context, "Generating code snippets...");
                                 SnippetCompiler.compile();
-                                sendSuccess(context, "Generating rich display informations...");
+                                sendSuccess(context, "Generating rich display information...");
                                 RichFluidCompiler.compile();
                                 RichItemCompiler.compile();
                                 RichLangCompiler.compile();

@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ProbeConfig {
 
-    private static ProbeConfig reference = null;
+    private static ProbeConfig cfgReference = null;
     public static final Path PATH = KubeJSPaths.CONFIG.resolve("probejs.json");
     public boolean keepBeaned = true;
     public boolean enabled = true;
@@ -25,10 +25,10 @@ public class ProbeConfig {
     public boolean trimming = true;
 
     public static ProbeConfig getInstance() {
-        if (reference == null) {
-            ProbeConfig.reference = new ProbeConfig();
+        if (cfgReference == null) {
+            ProbeConfig.cfgReference = new ProbeConfig();
         }
-        return ProbeConfig.reference;
+        return ProbeConfig.cfgReference;
     }
 
     private ProbeConfig() {
