@@ -4,10 +4,10 @@ import com.probejs.info.MethodInfo.ParamInfo;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Walker {
@@ -86,8 +86,7 @@ public class Walker {
         for (Class<?> clazz : classes) {
             ClassInfo info = ClassInfo.ofCache(clazz);
             //TODO: walkSuperGenerics is not a good idea, we needs ClassInfo rewriting
-            /*
-            if (this.walkSuperGenerics) {
+//            /*
                 Type genericSuper = info.getClazzRaw().getGenericSuperclass();
                 if (genericSuper instanceof ParameterizedType) {
                     Arrays
@@ -105,8 +104,7 @@ public class Walker {
                     .filter(t -> t instanceof Class)
                     .map(t -> (Class<?>) t)
                     .forEach(result::add);
-            }
-             */
+//             */
             if (walkSuper) {
                 ClassInfo superclass = info.getSuperClass();
                 if (superclass != null) {
