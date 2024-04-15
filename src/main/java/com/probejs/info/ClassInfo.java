@@ -43,7 +43,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private final int modifiers;
     private final boolean isInterface;
     private final boolean isFunctionalInterface;
-    private final List<TypeInfoVariable> parameters;
+    private final List<TypeInfoVariable> typeParamaters;
     /**
      * filtered view of {@link ClassInfo#allMethodInfos}
      */
@@ -69,7 +69,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
 
         this.interfaces = new ArrayList<>(0);
         this.constructorInfos = new ArrayList<>(0);
-        this.parameters = new ArrayList<>(0);
+        this.typeParamaters = new ArrayList<>(0);
         this.methodInfos = new ArrayList<>(0);
         this.fieldInfos = new ArrayList<>(0);
         this.allMethodInfos = new ArrayList<>(0);
@@ -84,7 +84,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
                     .map(ConstructorInfo::new)
                     .collect(Collectors.toList())
             );
-            parameters.addAll(
+            typeParamaters.addAll(
                 Arrays
                     .stream(clazzRaw.getTypeParameters())
                     .map(TypeInfoVariable::new)
@@ -264,8 +264,8 @@ public class ClassInfo implements Comparable<ClassInfo> {
         return methodInfos;
     }
 
-    public List<TypeInfoVariable> getParameters() {
-        return parameters;
+    public List<TypeInfoVariable> getTypeParamaters() {
+        return typeParamaters;
     }
 
     public boolean isEnum() {

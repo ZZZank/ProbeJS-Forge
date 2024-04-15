@@ -256,13 +256,13 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 new FormatterType(
                     new TypeInfoParameterized(
                         new TypeInfoClass(classInfo.getClazzRaw()),
-                        classInfo.getParameters()
+                        classInfo.getTypeParamaters()
                     )
                 )
                     .format()
             );
         }
-        List<TypeInfoVariable> params = classInfo.getParameters();
+        List<TypeInfoVariable> params = classInfo.getTypeParamaters();
         if (!params.isEmpty()) {
             String paramString = String.format(
                 "<%s>",

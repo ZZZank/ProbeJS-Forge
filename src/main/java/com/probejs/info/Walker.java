@@ -85,37 +85,15 @@ public class Walker {
         Set<Class<?>> result = new HashSet<>();
         for (Class<?> clazz : classes) {
             ClassInfo info = ClassInfo.ofCache(clazz);
-            result.addAll(walkTypes(info.getParameters()));
+            result.addAll(walkTypes(info.getTypeParamaters()));
             if (walkSuper) {
                 ClassInfo superclass = info.getSuperClass();
                 if (superclass != null) {
                     result.addAll(walkType(info.getSuperType()));
 //                    result.add(superclass.getClazzRaw());
-//                    result.addAll(walkTypes(superclass.getParameters()));
-                for (ITypeInfo cInfo : info.getInterfaces()) {
-                    result.addAll(walkType(cInfo));
+                    result.addAll(walkTypes(superclass.getTypeParamaters()));
                 }
-                }
-                //TODO: not a good idea, we needs ClassInfo rewriting
-                /*
-                Type genericSuper = info.getClazzRaw().getGenericSuperclass();
-                if (genericSuper instanceof ParameterizedType) {
-                    Arrays
-                        .stream(((ParameterizedType) genericSuper).getActualTypeArguments())
-                        .filter(t -> t instanceof Class)
-                        .map(t -> (Class<?>) t)
-                        .forEach(result::add);
-                }
-                Arrays
-                    .stream(info.getClazzRaw().getGenericInterfaces())
-                    .filter(t -> t instanceof ParameterizedType)
-                    .map(t -> (ParameterizedType) t)
-                    .map(ParameterizedType::getActualTypeArguments)
-                    .flatMap(Arrays::stream)
-                    .filter(t -> t instanceof Class)
-                    .map(t -> (Class<?>) t)
-                    .forEach(result::add);
-                */
+                result.addAll(walkTypes(info.getInterfaces()));
             }
 
             if (walkField) {
