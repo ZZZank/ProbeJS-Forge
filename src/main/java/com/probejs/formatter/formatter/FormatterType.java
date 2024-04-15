@@ -51,29 +51,38 @@ public class FormatterType {
             );
         }
         if (typeInfo instanceof TypeInfoVariable) {
-            return transformer.apply(typeInfo, typeInfo.getTypeName());
+            TypeInfoVariable vInfo = (TypeInfoVariable) typeInfo;
+            String bounds = vInfo.getBounds()
+                .stream()
+                .map(FormatterType::new)
+                .map(fmtr -> fmtr.format(0, 0))
+                .filter(str -> !str.equals("any"))
+                .collect(Collectors.joining(","));
+            String name = typeInfo.getTypeName();
+            if (!bounds.isEmpty()) {
+                name = String.format("%s extends %s", name, bounds);
+            }
+            return transformer.apply(typeInfo, name);
         }
         if (typeInfo instanceof TypeInfoArray) {
             return transformer.apply(
                 typeInfo,
                 new FormatterType(typeInfo.getBaseType(), useSpecial, transformer)
                     .format(indent, stepIndent) +
-                "[]"
+                    "[]"
             );
         }
         if (typeInfo instanceof TypeInfoParameterized) {
             TypeInfoParameterized parType = (TypeInfoParameterized) typeInfo;
-            if (
-                new FormatterType(parType.getBaseType(), useSpecial, transformer).format(0, 0).equals("any")
-            ) {
-                return transformer.apply(typeInfo, NameResolver.ResolvedName.UNRESOLVED.getFullName());
+            String raw = new FormatterType(parType.getBaseType(), useSpecial, transformer).format(indent, stepIndent);
+            if (raw.equals("any")) {
+                return transformer.apply(typeInfo, "any");
             }
             return transformer.apply(
                 typeInfo,
                 String.format(
                     "%s<%s>",
-                    new FormatterType(parType.getBaseType(), useSpecial, transformer)
-                        .format(indent, stepIndent),
+                    raw,
                     parType
                         .getParamTypes()
                         .stream()
@@ -82,7 +91,7 @@ public class FormatterType {
                 )
             );
         }
-        return "any";
+        return ResolvedName.UNRESOLVED.getFullName();
     }
 
     /**
