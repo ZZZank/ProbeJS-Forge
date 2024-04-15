@@ -61,7 +61,7 @@ public class FormatterType {
                 .map(FormatterType::format)
                 .filter(str -> !str.equals("any"))
                 .collect(Collectors.joining(","));
-            String name = typeInfo.getTypeName();
+            String name = vInfo.getTypeName();
             if (!bounds.isEmpty()) {
                 name = String.format("%s extends %s", name, bounds);
             }
@@ -95,33 +95,5 @@ public class FormatterType {
             );
         }
         return ResolvedName.UNRESOLVED.getFullName();
-    }
-
-    /**
-     * similar to {@code new FormatterType(info,false).format(0,4)}, but with additional
-     * processing for TypeInfoClass. If its getTypeVariables() is not returning an empty
-     * list, a {@code <any,any,...>} style type variable representation will be added to
-     * the end of formatted string
-     */
-    public static String formatParameterized(ITypeInfo info) {
-        StringBuilder sb = new StringBuilder(new FormatterType(info, false).format());
-        if (info instanceof TypeInfoClass) {
-            TypeInfoClass clazz = (TypeInfoClass) info;
-            if (!clazz.getTypeVariables().isEmpty()) {
-                sb.append(
-                    String.format(
-                        "<%s>",
-                        clazz
-                            .getTypeVariables()
-                            .stream()
-                            .map(ITypeInfo::getTypeName)
-                            .map(NameResolver::getResolvedName)
-                            .map(ResolvedName::getFullName)
-                            .collect(Collectors.joining(","))
-                    )
-                );
-            }
-        }
-        return sb.toString();
     }
 }

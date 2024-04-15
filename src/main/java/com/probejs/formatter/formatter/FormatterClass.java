@@ -43,6 +43,34 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         }
     }
 
+    /**
+     * similar to {@code new FormatterType(info,false).format(0,4)}, but with additional
+     * processing for TypeInfoClass. If its getTypeVariables() is not returning an empty
+     * list, a {@code <any,any,...>} style type variable representation will be added to
+     * the end of formatted string
+     */
+    public static String formatParameterized(ITypeInfo info) {
+        StringBuilder sb = new StringBuilder(new FormatterType(info, false).format());
+        if (info instanceof TypeInfoClass) {
+            TypeInfoClass clazz = (TypeInfoClass) info;
+            if (!clazz.getTypeVariables().isEmpty()) {
+                sb.append(
+                    String.format(
+                        "<%s>",
+                        clazz
+                            .getTypeVariables()
+                            .stream()
+                            .map(ITypeInfo::getTypeName)
+                            .map(NameResolver::getResolvedName)
+                            .map(NameResolver.ResolvedName::getFullName)
+                            .collect(Collectors.joining(","))
+                    )
+                );
+            }
+        }
+        return sb.toString();
+    }
+
     public void setInternal(boolean internal) {
         this.internal = internal;
     }
@@ -115,7 +143,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 firstLine.add("Document.Object");
             } else {
                 firstLine.add(
-                    FormatterType.formatParameterized(
+                    formatParameterized(
                         TypeResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
                     )
                 );
@@ -128,7 +156,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 Arrays
                     .stream(classInfo.getClazzRaw().getGenericInterfaces())
                     .map(TypeResolver::resolveType)
-                    .map(FormatterType::formatParameterized)
+                    .map(FormatterClass::formatParameterized)
                     .collect(Collectors.joining(", "))
             );
         }
