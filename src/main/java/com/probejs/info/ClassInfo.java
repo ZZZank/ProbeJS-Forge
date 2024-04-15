@@ -54,7 +54,8 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private final List<FieldInfo> fieldInfos;
     private final List<ConstructorInfo> constructorInfos;
     private final ClassInfo superClass;
-    private final List<ClassInfo> interfaces;
+    private final ITypeInfo superType;
+    private final List<ITypeInfo> interfaces;
     private final List<MethodInfo> allMethodInfos;
     private final List<FieldInfo> allFieldInfos;
 
@@ -64,6 +65,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         this.modifiers = clazzRaw.getModifiers();
         this.isInterface = clazzRaw.isInterface();
         this.superClass = ofCache(clazzRaw.getSuperclass());
+        this.superType = TypeResolver.resolveType(clazz.getGenericSuperclass());
 
         this.interfaces = new ArrayList<>(0);
         this.constructorInfos = new ArrayList<>(0);
@@ -74,7 +76,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         this.allFieldInfos = new ArrayList<>(0);
         try {
             interfaces.addAll(
-                Arrays.stream(clazzRaw.getInterfaces()).map(ClassInfo::ofCache).collect(Collectors.toList())
+            Arrays.stream(clazz.getGenericInterfaces()).map(TypeResolver::resolveType).collect(Collectors.toList())
             );
             constructorInfos.addAll(
                 Arrays
@@ -189,7 +191,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
             .map(ClassInfo::resolveTypeOverrides)
             .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
         //Step to next level
-        interfaces.forEach(i -> i.applyInterfaceGenerics(methodsToMutate, fieldsToMutate));
+        interfaces.forEach(i -> ofCache(i.getResolvedClass()).applyInterfaceGenerics(methodsToMutate, fieldsToMutate));
         //Rewind
         Arrays
             .stream(clazzRaw.getGenericInterfaces())
@@ -246,7 +248,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         return superClass;
     }
 
-    public List<ClassInfo> getInterfaces() {
+    public List<ITypeInfo> getInterfaces() {
         return interfaces;
     }
 
@@ -299,5 +301,9 @@ public class ClassInfo implements Comparable<ClassInfo> {
     @Override
     public int compareTo(ClassInfo o) {
         return this.name.compareTo(o.name);
+    }
+
+    public ITypeInfo getSuperType() {
+        return superType;
     }
 }

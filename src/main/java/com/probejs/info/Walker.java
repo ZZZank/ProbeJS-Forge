@@ -61,8 +61,7 @@ public class Walker {
             TypeInfoParameterized tInfoP = (TypeInfoParameterized) tInfo;
             result.add(tInfoP.getResolvedClass());
             result.addAll(walkTypes(tInfoP.getParamTypes()));
-        }
-        if (tInfo instanceof TypeInfoVariable) {
+        } else if (tInfo instanceof TypeInfoVariable) {
             ((TypeInfoVariable) tInfo).getBounds()
                 .stream()
                 .map(ITypeInfo::getResolvedClass)
@@ -86,15 +85,16 @@ public class Walker {
         Set<Class<?>> result = new HashSet<>();
         for (Class<?> clazz : classes) {
             ClassInfo info = ClassInfo.ofCache(clazz);
+            result.addAll(walkTypes(info.getParameters()));
             if (walkSuper) {
                 ClassInfo superclass = info.getSuperClass();
                 if (superclass != null) {
-                    result.add(superclass.getClazzRaw());
-                    result.addAll(walkTypes(superclass.getParameters()));
+                    result.addAll(walkType(info.getSuperType()));
+//                    result.add(superclass.getClazzRaw());
+//                    result.addAll(walkTypes(superclass.getParameters()));
+                for (ITypeInfo cInfo : info.getInterfaces()) {
+                    result.addAll(walkType(cInfo));
                 }
-                for (ClassInfo cInfo : info.getInterfaces()) {
-                    result.add(cInfo.getClazzRaw());
-                    result.addAll(walkTypes(cInfo.getParameters()));
                 }
                 //TODO: not a good idea, we needs ClassInfo rewriting
                 /*
