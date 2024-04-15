@@ -4,6 +4,7 @@ import com.probejs.info.MethodInfo.ParamInfo;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
+import com.probejs.info.type.TypeInfoWildcard;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +28,11 @@ public class Walker {
                 .stream()
                 .map(ITypeInfo::getResolvedClass)
                 .forEach(result::add);
+        } else if (tInfo instanceof TypeInfoWildcard){
+            TypeInfoWildcard wInfo = (TypeInfoWildcard) tInfo;
+            result.add(tInfo.getResolvedClass());
+//            result.addAll(walkTypes(wInfo.getLowerBounds()));
+            result.addAll(walkTypes((wInfo.getUpperBounds())));
         } else {
             result.add(tInfo.getResolvedClass());
         }
