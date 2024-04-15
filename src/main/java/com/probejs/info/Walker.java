@@ -61,7 +61,8 @@ public class Walker {
             TypeInfoParameterized tInfoP = (TypeInfoParameterized) tInfo;
             result.add(tInfoP.getResolvedClass());
             result.addAll(walkTypes(tInfoP.getParamTypes()));
-        } else if (tInfo instanceof TypeInfoVariable) {
+        }
+        if (tInfo instanceof TypeInfoVariable) {
             ((TypeInfoVariable) tInfo).getBounds()
                 .stream()
                 .map(ITypeInfo::getResolvedClass)
@@ -85,8 +86,18 @@ public class Walker {
         Set<Class<?>> result = new HashSet<>();
         for (Class<?> clazz : classes) {
             ClassInfo info = ClassInfo.ofCache(clazz);
-            //TODO: walkSuperGenerics is not a good idea, we needs ClassInfo rewriting
-//            /*
+            if (walkSuper) {
+                ClassInfo superclass = info.getSuperClass();
+                if (superclass != null) {
+                    result.add(superclass.getClazzRaw());
+                    result.addAll(walkTypes(superclass.getParameters()));
+                }
+                for (ClassInfo cInfo : info.getInterfaces()) {
+                    result.add(cInfo.getClazzRaw());
+                    result.addAll(walkTypes(cInfo.getParameters()));
+                }
+                //TODO: not a good idea, we needs ClassInfo rewriting
+                /*
                 Type genericSuper = info.getClazzRaw().getGenericSuperclass();
                 if (genericSuper instanceof ParameterizedType) {
                     Arrays
@@ -104,17 +115,7 @@ public class Walker {
                     .filter(t -> t instanceof Class)
                     .map(t -> (Class<?>) t)
                     .forEach(result::add);
-//             */
-            if (walkSuper) {
-                ClassInfo superclass = info.getSuperClass();
-                if (superclass != null) {
-                    result.add(superclass.getClazzRaw());
-                    result.addAll(walkTypes(superclass.getParameters()));
-                }
-                for (ClassInfo cInfo : info.getInterfaces()) {
-                    result.add(cInfo.getClazzRaw());
-                    result.addAll(walkTypes(cInfo.getParameters()));
-                }
+                */
             }
 
             if (walkField) {
@@ -128,6 +129,11 @@ public class Walker {
                     for (ParamInfo pInfo : mInfo.getParams()) {
                         result.addAll(walkType(pInfo.getType()));
                     }
+                }
+            }
+            for (ConstructorInfo cInfo : info.getConstructorInfos()) {
+                for (ParamInfo pInfo : cInfo.getParams()) {
+                    result.addAll(walkType(pInfo.getType()));
                 }
             }
         }
