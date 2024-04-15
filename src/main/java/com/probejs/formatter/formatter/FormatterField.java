@@ -57,7 +57,7 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
                         true
                     )
                 )
-                    .format(0, 0)
+                    .format()
             );
         }
         builder.append(';');

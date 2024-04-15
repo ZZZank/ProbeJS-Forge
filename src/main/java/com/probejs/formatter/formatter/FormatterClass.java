@@ -259,7 +259,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                         classInfo.getParameters()
                     )
                 )
-                    .format(0, 0)
+                    .format()
             );
         }
         List<TypeInfoVariable> params = classInfo.getParameters();

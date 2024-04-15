@@ -1,6 +1,5 @@
 package com.probejs.formatter;
 
-import com.probejs.ProbeJS;
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeRaw;
 import com.probejs.formatter.formatter.FormatterType;
@@ -29,7 +28,7 @@ public class SpecialTypes {
         if (inner == null) {
             return "any";
         }
-        return String.format("typeof %s", new FormatterType(inner.getBaseType(), false).format(0, 0));
+        return String.format("typeof %s", new FormatterType(inner.getBaseType(), false).format());
     }
 
     private static String formatValueOrType(Object obj) {

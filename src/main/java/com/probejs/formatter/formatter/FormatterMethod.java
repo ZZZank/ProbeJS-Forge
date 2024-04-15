@@ -131,10 +131,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     private static String formatTypeParameterized(ITypeInfo info, boolean useSpecial) {
         if (!(info instanceof TypeInfoClass)) {
-            return new FormatterType(info, useSpecial).format(0, 0);
+            return new FormatterType(info, useSpecial).format();
         }
         final TypeInfoClass clazz = (TypeInfoClass) info;
-        final StringBuilder sb = new StringBuilder(new FormatterType(info, useSpecial).format(0, 0));
+        final StringBuilder sb = new StringBuilder(new FormatterType(info, useSpecial).format());
         if (!NameResolver.isTypeSpecial(clazz.getResolvedClass()) && !clazz.getTypeVariables().isEmpty()) {
             sb.append('<');
             sb.append(String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any")));
@@ -173,7 +173,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                     return rawString;
                 }
             )
-                .format(0, 0)
+                .format()
         );
         if (info instanceof TypeInfoClass) {
             final TypeInfoClass classInfo = (TypeInfoClass) info;

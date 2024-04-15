@@ -20,7 +20,7 @@ public class FormatterConstructor implements IFormatter {
     }
 
     private String formatTypeParameterized(ITypeInfo info) {
-        StringBuilder sb = new StringBuilder(new FormatterType(info).format(0, 0));
+        StringBuilder sb = new StringBuilder(new FormatterType(info).format());
         if (info instanceof TypeInfoClass) {
             TypeInfoClass clazz = (TypeInfoClass) info;
             ClassInfo classInfo = ClassInfo.ofCache(clazz.getResolvedClass());

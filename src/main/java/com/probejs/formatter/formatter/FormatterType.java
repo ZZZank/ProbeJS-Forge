@@ -30,7 +30,7 @@ public class FormatterType {
         this(typeInfo, true);
     }
 
-    public String format(int indent, int stepIndent) {
+    public String format() {
         if (useSpecial) {
             Class<?> rawClass = typeInfo.getResolvedClass();
             if (NameResolver.specialTypeFormatters.containsKey(rawClass)) {
@@ -47,7 +47,7 @@ public class FormatterType {
         if (typeInfo instanceof TypeInfoWildcard) {
             return transformer.apply(
                 typeInfo,
-                new FormatterType(typeInfo.getBaseType(), useSpecial, transformer).format(indent, stepIndent)
+                new FormatterType(typeInfo.getBaseType(), useSpecial, transformer).format()
             );
         }
         if (typeInfo instanceof TypeInfoVariable) {
@@ -55,7 +55,7 @@ public class FormatterType {
             String bounds = vInfo.getBounds()
                 .stream()
                 .map(FormatterType::new)
-                .map(fmtr -> fmtr.format(0, 0))
+                .map(fmtr -> fmtr.format())
                 .filter(str -> !str.equals("any"))
                 .collect(Collectors.joining(","));
             String name = typeInfo.getTypeName();
@@ -68,13 +68,13 @@ public class FormatterType {
             return transformer.apply(
                 typeInfo,
                 new FormatterType(typeInfo.getBaseType(), useSpecial, transformer)
-                    .format(indent, stepIndent) +
+                    .format() +
                     "[]"
             );
         }
         if (typeInfo instanceof TypeInfoParameterized) {
             TypeInfoParameterized parType = (TypeInfoParameterized) typeInfo;
-            String raw = new FormatterType(parType.getBaseType(), useSpecial, transformer).format(indent, stepIndent);
+            String raw = new FormatterType(parType.getBaseType(), useSpecial, transformer).format();
             if (raw.equals("any")) {
                 return transformer.apply(typeInfo, "any");
             }
@@ -86,7 +86,7 @@ public class FormatterType {
                     parType
                         .getParamTypes()
                         .stream()
-                        .map(p -> new FormatterType(p, useSpecial, transformer).format(indent, stepIndent))
+                        .map(p -> new FormatterType(p, useSpecial, transformer).format())
                         .collect(Collectors.joining(", "))
                 )
             );
@@ -101,7 +101,7 @@ public class FormatterType {
      * the end of formatted string
      */
     public static String formatParameterized(ITypeInfo info) {
-        StringBuilder sb = new StringBuilder(new FormatterType(info, false).format(0, 0));
+        StringBuilder sb = new StringBuilder(new FormatterType(info, false).format());
         if (info instanceof TypeInfoClass) {
             TypeInfoClass clazz = (TypeInfoClass) info;
             if (!clazz.getTypeVariables().isEmpty()) {
