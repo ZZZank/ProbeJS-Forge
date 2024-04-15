@@ -3,7 +3,7 @@ package com.probejs.formatter;
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeRaw;
 import com.probejs.formatter.formatter.FormatterClass;
-import com.probejs.formatter.formatter.FormatterType0;
+import com.probejs.formatter.formatter.FormatterType;
 import com.probejs.info.SpecialData;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
@@ -29,7 +29,7 @@ public class SpecialTypes {
         if (inner == null) {
             return "any";
         }
-        return String.format("typeof %s", FormatterType0.of(inner.getBaseType(), false).format());
+        return String.format("typeof %s", FormatterType.of(inner.getBaseType(), false).format());
     }
 
     private static String formatValueOrType(Object obj) {

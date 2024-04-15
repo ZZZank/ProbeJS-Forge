@@ -50,7 +50,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
      * the end of formatted string
      */
     public static String formatParameterized(ITypeInfo info) {
-        StringBuilder sb = new StringBuilder(new FormatterType(info, false).format());
+        StringBuilder sb = new StringBuilder(FormatterType.of(info, false).format());
         if (info instanceof TypeInfoClass) {
             TypeInfoClass clazz = (TypeInfoClass) info;
             if (!clazz.getTypeVariables().isEmpty()) {
@@ -281,7 +281,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         String underName = origName + "_";
         if (NameResolver.specialTypeFormatters.containsKey(classInfo.getClazzRaw())) {
             assignableTypes.add(
-                FormatterType0.of(
+                FormatterType.of(
                     new TypeInfoParameterized(
                         new TypeInfoClass(classInfo.getClazzRaw()),
                         classInfo.getTypeParameters()
