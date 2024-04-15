@@ -46,6 +46,7 @@ public class Walker {
         Set<Class<?>> result = new HashSet<>();
         for (Class<?> clazz : classes) {
             ClassInfo info = ClassInfo.ofCache(clazz);
+            //self
             result.addAll(walkTypes(info.getTypeParameters()));
             //super
             ClassInfo superclass = info.getSuperClass();

@@ -3,7 +3,9 @@ package com.probejs.formatter.formatter;
 import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.NameResolver.ResolvedName;
 import com.probejs.info.type.*;
+
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FormatterType {
@@ -33,8 +35,9 @@ public class FormatterType {
     public String format() {
         if (useSpecial) {
             Class<?> rawClass = typeInfo.getResolvedClass();
-            if (NameResolver.specialTypeFormatters.containsKey(rawClass)) {
-                return NameResolver.specialTypeFormatters.get(rawClass).apply(this.typeInfo);
+            Function<ITypeInfo, String> special = NameResolver.specialTypeFormatters.get(rawClass);
+            if (special != null) {
+                return special.apply(this.typeInfo);
             }
         }
 
@@ -55,7 +58,7 @@ public class FormatterType {
             String bounds = vInfo.getBounds()
                 .stream()
                 .map(FormatterType::new)
-                .map(fmtr -> fmtr.format())
+                .map(FormatterType::format)
                 .filter(str -> !str.equals("any"))
                 .collect(Collectors.joining(","));
             String name = typeInfo.getTypeName();

@@ -33,7 +33,7 @@ public class TypeInfoClass implements ITypeInfo {
 
     @Override
     public String getTypeName() {
-        return wrapTypeName(this.raw.getTypeName());
+        return this.raw.getTypeName();
     }
 
     @Override

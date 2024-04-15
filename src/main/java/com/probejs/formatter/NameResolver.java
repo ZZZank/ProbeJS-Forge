@@ -21,7 +21,7 @@ public class NameResolver {
 
     public static class ResolvedName {
 
-        public static final ResolvedName UNRESOLVED = new ResolvedName(Collections.singletonList("any"));
+        public static final ResolvedName UNRESOLVED = new ResolvedName(Collections.singletonList("Unresolved"));
         private final List<String> names;
 
         private ResolvedName(List<String> names) {

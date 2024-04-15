@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class OnJavaMixin {
 
     @Inject(method = "loadJavaClass", at = @At("RETURN"), remap = false)
-    public void captureJacaClass(Scriptable scope, Object[] args, CallbackInfoReturnable<NativeJavaClass> cir) {
+    public void captureJavaClass(Scriptable scope, Object[] args, CallbackInfoReturnable<NativeJavaClass> cir) {
         CapturedClasses.capturedJavaClasses.add(cir.getReturnValue().getClassObject());
     }
 }

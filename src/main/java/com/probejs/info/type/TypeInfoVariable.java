@@ -2,9 +2,9 @@ package com.probejs.info.type;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TypeInfoVariable implements ITypeInfo {
 
@@ -68,9 +68,14 @@ public class TypeInfoVariable implements ITypeInfo {
     }
 
     public List<ITypeInfo> getBounds() {
-        return Arrays
-            .stream(this.raw.getBounds())
-            .map(TypeResolver::resolveType)
-            .collect(Collectors.toList());
+        Type[] bounds = this.raw.getBounds();
+        if (bounds.length == 1 && bounds[0] == Object.class) {
+            return Collections.emptyList();
+        }
+        List<ITypeInfo> boundTypes = new ArrayList<>(bounds.length);
+        for (Type bound : bounds) {
+            boundTypes.add(TypeResolver.resolveType(bound));
+        }
+        return boundTypes;
     }
 }
