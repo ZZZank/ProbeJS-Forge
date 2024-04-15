@@ -24,11 +24,11 @@ public class FormatterConstructor implements IFormatter {
         if (info instanceof TypeInfoClass) {
             TypeInfoClass clazz = (TypeInfoClass) info;
             ClassInfo classInfo = ClassInfo.ofCache(clazz.getResolvedClass());
-            if (!classInfo.getTypeParamaters().isEmpty()) {
+            if (!classInfo.getTypeParameters().isEmpty()) {
                 sb.append('<');
                 sb.append(
                     classInfo
-                        .getTypeParamaters()
+                        .getTypeParameters()
                         .stream()
                         .map(ITypeInfo::getTypeName)
                         .map(NameResolver::getResolvedName)
