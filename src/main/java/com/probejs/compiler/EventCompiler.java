@@ -63,7 +63,7 @@ public class EventCompiler {
             .sorted(Comparator.comparing(Class::getName))
             .map(clazz ->
                 String.format(
-                    "declare function onForgeEvent(name: %s, handler: (event: %s) => void);",
+                    "declare function onForgeEvent(name: %s, handler: (event: %s) => void): void;",
                     ProbeJS.GSON.toJson(clazz.getName()),
                     FormatterType.formatParameterized(new TypeInfoClass(clazz))
                 )
@@ -83,7 +83,7 @@ public class EventCompiler {
             lines.addAll(wildcard.getBuiltinPropAsComment());
             lines.add(
                 String.format(
-                    "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void);",
+                    "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void): void;",
                     id,
                     FormatterType.formatParameterized(new TypeInfoClass(wildcard.clazzRaw))
                 )
@@ -98,7 +98,7 @@ public class EventCompiler {
                 .format(0, 0)
         );
         lines.add(
-            "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void);"
+            "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void): void;"
         );
         lines.add("");
         for (final String line : lines) {
@@ -129,7 +129,7 @@ public class EventCompiler {
                 " * this is the general representation of `onEvent()`, seeing this comment usually indicates that such event does not exist,",
                 " * or is unknown to ProbeJS yet",
                 " */",
-                "declare function onEvent(name: string, handler: (event: Internal.EventJS) => void);",
+                "declare function onEvent(name: string, handler: (event: Internal.EventJS) => void): void;",
                 ""
             )
         );
