@@ -6,6 +6,7 @@ import com.probejs.info.type.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class FormatterType0<T extends ITypeInfo> {
@@ -22,22 +23,38 @@ public abstract class FormatterType0<T extends ITypeInfo> {
         return DUMMY;
     }
 
+    /**
+     * same as calling {@code underscored(true)}
+     * @return formatter itself
+     */
     public FormatterType0<T> underscored() {
-        this.underscored = true;
+        this.underscored(true);
         return this;
     }
 
+    /**
+     * set if the formatter should add underscore whenever possible, to refer to all assignable
+     * type alias of such type
+     * @return formatter itself
+     */
     public FormatterType0<T> underscored(boolean under) {
         this.underscored = under;
         return this;
     }
 
-    protected String withUnderscored(String s) {
-        if (!underscored) {
-            return s;
+    /**
+     * determine the value of "underscored" via provided {@link Predicate}, which will be applied to the
+     * {@link ITypeInfo} provided by {@code getInfo()}
+     */
+    public FormatterType0<T> underscored(Predicate<ITypeInfo> predicate) {
+        T info = this.getInfo();
+        if (info != null) {
+            this.underscored(predicate.test(info));
         }
-        return s + "_";
+        return this;
     }
+
+    public abstract T getInfo();
 
     public abstract String format();
 
@@ -47,6 +64,11 @@ public abstract class FormatterType0<T extends ITypeInfo> {
 
         private Dummy(String value) {
             this.value = value;
+        }
+
+        @Override
+        public ITypeInfo getInfo() {
+            return null;
         }
 
         @Override
@@ -64,6 +86,11 @@ public abstract class FormatterType0<T extends ITypeInfo> {
         @Deprecated
         public Clazz(ITypeInfo tInfo) {
             this.tInfo = (TypeInfoClass) tInfo;
+        }
+
+        @Override
+        public ITypeInfo getInfo() {
+            return this.tInfo;
         }
 
         @Override
@@ -88,6 +115,11 @@ public abstract class FormatterType0<T extends ITypeInfo> {
         }
 
         @Override
+        public ITypeInfo getInfo() {
+            return this.tInfo;
+        }
+
+        @Override
         public String format() {
             return FormatterType0.of(this.tInfo.getBaseType()).format();
         }
@@ -102,6 +134,11 @@ public abstract class FormatterType0<T extends ITypeInfo> {
         @Deprecated
         public Variable(ITypeInfo tInfo) {
             this.tInfo = (TypeInfoVariable) tInfo;
+        }
+
+        @Override
+        public ITypeInfo getInfo() {
+            return this.tInfo;
         }
 
         @Override
@@ -133,6 +170,11 @@ public abstract class FormatterType0<T extends ITypeInfo> {
         }
 
         @Override
+        public ITypeInfo getInfo() {
+            return this.tInfo;
+        }
+
+        @Override
         public String format() {
             return FormatterType0.of(this.tInfo.getBaseType()).format() + "[]";
         }
@@ -147,6 +189,11 @@ public abstract class FormatterType0<T extends ITypeInfo> {
         @Deprecated
         public Parameterized(ITypeInfo tInfo) {
             this.tInfo = (TypeInfoParameterized) tInfo;
+        }
+
+        @Override
+        public ITypeInfo getInfo() {
+            return this.tInfo;
         }
 
         @Override
