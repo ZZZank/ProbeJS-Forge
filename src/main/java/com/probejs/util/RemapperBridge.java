@@ -7,32 +7,12 @@ import me.shedaniel.architectury.platform.Platform;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class RemapperBridge {
+public abstract class RemapperBridge {
 
-    public static final RemapperBridge.DummyIRemapper dummyRemapper = new RemapperBridge.DummyIRemapper() {
-        @Override
-        public String getMappedClass(Class<?> from) {
-            return "";
-        }
+    public static final IRemapper emptyRemapper = new EmptyRemapper();
+    private static IRemapper reference = emptyRemapper;
 
-        @Override
-        public String getUnmappedClass(String from) {
-            return "";
-        }
-
-        @Override
-        public String getMappedField(Class<?> from, Field field) {
-            return "";
-        }
-
-        @Override
-        public String getMappedMethod(Class<?> from, Method method) {
-            return "";
-        }
-    };
-    private static RemapperBridge.DummyIRemapper reference = dummyRemapper;
-
-    public static RemapperBridge.DummyIRemapper getRemapper() {
+    public static IRemapper getRemapper() {
         return RemapperBridge.reference;
     }
 
@@ -43,18 +23,16 @@ public class RemapperBridge {
         }
         ProbeJS.LOGGER.info("Refreshing Remapper reference");
         try {
-            //TODO: correct class type
-            Class<?> c = Class.forName("dev.latvian.mods.rhino.util.remapper.Remapper");
-            RemapperBridge.reference = new ReflectingRemapper(c);
+            RemapperBridge.reference = new ReflectingRemapper();
             ProbeJS.LOGGER.info("Remapper reference refreshed");
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Unable to refresh Remapper reference");
             e.printStackTrace();
-            RemapperBridge.reference = RemapperBridge.dummyRemapper;
+            RemapperBridge.reference = RemapperBridge.emptyRemapper;
         }
     }
 
-    public interface DummyIRemapper {
+    public interface IRemapper {
 
         String getMappedClass(Class<?> from);
 
@@ -66,14 +44,15 @@ public class RemapperBridge {
 
     }
 
-    private static class ReflectingRemapper implements DummyIRemapper {
+    private static class ReflectingRemapper implements IRemapper {
         private final Object source;
         private final Method mapClass;
         private final Method unmapClass;
         private final Method mapField;
         private final Method mapMethod;
 
-        public ReflectingRemapper(Class<?> c) throws Exception {
+        public ReflectingRemapper() throws Exception {
+            Class<?> c = Class.forName("dev.latvian.mods.rhino.util.remapper.Remapper");
             source = Context.class.getMethod("getRemapper").invoke(null);
             mapClass = c.getMethod("getMappedClass", Class.class);
             unmapClass = c.getMethod("getUnmappedClass", String.class);
@@ -99,6 +78,28 @@ public class RemapperBridge {
         @Override
         public String getMappedMethod(Class<?> from, Method method) {
             return PUtil.tryOrDefault(()->(String) mapMethod.invoke(source, from, method), "");
+        }
+    }
+
+    private static class EmptyRemapper implements IRemapper {
+        @Override
+        public String getMappedClass(Class<?> from) {
+            return "";
+        }
+
+        @Override
+        public String getUnmappedClass(String from) {
+            return "";
+        }
+
+        @Override
+        public String getMappedField(Class<?> from, Field field) {
+            return "";
+        }
+
+        @Override
+        public String getMappedMethod(Class<?> from, Method method) {
+            return "";
         }
     }
 }
