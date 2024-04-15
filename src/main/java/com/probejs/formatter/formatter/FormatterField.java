@@ -50,7 +50,7 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
             builder.append(NameResolver.formatValue(fieldInfo.getStaticValue()));
         } else {
             builder.append(
-                new FormatterType(
+                FormatterType0.of(
                     fieldInfo.getType(),
                     NameResolver.specialTypeGuards.getOrDefault(
                         TypeResolver.getContainedTypeOrSelf(fieldInfo.getType()).getResolvedClass(),

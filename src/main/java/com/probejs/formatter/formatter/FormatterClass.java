@@ -253,7 +253,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         String underName = origName + "_";
         if (NameResolver.specialTypeFormatters.containsKey(classInfo.getClazzRaw())) {
             assignableTypes.add(
-                new FormatterType(
+                FormatterType0.of(
                     new TypeInfoParameterized(
                         new TypeInfoClass(classInfo.getClazzRaw()),
                         classInfo.getTypeParameters()

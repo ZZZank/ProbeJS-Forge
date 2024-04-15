@@ -131,10 +131,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     private static String formatTypeParameterized(ITypeInfo info, boolean useSpecial) {
         if (!(info instanceof TypeInfoClass)) {
-            return new FormatterType(info, useSpecial).format();
+            return FormatterType0.of(info, useSpecial).format();
         }
         final TypeInfoClass clazz = (TypeInfoClass) info;
-        final StringBuilder sb = new StringBuilder(new FormatterType(info, useSpecial).format());
+        final StringBuilder sb = new StringBuilder(FormatterType0.of(info, useSpecial).format());
         if (!NameResolver.isTypeSpecial(clazz.getResolvedClass()) && !clazz.getTypeVariables().isEmpty()) {
             sb.append('<');
             sb.append(String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any")));
@@ -160,19 +160,15 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
         final StringBuilder sb = new StringBuilder();
         sb.append(
-            new FormatterType(
-                info,
-                false,
-                (typeInfo, rawString) -> {
+            FormatterType0
+                .of(info, false)
+                .underscored((typeInfo) -> {
                     if (!forceNoUnderscore && typeInfo instanceof TypeInfoClass) {
                         Class<?> clazz = typeInfo.getResolvedClass();
-                        if (!NameResolver.resolvedPrimitives.contains(clazz.getName())) {
-                            return (rawString + "_");
-                        }
+                        return !NameResolver.resolvedPrimitives.contains(clazz.getName());
                     }
-                    return rawString;
-                }
-            )
+                    return false;
+                })
                 .format()
         );
         if (info instanceof TypeInfoClass) {

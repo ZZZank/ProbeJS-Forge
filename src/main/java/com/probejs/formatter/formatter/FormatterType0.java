@@ -168,8 +168,8 @@ public abstract class FormatterType0<T extends ITypeInfo> {
             String bounds = this.tInfo
                 .getBounds()
                 .stream()
-                .map(FormatterType::new)
-                .map(FormatterType::format)
+                .map(FormatterType0::of)
+                .map(FormatterType0::format)
                 .filter(str -> !str.equals("any"))
                 .collect(Collectors.joining(", "));
             String name = this.tInfo.getTypeName();
