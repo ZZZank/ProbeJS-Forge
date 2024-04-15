@@ -13,14 +13,28 @@ public abstract class FormatterType0<T extends ITypeInfo> {
 
     public static final Map<Class<? extends ITypeInfo>, Function<ITypeInfo, FormatterType0<?>>> REGISTRIES = new HashMap<>();
     public static final Dummy DUMMY_ANY = new Dummy("any");
-    protected boolean underscored;
+    protected boolean underscored = false;
+
+    static {
+        REGISTRIES.put(TypeInfoClass.class, Clazz::new);
+        REGISTRIES.put(TypeInfoArray.class, Array::new);
+        REGISTRIES.put(TypeInfoParameterized.class, Parameterized::new);
+        REGISTRIES.put(TypeInfoVariable.class, Variable::new);
+        REGISTRIES.put(TypeInfoWildcard.class, Wildcard::new);
+    }
 
     public static FormatterType0<? extends ITypeInfo> of(ITypeInfo tInfo) {
+        return of(tInfo, true);
+    }
+
+    public static FormatterType0<? extends ITypeInfo> of(ITypeInfo tInfo, boolean allowSpecial) {
         //special
-        Class<?> rawClass = tInfo.getResolvedClass();
-        Function<ITypeInfo, String> special = NameResolver.specialTypeFormatters.get(rawClass);
-        if (special != null) {
-            return new Dummy(special.apply(tInfo));
+        if (allowSpecial) {
+            Class<?> rawClass = tInfo.getResolvedClass();
+            Function<ITypeInfo, String> special = NameResolver.specialTypeFormatters.get(rawClass);
+            if (special != null) {
+                return new Dummy(special.apply(tInfo));
+            }
         }
         //general
         Function<ITypeInfo, FormatterType0<?>> builder = REGISTRIES.get(tInfo.getClass());
