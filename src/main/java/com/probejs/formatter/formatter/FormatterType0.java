@@ -12,15 +12,23 @@ import java.util.stream.Collectors;
 public abstract class FormatterType0<T extends ITypeInfo> {
 
     public static final Map<Class<? extends ITypeInfo>, Function<ITypeInfo, FormatterType0<?>>> REGISTRIES = new HashMap<>();
-    public static final Dummy DUMMY = new Dummy("any");
+    public static final Dummy DUMMY_ANY = new Dummy("any");
     protected boolean underscored;
 
     public static FormatterType0<? extends ITypeInfo> of(ITypeInfo tInfo) {
+        //special
+        Class<?> rawClass = tInfo.getResolvedClass();
+        Function<ITypeInfo, String> special = NameResolver.specialTypeFormatters.get(rawClass);
+        if (special != null) {
+            return new Dummy(special.apply(tInfo));
+        }
+        //general
         Function<ITypeInfo, FormatterType0<?>> builder = REGISTRIES.get(tInfo.getClass());
         if (builder != null) {
             return builder.apply(tInfo);
         }
-        return DUMMY;
+        //fallback
+        return DUMMY_ANY;
     }
 
     /**
