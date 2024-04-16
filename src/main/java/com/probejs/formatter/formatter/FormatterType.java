@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public abstract class FormatterType<T extends ITypeInfo> {
 
     public static final Map<Class<? extends ITypeInfo>, Function<ITypeInfo, FormatterType<?>>> REGISTRIES = new HashMap<>();
-    public static final Dummy DUMMY_ANY = new Dummy("any");
+    public static final Literal LITERAL_ANY = new Literal("any");
     protected boolean underscored = false;
 
     static {
@@ -33,7 +33,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
             Class<?> rawClass = tInfo.getResolvedClass();
             Function<ITypeInfo, String> special = NameResolver.specialTypeFormatters.get(rawClass);
             if (special != null) {
-                return new Dummy(special.apply(tInfo));
+                return new Literal(special.apply(tInfo));
             }
         }
         //general
@@ -42,7 +42,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
             return builder.apply(tInfo);
         }
         //fallback
-        return DUMMY_ANY;
+        return LITERAL_ANY;
     }
 
     /**
@@ -80,17 +80,17 @@ public abstract class FormatterType<T extends ITypeInfo> {
 
     public abstract String format();
 
-    public static class Dummy extends FormatterType<ITypeInfo> {
+    public static class Literal extends FormatterType<TypeLiteral> {
 
         private final String value;
 
-        private Dummy(String value) {
+        public Literal(String value) {
             this.value = value;
         }
 
         @Override
-        public ITypeInfo getInfo() {
-            return null;
+        public TypeLiteral getInfo() {
+            return new TypeLiteral(this.value);
         }
 
         @Override
@@ -105,7 +105,6 @@ public abstract class FormatterType<T extends ITypeInfo> {
         /**
          * use {@link FormatterType#of(ITypeInfo)} instead
          */
-        @Deprecated
         public Clazz(ITypeInfo tInfo) {
             this.tInfo = (TypeInfoClass) tInfo;
         }
@@ -131,7 +130,6 @@ public abstract class FormatterType<T extends ITypeInfo> {
         /**
          * use {@link FormatterType#of(ITypeInfo)} instead
          */
-        @Deprecated
         public Wildcard(ITypeInfo tInfo) {
             this.tInfo = (TypeInfoWildcard) tInfo;
         }
@@ -153,7 +151,6 @@ public abstract class FormatterType<T extends ITypeInfo> {
         /**
          * use {@link FormatterType#of(ITypeInfo)} instead
          */
-        @Deprecated
         public Variable(ITypeInfo tInfo) {
             this.tInfo = (TypeInfoVariable) tInfo;
         }
@@ -188,7 +185,6 @@ public abstract class FormatterType<T extends ITypeInfo> {
         /**
          * use {@link FormatterType#of(ITypeInfo)} instead
          */
-        @Deprecated
         public Array(ITypeInfo tInfo) {
             this.tInfo = (TypeInfoArray) tInfo;
         }
@@ -200,7 +196,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
 
         @Override
         public String format() {
-            return FormatterType.of(this.tInfo.getBaseType()).format() + "[]";
+            return FormatterType.of(this.tInfo.getBaseType()).underscored(this.underscored).format() + "[]";
         }
     }
 
@@ -210,7 +206,6 @@ public abstract class FormatterType<T extends ITypeInfo> {
         /**
          * use {@link FormatterType#of(ITypeInfo)} instead
          */
-        @Deprecated
         public Parameterized(ITypeInfo tInfo) {
             this.tInfo = (TypeInfoParameterized) tInfo;
         }
@@ -227,7 +222,6 @@ public abstract class FormatterType<T extends ITypeInfo> {
                 this.tInfo.getParamTypes()
                     .stream()
                     .map(FormatterType::of)
-                    .map(fmtr -> fmtr.underscored(false))
                     .map(FormatterType::format)
                     .collect(Collectors.joining(", "))
             );

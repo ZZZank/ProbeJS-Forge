@@ -1,0 +1,47 @@
+package com.probejs.info.type;
+
+import java.lang.reflect.Type;
+
+public class TypeLiteral implements ITypeInfo {
+
+    private final String value;
+
+    public TypeLiteral(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public Type getRaw() {
+        return null;
+    }
+
+    @Override
+    public ITypeInfo getBaseType() {
+        return this;
+    }
+
+    @Override
+    public Class<?> getResolvedClass() {
+        return null;
+    }
+
+    @Override
+    public String getTypeName() {
+        return this.value;
+    }
+
+    @Override
+    public String wrapTypeName(String rawName) {
+        return rawName;
+    }
+
+    @Override
+    public ITypeInfo copy() {
+        return this;
+    }
+
+    @Override
+    public boolean assignableFrom(ITypeInfo info) {
+        return false;
+    }
+}
