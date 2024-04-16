@@ -143,7 +143,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
 
         @Override
         public String format() {
-            return FormatterType.of(this.tInfo.getBaseType()).format();
+            return FormatterType.of(this.tInfo.getBaseType()).underscored(this.underscored).format();
         }
     }
 
