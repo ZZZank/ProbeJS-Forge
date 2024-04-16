@@ -39,15 +39,7 @@ public class TypeInfoVariable implements ITypeInfo {
 
     @Override
     public String getTypeName() {
-        return wrapTypeName(this.raw.getTypeName());
-    }
-
-    @Override
-    public String wrapTypeName(String rawName) {
-        if (underscored) {
-            return rawName + '_';
-        }
-        return rawName;
+        return this.raw.getTypeName();
     }
 
     @Override

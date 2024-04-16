@@ -9,13 +9,8 @@ import java.util.stream.Collectors;
 
 public class TypeInfoParameterized implements ITypeInfo {
 
-    public static boolean test(Type type) {
-        return type instanceof ParameterizedType;
-    }
-
     private ITypeInfo rawType;
     private List<ITypeInfo> paramTypes;
-
     public TypeInfoParameterized(Type type) {
         if (!test(type)) {
             throw new IllegalArgumentException("provided `type` is not an instance of ParameterizedType");
@@ -34,6 +29,10 @@ public class TypeInfoParameterized implements ITypeInfo {
         this.paramTypes = new ArrayList<>(paramTypes);
     }
 
+    public static boolean test(Type type) {
+        return type instanceof ParameterizedType;
+    }
+
     @Override
     public ITypeInfo getBaseType() {
         return rawType;
@@ -48,16 +47,14 @@ public class TypeInfoParameterized implements ITypeInfo {
         return paramTypes;
     }
 
-    @Override
-    public String getTypeName() {
-        return wrapTypeName(this.rawType.getTypeName());
+    public void setParamTypes(List<ITypeInfo> paramTypes) {
+        this.paramTypes = paramTypes;
     }
 
     @Override
-    public String wrapTypeName(String rawName) {
-        return String.format(
-            "%s<%s>",
-            rawName,
+    public String getTypeName() {
+        return String.format("%s<%s>",
+            this.rawType.getTypeName(),
             paramTypes.stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", "))
         );
     }
@@ -84,10 +81,6 @@ public class TypeInfoParameterized implements ITypeInfo {
             }
         }
         return false;
-    }
-
-    public void setParamTypes(List<ITypeInfo> paramTypes) {
-        this.paramTypes = paramTypes;
     }
 
     public void setRawType(ITypeInfo rawType) {

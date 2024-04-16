@@ -31,11 +31,6 @@ public class TypeLiteral implements ITypeInfo {
     }
 
     @Override
-    public String wrapTypeName(String rawName) {
-        return rawName;
-    }
-
-    @Override
     public ITypeInfo copy() {
         return this;
     }

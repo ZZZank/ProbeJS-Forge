@@ -11,8 +11,6 @@ public interface ITypeInfo {
 
     String getTypeName();
 
-    String wrapTypeName(String rawName);
-
     ITypeInfo copy();
 
     boolean assignableFrom(ITypeInfo info);

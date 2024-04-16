@@ -37,11 +37,6 @@ public class TypeInfoClass implements ITypeInfo {
     }
 
     @Override
-    public String wrapTypeName(String rawName) {
-        return rawName;
-    }
-
-    @Override
     public ITypeInfo copy() {
         return new TypeInfoClass(raw);
     }
