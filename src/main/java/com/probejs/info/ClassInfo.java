@@ -38,7 +38,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         return new ClassInfo(clazz);
     }
 
-    private final Class<?> clazzRaw;
+    private final Class<?> raw;
     private final String name;
     private final int modifiers;
     private final boolean isInterface;
@@ -60,11 +60,11 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private final List<FieldInfo> allFieldInfos;
 
     private ClassInfo(Class<?> clazz) {
-        this.clazzRaw = clazz;
-        this.name = clazzRaw.getName();
-        this.modifiers = clazzRaw.getModifiers();
-        this.isInterface = clazzRaw.isInterface();
-        this.superClass = ofCache(clazzRaw.getSuperclass());
+        this.raw = clazz;
+        this.name = raw.getName();
+        this.modifiers = raw.getModifiers();
+        this.isInterface = raw.isInterface();
+        this.superClass = ofCache(raw.getSuperclass());
         this.superType = TypeResolver.resolveType(clazz.getGenericSuperclass());
 
         this.interfaces = new ArrayList<>(0);
@@ -80,19 +80,19 @@ public class ClassInfo implements Comparable<ClassInfo> {
             );
             constructorInfos.addAll(
                 Arrays
-                    .stream(clazzRaw.getConstructors())
+                    .stream(raw.getConstructors())
                     .map(ConstructorInfo::new)
                     .collect(Collectors.toList())
             );
             typeParameters.addAll(
                 Arrays
-                    .stream(clazzRaw.getTypeParameters())
+                    .stream(raw.getTypeParameters())
                     .map(TypeInfoVariable::new)
                     .collect(Collectors.toList())
             );
             //methods
             Arrays
-                .stream(clazzRaw.getMethods())
+                .stream(raw.getMethods())
                 .map(m -> new MethodInfo(m, clazz))
                 .peek(allMethodInfos::add)
                 .filter(mInfo -> {
@@ -100,7 +100,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
                         return true;
                     }
                     if (isInterface) {
-                        return mInfo.getRaw().getDeclaringClass() == clazzRaw;
+                        return mInfo.getRaw().getDeclaringClass() == raw;
                     }
                     return !hasIdenticalParentMethod(mInfo.getRaw(), clazz);
                 })
@@ -109,16 +109,16 @@ public class ClassInfo implements Comparable<ClassInfo> {
                 .forEach(methodInfos::add);
             //fields
             Arrays
-                .stream(clazzRaw.getFields())
+                .stream(raw.getFields())
                 .map(f -> new FieldInfo(f, clazz))
                 .peek(allFieldInfos::add)
-                .filter(fInfo -> !ProbeJS.CONFIG.trimming || fInfo.getRaw().getDeclaringClass() == clazzRaw)
+                .filter(fInfo -> !ProbeJS.CONFIG.trimming || fInfo.getRaw().getDeclaringClass() == raw)
                 .filter(f -> ClassResolver.acceptField(f.getName()))
                 .filter(f -> !f.shouldHide())
                 .forEach(fieldInfos::add);
         } catch (NoClassDefFoundError e) {
             // https://github.com/ZZZank/ProbeJS-Forge/issues/2
-            ProbeJS.LOGGER.error("Unable to fetch infos for class '{}'", clazzRaw.getName());
+            ProbeJS.LOGGER.error("Unable to fetch infos for class '{}'", raw.getName());
             e.printStackTrace();
         }
         //Resolve types - rollback everything till Object
@@ -129,7 +129,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         this.isFunctionalInterface = isInterface && abstracts.size() == 1;
         if (this.isFunctionalInterface) {
             NameResolver.addSpecialAssignments(
-                this.clazzRaw,
+                this.raw,
                 () -> {
                     FormatterMethod formatterLmbda = new FormatterMethod(abstracts.get(0));
                     String lmbda = String.format(
@@ -162,11 +162,11 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private void applySuperGenerics(List<MethodInfo> methodsToMutate, List<FieldInfo> fieldsToMutate) {
         if (superClass != null) {
             //Apply current level changes
-            ITypeInfo typeInfo = TypeResolver.resolveType(clazzRaw.getGenericSuperclass());
+            ITypeInfo typeInfo = TypeResolver.resolveType(raw.getGenericSuperclass());
             Map<String, ITypeInfo> internalGenericMap = resolveTypeOverrides(typeInfo);
             applyGenerics(internalGenericMap, methodsToMutate, fieldsToMutate);
             Arrays
-                .stream(clazzRaw.getGenericInterfaces())
+                .stream(raw.getGenericInterfaces())
                 .map(TypeResolver::resolveType)
                 .map(ClassInfo::resolveTypeOverrides)
                 .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
@@ -175,7 +175,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
             //Rewind
             applyGenerics(internalGenericMap, methodsToMutate, fieldsToMutate);
             Arrays
-                .stream(clazzRaw.getGenericInterfaces())
+                .stream(raw.getGenericInterfaces())
                 .map(TypeResolver::resolveType)
                 .map(ClassInfo::resolveTypeOverrides)
                 .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
@@ -186,7 +186,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private void applyInterfaceGenerics(List<MethodInfo> methodsToMutate, List<FieldInfo> fieldsToMutate) {
         //Apply current level changes
         Arrays
-            .stream(clazzRaw.getGenericInterfaces())
+            .stream(raw.getGenericInterfaces())
             .map(TypeResolver::resolveType)
             .map(ClassInfo::resolveTypeOverrides)
             .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
@@ -194,7 +194,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         interfaces.forEach(i -> ofCache(i.getResolvedClass()).applyInterfaceGenerics(methodsToMutate, fieldsToMutate));
         //Rewind
         Arrays
-            .stream(clazzRaw.getGenericInterfaces())
+            .stream(raw.getGenericInterfaces())
             .map(TypeResolver::resolveType)
             .map(ClassInfo::resolveTypeOverrides)
             .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
@@ -269,11 +269,11 @@ public class ClassInfo implements Comparable<ClassInfo> {
     }
 
     public boolean isEnum() {
-        return clazzRaw.isEnum();
+        return raw.isEnum();
     }
 
-    public Class<?> getClazzRaw() {
-        return clazzRaw;
+    public Class<?> getRaw() {
+        return raw;
     }
 
     public String getName() {

@@ -87,14 +87,14 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         }
 
         List<String> assignableTypes = DocManager.typesAssignable
-            .getOrDefault(classInfo.getClazzRaw().getName(), new ArrayList<>())
+            .getOrDefault(classInfo.getRaw().getName(), new ArrayList<>())
             .stream()
             .map(t -> t.transform(IType.defaultTransformer))
             .collect(Collectors.toList());
 
         if (classInfo.isEnum()) {
             //TODO: add special processing for KubeJS
-            Class<?> clazz = classInfo.getClazzRaw();
+            Class<?> clazz = classInfo.getRaw();
             try {
                 Method values = clazz.getMethod("values");
                 values.setAccessible(true);
@@ -124,12 +124,12 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             firstLine.add("class");
         }
         firstLine.add(NameResolver.getResolvedName(classInfo.getName()).getLastName());
-        if (classInfo.getClazzRaw().getTypeParameters().length != 0) {
+        if (classInfo.getRaw().getTypeParameters().length != 0) {
             firstLine.add(
                 String.format(
                     "<%s>",
                     Arrays
-                        .stream(classInfo.getClazzRaw().getTypeParameters())
+                        .stream(classInfo.getRaw().getTypeParameters())
                         .map(TypeVariable::getName)
                         .collect(Collectors.joining(", "))
                 )
@@ -138,13 +138,13 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         // super class
         if (classInfo.getSuperClass() != null) {
             firstLine.add("extends");
-            if (classInfo.getSuperClass().getClazzRaw() == Object.class) {
+            if (classInfo.getSuperClass().getRaw() == Object.class) {
                 // redirect to another `Object` so that we can bypass replacement of original `Object`
                 firstLine.add("Document.Object");
             } else {
                 firstLine.add(
                     formatParameterized(
-                        TypeResolver.resolveType(classInfo.getClazzRaw().getGenericSuperclass())
+                        TypeResolver.resolveType(classInfo.getRaw().getGenericSuperclass())
                     )
                 );
             }
@@ -154,7 +154,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             firstLine.add(classInfo.isInterface() ? "extends" : "implements");
             firstLine.add(
                 Arrays
-                    .stream(classInfo.getClazzRaw().getGenericInterfaces())
+                    .stream(classInfo.getRaw().getGenericInterfaces())
                     .map(TypeResolver::resolveType)
                     .map(FormatterClass::formatParameterized)
                     .collect(Collectors.joining(", "))
@@ -217,16 +217,14 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             }
 
             getterMap.forEach((k, v) -> lines.addAll(v.formatBean(indent + stepIndent, stepIndent)));
-            setterMap.forEach((k, v) -> {
-                v
-                    .stream()
-                    .filter(m ->
-                        !getterMap.containsKey(m.getBeanedName()) ||
-                        getterMap.get(m.getBeanedName()).getBeanTypeString().equals(m.getBeanTypeString())
-                    )
-                    .findFirst()
-                    .ifPresent(fmtr -> lines.addAll(fmtr.formatBean(indent + stepIndent, stepIndent)));
-            });
+            setterMap.forEach((k, v) -> v
+                .stream()
+                .filter(m ->
+                    !getterMap.containsKey(m.getBeanedName()) ||
+                    getterMap.get(m.getBeanedName()).getBeanTypeString().equals(m.getBeanTypeString())
+                )
+                .findFirst()
+                .ifPresent(fmtr -> lines.addAll(fmtr.formatBean(indent + stepIndent, stepIndent))));
         }
         //special processing for FunctionalInterface
         if (classInfo.isFunctionalInterface()) {
@@ -279,11 +277,11 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         //type conversion
         String origName = NameResolver.getResolvedName(classInfo.getName()).getLastName();
         String underName = origName + "_";
-        if (NameResolver.specialTypeFormatters.containsKey(classInfo.getClazzRaw())) {
+        if (NameResolver.specialTypeFormatters.containsKey(classInfo.getRaw())) {
             assignableTypes.add(
                 FormatterType.of(
                     new TypeInfoParameterized(
-                        new TypeInfoClass(classInfo.getClazzRaw()),
+                        new TypeInfoClass(classInfo.getRaw()),
                         classInfo.getTypeParameters()
                     )
                 )

@@ -1,9 +1,9 @@
 package com.probejs.info.type;
 
+import com.probejs.info.ClassInfo;
+
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TypeInfoClass implements ITypeInfo {
 
@@ -11,14 +11,17 @@ public class TypeInfoClass implements ITypeInfo {
         return type instanceof Class<?>;
     }
 
-    private final Class<?> raw;
+    private final ClassInfo info;
 
     public TypeInfoClass(Type type) {
-        this.raw = (Class<?>) type;
+        if (!(type instanceof Class<?>)){
+            throw new IllegalArgumentException();
+        }
+        this.info = ClassInfo.ofCache((Class<?>) type);
     }
 
-    private TypeInfoClass(Class<?> type) {
-        this.raw = type;
+    private TypeInfoClass(ClassInfo type) {
+        info = type;
     }
 
     @Override
@@ -28,17 +31,17 @@ public class TypeInfoClass implements ITypeInfo {
 
     @Override
     public Class<?> getResolvedClass() {
-        return raw;
+        return this.info.getRaw();
     }
 
     @Override
     public String getTypeName() {
-        return this.raw.getTypeName();
+        return this.info.getRaw().getTypeName();
     }
 
     @Override
     public ITypeInfo copy() {
-        return new TypeInfoClass(raw);
+        return new TypeInfoClass(this.info);
     }
 
     @Override
@@ -47,18 +50,15 @@ public class TypeInfoClass implements ITypeInfo {
             return false;
         }
         TypeInfoClass clazz = (TypeInfoClass) info;
-        return clazz.raw.isAssignableFrom(raw);
+        return clazz.info.getRaw().isAssignableFrom(this.info.getRaw());
     }
 
-    public List<ITypeInfo> getTypeVariables() {
-        return Arrays
-            .stream(raw.getTypeParameters())
-            .map(TypeResolver::resolveType)
-            .collect(Collectors.toList());
+    public List<TypeInfoVariable> getTypeVariables() {
+        return this.info.getTypeParameters();
     }
 
     @Override
     public Type getRaw() {
-        return this.raw;
+        return this.info.getRaw();
     }
 }
