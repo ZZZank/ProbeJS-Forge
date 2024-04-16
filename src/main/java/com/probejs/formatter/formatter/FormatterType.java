@@ -165,6 +165,8 @@ public abstract class FormatterType<T extends ITypeInfo> {
 
         @Override
         public String format() {
+            String name = this.tInfo.getTypeName();
+            /*
             String bounds = this.tInfo
                 .getBounds()
                 .stream()
@@ -172,10 +174,10 @@ public abstract class FormatterType<T extends ITypeInfo> {
                 .map(FormatterType::format)
                 .filter(str -> !str.equals("any"))
                 .collect(Collectors.joining(", "));
-            String name = this.tInfo.getTypeName();
             if (!bounds.isEmpty()) {
                 name = String.format("%s extends %s", name, bounds);
             }
+            */
             return name;
         }
     }
