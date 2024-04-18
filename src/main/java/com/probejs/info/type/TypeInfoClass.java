@@ -1,9 +1,9 @@
 package com.probejs.info.type;
 
-import com.probejs.info.ClassInfo;
-
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TypeInfoClass implements ITypeInfo {
 
@@ -11,17 +11,14 @@ public class TypeInfoClass implements ITypeInfo {
         return type instanceof Class<?>;
     }
 
-    private final ClassInfo info;
+    private final Class<?> raw;
 
     public TypeInfoClass(Type type) {
-        if (!(type instanceof Class<?>)){
-            throw new IllegalArgumentException();
-        }
-        this.info = ClassInfo.ofCache((Class<?>) type);
+        this.raw = (Class<?>) type;
     }
 
-    private TypeInfoClass(ClassInfo type) {
-        info = type;
+    private TypeInfoClass(Class<?> type) {
+        this.raw = type;
     }
 
     @Override
@@ -31,17 +28,17 @@ public class TypeInfoClass implements ITypeInfo {
 
     @Override
     public Class<?> getResolvedClass() {
-        return this.info.getRaw();
+        return raw;
     }
 
     @Override
     public String getTypeName() {
-        return this.info.getRaw().getTypeName();
+        return this.raw.getTypeName();
     }
 
     @Override
     public ITypeInfo copy() {
-        return new TypeInfoClass(this.info);
+        return new TypeInfoClass(raw);
     }
 
     @Override
@@ -50,15 +47,18 @@ public class TypeInfoClass implements ITypeInfo {
             return false;
         }
         TypeInfoClass clazz = (TypeInfoClass) info;
-        return clazz.info.getRaw().isAssignableFrom(this.info.getRaw());
+        return clazz.raw.isAssignableFrom(raw);
     }
 
     public List<TypeInfoVariable> getTypeVariables() {
-        return this.info.getTypeParameters();
+        return Arrays
+            .stream(raw.getTypeParameters())
+            .map(TypeInfoVariable::new)
+            .collect(Collectors.toList());
     }
 
     @Override
     public Type getRaw() {
-        return this.info.getRaw();
+        return this.raw;
     }
 }
