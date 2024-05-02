@@ -58,7 +58,7 @@ public class TypingCompiler {
             .stream()
             .map(DummyBindingEvent::touchConstantClassRecursive)
             .forEach(touchableClasses::addAll);
-        touchableClasses.addAll(bindingEvent.getClassDumpMap().values());
+        touchableClasses.addAll(bindingEvent.getClassDumpReversed().keySet());
 
         Walker walker = new Walker(touchableClasses);
         return walker.walk();
@@ -72,7 +72,7 @@ public class TypingCompiler {
         for (Class<?> clazz : globalClasses) {
             FormatterClass formatter = new FormatterClass(ClassInfo.ofCache(clazz));
             DocManager.classDocuments
-                .getOrDefault(clazz.getName(), new ArrayList<>(0))
+                .getOrDefault(clazz.getName(), Collections.emptyList())
                 .forEach(formatter::addDocument);
 
             NameResolver.ResolvedName name = NameResolver.getResolvedName(clazz.getName());
@@ -207,7 +207,13 @@ public class TypingCompiler {
         final Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
         globalClasses.removeIf(ClassResolver::shouldSkip);
 
-        bindingEvent.getClassDumpMap().forEach((s, c) -> NameResolver.putResolvedName(c, s));
+        bindingEvent.getClassDumpReversed().forEach((c, names) -> {
+            final String base = names.get(0);
+            NameResolver.putResolvedName(c, base);
+            for (int i = 1; i < names.size(); i++) {
+                DocManager.rawTSDoc.add(String.format("declare const %s = %s", names.get(i), base));
+            }
+        });
         NameResolver.resolveNames(globalClasses);
 
         SpecialTypes.processSpecialAssignments();

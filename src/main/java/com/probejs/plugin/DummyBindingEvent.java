@@ -4,12 +4,8 @@ import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.ScriptableObject;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 public class DummyBindingEvent extends BindingsEvent {
 
@@ -38,6 +34,14 @@ public class DummyBindingEvent extends BindingsEvent {
 
     public HashMap<String, Class<?>> getClassDumpMap() {
         return classDumpMap;
+    }
+
+    public Map<Class<?>, List<String>> getClassDumpReversed() {
+        final Map<Class<?>, List<String>> reversed = new HashMap<>();
+        this.classDumpMap.forEach((name, clazz) -> {
+            reversed.computeIfAbsent(clazz, (k) -> new ArrayList<>()).add(name);
+        });
+        return reversed;
     }
 
     public HashMap<String, Object> getConstantDumpMap() {
