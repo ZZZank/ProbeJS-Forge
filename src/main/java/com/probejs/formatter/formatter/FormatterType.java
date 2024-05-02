@@ -21,6 +21,8 @@ public abstract class FormatterType<T extends ITypeInfo> {
         REGISTRIES.put(TypeInfoParameterized.class, Parameterized::new);
         REGISTRIES.put(TypeInfoVariable.class, Variable::new);
         REGISTRIES.put(TypeInfoWildcard.class, Wildcard::new);
+        REGISTRIES.put(TypeUnion.class, Union::new);
+        REGISTRIES.put(TypeIntersection.class, Intersection::new);
     }
 
     public static FormatterType<? extends ITypeInfo> of(ITypeInfo tInfo) {
@@ -240,6 +242,57 @@ public abstract class FormatterType<T extends ITypeInfo> {
                     .map(FormatterType::format)
                     .collect(Collectors.joining(", "))
             );
+        }
+    }
+
+    /**
+     * 'string | number'
+     */
+    public static class Union extends FormatterType<TypeUnion> {
+        private final TypeUnion tInfo;
+
+        /**
+         * use {@link FormatterType#of(ITypeInfo)} instead
+         */
+        public Union(ITypeInfo tInfo) {
+            this.tInfo = (TypeUnion) tInfo;
+        }
+
+        @Override
+        public TypeUnion getInfo() {
+            return this.tInfo;
+        }
+
+        @Override
+        public String format() {
+            return FormatterType.of(this.tInfo.left()).underscored(this.underscored).format()
+                + " | "
+                + FormatterType.of(this.tInfo.right()).underscored(this.underscored).format();
+        }
+    }
+    /**
+     * 'string | number'
+     */
+    public static class Intersection extends FormatterType<TypeIntersection> {
+        private final TypeIntersection tInfo;
+
+        /**
+         * use {@link FormatterType#of(ITypeInfo)} instead
+         */
+        public Intersection(ITypeInfo tInfo) {
+            this.tInfo = (TypeIntersection) tInfo;
+        }
+
+        @Override
+        public TypeIntersection getInfo() {
+            return this.tInfo;
+        }
+
+        @Override
+        public String format() {
+            return FormatterType.of(this.tInfo.left()).underscored(this.underscored).format()
+                + " & "
+                + FormatterType.of(this.tInfo.right()).underscored(this.underscored).format();
         }
     }
 }
