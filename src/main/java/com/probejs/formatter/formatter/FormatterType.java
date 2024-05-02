@@ -99,6 +99,9 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
     }
 
+    /**
+     * 'String', 'List'
+     */
     public static class Clazz extends FormatterType<TypeInfoClass> {
         private final TypeInfoClass tInfo;
 
@@ -124,6 +127,9 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
     }
 
+    /**
+     * '?', '? extends Number', '? super Integer'
+     */
     public static class Wildcard extends FormatterType<TypeInfoWildcard> {
         private final TypeInfoWildcard tInfo;
 
@@ -145,6 +151,9 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
     }
 
+    /**
+     * 'T', 'K extends List'
+     */
     public static class Variable extends FormatterType<TypeInfoVariable> {
         private final TypeInfoVariable tInfo;
 
@@ -179,6 +188,9 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
     }
 
+    /**
+     * 'int[]'
+     */
     public static class Array extends FormatterType<TypeInfoArray> {
         private final TypeInfoArray tInfo;
 
@@ -200,6 +212,9 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
     }
 
+    /**
+     * {@code Map<String, Boolean>}
+     */
     public static class Parameterized extends FormatterType<TypeInfoParameterized> {
         private final TypeInfoParameterized tInfo;
 

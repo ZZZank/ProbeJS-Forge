@@ -103,7 +103,7 @@ public class NameResolver {
      * @see com.probejs.formatter.NameResolver#putResolvedName(String, ResolvedName)
      */
     public static ResolvedName putResolvedName(Class<?> clazz, String resolvedName) {
-        return putResolvedName(clazz, new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
+        return putResolvedName(clazz.getName(), new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
     }
 
     /**

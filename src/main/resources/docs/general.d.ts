@@ -187,8 +187,8 @@ class RecipeFilter {
  * @target dev.latvian.kubejs.block.BlockStatePredicate
  * @assign dev.latvian.kubejs.block.BlockStatePredicate[]
  * @assign {or?: Internal.BlockStatePredicate_, not?: Internal.BlockStatePredicate_}
- * @assign net.minecraft.world.level.block.Block
- * @assign net.minecraft.world.level.block.state.BlockState
+ * @assign net.minecraft.block.Block
+ * @assign net.minecraft.block.BlockState
  * @assign `#${string}`
  * @assign RegExp
  */

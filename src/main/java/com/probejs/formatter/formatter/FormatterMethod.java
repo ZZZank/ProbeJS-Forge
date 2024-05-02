@@ -10,6 +10,7 @@ import com.probejs.formatter.NameResolver;
 import com.probejs.info.MethodInfo;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
+import com.probejs.info.type.TypeInfoVariable;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
 import java.util.*;
@@ -20,13 +21,13 @@ import javax.annotation.Nullable;
 public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements IFormatter {
 
     private final MethodInfo info;
-    private Map<String, IType> paramNameModifiers;
+    private final Map<String, IType> paramModifiers;
     private IType returnModifiers;
     private final BeanType beanType;
 
     public FormatterMethod(MethodInfo methodInfo) {
         this.info = methodInfo;
-        this.paramNameModifiers = null;
+        this.paramModifiers = new HashMap<>();
         this.returnModifiers = null;
         this.beanType = caculateBeanType(this.info);
     }
@@ -38,8 +39,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     public static enum BeanType {
         NONE,
         GETTER,
-        GETTER_IS,
         SETTER,
+        GETTER_IS,
     }
 
     public BeanType getBeanType() {
@@ -100,11 +101,11 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             : info.getParams().get(0).getType().getTypeName();
     }
 
-    public Map<String, IType> getParamNameModifiers() {
-        if (this.paramNameModifiers == null) {
+    public Map<String, IType> getParamModifiers() {
+        if (this.paramModifiers.isEmpty()) {
             refreshModifiers();
         }
-        return paramNameModifiers;
+        return paramModifiers;
     }
 
     public IType getReturnModifiers() {
@@ -115,12 +116,12 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     private void refreshModifiers() {
-        this.paramNameModifiers = new HashMap<>();
+        this.paramModifiers.clear();
         this.returnModifiers = null;
         if (document != null) {
             final DocumentComment comment = document.getComment();
             if (comment != null) {
-                paramNameModifiers.putAll(CommentUtil.getTypeModifiers(comment));
+                paramModifiers.putAll(CommentUtil.getTypeModifiers(comment));
                 CommentReturns r = comment.getSpecialComment(CommentReturns.class);
                 if (r != null) {
                     returnModifiers = r.getReturnType();
@@ -163,7 +164,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             FormatterType
                 .of(info, false)
                 .underscored((typeInfo) -> {
-                    if (!forceNoUnderscore && typeInfo instanceof TypeInfoClass) {
+                    if (forceNoUnderscore) {
+                        return false;
+                    }
+                    if (typeInfo instanceof TypeInfoClass) {
                         Class<?> clazz = typeInfo.getResolvedClass();
                         return !NameResolver.resolvedPrimitives.contains(clazz.getName());
                     }
@@ -172,8 +176,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 .format()
         );
         if (info instanceof TypeInfoClass) {
-            final TypeInfoClass classInfo = (TypeInfoClass) info;
-            List<ITypeInfo> typeVariables = classInfo.getTypeVariables();
+            final TypeInfoClass cInfo = (TypeInfoClass) info;
+            List<TypeInfoVariable> typeVariables = cInfo.getTypeVariables();
             if (!typeVariables.isEmpty()) {
                 sb.append('<');
                 sb.append(
@@ -204,7 +208,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         final BiFunction<IType, String, String> typeTransformer = forceNoUnderscore
             ? IType.dummyTransformer
             : IType.defaultTransformer;
-        Map<String, IType> modifiers = getParamNameModifiers();
+        Map<String, IType> modifiers = getParamModifiers();
         return info
             .getParams()
             .stream()
@@ -278,9 +282,6 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         List<String> lines = new ArrayList<>();
 
         String methodName = info.getName();
-        // Pair<Map<String, IType>, IType> modifierPair = getModifiers();
-        // Map<String, IType> paramModifiers = modifierPair.getFirst();
-        // IType returnModifier = modifierPair.getSecond();
 
         if (document != null) {
             DocumentComment comment = document.getComment();

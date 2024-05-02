@@ -117,7 +117,7 @@ public class EventCompiler {
             lines.addAll(eInfo.getBuiltinPropAsComment());
             lines.add(
                 String.format(
-                    "declare function onEvent(name: \"%s\", handler: (event: %s) => void);",
+                    "declare function onEvent(name: \"%s\", handler: (event: %s) => void): void;",
                     id,
                     FormatterClass.formatParameterized(new TypeInfoClass(eInfo.clazzRaw))
                 )

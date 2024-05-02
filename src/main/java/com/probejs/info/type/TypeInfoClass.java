@@ -1,9 +1,9 @@
 package com.probejs.info.type;
 
+import com.probejs.info.ClassInfo;
+
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TypeInfoClass implements ITypeInfo {
 
@@ -51,10 +51,7 @@ public class TypeInfoClass implements ITypeInfo {
     }
 
     public List<TypeInfoVariable> getTypeVariables() {
-        return Arrays
-            .stream(raw.getTypeParameters())
-            .map(TypeInfoVariable::new)
-            .collect(Collectors.toList());
+        return ClassInfo.ofCache(this.raw).getTypeParameters();
     }
 
     @Override

@@ -99,9 +99,6 @@ public class ClassInfo implements Comparable<ClassInfo> {
                     if (!ProbeJS.CONFIG.trimming) {
                         return true;
                     }
-                    if (isInterface) {
-                        return mInfo.getRaw().getDeclaringClass() == raw;
-                    }
                     return !hasIdenticalParentMethod(mInfo.getRaw(), clazz);
                 })
                 .filter(m -> ClassResolver.acceptMethod(m.getName()))
@@ -290,7 +287,6 @@ public class ClassInfo implements Comparable<ClassInfo> {
         for (Class<?> parent = clazz.getSuperclass(); parent != null; parent = parent.getSuperclass()) {
             try {
                 Method parentMethod = parent.getMethod(method.getName(), method.getParameterTypes());
-                // Check if the generic return type is the same
                 // seems not working for interfaces, e.g. RecipeFilter
                 return parentMethod.getGenericReturnType().equals(method.getGenericReturnType());
             } catch (NoSuchMethodException ignored) {}
