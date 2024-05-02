@@ -99,7 +99,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
     }
 
-    public static class Clazz extends FormatterType<ITypeInfo> {
+    public static class Clazz extends FormatterType<TypeInfoClass> {
         private final TypeInfoClass tInfo;
 
         /**
@@ -110,7 +110,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
 
         @Override
-        public ITypeInfo getInfo() {
+        public TypeInfoClass getInfo() {
             return this.tInfo;
         }
 
@@ -124,7 +124,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
     }
 
-    public static class Wildcard extends FormatterType<ITypeInfo> {
+    public static class Wildcard extends FormatterType<TypeInfoWildcard> {
         private final TypeInfoWildcard tInfo;
 
         /**
@@ -135,7 +135,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
 
         @Override
-        public ITypeInfo getInfo() {
+        public TypeInfoWildcard getInfo() {
             return this.tInfo;
         }
 
@@ -145,7 +145,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
     }
 
-    public static class Variable extends FormatterType<ITypeInfo> {
+    public static class Variable extends FormatterType<TypeInfoVariable> {
         private final TypeInfoVariable tInfo;
 
         /**
@@ -156,7 +156,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
 
         @Override
-        public ITypeInfo getInfo() {
+        public TypeInfoVariable getInfo() {
             return this.tInfo;
         }
 
@@ -179,7 +179,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
     }
 
-    public static class Array extends FormatterType<ITypeInfo> {
+    public static class Array extends FormatterType<TypeInfoArray> {
         private final TypeInfoArray tInfo;
 
         /**
@@ -190,7 +190,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
 
         @Override
-        public ITypeInfo getInfo() {
+        public TypeInfoArray getInfo() {
             return this.tInfo;
         }
 
@@ -200,7 +200,7 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
     }
 
-    public static class Parameterized extends FormatterType<ITypeInfo> {
+    public static class Parameterized extends FormatterType<TypeInfoParameterized> {
         private final TypeInfoParameterized tInfo;
 
         /**
@@ -211,14 +211,14 @@ public abstract class FormatterType<T extends ITypeInfo> {
         }
 
         @Override
-        public ITypeInfo getInfo() {
+        public TypeInfoParameterized getInfo() {
             return this.tInfo;
         }
 
         @Override
         public String format() {
             return String.format("%s<%s>",
-                FormatterType.of(this.tInfo.getBaseType()).format(),
+                FormatterType.of(this.tInfo.getBaseType()).underscored(this.underscored).format(),
                 this.tInfo.getParamTypes()
                     .stream()
                     .map(FormatterType::of)
