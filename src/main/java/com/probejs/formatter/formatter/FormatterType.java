@@ -2,6 +2,9 @@ package com.probejs.formatter.formatter;
 
 import com.probejs.formatter.NameResolver;
 import com.probejs.info.type.*;
+import com.probejs.info.type.ts.TypeIntersection;
+import com.probejs.info.type.ts.TypeLiteral;
+import com.probejs.info.type.ts.TypeUnion;
 
 import java.util.HashMap;
 import java.util.Map;

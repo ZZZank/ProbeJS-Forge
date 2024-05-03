@@ -6,13 +6,18 @@ import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
 import com.probejs.util.RemapperBridge;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Getter;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 public class FieldInfo implements Comparable<FieldInfo> {
 
+    @Getter
     private final Field raw;
+    @Getter
     private final String name;
+    @Getter
     private ITypeInfo type;
     private final int modifiers;
     private final boolean shouldHide;
@@ -45,20 +50,8 @@ public class FieldInfo implements Comparable<FieldInfo> {
         return Modifier.isFinal(modifiers);
     }
 
-    public Field getRaw() {
-        return raw;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public boolean shouldHide() {
         return shouldHide;
-    }
-
-    public ITypeInfo getType() {
-        return type;
     }
 
     public Object getStaticValue() {

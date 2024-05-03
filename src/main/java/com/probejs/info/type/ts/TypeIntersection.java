@@ -1,4 +1,6 @@
-package com.probejs.info.type;
+package com.probejs.info.type.ts;
+
+import com.probejs.info.type.ITypeInfo;
 
 import java.lang.reflect.Type;
 

@@ -13,6 +13,8 @@ import com.probejs.info.type.TypeInfoClass;
 import com.probejs.info.type.TypeInfoVariable;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
+import lombok.Getter;
+
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -20,9 +22,11 @@ import javax.annotation.Nullable;
 
 public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements IFormatter {
 
+    @Getter
     private final MethodInfo info;
     private final Map<String, IType> paramModifiers;
     private IType returnModifiers;
+    @Getter
     private final BeanType beanType;
 
     public FormatterMethod(MethodInfo methodInfo) {
@@ -32,19 +36,11 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         this.beanType = caculateBeanType(this.info);
     }
 
-    public MethodInfo getInfo() {
-        return info;
-    }
-
     public static enum BeanType {
         NONE,
         GETTER,
         SETTER,
         GETTER_IS,
-    }
-
-    public BeanType getBeanType() {
-        return this.beanType;
     }
 
     public static BeanType caculateBeanType(MethodInfo info) {
@@ -152,10 +148,11 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         return formatTypeParameterized(info.getReturnType(), false);
     }
 
-    private String formatParamUnderscore(ITypeInfo info, boolean forceNoUnderscore) {
-        final Class<?> resolvedClass = info.getResolvedClass();
+    private String formatParam(MethodInfo.ParamInfo pInfo, boolean forceNoUnderscore) {
+        ITypeInfo info = pInfo.getType();
+        final Class<?> clazz = info.getResolvedClass();
         //No assigned types, and not enum, use normal route.
-        if (!DocManager.typesAssignable.containsKey(resolvedClass.getName()) && !resolvedClass.isEnum()) {
+        if (!DocManager.typesAssignable.containsKey(clazz.getName()) && !clazz.isEnum()) {
             return formatTypeParameterized(info, true);
         }
 
@@ -168,8 +165,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                         return false;
                     }
                     if (typeInfo instanceof TypeInfoClass) {
-                        Class<?> clazz = typeInfo.getResolvedClass();
-                        return !NameResolver.resolvedPrimitives.contains(clazz.getName());
+                        Class<?> c = typeInfo.getResolvedClass();
+                        return !NameResolver.resolvedPrimitives.contains(c.getName());
                     }
                     return false;
                 })
@@ -216,7 +213,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 String nameRaw = pInfo.getName();
                 String paramType = modifiers.containsKey(nameRaw)
                     ? modifiers.get(nameRaw).transform(typeTransformer)
-                    : formatParamUnderscore(pInfo.getType(), forceNoUnderscore);
+                    : formatParam(pInfo, forceNoUnderscore);
                 return String.format(
                     "%s%s: %s",
                     pInfo.isVarArgs() ? "..." : "",
@@ -253,15 +250,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         }
         builder.append(info.getName());
         if (!info.getTypeVariables().isEmpty()) {
-            builder
-                .append('<')
-                .append(
-                    info
-                        .getTypeVariables()
-                        .stream()
-                        .map(ITypeInfo::getTypeName)
-                        .collect(Collectors.joining(", "))
-                )
+            builder.append('<')
+                .append(info.getTypeVariables().stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", ")))
                 .append('>');
         }
         builder
@@ -281,8 +271,6 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     public List<String> formatBean(int indent, int stepIndent) {
         List<String> lines = new ArrayList<>();
 
-        String methodName = info.getName();
-
         if (document != null) {
             DocumentComment comment = document.getComment();
             if (CommentUtil.isHidden(comment)) return lines;
@@ -291,12 +279,12 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
         String idnt = PUtil.indent(indent);
         String beaned = getBeanedName();
-        if (methodName.startsWith("is")) {
-            lines.add(idnt + String.format("get %s(): boolean;", beaned));
-        } else if (methodName.startsWith("get")) {
-            lines.add(idnt + String.format("get %s(): %s;", beaned, formatReturn()));
-        } else if (methodName.startsWith("set")) {
-            lines.add(idnt + String.format("set %s(%s);", beaned, formatParams(new HashMap<>(0))));
+        if (this.beanType == BeanType.GETTER_IS) {
+            lines.add(String.format("%sget %s(): boolean;", idnt, beaned));
+        } else if (this.beanType == BeanType.GETTER) {
+            lines.add(String.format("%sget %s(): %s;", idnt, beaned, formatReturn()));
+        } else if (this.beanType == BeanType.SETTER) {
+            lines.add(String.format("%sset %s(%s);", idnt, beaned, formatParams(Collections.emptyMap())));
         }
         return lines;
     }

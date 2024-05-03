@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import lombok.val;
 import net.minecraft.world.damagesource.DamageSource;
 
 public class NameResolver {
@@ -193,7 +195,7 @@ public class NameResolver {
 
                 @Override
                 public List<String> get() {
-                    List<String> last = lastSupplier.get();
+                    val last = lastSupplier.get();
                     last.addAll(thenSupplier.get());
                     return last;
                 }
@@ -203,7 +205,7 @@ public class NameResolver {
     }
 
     public static List<String> getClassAssignments(Class<?> clazz) {
-        return specialClassAssigner.getOrDefault(clazz, ArrayList::new).get();
+        return specialClassAssigner.getOrDefault(clazz, Collections::emptyList).get();
     }
 
     public static void init() {
@@ -269,27 +271,22 @@ public class NameResolver {
                     .collect(Collectors.toList())
         );
 
-        addSpecialAssignments(
-            DamageSource.class,
-            () -> {
-                List<String> result = new ArrayList<>();
-                try {
-                    for (Field field : DamageSource.class.getDeclaredFields()) {
-                        if (
-                            !Modifier.isStatic(field.getModifiers()) ||
-                            field.getType() != DamageSource.class ||
-                            !Modifier.isPublic(field.getModifiers())
-                        ) {
-                            continue;
-                        }
-                        field.setAccessible(true);
-                        String id = ((DamageSource) field.get(null)).getMsgId();
-                        result.add(ProbeJS.GSON.toJson(id));
+        addSpecialAssignments(DamageSource.class, () -> {
+            List<String> result = new ArrayList<>();
+            try {
+                for (Field field : DamageSource.class.getDeclaredFields()) {
+                    if (!Modifier.isStatic(field.getModifiers())
+                        || field.getType() != DamageSource.class
+                        || !Modifier.isPublic(field.getModifiers())) {
+                        continue;
                     }
-                } catch (Exception ignored) {}
-                return result;
-            }
-        );
+                    field.setAccessible(true);
+                    String id = ((DamageSource) field.get(null)).getMsgId();
+                    result.add(ProbeJS.GSON.toJson(id));
+                }
+            } catch (Exception ignored) {}
+            return result;
+        });
 
         // putTypeGuard(true, Class.class, ClassWrapper.class);
         putTypeGuard(true, Class.class);
@@ -297,10 +294,10 @@ public class NameResolver {
 
         // putTypeFormatter(Class.class, SpecialTypes::formatClassLike);
 
-        addKeyword("function");
-        addKeyword("debugger");
-        addKeyword("in");
-        addKeyword("with");
-        addKeyword("java");
+        addKeyword("function" );
+        addKeyword("debugger" );
+        addKeyword("in"       );
+        addKeyword("with"     );
+        addKeyword("java"     );
     }
 }

@@ -1,10 +1,11 @@
 package com.probejs.info;
 
-import com.probejs.formatter.SpecialTypes;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.RemapperBridge;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -15,13 +16,21 @@ import java.util.stream.Collectors;
 
 public class MethodInfo {
 
+    @Getter
     private final Method raw;
+    @Getter
     private final String name;
     private final boolean shouldHide;
     private final int modifiers;
     private final Class<?> from;
+    @Setter
+    @Getter
     private ITypeInfo returnType;
+    @Setter
+    @Getter
     private List<ParamInfo> params;
+    @Setter
+    @Getter
     private List<ITypeInfo> typeVariables;
 
     private static String getRemappedOrDefault(Method method, Class<?> from) {
@@ -49,14 +58,6 @@ public class MethodInfo {
                 .collect(Collectors.toList());
     }
 
-    public Method getRaw() {
-        return raw;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public boolean shouldHide() {
         return shouldHide;
     }
@@ -69,37 +70,15 @@ public class MethodInfo {
         return Modifier.isAbstract(modifiers);
     }
 
-    public ITypeInfo getReturnType() {
-        return returnType;
-    }
-
-    public List<ParamInfo> getParams() {
-        return params;
-    }
-
-    public List<ITypeInfo> getTypeVariables() {
-        return typeVariables;
-    }
-
     public ClassInfo getFrom() {
         return ClassInfo.ofCache(from);
     }
 
-    public void setParams(List<ParamInfo> params) {
-        this.params = params;
-    }
-
-    public void setReturnType(ITypeInfo returnType) {
-        this.returnType = returnType;
-    }
-
-    public void setTypeVariables(List<ITypeInfo> typeVariables) {
-        this.typeVariables = typeVariables;
-    }
-
+    @Getter
     public static class ParamInfo {
 
         private final String name;
+        @Setter
         private ITypeInfo type;
         private final boolean isVarArgs;
 
@@ -107,22 +86,6 @@ public class MethodInfo {
             this.name = parameter.getName();
             this.type = TypeResolver.resolveType(parameter.getParameterizedType());
             this.isVarArgs = parameter.isVarArgs();
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public ITypeInfo getType() {
-            return type;
-        }
-
-        public boolean isVarArgs() {
-            return isVarArgs;
-        }
-
-        public void setTypeInfo(ITypeInfo type) {
-            this.type = type;
         }
     }
 }

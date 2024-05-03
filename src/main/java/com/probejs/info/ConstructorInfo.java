@@ -1,10 +1,15 @@
 package com.probejs.info;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Setter
+@Getter
 public class ConstructorInfo {
 
     private List<MethodInfo.ParamInfo> params;
@@ -15,13 +20,5 @@ public class ConstructorInfo {
                 .stream(constructor.getParameters())
                 .map(MethodInfo.ParamInfo::new)
                 .collect(Collectors.toList());
-    }
-
-    public List<MethodInfo.ParamInfo> getParams() {
-        return params;
-    }
-
-    public void setParams(List<MethodInfo.ParamInfo> params) {
-        this.params = params;
     }
 }

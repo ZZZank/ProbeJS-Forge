@@ -8,6 +8,8 @@ import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
 import com.probejs.info.type.TypeResolver;
+import lombok.Getter;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -38,23 +40,32 @@ public class ClassInfo implements Comparable<ClassInfo> {
         return new ClassInfo(clazz);
     }
 
+    @Getter
     private final Class<?> raw;
+    @Getter
     private final String name;
     private final int modifiers;
     private final boolean isInterface;
     private final boolean isFunctionalInterface;
+    @Getter
     private final List<TypeInfoVariable> typeParameters;
     /**
      * filtered view of {@link ClassInfo#allMethodInfos}
      */
+    @Getter
     private final List<MethodInfo> methodInfos;
     /**
      * filtered view of {@link ClassInfo#allFieldInfos}
      */
+    @Getter
     private final List<FieldInfo> fieldInfos;
+    @Getter
     private final List<ConstructorInfo> constructorInfos;
+    @Getter
     private final ClassInfo superClass;
+    @Getter
     private final ITypeInfo superType;
+    @Getter
     private final List<ITypeInfo> interfaces;
     private final List<MethodInfo> allMethodInfos;
     private final List<FieldInfo> allFieldInfos;
@@ -217,12 +228,12 @@ public class ClassInfo implements Comparable<ClassInfo> {
             method.setReturnType(TypeResolver.mutateTypeMap(method.getReturnType(), maskedNames));
             method
                 .getParams()
-                .forEach(p -> p.setTypeInfo(TypeResolver.mutateTypeMap(p.getType(), maskedNames)));
+                .forEach(p -> p.setType(TypeResolver.mutateTypeMap(p.getType(), maskedNames)));
 
             method.setReturnType(TypeResolver.mutateTypeMap(method.getReturnType(), internalGenericMap));
             method
                 .getParams()
-                .forEach(p -> p.setTypeInfo(TypeResolver.mutateTypeMap(p.getType(), internalGenericMap)));
+                .forEach(p -> p.setType(TypeResolver.mutateTypeMap(p.getType(), internalGenericMap)));
         }
         for (FieldInfo field : fieldInfo) {
             field.setTypeInfo(TypeResolver.mutateTypeMap(field.getType(), internalGenericMap));
@@ -241,40 +252,8 @@ public class ClassInfo implements Comparable<ClassInfo> {
         return Modifier.isAbstract(modifiers);
     }
 
-    public ClassInfo getSuperClass() {
-        return superClass;
-    }
-
-    public List<ITypeInfo> getInterfaces() {
-        return interfaces;
-    }
-
-    public List<FieldInfo> getFieldInfos() {
-        return fieldInfos;
-    }
-
-    public List<ConstructorInfo> getConstructorInfos() {
-        return constructorInfos;
-    }
-
-    public List<MethodInfo> getMethodInfos() {
-        return methodInfos;
-    }
-
-    public List<TypeInfoVariable> getTypeParameters() {
-        return typeParameters;
-    }
-
     public boolean isEnum() {
         return raw.isEnum();
-    }
-
-    public Class<?> getRaw() {
-        return raw;
-    }
-
-    public String getName() {
-        return name;
     }
 
     /**
@@ -299,7 +278,4 @@ public class ClassInfo implements Comparable<ClassInfo> {
         return this.name.compareTo(o.name);
     }
 
-    public ITypeInfo getSuperType() {
-        return superType;
-    }
 }
