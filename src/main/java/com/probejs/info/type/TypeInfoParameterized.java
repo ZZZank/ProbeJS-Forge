@@ -1,5 +1,8 @@
 package com.probejs.info.type;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -7,18 +10,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Setter
 public class TypeInfoParameterized implements ITypeInfo {
 
     private ITypeInfo rawType;
+    @Getter
     private List<ITypeInfo> paramTypes;
+
     public TypeInfoParameterized(Type type) {
         if (!test(type)) {
             throw new IllegalArgumentException("provided `type` is not an instance of ParameterizedType");
         }
         ParameterizedType parType = (ParameterizedType) type;
         rawType = TypeResolver.resolveType(parType.getRawType());
-        paramTypes =
-            Arrays
+        paramTypes = Arrays
                 .stream(parType.getActualTypeArguments())
                 .map(TypeResolver::resolveType)
                 .collect(Collectors.toList());
@@ -41,14 +46,6 @@ public class TypeInfoParameterized implements ITypeInfo {
     @Override
     public Class<?> getResolvedClass() {
         return rawType.getResolvedClass();
-    }
-
-    public List<ITypeInfo> getParamTypes() {
-        return paramTypes;
-    }
-
-    public void setParamTypes(List<ITypeInfo> paramTypes) {
-        this.paramTypes = paramTypes;
     }
 
     @Override
@@ -81,10 +78,6 @@ public class TypeInfoParameterized implements ITypeInfo {
             }
         }
         return false;
-    }
-
-    public void setRawType(ITypeInfo rawType) {
-        this.rawType = rawType;
     }
 
     @Override

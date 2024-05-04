@@ -220,10 +220,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
                 .stream()
                 .filter(i -> i instanceof TypeInfoVariable)
                 .map(i -> (TypeInfoVariable) i)
-                .forEach(v -> {
-                    maskedNames.put(v.getTypeName(), v);
-                    v.setUnderscored(true);
-                });
+                .forEach(v -> maskedNames.put(v.getTypeName(), v));
 
             method.setReturnType(TypeResolver.mutateTypeMap(method.getReturnType(), maskedNames));
             method
@@ -277,5 +274,4 @@ public class ClassInfo implements Comparable<ClassInfo> {
     public int compareTo(ClassInfo o) {
         return this.name.compareTo(o.name);
     }
-
 }

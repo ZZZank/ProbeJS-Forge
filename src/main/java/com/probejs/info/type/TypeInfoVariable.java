@@ -13,7 +13,6 @@ public class TypeInfoVariable implements ITypeInfo {
     }
 
     private final TypeVariable<?> raw;
-    private boolean underscored = false;
 
     public TypeInfoVariable(Type type) {
         this.raw = (TypeVariable<?>) type;
@@ -21,10 +20,6 @@ public class TypeInfoVariable implements ITypeInfo {
 
     private TypeInfoVariable(TypeVariable<?> inner) {
         this.raw = inner;
-    }
-
-    public void setUnderscored(boolean underscored) {
-        this.underscored = underscored;
     }
 
     @Override
@@ -44,9 +39,7 @@ public class TypeInfoVariable implements ITypeInfo {
 
     @Override
     public ITypeInfo copy() {
-        TypeInfoVariable copied = new TypeInfoVariable(raw);
-        copied.setUnderscored(underscored);
-        return copied;
+        return new TypeInfoVariable(raw);
     }
 
     @Override

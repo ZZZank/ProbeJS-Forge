@@ -18,11 +18,13 @@ public class ClassResolver {
     }
 
     public static boolean acceptMethod(String methodName) {
-        return !methodName.equals("constructor") && !Pattern.matches("^[fm]_[\\d_]+$", methodName);
+        return !methodName.equals("constructor");
+//            && !Pattern.matches("^[fm]_[\\d_]+$", methodName);
     }
 
     public static boolean acceptField(String fieldName) {
-        return !fieldName.equals("constructor") && !Pattern.matches("^[fm]_[\\d_]+$", fieldName);
+        return !fieldName.equals("constructor");
+//            && !Pattern.matches("^[fm]_[\\d_]+$", fieldName);
     }
 
     public static void init() {
