@@ -177,6 +177,9 @@ public abstract class FormatterType<T extends ITypeInfo> {
         @Override
         public String format() {
             String name = this.tInfo.getTypeName();
+            if (this.underscored) {
+                name = name + "_";
+            }
             /*
             String bounds = this.tInfo
                 .getBounds()
