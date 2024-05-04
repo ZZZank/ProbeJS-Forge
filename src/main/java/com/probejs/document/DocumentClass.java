@@ -3,33 +3,27 @@ package com.probejs.document;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentClass implements IConcrete, IFormatter {
 
+    @Getter
     private DocumentComment comment;
+    @Setter
+    @Getter
     private String name;
+    @Setter
     private String superClass;
+    @Setter
     private List<String> interfaces;
+    @Getter
     private final List<DocumentField> fieldDocs = new ArrayList<>();
+    @Getter
     private final List<DocumentMethod> methodDocs = new ArrayList<>();
-
-    public DocumentComment getComment() {
-        return comment;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSuperClass(String superClass) {
-        this.superClass = superClass;
-    }
-
-    public void setInterfaces(List<String> interfaces) {
-        this.interfaces = interfaces;
-    }
 
     public void acceptProperty(IDocument document) {
         if (document instanceof DocumentProperty) {
@@ -53,18 +47,6 @@ public class DocumentClass implements IConcrete, IFormatter {
         }
         fieldDocs.addAll(other.getFieldDocs());
         methodDocs.addAll(other.getMethodDocs());
-    }
-
-    public List<DocumentField> getFieldDocs() {
-        return fieldDocs;
-    }
-
-    public List<DocumentMethod> getMethodDocs() {
-        return methodDocs;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override

@@ -1,12 +1,22 @@
 package com.probejs.formatter.formatter;
 
 import com.probejs.util.PUtil;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class FormatterRaw implements IFormatter {
 
     private final List<String> docs;
+    /**
+     * -- SETTER --
+     *  if true, there will be two new lines as the begining and end of formatted strings
+     *  that can mark the start and end of raw doc
+     */
+    @Setter
+    @Getter
     private boolean commentMark;
 
     public FormatterRaw(List<String> docs) {
@@ -16,18 +26,6 @@ public class FormatterRaw implements IFormatter {
 
     public FormatterRaw(List<String> docs, boolean commentMark) {
         this.docs = docs;
-        this.commentMark = commentMark;
-    }
-
-    public boolean isCommentMark() {
-        return commentMark;
-    }
-
-    /**
-     * if true, there will be two new lines as the begining and end of formatted strings 
-     * that can mark the start and end of raw doc
-     */
-    public void setCommentMark(boolean commentMark) {
         this.commentMark = commentMark;
     }
 

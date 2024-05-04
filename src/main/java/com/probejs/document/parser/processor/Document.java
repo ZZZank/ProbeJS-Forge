@@ -1,8 +1,11 @@
 package com.probejs.document.parser.processor;
 
 import com.probejs.document.parser.handler.AbstractStackedMachine;
+import lombok.Getter;
+
 import java.util.Collection;
 
+@Getter
 public class Document extends AbstractStackedMachine<String> {
 
     private final DocumentHandler document;
@@ -23,7 +26,4 @@ public class Document extends AbstractStackedMachine<String> {
         }
     }
 
-    public DocumentHandler getDocument() {
-        return document;
-    }
 }

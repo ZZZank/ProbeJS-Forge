@@ -16,6 +16,8 @@ import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
+import lombok.Setter;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
@@ -29,6 +31,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
     private final Map<String, List<FormatterMethod>> methodFormatters = new HashMap<>();
     private final List<DocumentField> fieldAdditions = new ArrayList<>();
     private final List<DocumentMethod> methodAdditions = new ArrayList<>();
+    @Setter
     private boolean internal = false;
 
     public FormatterClass(ClassInfo classInfo) {
@@ -69,10 +72,6 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             }
         }
         return sb.toString();
-    }
-
-    public void setInternal(boolean internal) {
-        this.internal = internal;
     }
 
     @Override

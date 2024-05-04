@@ -1,9 +1,12 @@
 package com.probejs.document.type;
 
+import lombok.Getter;
+
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+@Getter
 public class TypeParameterized implements IType {
 
     private final IType rawType;
@@ -12,14 +15,6 @@ public class TypeParameterized implements IType {
     public TypeParameterized(IType rawType, List<IType> paramTypes) {
         this.rawType = rawType;
         this.paramTypes = paramTypes;
-    }
-
-    public IType getRawType() {
-        return rawType;
-    }
-
-    public List<IType> getParamTypes() {
-        return paramTypes;
     }
 
     @Override

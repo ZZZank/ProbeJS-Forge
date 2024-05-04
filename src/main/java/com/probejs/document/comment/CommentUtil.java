@@ -18,7 +18,6 @@ public class CommentUtil {
         return comment
             .getSpecialComments(CommentMod.class)
             .stream()
-            .map(c -> (CommentMod) c)
             .allMatch(CommentMod::isLoaded);
     }
 

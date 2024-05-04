@@ -8,11 +8,14 @@ import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter, IConcrete {
 
     //type <name> = <type>;
@@ -64,15 +67,4 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
         });
     }
 
-    public IType getType() {
-        return type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public DocumentComment getComment() {
-        return comment;
-    }
 }

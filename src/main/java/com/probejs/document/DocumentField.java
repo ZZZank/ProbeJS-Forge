@@ -7,6 +7,8 @@ import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,9 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
 
     private final boolean isFinal;
     private final boolean isStatic;
+    @Getter
     private final String name;
+    @Getter
     private final IType type;
 
     public DocumentField(String line) {
@@ -49,14 +53,6 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
 
     public boolean isStatic() {
         return isStatic;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public IType getType() {
-        return type;
     }
 
     @Override

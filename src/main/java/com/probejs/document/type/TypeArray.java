@@ -1,16 +1,15 @@
 package com.probejs.document.type;
 
+import lombok.Getter;
+
 import java.util.function.BiFunction;
 
+@Getter
 public class TypeArray implements IType {
     private final IType component;
 
     public TypeArray(IType component) {
         this.component = component;
-    }
-
-    public IType getComponent() {
-        return component;
     }
 
     @Override

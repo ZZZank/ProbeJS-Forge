@@ -59,9 +59,7 @@ public class DocManager {
                             .getSpecialComments(CommentAssign.class)
                             .stream()
                             .map(CommentAssign::getType)
-                            .forEach(type -> {
-                                addAssignable(target.getTargetName(), type);
-                            });
+                            .forEach(type -> addAssignable(target.getTargetName(), type));
                         continue;
                     }
                 }

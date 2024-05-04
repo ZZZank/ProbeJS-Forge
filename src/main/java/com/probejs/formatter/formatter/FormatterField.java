@@ -7,11 +7,14 @@ import com.probejs.formatter.NameResolver;
 import com.probejs.info.FieldInfo;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class FormatterField extends DocumentReceiver<DocumentField> implements IFormatter {
 
+    @Getter
     private final FieldInfo fieldInfo;
     private boolean isFromInterface = false;
 
@@ -65,7 +68,4 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
         return lines;
     }
 
-    public FieldInfo getFieldInfo() {
-        return fieldInfo;
-    }
 }

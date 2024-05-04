@@ -1,7 +1,9 @@
 package com.probejs.document.comment.special;
 
 import com.probejs.document.comment.AbstractComment;
+import lombok.Getter;
 
+@Getter
 public class CommentRename extends AbstractComment {
 
     private final String name;
@@ -15,11 +17,4 @@ public class CommentRename extends AbstractComment {
         to = nameTo[2];
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getTo() {
-        return to;
-    }
 }

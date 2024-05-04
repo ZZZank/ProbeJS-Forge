@@ -1,7 +1,10 @@
 package com.probejs.document;
 
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 public abstract class DocumentProperty implements IConcrete {
     protected DocumentComment comment;
 
@@ -14,7 +17,4 @@ public abstract class DocumentProperty implements IConcrete {
         }
     }
 
-    public DocumentComment getComment() {
-        return comment;
-    }
 }

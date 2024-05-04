@@ -1,9 +1,12 @@
 package com.probejs.info.type;
 
+import lombok.Setter;
+
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 import java.util.List;
 
+@Setter
 public class TypeInfoArray implements ITypeInfo {
 
     /**
@@ -62,10 +65,6 @@ public class TypeInfoArray implements ITypeInfo {
     @Override
     public String getTypeName() {
         return this.base.getTypeName()+"[]";
-    }
-
-    public void setBase(ITypeInfo type) {
-        this.base = type;
     }
 
     @Override

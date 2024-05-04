@@ -6,6 +6,8 @@ import com.probejs.document.IDecorative;
 import com.probejs.document.IDocument;
 import com.probejs.document.parser.handler.IStateHandler;
 import com.probejs.util.Pair;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +20,7 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
 
     public static final List<Pair<Predicate<String>, BiFunction<String, ProviderClass, IStateHandler<String>>>> handlers = new ArrayList<>();
     private final List<IDocumentProvider<?>> elements = new ArrayList<>();
+    @Getter
     private String name;
     private String superClass;
     private List<String> interfaces;
@@ -126,7 +129,4 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
         return document;
     }
 
-    public String getName() {
-        return name;
-    }
 }

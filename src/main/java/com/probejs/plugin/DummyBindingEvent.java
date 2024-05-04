@@ -4,9 +4,11 @@ import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.ScriptableObject;
+import lombok.Getter;
 
 import java.util.*;
 
+@Getter
 public class DummyBindingEvent extends BindingsEvent {
 
     private final HashMap<String, Object> constantDumpMap = new HashMap<>();
@@ -28,24 +30,12 @@ public class DummyBindingEvent extends BindingsEvent {
         }
     }
 
-    public HashMap<String, BaseFunction> getFunctionDump() {
-        return functionDump;
-    }
-
-    public HashMap<String, Class<?>> getClassDumpMap() {
-        return classDumpMap;
-    }
-
     public Map<Class<?>, List<String>> getClassDumpReversed() {
         final Map<Class<?>, List<String>> reversed = new HashMap<>();
         this.classDumpMap.forEach((name, clazz) -> {
             reversed.computeIfAbsent(clazz, (k) -> new ArrayList<>()).add(name);
         });
         return reversed;
-    }
-
-    public HashMap<String, Object> getConstantDumpMap() {
-        return constantDumpMap;
     }
 
     public static Set<Class<?>> touchConstantClassRecursive(Object constantDump) {

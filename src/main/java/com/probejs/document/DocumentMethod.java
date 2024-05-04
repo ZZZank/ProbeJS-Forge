@@ -7,6 +7,8 @@ import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.MethodInfo;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
+import lombok.Getter;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,7 @@ public class DocumentMethod
         return formatted;
     }
 
+    @Getter
     public static class DocumentParam {
 
         private final String name;
@@ -55,18 +58,14 @@ public class DocumentMethod
             this.type = type;
         }
 
-        public IType getType() {
-            return type;
-        }
-
-        public String getName() {
-            return name;
-        }
     }
 
     private final boolean isStatic;
+    @Getter
     private final String name;
+    @Getter
     private final IType returnType;
+    @Getter
     private final List<DocumentParam> params;
 
     public DocumentMethod(String line) {
@@ -117,18 +116,6 @@ public class DocumentMethod
 
     public boolean isStatic() {
         return isStatic;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public IType getReturnType() {
-        return returnType;
-    }
-
-    public List<DocumentParam> getParams() {
-        return params;
     }
 
     public boolean testMethod(MethodInfo methodInfo) {

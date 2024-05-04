@@ -3,7 +3,9 @@ package com.probejs.document.comment.special;
 import com.probejs.document.comment.AbstractComment;
 import com.probejs.document.type.IType;
 import com.probejs.document.type.DocTypeResolver;
+import lombok.Getter;
 
+@Getter
 public class CommentModify extends AbstractComment {
 
     private static final int MARK_LEN = "@modify ".length();
@@ -18,11 +20,4 @@ public class CommentModify extends AbstractComment {
         this.type = DocTypeResolver.resolve(split[2]);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public IType getType() {
-        return type;
-    }
 }
