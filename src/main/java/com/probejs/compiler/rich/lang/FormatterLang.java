@@ -1,7 +1,6 @@
 package com.probejs.compiler.rich.lang;
 
 import com.probejs.ProbeJS;
-import com.probejs.formatter.api.IFormatter;
 import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.util.PUtil;
 import java.util.*;

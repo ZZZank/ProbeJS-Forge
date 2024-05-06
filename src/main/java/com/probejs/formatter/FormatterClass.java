@@ -21,6 +21,7 @@ import com.probejs.info.type.*;
 import com.probejs.info.type.IType;
 import com.probejs.util.PUtil;
 import lombok.Setter;
+import lombok.val;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -79,8 +80,8 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
 
     @Override
     public List<String> formatLines(int indent, int stepIndent) {
-        List<String> lines = new ArrayList<>();
-        DocumentComment comment = document == null ? null : document.getComment();
+        val lines = new ArrayList<String>();
+        val comment = document == null ? null : document.getComment();
         if (comment != null) {
             if (CommentUtil.isHidden(comment)) {
                 return lines;
@@ -88,21 +89,21 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
             lines.addAll(comment.formatLines(indent, stepIndent));
         }
 
-        List<String> assignableTypes = DocManager.typesAssignable
-            .getOrDefault(classInfo.getRaw().getName(), new ArrayList<>())
+        val assignableTypes = DocManager.typesAssignable
+            .getOrDefault(classInfo.getRaw().getName(), Collections.emptyList())
             .stream()
             .map(t -> t.transform(IDocType.defaultTransformer))
             .collect(Collectors.toList());
 
         if (classInfo.isEnum()) {
             //TODO: add special processing for KubeJS
-            Class<?> clazz = classInfo.getRaw();
+            val clazz = classInfo.getRaw();
             try {
-                Method values = clazz.getMethod("values");
+                val values = clazz.getMethod("values");
                 values.setAccessible(true);
-                Object[] enumValues = (Object[]) values.invoke(null);
+                val enumValues = (Object[]) values.invoke(null);
                 //Use the name() here so won't be affected by overrides
-                Method name = Enum.class.getMethod("name");
+                val name = Enum.class.getMethod("name");
                 for (Object enumValue : enumValues) {
                     assignableTypes.add(
                         ProbeJS.GSON.toJson(name.invoke(enumValue).toString().toLowerCase(Locale.ROOT))
@@ -226,7 +227,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         }
         //special processing for FunctionalInterface
         if (classInfo.isFunctionalInterface()) {
-            Optional<MethodInfo> fnTargets = classInfo
+            val fnTargets = classInfo
                 .getMethodInfos()
                 .stream()
                 .filter(MethodInfo::isAbstract)

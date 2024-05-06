@@ -16,6 +16,7 @@ import com.probejs.info.type.TypeVariable;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
 import lombok.Getter;
+import lombok.val;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -46,14 +47,14 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     public static BeanType caculateBeanType(MethodInfo info) {
-        final String methodName = info.getName();
+        val methodName = info.getName();
         if (
             methodName.length() < 4 &&
             (methodName.equals("is") || methodName.equals("get") || methodName.equals("set"))
         ) {
             return BeanType.NONE;
         }
-        final int paramCount = info.getParams().size();
+        val paramCount = info.getParams().size();
 
         if (
             paramCount == 0 &&
@@ -117,10 +118,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         this.paramModifiers.clear();
         this.returnModifiers = null;
         if (document != null) {
-            final DocumentComment comment = document.getComment();
+            val comment = document.getComment();
             if (comment != null) {
                 paramModifiers.putAll(CommentUtil.getTypeModifiers(comment));
-                CommentReturns r = comment.getSpecialComment(CommentReturns.class);
+                val r = comment.getSpecialComment(CommentReturns.class);
                 if (r != null) {
                     returnModifiers = r.getReturnType();
                 }
@@ -132,8 +133,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         if (!(info instanceof TypeClass)) {
             return FormatterType.of(info, useSpecial).format();
         }
-        final TypeClass clazz = (TypeClass) info;
-        final StringBuilder sb = new StringBuilder(FormatterType.of(info, useSpecial).format());
+        val clazz = (TypeClass) info;
+        val sb = new StringBuilder(FormatterType.of(info, useSpecial).format());
         if (!NameResolver.isTypeSpecial(clazz.getResolvedClass()) && !clazz.getTypeVariables().isEmpty()) {
             sb.append('<');
             sb.append(String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any")));
@@ -143,7 +144,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     public String formatReturn() {
-        IDocType returnModifier = getReturnModifiers();
+        val returnModifier = getReturnModifiers();
         if (returnModifier != null) {
             return returnModifier.getTypeName();
         }
@@ -151,14 +152,14 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     private String formatParam(MethodInfo.ParamInfo pInfo, boolean forceNoUnderscore) {
-        IType info = pInfo.getType();
-        final Class<?> clazz = info.getResolvedClass();
+        val info = pInfo.getType();
+        val clazz = info.getResolvedClass();
         //No assigned types, and not enum, use normal route.
         if (!DocManager.typesAssignable.containsKey(clazz.getName()) && !clazz.isEnum()) {
             return formatTypeParameterized(info, true);
         }
 
-        final StringBuilder sb = new StringBuilder();
+        val sb = new StringBuilder();
         sb.append(
             FormatterType
                 .of(info, false)
@@ -175,8 +176,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 .format()
         );
         if (info instanceof TypeClass) {
-            final TypeClass cInfo = (TypeClass) info;
-            List<TypeVariable> typeVariables = cInfo.getTypeVariables();
+            val cInfo = (TypeClass) info;
+            val typeVariables = cInfo.getTypeVariables();
             if (!typeVariables.isEmpty()) {
                 sb.append('<');
                 sb.append(

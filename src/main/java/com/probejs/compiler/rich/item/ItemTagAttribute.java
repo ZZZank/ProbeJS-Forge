@@ -1,6 +1,5 @@
 package com.probejs.compiler.rich.item;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.Map;

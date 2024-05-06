@@ -8,6 +8,8 @@ import com.probejs.info.clazz.MethodInfo;
 import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeClass;
 import com.probejs.util.PUtil;
+import lombok.val;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,10 +23,10 @@ public class FormatterConstructor implements MultiFormatter {
     }
 
     private String formatTypeParameterized(IType info) {
-        StringBuilder sb = new StringBuilder(FormatterType.of(info).format());
+        val sb = new StringBuilder(FormatterType.of(info).format());
         if (info instanceof TypeClass) {
-            TypeClass clazz = (TypeClass) info;
-            ClassInfo classInfo = ClassInfo.ofCache(clazz.getResolvedClass());
+            val clazz = (TypeClass) info;
+            val classInfo = ClassInfo.ofCache(clazz.getResolvedClass());
             if (!classInfo.getTypeParameters().isEmpty()) {
                 sb.append('<');
                 sb.append(
