@@ -1,12 +1,11 @@
 package com.probejs.formatter;
 
-import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentField;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.IFormatter;
 import com.probejs.formatter.resolver.NameResolver;
-import com.probejs.info.FieldInfo;
+import com.probejs.info.clazz.FieldInfo;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
 import lombok.Getter;

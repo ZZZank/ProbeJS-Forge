@@ -12,10 +12,10 @@ import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterNamespace;
 import com.probejs.formatter.FormatterRaw;
 import com.probejs.formatter.api.IFormatter;
-import com.probejs.info.ClassInfo;
+import com.probejs.info.clazz.ClassInfo;
 import com.probejs.info.EventInfo;
 import com.probejs.info.SpecialData;
-import com.probejs.info.Walker;
+import com.probejs.info.ClassWalker;
 import com.probejs.info.type.TypeClass;
 import com.probejs.plugin.CapturedClasses;
 import com.probejs.plugin.DummyBindingEvent;
@@ -63,7 +63,7 @@ public class TypingCompiler {
             .forEach(touchableClasses::addAll);
         touchableClasses.addAll(bindingEvent.getClassDumpReversed().keySet());
 
-        Walker walker = new Walker(touchableClasses);
+        ClassWalker walker = new ClassWalker(touchableClasses);
         return walker.walk();
     }
 

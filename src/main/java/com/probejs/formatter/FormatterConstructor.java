@@ -2,9 +2,9 @@ package com.probejs.formatter;
 
 import com.probejs.formatter.api.IFormatter;
 import com.probejs.formatter.resolver.NameResolver;
-import com.probejs.info.ClassInfo;
-import com.probejs.info.ConstructorInfo;
-import com.probejs.info.MethodInfo;
+import com.probejs.info.clazz.ClassInfo;
+import com.probejs.info.clazz.ConstructorInfo;
+import com.probejs.info.clazz.MethodInfo;
 import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeClass;
 import com.probejs.util.PUtil;

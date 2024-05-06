@@ -9,7 +9,7 @@ import com.probejs.document.type.IDocType;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.IFormatter;
 import com.probejs.formatter.resolver.NameResolver;
-import com.probejs.info.MethodInfo;
+import com.probejs.info.clazz.MethodInfo;
 import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeClass;
 import com.probejs.info.type.TypeVariable;

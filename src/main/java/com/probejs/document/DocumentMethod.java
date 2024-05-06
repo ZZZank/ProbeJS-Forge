@@ -4,7 +4,7 @@ import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IDocType;
 import com.probejs.document.type.DocTypeResolver;
 import com.probejs.formatter.api.IFormatter;
-import com.probejs.info.MethodInfo;
+import com.probejs.info.clazz.MethodInfo;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
 import lombok.Getter;

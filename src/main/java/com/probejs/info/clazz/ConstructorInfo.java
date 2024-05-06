@@ -1,4 +1,4 @@
-package com.probejs.info;
+package com.probejs.info.clazz;
 
 import lombok.Getter;
 import lombok.Setter;

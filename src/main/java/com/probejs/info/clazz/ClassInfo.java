@@ -1,4 +1,4 @@
-package com.probejs.info;
+package com.probejs.info.clazz;
 
 import com.probejs.ProbeJS;
 import com.probejs.formatter.resolver.ClazzFilter;

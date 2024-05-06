@@ -1,4 +1,4 @@
-package com.probejs.info;
+package com.probejs.info.clazz;
 
 import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeResolver;

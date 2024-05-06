@@ -9,11 +9,11 @@ import lombok.val;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Walker {
+public class ClassWalker {
 
     private final Set<Class<?>> initial;
 
-    public Walker(Set<Class<?>> initial) {
+    public ClassWalker(Set<Class<?>> initial) {
         this.initial = initial;
     }
 
