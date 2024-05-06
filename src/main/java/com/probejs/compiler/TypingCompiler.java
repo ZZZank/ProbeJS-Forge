@@ -1,5 +1,7 @@
 package com.probejs.compiler;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.document.DocManager;
@@ -26,6 +28,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 
 public class TypingCompiler {
@@ -67,13 +71,11 @@ public class TypingCompiler {
     public static void compileGlobal(Set<Class<?>> globalClasses) throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("globals.d.ts"));
         writer.write("/// <reference path=\"./special.d.ts\" />\n");
-        Map<String, List<IFormatter>> namespaced = new HashMap<>();
+        Multimap<String, IFormatter> namespaced = ArrayListMultimap.create();
 
         for (Class<?> clazz : globalClasses) {
             FormatterClass formatter = new FormatterClass(ClassInfo.ofCache(clazz));
-            DocManager.classDocuments
-                .getOrDefault(clazz.getName(), Collections.emptyList())
-                .forEach(formatter::addDocument);
+            DocManager.classDocuments.get(clazz.getName()).forEach(formatter::addDocument);
 
             NameResolver.ResolvedName name = NameResolver.getResolvedName(clazz.getName());
             if (name.getNamespace().isEmpty()) {
@@ -87,24 +89,24 @@ public class TypingCompiler {
                 }
             } else {
                 formatter.setInternal(true);
-                namespaced.computeIfAbsent(name.getNamespace(), s -> new ArrayList<>()).add(formatter);
+                namespaced.put(name.getNamespace(), formatter);
             }
         }
 
-        for (Map.Entry<String, List<IFormatter>> entry : namespaced.entrySet()) {
-            String path = entry.getKey();
-            List<IFormatter> formatters = entry.getValue();
-            FormatterNamespace namespace = new FormatterNamespace(path, formatters);
-            for (String line : namespace.format(0, 4)) {
+        for (val entry : namespaced.asMap().entrySet()) {
+            val path = entry.getKey();
+            val formatters = entry.getValue();
+            val namespace = new FormatterNamespace(path, formatters);
+            for (val line : namespace.format(0, 4)) {
                 writer.write(line);
                 writer.write('\n');
             }
         }
 
-        for (Map.Entry<String, List<DocumentClass>> entry : DocManager.classAdditions.entrySet()) {
-            List<DocumentClass> document = entry.getValue();
-            DocumentClass start = document.get(0);
-            document.subList(1, document.size()).forEach(start::merge);
+        for (val entry : DocManager.classAdditions.entrySet()) {
+            val document = entry.getValue();
+            val baseDoc = document.get(0);
+            document.subList(1, document.size()).forEach(baseDoc::merge);
         }
 
         //namespace::Document
@@ -172,8 +174,8 @@ public class TypingCompiler {
     }
 
     public static void compileJSConfig() throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(KubeJSPaths.DIRECTORY.resolve("jsconfig.json"));
-        String lines = String
+        val writer = Files.newBufferedWriter(KubeJSPaths.DIRECTORY.resolve("jsconfig.json"));
+        val lines = String
             .join(
                 "\n",
                 "{",

@@ -1,5 +1,7 @@
 package com.probejs.compiler.special;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.probejs.formatter.NameResolver;
 import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
@@ -9,10 +11,7 @@ import com.probejs.util.Pair;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import net.minecraft.resources.ResourceLocation;
 
@@ -21,7 +20,7 @@ public abstract class RecipeHoldersCompiler {
     /**
      * mod -> {functionName, returnName}
      */
-    private static final Map<String, List<Pair<String, String>>> namespace2Method = new HashMap<>();
+    private static final Multimap<String, Pair<String, String>> namespace2Method = ArrayListMultimap.create();
 
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
         namespace2Method.clear();
@@ -30,9 +29,7 @@ public abstract class RecipeHoldersCompiler {
             String invoke = key.getPath();
             String recipeJSName = NameResolver.resolveName(value.factory.get().getClass()).getFullName();
 
-            namespace2Method
-                .computeIfAbsent(namespace, k -> new ArrayList<>())
-                .add(new Pair<>(invoke, recipeJSName));
+            namespace2Method.put(namespace, new Pair<>(invoke, recipeJSName));
         });
     }
 
@@ -52,7 +49,7 @@ public abstract class RecipeHoldersCompiler {
             namespecedFmtr.add(new FormatterRaw(base, false));
         }
 
-        for (Entry<String, List<Pair<String, String>>> entry : namespace2Method.entrySet()) {
+        for (Entry<String, Collection<Pair<String, String>>> entry : namespace2Method.asMap().entrySet()) {
             String name = entry.getKey();
             List<String> lines = new ArrayList<>();
             //name

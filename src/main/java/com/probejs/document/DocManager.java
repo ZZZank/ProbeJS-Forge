@@ -1,5 +1,7 @@
 package com.probejs.document;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.document.comment.CommentUtil;
@@ -20,7 +22,7 @@ import me.shedaniel.architectury.platform.Platform;
 
 public class DocManager {
 
-    public static final Map<String, List<DocumentClass>> classDocuments = new HashMap<>();
+    public static final Multimap<String, DocumentClass> classDocuments = ArrayListMultimap.create();
     public static final Map<String, List<IType>> typesAssignable = new HashMap<>();
     public static final Map<String, List<DocumentClass>> classAdditions = new HashMap<>();
     public static final List<String> rawTSDoc = new ArrayList<>();
@@ -52,9 +54,7 @@ public class DocManager {
                 if (comment != null) {
                     CommentTarget target = comment.getSpecialComment(CommentTarget.class);
                     if (target != null) {
-                        classDocuments
-                            .computeIfAbsent(target.getTargetName(), s -> new ArrayList<>())
-                            .add(classDoc);
+                        classDocuments.put(target.getTargetName(), classDoc);
                         comment
                             .getSpecialComments(CommentAssign.class)
                             .stream()

@@ -1,5 +1,7 @@
 package com.probejs.compiler;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.probejs.ProbeJS;
@@ -52,13 +54,13 @@ public class SnippetCompiler {
         // Compile tag entries to snippet
         for (Map.Entry<String, Collection<ResourceLocation>> entry : SpecialData.computeTags().entrySet()) {
             String type = entry.getKey();
-            Map<String, List<String>> byModMembers = new HashMap<>();
+            Multimap<String, String> byModMembers = ArrayListMultimap.create();
             entry
                 .getValue()
                 .forEach(rl ->
-                    byModMembers.computeIfAbsent(rl.getNamespace(), k -> new ArrayList<>()).add(rl.getPath())
+                    byModMembers.put(rl.getNamespace(), rl.getPath())
                 );
-            byModMembers.forEach((mod, modMembers) -> {
+            byModMembers.asMap().forEach((mod, modMembers) -> {
                 final JsonObject modMembersJson = new JsonObject();
                 final JsonArray prefixes = new JsonArray();
                 if (ProbeJS.CONFIG.vanillaOrder) {

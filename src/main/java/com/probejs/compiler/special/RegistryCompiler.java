@@ -1,10 +1,14 @@
 package com.probejs.compiler.special;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.probejs.ProbeJS;
 import com.probejs.formatter.formatter.FormatterNamespace;
 import com.probejs.formatter.formatter.FormatterRaw;
 import com.probejs.formatter.formatter.IFormatter;
 import com.probejs.info.RegistryInfo;
+import lombok.val;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
@@ -19,16 +23,16 @@ public class RegistryCompiler {
     }
 
     public static void compile(BufferedWriter writer) throws IOException {
-        Map<String, List<RegistryInfo>> infoByMods = new HashMap<>();
+        Multimap<String, RegistryInfo> infoByMods = ArrayListMultimap.create();
         for (RegistryInfo info : RegistryCompiler.rInfos) {
-            infoByMods.computeIfAbsent(info.id.getNamespace(), k -> new ArrayList<>()).add(info);
+            infoByMods.put(info.id.getNamespace(), info);
         }
         List<IFormatter> formatters = new ArrayList<>();
-        infoByMods.forEach((namespace, rInfo) -> {
-            List<String> lines = rInfo
+        infoByMods.asMap().forEach((namespace, rInfo) -> {
+            val lines = rInfo
                 .stream()
                 .map(info -> {
-                    List<String> names = info.names
+                    val names = info.names
                         .stream()
                         .map(rl -> ProbeJS.GSON.toJson(rl.toString()))
                         .collect(Collectors.toList());
@@ -44,8 +48,8 @@ public class RegistryCompiler {
                 .collect(Collectors.toList());
             formatters.add(new FormatterNamespace(namespace, new FormatterRaw(lines, false)));
         });
-        IFormatter namespaced = new FormatterNamespace("Registry", formatters);
-        for (String line : namespaced.format(0, 4)) {
+        val namespaced = new FormatterNamespace("Registry", formatters);
+        for (val line : namespaced.format(0, 4)) {
             writer.write(line);
             writer.write('\n');
         }
