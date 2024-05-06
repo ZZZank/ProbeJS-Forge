@@ -155,7 +155,7 @@ public class TypingCompiler {
         globalClasses
             .stream()
             .filter(c -> ServerScriptManager.instance.scriptManager.isClassAllowed(c.getName()))
-            .sorted(Comparator.comparing(c -> c.getName()))
+            .sorted(Comparator.comparing(Class::getName))
             .map(c ->
                 String.format(
                     "declare function java(name: %s): typeof %s;",

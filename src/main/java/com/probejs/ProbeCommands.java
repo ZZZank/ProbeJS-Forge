@@ -16,8 +16,9 @@ import com.probejs.formatter.ClassResolver;
 import com.probejs.formatter.NameResolver;
 import com.probejs.util.RemapperBridge;
 import dev.latvian.kubejs.KubeJSPaths;
+
 import java.nio.file.Files;
-import java.nio.file.Path;
+import lombok.val;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -57,35 +58,21 @@ public class ProbeCommands {
                                 RichItemCompiler.compile();
                                 RichLangCompiler.compile();
                             } catch (Exception e) {
-                                e.printStackTrace();
-                                context
-                                    .getSource()
-                                    .sendSuccess(
-                                        new TextComponent(
-                                            "[ERROR]Uncaught exception happened, terminating typing generation..."
-                                        )
-                                            .withStyle(ChatFormatting.RED),
-                                        true
-                                    );
-                                MutableComponent githubLink = new TextComponent("ProbeJS Github")
-                                    .withStyle(
-                                        Style.EMPTY
-                                            .withUnderlined(true)
-                                            .withClickEvent(
-                                                new ClickEvent(
-                                                    ClickEvent.Action.OPEN_URL,
-                                                    "https://github.com/ZZZank/ProbeJS-Forge/issues"
-                                                )
-                                            )
-                                    );
-                                context
-                                    .getSource()
-                                    .sendSuccess(
-                                        new TextComponent("Please report this error to ")
+                                ProbeJS.LOGGER.error(e);
+                                context.getSource().sendSuccess(new TextComponent(
+                                    "[ERROR]Uncaught exception happened, terminating typing generation...").withStyle(
+                                    ChatFormatting.RED), true);
+                                val githubLink = new TextComponent("ProbeJS Github")
+                                    .withStyle(Style.EMPTY.withUnderlined(true)
+                                        .withClickEvent(new ClickEvent(
+                                            ClickEvent.Action.OPEN_URL,
+                                            "https://github.com/ZZZank/ProbeJS-Forge/issues"
+                                        )));
+                                context.getSource()
+                                    .sendSuccess(new TextComponent("Please report this error to ")
                                             .append(githubLink)
-                                            .append(" with complete latest.log."),
-                                        true
-                                    );
+                                            .append(" with complete latest.log.")
+                                        , true);
                             }
                             return sendSuccess(context, "ProbeJS typing generation finished.");
                         })
@@ -95,18 +82,18 @@ public class ProbeCommands {
                         .literal("clear_cache")
                         .requires(source -> source.getServer().isSingleplayer())
                         .executes(context -> {
-                            String[] cacheNames = new String[] {
+                            String[] cacheNames = new String[]{
                                 EventCompiler.EVENT_CACHE_NAME,
                                 EventCompiler.FORGE_EVENT_CACHE_NAME,
                             };
                             for (String cacheName : cacheNames) {
-                                String wrapped = String.format("Cache file '%s'", cacheName);
-                                Path path = KubeJSPaths.EXPORTED.resolve(cacheName);
+                                val wrapped = String.format("Cache file '%s'", cacheName);
+                                val path = KubeJSPaths.EXPORTED.resolve(cacheName);
                                 if (!Files.exists(path)) {
                                     sendSuccess(context, wrapped + " not found, skipping. ");
                                     continue;
                                 }
-                                boolean deleted = path.toFile().delete();
+                                val deleted = path.toFile().delete();
                                 if (!deleted) {
                                     sendSuccess(context, wrapped + " unable to delete. ");
                                     continue;
@@ -196,8 +183,8 @@ public class ProbeCommands {
     }
 
     /**
-     * @param source The command source, usually avaliable in Command.executes() callback,
-     * via {@code Command.executes(context -> context.getSource())}
+     * @param source  The command source, usually avaliable in Command.executes() callback,
+     *                via {@code Command.executes(context -> context.getSource())}
      * @param message The message you want to send
      * @return Will always be `Command.SINGLE_SUCCESS`
      */

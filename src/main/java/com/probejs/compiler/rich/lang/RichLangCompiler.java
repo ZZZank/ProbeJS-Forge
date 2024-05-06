@@ -68,11 +68,7 @@ public class RichLangCompiler {
                 JsonObject langObj = new JsonObject();
                 langObj.addProperty("key", entry.getKey());
                 JsonObject langs = new JsonObject();
-                entry
-                    .getValue()
-                    .entrySet()
-                    .stream()
-                    .forEach(e -> langs.addProperty(e.getKey(), e.getValue()));
+                entry.getValue().forEach(langs::addProperty);
                 langObj.add("languages", langs);
                 langObj.addProperty("selected", languageManager.getLanguage(selected).getName());
                 return langObj;
