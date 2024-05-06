@@ -57,7 +57,7 @@ public class ProbeCommands {
                                 RichItemCompiler.compile();
                                 RichLangCompiler.compile();
                             } catch (Exception e) {
-                                ProbeJS.LOGGER.error(e);
+                                e.printStackTrace();
                                 context.getSource().sendSuccess(new TextComponent(
                                     "[ERROR]Uncaught exception happened, terminating typing generation...").withStyle(
                                     ChatFormatting.RED), true);

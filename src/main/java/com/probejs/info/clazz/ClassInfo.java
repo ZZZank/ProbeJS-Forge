@@ -107,7 +107,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         } catch (NoClassDefFoundError e) {
             // https://github.com/ZZZank/ProbeJS-Forge/issues/2
             ProbeJS.LOGGER.error("Unable to fetch infos for class '{}'", raw.getName());
-            ProbeJS.LOGGER.error(e);
+            e.printStackTrace();
         }
         //Resolve types - rollback everything till Object
         applySuperGenerics(methodInfos, fieldInfos);
