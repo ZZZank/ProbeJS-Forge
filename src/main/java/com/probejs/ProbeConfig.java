@@ -26,16 +26,15 @@ public class ProbeConfig {
 
     public static ProbeConfig getInstance() {
         if (cfgReference == null) {
-            ProbeConfig.cfgReference = new ProbeConfig();
+            ProbeConfig.cfgReference = new ProbeConfig(ProbeConfig.PATH);
         }
         return ProbeConfig.cfgReference;
     }
 
-    private ProbeConfig() {
-        Path cfg = KubeJSPaths.CONFIG.resolve("probejs.json");
-        if (Files.exists(cfg)) {
+    private ProbeConfig(Path path) {
+        if (Files.exists(path)) {
             try {
-                Map<?, ?> obj = ProbeJS.GSON.fromJson(Files.newBufferedReader(cfg), Map.class);
+                Map<?, ?> obj = ProbeJS.GSON.fromJson(Files.newBufferedReader(path), Map.class);
                 keepBeaned = PUtil.castedGetOrDef("keepBeaned", obj, true);
                 enabled = PUtil.castedGetOrDef("enabled", obj, true);
                 vanillaOrder = PUtil.castedGetOrDef("vanillaOrder", obj, true);
