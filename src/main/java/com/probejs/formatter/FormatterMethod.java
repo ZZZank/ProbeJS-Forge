@@ -166,9 +166,9 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                     if (forceNoUnderscore) {
                         return false;
                     }
-                    if (typeInfo instanceof TypeClass) {
-                        Class<?> c = typeInfo.getResolvedClass();
-                        return !NameResolver.resolvedPrimitives.contains(c.getName());
+                    val base = typeInfo.getBaseType();
+                    if (base instanceof TypeClass) {
+                        return !NameResolver.resolvedPrimitives.contains(base.getResolvedClass().getName());
                     }
                     return false;
                 })
