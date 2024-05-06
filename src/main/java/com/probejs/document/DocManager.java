@@ -2,24 +2,13 @@ package com.probejs.document;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.probejs.ProbeJS;
-import com.probejs.ProbePaths;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentAssign;
 import com.probejs.document.comment.special.CommentTarget;
 import com.probejs.document.parser.processor.Document;
 import com.probejs.document.type.IDocType;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import me.shedaniel.architectury.platform.Mod;
-import me.shedaniel.architectury.platform.Platform;
 
 public class DocManager {
 
@@ -38,12 +27,7 @@ public class DocManager {
         typeDocuments.clear();
         typesAssignable.clear();
 
-        try {
-            fromFiles(documentState);
-            fromPath(documentState);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new DocReader(documentState, rawTSDoc).defaultSetup().read();
 
         for (IDocument doc : documentState.getDocument().getDocuments()) {
             if (doc instanceof DocumentClass) {
@@ -82,100 +66,5 @@ public class DocManager {
 
     public static void addAdditions(String className, DocumentClass addition) {
         DocManager.classAdditions.computeIfAbsent(className, k -> new ArrayList<>()).add(addition);
-    }
-
-    public static void fromPath(Document document) throws IOException {
-        File[] files = ProbePaths.DOCS.toFile().listFiles();
-        if (files == null) {
-            return;
-        }
-        List<File> validFiles = Arrays
-            .stream(files)
-            .filter(f -> f.getName().endsWith(".d.ts") && !f.isDirectory())
-            .sorted(Comparator.comparing(File::getName))
-            .collect(Collectors.toList());
-        for (File f : validFiles) {
-            BufferedReader reader = Files.newBufferedReader(f.toPath());
-            if (f.getName().startsWith("!")) {
-                reader.lines().forEach(rawTSDoc::add);
-            } else {
-                reader.lines().forEach(document::step);
-            }
-            reader.close();
-        }
-    }
-
-    public static void fromFiles(Document document) throws IOException {
-        List<ZipFile> validFiles = Platform
-            .getMods()
-            .stream()
-            .map(Mod::getFilePath)
-            .filter(path -> {
-                String pathName = path.getFileName().toString();
-                return Files.isRegularFile(path) && (pathName.endsWith(".jar") || pathName.endsWith(".zip"));
-            })
-            .map(Path::toFile)
-            .map(file -> {
-                try {
-                    return new ZipFile(file);
-                } catch (IOException ignored) {
-                    ProbeJS.LOGGER.error("Unable to open file - {}", file.getName());
-                }
-                return null;
-            })
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-        for (ZipFile file : validFiles) {
-            ZipEntry entry = file.getEntry("probejs.documents.txt");
-            if (entry == null) {
-                continue;
-            }
-            ProbeJS.LOGGER.info("Found documents list from {}", file.getName());
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader(
-                    new BufferedInputStream(file.getInputStream(entry)),
-                    StandardCharsets.UTF_8
-                )
-            );
-            List<String> docNames = reader.lines().collect(Collectors.toList());
-            for (String docName : docNames) {
-                final boolean isRawDoc = docName.startsWith("!");
-                if (isRawDoc) {
-                    //remove "raw" indicator
-                    docName = docName.substring(1);
-                }
-                //check mod installing condition
-                int i = docName.indexOf(" ");
-                if (
-                    //has mod installation check
-                    i != -1 &&
-                    //check if all mods are installed
-                    !Arrays
-                        .stream(docName.substring(0, i).split("&"))
-                        .allMatch(Platform::isModLoaded)
-                ) {
-                    continue;
-                }
-                //read doc
-                ZipEntry docEntry = file.getEntry(docName);
-                if (docEntry == null) {
-                    ProbeJS.LOGGER.warn("Document from file not found - {}", docName);
-                    continue;
-                }
-                ProbeJS.LOGGER.info("Loading document inside jar - {}", docName);
-                BufferedReader docReader = new BufferedReader(
-                    new InputStreamReader(
-                        new BufferedInputStream(file.getInputStream(docEntry)),
-                        StandardCharsets.UTF_8
-                    )
-                );
-                if (isRawDoc) {
-                    docReader.lines().forEach(rawTSDoc::add);
-                } else {
-                    docReader.lines().forEach(document::step);
-                }
-            }
-            file.close();
-        }
     }
 }
