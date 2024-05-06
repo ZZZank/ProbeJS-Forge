@@ -250,7 +250,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
         // constructors
         if (!classInfo.isInterface()) {
-            if (internal && !classInfo.getConstructorInfos().isEmpty()) {
+            if (internal && !classInfo.getConstructors().isEmpty()) {
                 lines.addAll(
                     new FormatterComments("Internal constructor, not callable unless via `java()`.")
                         .setStyle(FormatterComments.CommentStyle.J_DOC)
@@ -258,7 +258,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 );
             }
             classInfo
-                .getConstructorInfos()
+                .getConstructors()
                 .stream()
                 .map(FormatterConstructor::new)
                 .forEach(f -> lines.addAll(f.format(indent + stepIndent, stepIndent)));

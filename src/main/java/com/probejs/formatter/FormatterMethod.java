@@ -60,8 +60,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             methodName.startsWith("is") &&
             (
                 //TODO: it seems that we can't pre-calculate the Boolean TypeClass, why
-                info.getReturnType().assignableFrom(new TypeClass(Boolean.class)) ||
-                info.getReturnType().assignableFrom(new TypeClass(Boolean.TYPE))
+                info.getType().assignableFrom(new TypeClass(Boolean.class)) ||
+                info.getType().assignableFrom(new TypeClass(Boolean.TYPE))
             )
         ) {
             return BeanType.GETTER_IS;
@@ -95,7 +95,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     public String getBeanTypeString() {
         return isGetter()
-            ? info.getReturnType().getTypeName()
+            ? info.getType().getTypeName()
             : info.getParams().get(0).getType().getTypeName();
     }
 
@@ -147,7 +147,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         if (returnModifier != null) {
             return returnModifier.getTypeName();
         }
-        return formatTypeParameterized(info.getReturnType(), false);
+        return formatTypeParameterized(info.getType(), false);
     }
 
     private String formatParam(MethodInfo.ParamInfo pInfo, boolean forceNoUnderscore) {

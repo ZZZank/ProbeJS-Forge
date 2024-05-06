@@ -130,7 +130,7 @@ public class DocumentMethod
 
         if (
             !params.keySet().equals(docParams.keySet()) ||
-            !DocTypeResolver.typeEquals(returnType, methodInfo.getReturnType())
+            !DocTypeResolver.typeEquals(returnType, methodInfo.getType())
         ) {
             return false;
         }
