@@ -1,82 +1,69 @@
 package com.probejs.compiler.rich.lang;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import com.probejs.util.json.JObject;
+import com.probejs.util.json.JPrimitive;
+import lombok.val;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.LanguageInfo;
-import net.minecraft.client.resources.language.LanguageManager;
 
 public class RichLangCompiler {
 
     public static void compile() throws IOException {
-        JsonArray langKeyArray = new JsonArray();
+        val langKeyArray = new JsonArray();
 
-        LanguageManager languageManager = Minecraft.getInstance().getLanguageManager();
+        val langManager = Minecraft.getInstance().getLanguageManager();
 
-        String selected = languageManager.getSelected().getCode();
-        String codeRegion = selected.contains("_") ? selected.split("_")[0] : selected.substring(0, 2);
-        List<LanguageInfo> sameRegionLang = languageManager
+        val selected = langManager.getSelected().getCode();
+        val codeRegion = selected.contains("_") ? selected.split("_")[0] : selected.substring(0, 2);
+        val sameRegionLang = langManager
             .getLanguages()
             .stream()
-            .filter(entry -> entry.getCode().startsWith(codeRegion))
+            .map(LanguageInfo::getCode)
+            .filter(code -> code.startsWith(codeRegion))
             .collect(Collectors.toList());
+        val langCodes = new HashSet<String>();
+        langCodes.add(FormatterLang.DEFAULT_LANGUAGE.getCode());
+        langCodes.add(langManager.getSelected().getCode());
+        langCodes.addAll(sameRegionLang);
 
         Map<String, Map<String, String>> storage = new HashMap<>();
-
-        FormatterLang
-            .getLangKeys(FormatterLang.DEFAULT_LANGUAGE.getCode())
-            .forEach(entry ->
+        for (val langCode : langCodes) {
+            val lang = langManager.getLanguage(langCode);
+            FormatterLang.getLangKeys(lang).forEach(entry ->
                 storage
                     .computeIfAbsent(entry.getKey(), key -> new HashMap<>())
-                    .put(FormatterLang.DEFAULT_LANGUAGE.getName(), entry.getValue())
-            );
-
-        if (!selected.equals(FormatterLang.DEFAULT_LANGUAGE.getCode())) {
-            FormatterLang
-                .getLangKeys(selected)
-                .forEach(entry ->
-                    storage
-                        .computeIfAbsent(entry.getKey(), key -> new HashMap<>())
-                        .put(languageManager.getLanguage(selected).getName(), entry.getValue())
-                );
-        }
-
-        for (LanguageInfo lang : sameRegionLang) {
-            FormatterLang
-                .getLangKeys(lang)
-                .forEach(entry ->
-                    storage
-                        .computeIfAbsent(entry.getKey(), key -> new HashMap<>())
-                        .put(lang.getName(), entry.getValue())
-                );
+                    .put(lang.getName(), entry.getValue()));
         }
 
         storage
             .entrySet()
             .stream()
-            .map(entry -> {
-                JsonObject langObj = new JsonObject();
-                langObj.addProperty("key", entry.getKey());
-                JsonObject langs = new JsonObject();
-                entry.getValue().forEach(langs::addProperty);
-                langObj.add("languages", langs);
-                langObj.addProperty("selected", languageManager.getLanguage(selected).getName());
-                return langObj;
-            })
+            .map(entry -> JObject.of()
+                .add("key", entry.getKey())
+                .add("languages", JObject.of().addAll(entry
+                    .getValue()
+                    .entrySet()
+                    .stream()
+                    .map(e -> new Pair<>(e.getKey(), JPrimitive.of(e.getValue())))
+                ))
+                .add("selected", langManager.getLanguage(selected).getName())
+                .build()
+            )
             .forEach(langKeyArray::add);
         Path richFile = ProbePaths.WORKSPACE.resolve("lang-keys.json");
         BufferedWriter writer = Files.newBufferedWriter(richFile);
-        writer.write(ProbeJS.GSON.toJson(langKeyArray));
+        ProbeJS.GSON.toJson(langKeyArray, writer);
         writer.close();
     }
 }

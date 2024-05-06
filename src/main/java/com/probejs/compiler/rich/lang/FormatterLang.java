@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import lombok.val;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.ClientLanguage;
 import net.minecraft.client.resources.language.LanguageInfo;
@@ -56,14 +58,14 @@ public class FormatterLang implements MultiFormatter {
     }
 
     public static Stream<Map.Entry<String, String>> getLangKeys(LanguageInfo language) {
-        Minecraft mc = Minecraft.getInstance();
-        LanguageManager manager = mc.getLanguageManager();
-        LanguageInfo english = manager.getLanguage(FormatterLang.DEFAULT_LANGUAGE.getCode());
-        List<LanguageInfo> languages = language.equals(english)
+        val mc = Minecraft.getInstance();
+        val manager = mc.getLanguageManager();
+        val english = manager.getLanguage(FormatterLang.DEFAULT_LANGUAGE.getCode());
+        val languages = language.equals(english)
             ? Collections.singletonList(english)
             : Arrays.asList(english, language);
 
-        ClientLanguage clientLanguage = ClientLanguage.loadFrom(mc.getResourceManager(), languages);
+        val clientLanguage = ClientLanguage.loadFrom(mc.getResourceManager(), languages);
         Map<String, String> storage = clientLanguage.getLanguageData();
 
         if (!ALL_KEYS.isEmpty()) {

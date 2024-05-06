@@ -4,6 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.Map;
+
+import com.probejs.util.json.JArray;
+import com.probejs.util.json.JObject;
+import com.probejs.util.json.JPrimitive;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
@@ -31,13 +35,16 @@ public class ItemTagAttribute {
      */
 
     public JsonObject serialize() {
-        JsonObject o = new JsonObject();
-        //tag id
-        o.addProperty("id", id);
-        //items in tag
-        JsonArray tags = new JsonArray();
-        itemsOfTag.stream().map(Registry.ITEM::getKey).map(ResourceLocation::toString).forEach(tags::add);
-        o.add("items", tags);
-        return o;
+        return JObject.of()
+            .add("id", id)
+            .add("items",
+                JArray.of()
+                    .addAll(itemsOfTag.stream()
+                        .map(Registry.ITEM::getKey)
+                        .map(ResourceLocation::toString)
+                        .map(JPrimitive::of)
+                    )
+            )
+            .build();
     }
 }

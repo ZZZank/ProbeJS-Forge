@@ -2,6 +2,8 @@ package com.probejs.compiler.rich.item;
 
 import com.google.gson.JsonObject;
 
+import com.probejs.util.json.JObject;
+import lombok.val;
 import net.minecraft.core.Registry;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -46,39 +48,35 @@ public class ItemAttribute {
 
     @Nullable
     public JsonObject serialize() {
-        JsonObject prop;
+        val prop = JObject.of();
         //basic
         Item itemRepr = item.getItem();
         try {
-            prop = new JsonObject();
-            prop.addProperty("id", Registry.ITEM.getKey(itemRepr).toString());
-            prop.addProperty("localized", item.getHoverName().getString());
-            prop.addProperty("maxDamage", item.getMaxDamage());
-            prop.addProperty("maxStackSize", item.getMaxStackSize());
+            prop.add("id", Registry.ITEM.getKey(itemRepr).toString())
+                .add("localized", item.getHoverName().getString())
+                .add("maxDamage", item.getMaxDamage())
+                .add("maxStackSize", item.getMaxStackSize());
         } catch (Throwable ignored) {
             return null;
         }
         //tool
         String toolType = determineToolType();
         if (toolType != null) {
-            prop.addProperty("toolType", toolType);
+            prop.add("toolType", toolType);
         }
         //food
         FoodProperties food = itemRepr.getFoodProperties();
         if (food != null) {
-            JsonObject foodProp = new JsonObject();
-            foodProp.addProperty("nutrition", food.getNutrition());
-            foodProp.addProperty("saturation", food.getSaturationModifier());
-            foodProp.addProperty("alwaysEdible", food.canAlwaysEat());
-            prop.add("food", foodProp);
+            prop.add("food", JObject.of()
+                .add("nutrition", food.getNutrition())
+                .add("saturation", food.getSaturationModifier())
+                .add("alwaysEdible", food.canAlwaysEat()));
         }
         //block
         if (itemRepr instanceof BlockItem) {
             BlockItem blockItem = (BlockItem) itemRepr;
-            JsonObject blockProp = new JsonObject();
-            blockProp.addProperty("crop", blockItem.getBlock() instanceof CropBlock);
-            prop.add("block", blockProp);
+            prop.add("block", JObject.of().add("crop", blockItem.getBlock() instanceof CropBlock));
         }
-        return prop;
+        return prop.build();
     }
 }

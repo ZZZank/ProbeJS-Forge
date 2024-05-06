@@ -77,7 +77,7 @@ public class DocReader {
             reader.lines().forEach(docs::add);
         }
         //read each doc
-        for (val docName : docs) {
+        for (String docName : docs) {
             val isRawDoc = docName.startsWith("!");
             if (isRawDoc) {
                 //remove "raw" indicator
@@ -88,7 +88,7 @@ public class DocReader {
                 continue;
             }
             //read doc
-            ZipEntry docEntry = zip.getEntry(docName);
+            val docEntry = zip.getEntry(docName);
             if (docEntry == null) {
                 ProbeJS.LOGGER.warn("Document from file not found - {}", docName);
                 continue;
@@ -107,6 +107,9 @@ public class DocReader {
 
     private static boolean modConditionMet(String name) {
         val i = name.indexOf(" ");
+        if (i < 0) {
+            return true;
+        }
         for (val modId : name.substring(0, i).split("&")) {
             if (!Platform.isModLoaded(modId)) {
                 return false;

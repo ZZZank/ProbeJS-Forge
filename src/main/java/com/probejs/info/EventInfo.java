@@ -8,6 +8,8 @@ import com.probejs.util.json.JObject;
 import com.probejs.util.json.JPrimitive;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
+import lombok.val;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -55,13 +57,20 @@ public class EventInfo implements Comparable<EventInfo> {
     }
 
     public JsonObject toJson() {
-        return JObject.of()
+        val jObject = JObject.of()
             .add("id", id)
-            .add("sub", sub)
             .add("class", clazzRaw.getName())
-            .add("type", JArray.of().addAll(scriptTypes.stream().map(ScriptType::name).map(JPrimitive::of)))
-            .add("cancellable", this.cancellable)
-            .build();
+            .add("cancellable", this.cancellable);
+        if (hasSub()) {
+            jObject.add("sub", sub);
+        }
+        if (scriptTypes != null) {
+            jObject.add(
+                "type",
+                JArray.of().addAll(scriptTypes.stream().map(ScriptType::name).map(JPrimitive::of))
+            );
+        }
+        return jObject.build();
     }
 
     /**
