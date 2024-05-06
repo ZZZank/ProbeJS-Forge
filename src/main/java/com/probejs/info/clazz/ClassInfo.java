@@ -28,13 +28,11 @@ public class ClassInfo implements Comparable<ClassInfo> {
         }
         //No computeIfAbsent because new ClassInfo will call ofCache for superclass lookup
         //This will cause a CME because multiple updates occurred in one computeIfAbsent
-        ClassInfo cInfo = ALL.get(clazz);
+        val cInfo = ALL.get(clazz);
         if (cInfo != null) {
             return cInfo;
         }
-        cInfo = new ClassInfo(clazz);
-        ALL.put(clazz, cInfo);
-        return cInfo;
+        return new ClassInfo(clazz, true);
     }
 
     private final Class<?> raw;
@@ -50,7 +48,10 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private final IType superType;
     private final List<IType> interfaces;
 
-    private ClassInfo(Class<?> clazz) {
+    private ClassInfo(Class<?> clazz, boolean putInCache) {
+        if (putInCache) {
+            ALL.put(clazz, this);
+        }
         this.raw = clazz;
         this.name = raw.getName();
         this.modifiers = raw.getModifiers();

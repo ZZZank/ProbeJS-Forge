@@ -23,7 +23,7 @@ public class MethodInfo extends BaseMemberInfo {
     /**
      * the classInfo that the method belongs to is NOT in info cache when MethodInfo is being constructed
      */
-    private final Class<?> from;
+    private final ClassInfo from;
     @Setter
     private List<ParamInfo> params;
     @Setter
@@ -43,7 +43,7 @@ public class MethodInfo extends BaseMemberInfo {
         super(getRemappedOrDefault(method, from), TypeResolver.resolveType(method.getGenericReturnType()));
         this.raw = method;
         this.shouldHide = method.getAnnotation(HideFromJS.class) != null;
-        this.from = from;
+        this.from = ClassInfo.ofCache(from);
         this.modifiers = method.getModifiers();
         this.params = Arrays.stream(method.getParameters()).map(ParamInfo::new).collect(Collectors.toList());
         this.typeVariables = Arrays.stream(method.getTypeParameters())
@@ -65,8 +65,7 @@ public class MethodInfo extends BaseMemberInfo {
         private final boolean isVarArgs;
 
         public ParamInfo(Parameter parameter) {
-            this.name = parameter.getName();
-            this.type = TypeResolver.resolveType(parameter.getParameterizedType());
+            super(parameter.getName(), TypeResolver.resolveType(parameter.getParameterizedType()));
             this.isVarArgs = parameter.isVarArgs();
         }
     }

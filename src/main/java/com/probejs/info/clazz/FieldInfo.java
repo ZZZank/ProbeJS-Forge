@@ -16,6 +16,7 @@ public class FieldInfo extends BaseMemberInfo implements Comparable<FieldInfo> {
     private final int modifiers;
     private final boolean shouldHide;
     private final Object staticValue;
+    private final ClassInfo from;
 
     private static String getRemappedOrDefault(Field field, Class<?> clazz) {
         String mapped = RemapperBridge.getRemapper().getMappedField(clazz, field);
@@ -28,6 +29,7 @@ public class FieldInfo extends BaseMemberInfo implements Comparable<FieldInfo> {
     public FieldInfo(Field field, Class<?> clazz) {
         super(getRemappedOrDefault(field, clazz), TypeResolver.resolveType(field.getGenericType()));
         this.raw = field;
+        this.from = ClassInfo.ofCache(clazz);
         this.modifiers = field.getModifiers();
         this.shouldHide = field.getAnnotation(HideFromJS.class) != null;
         this.staticValue = PUtil.tryOrDefault(() -> isStatic() ? field.get(null) : null, null);
