@@ -1,4 +1,4 @@
-package com.probejs.formatter.formatter;
+package com.probejs.formatter.api;
 
 public abstract class DocumentedFormatter<T> implements IDocumented<T> {
 

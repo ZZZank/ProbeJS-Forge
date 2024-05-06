@@ -1,4 +1,4 @@
-package com.probejs.formatter.formatter;
+package com.probejs.formatter.api;
 
 public abstract class DocumentReceiver<T> implements IDocumented<T> {
 

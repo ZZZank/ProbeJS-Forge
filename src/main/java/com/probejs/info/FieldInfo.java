@@ -1,6 +1,5 @@
 package com.probejs.info;
 
-import com.probejs.formatter.SpecialTypes;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;

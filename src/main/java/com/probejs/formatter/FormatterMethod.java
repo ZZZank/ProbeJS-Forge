@@ -1,4 +1,4 @@
-package com.probejs.formatter.formatter;
+package com.probejs.formatter;
 
 import com.probejs.document.DocManager;
 import com.probejs.document.DocumentComment;
@@ -6,7 +6,9 @@ import com.probejs.document.DocumentMethod;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentReturns;
 import com.probejs.document.type.IType;
-import com.probejs.formatter.NameResolver;
+import com.probejs.formatter.api.DocumentReceiver;
+import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.MethodInfo;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;

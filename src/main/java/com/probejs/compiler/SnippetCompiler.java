@@ -6,7 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
-import com.probejs.formatter.NameResolver;
+import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.RegistryInfo;
 import com.probejs.info.SpecialData;
 import java.io.BufferedWriter;

@@ -4,14 +4,13 @@ import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IType;
 import com.probejs.document.type.DocTypeResolver;
-import com.probejs.formatter.formatter.IFormatter;
+import com.probejs.formatter.api.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

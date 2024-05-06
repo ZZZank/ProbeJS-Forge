@@ -1,6 +1,7 @@
-package com.probejs.formatter.formatter;
+package com.probejs.formatter;
 
-import com.probejs.formatter.NameResolver;
+import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.ConstructorInfo;
 import com.probejs.info.MethodInfo;

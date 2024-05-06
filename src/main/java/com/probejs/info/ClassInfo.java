@@ -1,9 +1,9 @@
 package com.probejs.info;
 
 import com.probejs.ProbeJS;
-import com.probejs.formatter.ClassResolver;
-import com.probejs.formatter.NameResolver;
-import com.probejs.formatter.formatter.FormatterMethod;
+import com.probejs.formatter.resolver.ClazzFilter;
+import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.FormatterMethod;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoParameterized;
 import com.probejs.info.type.TypeInfoVariable;
@@ -112,7 +112,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
                     }
                     return !hasIdenticalParentMethod(mInfo.getRaw(), clazz);
                 })
-                .filter(m -> ClassResolver.acceptMethod(m.getName()))
+                .filter(m -> ClazzFilter.acceptMethod(m.getName()))
                 .filter(m -> !m.shouldHide())
                 .forEach(methodInfos::add);
             //fields
@@ -121,7 +121,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
                 .map(f -> new FieldInfo(f, clazz))
                 .peek(allFieldInfos::add)
                 .filter(fInfo -> !ProbeJS.CONFIG.trimming || fInfo.getRaw().getDeclaringClass() == raw)
-                .filter(f -> ClassResolver.acceptField(f.getName()))
+                .filter(f -> ClazzFilter.acceptField(f.getName()))
                 .filter(f -> !f.shouldHide())
                 .forEach(fieldInfos::add);
         } catch (NoClassDefFoundError e) {

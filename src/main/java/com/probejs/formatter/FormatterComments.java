@@ -1,5 +1,6 @@
-package com.probejs.formatter.formatter;
+package com.probejs.formatter;
 
+import com.probejs.formatter.api.IFormatter;
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,8 +8,8 @@ import java.util.List;
 
 public class FormatterComments implements IFormatter {
 
-    protected final List<String> raw;
-    protected boolean isBlockStyle;
+    private final List<String> raw;
+    private boolean style;
 
     /**
      * construct a multi-line comment formatter, and formatted lines will be in
@@ -16,7 +17,7 @@ public class FormatterComments implements IFormatter {
      */
     public FormatterComments(List<String> lines) {
         this.raw = lines;
-        this.isBlockStyle = true;
+        this.style = true;
     }
 
     /**
@@ -26,15 +27,11 @@ public class FormatterComments implements IFormatter {
     public FormatterComments(String... lines) {
         this.raw = new ArrayList<>(lines.length);
         this.raw.addAll(Arrays.asList(lines));
-        this.isBlockStyle = true;
+        this.style = true;
     }
 
-    public boolean isBlockStyle() {
-        return this.isBlockStyle;
-    }
-
-    public FormatterComments setBlockStyle(boolean isMultiLine) {
-        this.isBlockStyle = isMultiLine;
+    public FormatterComments setStyle(boolean isMultiLine) {
+        this.style = isMultiLine;
         return this;
     }
 
@@ -53,15 +50,15 @@ public class FormatterComments implements IFormatter {
     @Override
     public List<String> format(int indent, int stepIndent) {
         final String idnt = PUtil.indent(indent);
-        final String commentMark = this.isBlockStyle ? " * " : "// ";
+        final String commentMark = this.style ? " * " : "// ";
         List<String> lines = new ArrayList<>(2 + this.raw.size());
-        if (this.isBlockStyle) {
+        if (this.style) {
             lines.add(idnt + "/**");
         }
         for (final String line : this.raw) {
             lines.add(String.format("%s%s%s", idnt, commentMark, line));
         }
-        if (this.isBlockStyle) {
+        if (this.style) {
             lines.add(idnt + " */");
         }
         return lines;

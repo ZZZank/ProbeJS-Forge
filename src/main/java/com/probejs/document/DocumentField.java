@@ -3,7 +3,7 @@ package com.probejs.document;
 import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IType;
 import com.probejs.document.type.DocTypeResolver;
-import com.probejs.formatter.formatter.IFormatter;
+import com.probejs.formatter.api.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;

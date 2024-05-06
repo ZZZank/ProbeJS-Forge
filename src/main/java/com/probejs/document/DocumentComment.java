@@ -3,7 +3,7 @@ package com.probejs.document;
 import com.probejs.document.comment.AbstractComment;
 import com.probejs.document.comment.CommentHandler;
 import com.probejs.document.comment.CommentUtil;
-import com.probejs.formatter.formatter.IFormatter;
+import com.probejs.formatter.api.IFormatter;
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
 import java.util.Collection;

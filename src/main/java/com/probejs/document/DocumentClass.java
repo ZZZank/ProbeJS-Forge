@@ -1,7 +1,7 @@
 package com.probejs.document;
 
 import com.probejs.document.comment.CommentUtil;
-import com.probejs.formatter.formatter.IFormatter;
+import com.probejs.formatter.api.IFormatter;
 import com.probejs.util.PUtil;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,8 +1,8 @@
 package com.probejs.compiler.special;
 
 import com.probejs.ProbeJS;
-import com.probejs.formatter.formatter.FormatterNamespace;
-import com.probejs.formatter.formatter.FormatterRaw;
+import com.probejs.formatter.FormatterNamespace;
+import com.probejs.formatter.FormatterRaw;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;

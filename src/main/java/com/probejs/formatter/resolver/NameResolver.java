@@ -1,4 +1,4 @@
-package com.probejs.formatter;
+package com.probejs.formatter.resolver;
 
 import com.probejs.ProbeJS;
 import com.probejs.info.type.ITypeInfo;
@@ -71,7 +71,7 @@ public class NameResolver {
     public static final Set<String> resolvedPrimitives = new HashSet<>();
 
     /**
-     * @see com.probejs.formatter.NameResolver#putResolvedName(String, ResolvedName)
+     * @see NameResolver#putResolvedName(String, ResolvedName)
      */
     public static ResolvedName putResolvedName(String className, String resolvedName) {
         return putResolvedName(className, new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
@@ -95,14 +95,14 @@ public class NameResolver {
     }
 
     /**
-     * @see com.probejs.formatter.NameResolver#putResolvedName(String, ResolvedName)
+     * @see NameResolver#putResolvedName(String, ResolvedName)
      */
     public static ResolvedName putResolvedName(Class<?> clazz, ResolvedName resolvedName) {
         return putResolvedName(clazz.getName(), resolvedName);
     }
 
     /**
-     * @see com.probejs.formatter.NameResolver#putResolvedName(String, ResolvedName)
+     * @see NameResolver#putResolvedName(String, ResolvedName)
      */
     public static ResolvedName putResolvedName(Class<?> clazz, String resolvedName) {
         return putResolvedName(clazz.getName(), new ResolvedName(Arrays.asList(resolvedName.split("\\."))));

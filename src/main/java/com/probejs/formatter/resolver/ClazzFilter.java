@@ -1,11 +1,10 @@
-package com.probejs.formatter;
+package com.probejs.formatter.resolver;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
 
-public class ClassResolver {
+public class ClazzFilter {
 
     public static final Set<Class<?>> skipped = new HashSet<>();
 

@@ -5,14 +5,13 @@ import com.google.common.collect.Multimap;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.document.DocManager;
-import com.probejs.document.DocumentClass;
-import com.probejs.formatter.ClassResolver;
-import com.probejs.formatter.NameResolver;
-import com.probejs.formatter.SpecialTypes;
-import com.probejs.formatter.formatter.FormatterClass;
-import com.probejs.formatter.formatter.FormatterNamespace;
-import com.probejs.formatter.formatter.FormatterRaw;
-import com.probejs.formatter.formatter.IFormatter;
+import com.probejs.formatter.resolver.ClazzFilter;
+import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.SpecialTypes;
+import com.probejs.formatter.FormatterClass;
+import com.probejs.formatter.FormatterNamespace;
+import com.probejs.formatter.FormatterRaw;
+import com.probejs.formatter.api.IFormatter;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.EventInfo;
 import com.probejs.info.SpecialData;
@@ -207,7 +206,7 @@ public class TypingCompiler {
 
         //global class
         final Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
-        globalClasses.removeIf(ClassResolver::shouldSkip);
+        globalClasses.removeIf(ClazzFilter::shouldSkip);
 
         bindingEvent.getClassDumpReversed().forEach((c, names) -> {
             final String base = names.get(0);

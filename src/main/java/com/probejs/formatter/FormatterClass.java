@@ -1,4 +1,4 @@
-package com.probejs.formatter.formatter;
+package com.probejs.formatter;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -11,7 +11,9 @@ import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.type.IType;
-import com.probejs.formatter.NameResolver;
+import com.probejs.formatter.api.DocumentReceiver;
+import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.*;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;
@@ -253,7 +255,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             if (internal && !classInfo.getConstructorInfos().isEmpty()) {
                 lines.addAll(
                     new FormatterComments("Internal constructor, not callable unless via `java()`.")
-                        .setBlockStyle(true)
+                        .setStyle(true)
                         .format(indent + stepIndent, stepIndent)
                 );
             }

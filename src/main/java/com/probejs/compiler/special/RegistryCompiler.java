@@ -3,9 +3,9 @@ package com.probejs.compiler.special;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.probejs.ProbeJS;
-import com.probejs.formatter.formatter.FormatterNamespace;
-import com.probejs.formatter.formatter.FormatterRaw;
-import com.probejs.formatter.formatter.IFormatter;
+import com.probejs.formatter.FormatterNamespace;
+import com.probejs.formatter.FormatterRaw;
+import com.probejs.formatter.api.IFormatter;
 import com.probejs.info.RegistryInfo;
 import lombok.val;
 

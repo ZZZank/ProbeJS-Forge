@@ -1,9 +1,9 @@
-package com.probejs.formatter;
+package com.probejs.formatter.resolver;
 
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeRaw;
-import com.probejs.formatter.formatter.FormatterClass;
-import com.probejs.formatter.formatter.FormatterType;
+import com.probejs.formatter.FormatterClass;
+import com.probejs.formatter.FormatterType;
 import com.probejs.info.SpecialData;
 import com.probejs.info.type.ITypeInfo;
 import com.probejs.info.type.TypeInfoClass;

@@ -1,4 +1,4 @@
-package com.probejs.formatter.formatter;
+package com.probejs.formatter.api;
 
 import java.util.List;
 

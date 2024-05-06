@@ -2,10 +2,10 @@ package com.probejs.compiler.special;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.probejs.formatter.NameResolver;
-import com.probejs.formatter.formatter.FormatterNamespace;
-import com.probejs.formatter.formatter.FormatterRaw;
-import com.probejs.formatter.formatter.IFormatter;
+import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.FormatterNamespace;
+import com.probejs.formatter.FormatterRaw;
+import com.probejs.formatter.api.IFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;

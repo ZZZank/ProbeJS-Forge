@@ -1,5 +1,6 @@
-package com.probejs.formatter.formatter;
+package com.probejs.formatter;
 
+import com.probejs.formatter.api.IFormatter;
 import com.probejs.util.PUtil;
 import lombok.Getter;
 import lombok.Setter;

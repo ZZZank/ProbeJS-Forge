@@ -2,7 +2,7 @@ package com.probejs.info;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.probejs.formatter.formatter.FormatterComments;
+import com.probejs.formatter.FormatterComments;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
 import java.util.EnumSet;

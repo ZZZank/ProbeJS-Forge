@@ -1,6 +1,6 @@
 package com.probejs.document.type;
 
-import com.probejs.formatter.NameResolver;
+import com.probejs.formatter.resolver.NameResolver;
 import java.util.function.BiFunction;
 
 public interface IType {

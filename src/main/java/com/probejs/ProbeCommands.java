@@ -12,8 +12,8 @@ import com.probejs.compiler.rich.lang.RichLangCompiler;
 import com.probejs.document.DocManager;
 import com.probejs.document.comment.CommentHandler;
 import com.probejs.document.parser.processor.DocumentProviderManager;
-import com.probejs.formatter.ClassResolver;
-import com.probejs.formatter.NameResolver;
+import com.probejs.formatter.resolver.ClazzFilter;
+import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.util.RemapperBridge;
 import dev.latvian.kubejs.KubeJSPaths;
 
@@ -23,7 +23,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 
@@ -47,7 +46,7 @@ public class ProbeCommands {
                                 DocumentProviderManager.init();
                                 CommentHandler.init();
                                 DocManager.init();
-                                ClassResolver.init();
+                                ClazzFilter.init();
                                 NameResolver.init();
                                 sendSuccess(context, "Generating docs...");
                                 TypingCompiler.compile();
