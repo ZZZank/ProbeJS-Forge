@@ -149,10 +149,13 @@ public class EventCompiler {
             return cachedEvents;
         }
         try {
-            final JsonObject cachedMap = ProbeJS.GSON.fromJson(
+            val cachedMap = ProbeJS.GSON.fromJson(
                 Files.newBufferedReader(EVENT_CACHE_PATH),
                 JsonObject.class
             );
+            if (cachedMap == null) {
+                return cachedEvents;
+            }
             for (Map.Entry<String, JsonElement> entry : cachedMap.entrySet()) {
                 final String key = entry.getKey();
                 final JsonElement value = entry.getValue();
@@ -191,6 +194,9 @@ public class EventCompiler {
                 Files.newBufferedReader(FORGE_EVENT_CACHE_PATH),
                 Map.class
             );
+            if (fileCache == null) {
+                return cachedEvents;
+            }
             fileCache.forEach((k, v) -> {
                 if (!(k instanceof String) || !(v instanceof String)) {
                     ProbeJS.LOGGER.warn("Unexpected entry in class cache: {}, {}", k, v);
