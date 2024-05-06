@@ -54,12 +54,11 @@ public class DocReader {
     private void readFromModJar(Mod mod) throws IOException {
         //make sure it's regular mod file
         val path = mod.getFilePath();
-        val fName = path.getFileName();
-        if (!Files.isRegularFile(path) || !(fName.endsWith(".jar") && fName.endsWith(".zip"))) {
+        val fName = path.getFileName().toString();
+        if (!Files.isRegularFile(path) || !(fName.endsWith(".jar") || fName.endsWith(".zip"))) {
             return;
         }
         //open it, fetch document list
-
         val zip = new ZipFile(path.toFile());
         val target = zip.getEntry("probejs.documents.txt");
         if (target == null) {
