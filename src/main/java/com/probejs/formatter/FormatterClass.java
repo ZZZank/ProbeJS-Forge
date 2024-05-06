@@ -255,7 +255,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             if (internal && !classInfo.getConstructorInfos().isEmpty()) {
                 lines.addAll(
                     new FormatterComments("Internal constructor, not callable unless via `java()`.")
-                        .setStyle(true)
+                        .setStyle(FormatterComments.CommentStyle.J_DOC)
                         .format(indent + stepIndent, stepIndent)
                 );
             }

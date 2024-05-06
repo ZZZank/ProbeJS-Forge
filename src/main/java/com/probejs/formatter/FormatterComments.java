@@ -2,14 +2,36 @@ package com.probejs.formatter;
 
 import com.probejs.formatter.api.IFormatter;
 import com.probejs.util.PUtil;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.val;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class FormatterComments implements IFormatter {
 
+    @AllArgsConstructor
+    @Getter
+    public enum CommentStyle {
+        J_DOC("/**", " * ", " */"),
+        BLOCK("/*", " * ", " */"),
+        LINE(null, "// ", null);
+
+        @Nullable
+        private final String begin;
+        @Nonnull
+        private final String inline;
+        @Nullable
+        private final String end;
+    }
+
     private final List<String> raw;
-    private boolean style;
+    @Getter
+    private CommentStyle style;
 
     /**
      * construct a multi-line comment formatter, and formatted lines will be in
@@ -17,7 +39,7 @@ public class FormatterComments implements IFormatter {
      */
     public FormatterComments(List<String> lines) {
         this.raw = lines;
-        this.style = true;
+        this.style = CommentStyle.BLOCK;
     }
 
     /**
@@ -25,13 +47,11 @@ public class FormatterComments implements IFormatter {
      * block comment style
      */
     public FormatterComments(String... lines) {
-        this.raw = new ArrayList<>(lines.length);
-        this.raw.addAll(Arrays.asList(lines));
-        this.style = true;
+        this(Arrays.asList(lines));
     }
 
-    public FormatterComments setStyle(boolean isMultiLine) {
-        this.style = isMultiLine;
+    public FormatterComments setStyle(CommentStyle style) {
+        this.style = style;
         return this;
     }
 
@@ -40,7 +60,7 @@ public class FormatterComments implements IFormatter {
      * @return formatter itself
      */
     public FormatterComments trim() {
-        final int size = this.raw.size();
+        val size = this.raw.size();
         for (int i = 0; i < size; i++) {
             this.raw.set(i, this.raw.get(i).trim());
         }
@@ -49,17 +69,16 @@ public class FormatterComments implements IFormatter {
 
     @Override
     public List<String> format(int indent, int stepIndent) {
-        final String idnt = PUtil.indent(indent);
-        final String commentMark = this.style ? " * " : "// ";
-        List<String> lines = new ArrayList<>(2 + this.raw.size());
-        if (this.style) {
-            lines.add(idnt + "/**");
+        val idnt = PUtil.indent(indent);
+        val lines = new ArrayList<String>(2 + this.raw.size());
+        if (this.style.begin != null) {
+            lines.add(idnt + this.style.begin);
         }
         for (final String line : this.raw) {
-            lines.add(String.format("%s%s%s", idnt, commentMark, line));
+            lines.add(String.format("%s%s%s", idnt, this.style.inline, line));
         }
-        if (this.style) {
-            lines.add(idnt + " */");
+        if (this.style.end != null) {
+            lines.add(idnt + this.style.end);
         }
         return lines;
     }
