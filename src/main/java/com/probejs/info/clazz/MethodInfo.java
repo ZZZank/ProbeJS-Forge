@@ -14,23 +14,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MethodInfo {
+@Getter
+public class MethodInfo extends BaseMemberInfo {
 
-    @Getter
     private final Method raw;
-    @Getter
-    private final String name;
     private final boolean shouldHide;
     private final int modifiers;
+    /**
+     * the classInfo that the method belongs to is NOT in info cache when MethodInfo is being constructed
+     */
     private final Class<?> from;
     @Setter
-    @Getter
-    private IType returnType;
-    @Setter
-    @Getter
     private List<ParamInfo> params;
     @Setter
-    @Getter
     private List<IType> typeVariables;
 
     private static String getRemappedOrDefault(Method method, Class<?> from) {
@@ -44,22 +40,15 @@ public class MethodInfo {
     }
 
     public MethodInfo(Method method, Class<?> from) {
+        super(getRemappedOrDefault(method, from), TypeResolver.resolveType(method.getGenericReturnType()));
         this.raw = method;
-        this.name = getRemappedOrDefault(method, from);
         this.shouldHide = method.getAnnotation(HideFromJS.class) != null;
         this.from = from;
         this.modifiers = method.getModifiers();
-        this.returnType = TypeResolver.resolveType(method.getGenericReturnType());
         this.params = Arrays.stream(method.getParameters()).map(ParamInfo::new).collect(Collectors.toList());
-        this.typeVariables =
-            Arrays
-                .stream(method.getTypeParameters())
-                .map(TypeResolver::resolveType)
-                .collect(Collectors.toList());
-    }
-
-    public boolean shouldHide() {
-        return shouldHide;
+        this.typeVariables = Arrays.stream(method.getTypeParameters())
+            .map(TypeResolver::resolveType)
+            .collect(Collectors.toList());
     }
 
     public boolean isStatic() {
@@ -70,16 +59,9 @@ public class MethodInfo {
         return Modifier.isAbstract(modifiers);
     }
 
-    public ClassInfo getFrom() {
-        return ClassInfo.ofCache(from);
-    }
-
     @Getter
-    public static class ParamInfo {
+    public static class ParamInfo extends BaseMemberInfo {
 
-        private final String name;
-        @Setter
-        private IType type;
         private final boolean isVarArgs;
 
         public ParamInfo(Parameter parameter) {

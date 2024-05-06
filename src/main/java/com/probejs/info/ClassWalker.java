@@ -67,13 +67,13 @@ public class ClassWalker {
             }
             //method
             for (val mInfo : info.getMethodInfos()) {
-                result.addAll(walkType(mInfo.getReturnType()));
+                result.addAll(walkType(mInfo.getType()));
                 for (val pInfo : mInfo.getParams()) {
                     result.addAll(walkType(pInfo.getType()));
                 }
             }
             //constructor
-            for (val cInfo : info.getConstructorInfos()) {
+            for (val cInfo : info.getConstructors()) {
                 for (val pInfo : cInfo.getParams()) {
                     result.addAll(walkType(pInfo.getType()));
                 }
