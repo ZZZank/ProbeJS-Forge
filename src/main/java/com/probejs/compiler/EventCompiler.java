@@ -4,13 +4,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.datafixers.util.Pair;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterComments;
 import com.probejs.info.EventInfo;
 import com.probejs.info.type.TypeClass;
+import com.probejs.util.json.JObject;
 import dev.latvian.kubejs.event.EventJS;
+import lombok.val;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -165,13 +169,13 @@ public class EventCompiler {
     }
 
     public static void compileEventsCache(Map<String, EventInfo> events) throws IOException {
-        final BufferedWriter cacheWriter = Files.newBufferedWriter(EVENT_CACHE_PATH);
-        final JsonObject outJson = new JsonObject();
-        for (final Map.Entry<String, EventInfo> entry : events.entrySet()) {
-            final String eventName = entry.getKey();
-            final EventInfo eventClass = entry.getValue();
-            outJson.add(eventName, eventClass.toJson());
-        }
+        val cacheWriter = Files.newBufferedWriter(EVENT_CACHE_PATH);
+        val outJson = JObject.of()
+            .addAll(events.entrySet()
+                .stream()
+                .map(entry -> new Pair<>(entry.getKey(), JObject.of(entry.getValue().toJson())))
+            )
+            .build();
         ProbeJS.GSON.toJson(outJson, cacheWriter);
         cacheWriter.close();
     }

@@ -53,11 +53,20 @@ public class JObject implements IJsonBuilder<JsonObject> {
         return this;
     }
 
-    public JObject add(String key, String value) {
-        if (value != null) {
-            members.put(key, JPrimitive.of(value));
-        }
-        return this;
+    public JObject add(String key, Character c) {
+        return this.add(key, JPrimitive.of(c));
+    }
+
+    public JObject add(String key, String str) {
+        return this.add(key, JPrimitive.of(str));
+    }
+
+    public JObject add(String key, Number num) {
+        return this.add(key, JPrimitive.of(num));
+    }
+
+    public JObject add(String key, Boolean bool) {
+        return this.add(key, JPrimitive.of(bool));
     }
 
     public JObject addAll(Map<String, IJsonBuilder<?>> members) {

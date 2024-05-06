@@ -17,9 +17,11 @@ public class JArray implements IJsonBuilder<JsonArray> {
         return JArray.of().addAll(members);
     }
 
-    private JArray() {}
+    private JArray() {
+        members = new ArrayList<>(3);
+    }
 
-    private final List<IJsonBuilder<?>> members = new ArrayList<>();
+    private final List<IJsonBuilder<?>> members;
 
     public JArray ifThen(boolean condition, Consumer<JArray> action) {
         if (condition) {
@@ -31,6 +33,22 @@ public class JArray implements IJsonBuilder<JsonArray> {
     public JArray add(IJsonBuilder<?> member) {
         members.add(member);
         return this;
+    }
+
+    public JArray add(Character c) {
+        return this.add(JPrimitive.of(c));
+    }
+
+    public JArray add(String str) {
+        return this.add(JPrimitive.of(str));
+    }
+
+    public JArray add(Number num) {
+        return this.add(JPrimitive.of(num));
+    }
+
+    public JArray add(Boolean bool) {
+        return this.add(JPrimitive.of(bool));
     }
 
     public JArray addAll(Iterable<IJsonBuilder<?>> members) {

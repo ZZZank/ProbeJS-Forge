@@ -3,6 +3,9 @@ package com.probejs.info;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.probejs.formatter.FormatterComments;
+import com.probejs.util.json.JArray;
+import com.probejs.util.json.JObject;
+import com.probejs.util.json.JPrimitive;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
 import java.util.EnumSet;
@@ -52,15 +55,13 @@ public class EventInfo implements Comparable<EventInfo> {
     }
 
     public JsonObject toJson() {
-        JsonObject json = new JsonObject();
-        json.addProperty("id", id);
-        json.addProperty("sub", sub);
-        json.addProperty("class", clazzRaw.getName());
-        JsonArray types = new JsonArray();
-        scriptTypes.forEach(script -> types.add(script.name()));
-        json.add("type", types);
-        json.addProperty("cancellable", cancellable);
-        return json;
+        return JObject.of()
+            .add("id", id)
+            .add("sub", sub)
+            .add("class", clazzRaw.getName())
+            .add("type", JArray.of().addAll(scriptTypes.stream().map(ScriptType::name).map(JPrimitive::of)))
+            .add("cancellable", this.cancellable)
+            .build();
     }
 
     /**
@@ -76,6 +77,7 @@ public class EventInfo implements Comparable<EventInfo> {
             typeNames.add("unknown, info of this event seems fetched from an older version of cache");
         }
         return new FormatterComments("@cancellable " + canCancel, "@at " + String.join(", ", typeNames))
+            .setStyle(FormatterComments.CommentStyle.J_DOC)
             .formatLines(0, 0);
     }
 

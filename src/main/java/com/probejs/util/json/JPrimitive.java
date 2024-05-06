@@ -2,21 +2,23 @@ package com.probejs.util.json;
 
 import com.google.gson.JsonPrimitive;
 
+import javax.annotation.Nonnull;
+
 public class JPrimitive implements IJsonBuilder<JsonPrimitive> {
 
-    public static JPrimitive of(Character value) {
+    public static JPrimitive of(@Nonnull Character value) {
         return new JPrimitive(value);
     }
 
-    public static JPrimitive of(String value) {
+    public static JPrimitive of(@Nonnull String value) {
         return new JPrimitive(value);
     }
 
-    public static JPrimitive of(Number value) {
+    public static JPrimitive of(@Nonnull Number value) {
         return new JPrimitive(value);
     }
 
-    public static JPrimitive of(Boolean value) {
+    public static JPrimitive of(@Nonnull Boolean value) {
         return new JPrimitive(value);
     }
 
