@@ -7,12 +7,12 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Getter
-public class TypeParameterized implements IType {
+public class DocTypeParameterized implements IDocType {
 
-    private final IType rawType;
-    private final List<IType> paramTypes;
+    private final IDocType rawType;
+    private final List<IDocType> paramTypes;
 
-    public TypeParameterized(IType rawType, List<IType> paramTypes) {
+    public DocTypeParameterized(IDocType rawType, List<IDocType> paramTypes) {
         this.rawType = rawType;
         this.paramTypes = paramTypes;
     }
@@ -22,12 +22,12 @@ public class TypeParameterized implements IType {
         return String.format(
             "%s<%s>",
             rawType.getTypeName(),
-            paramTypes.stream().map(IType::getTypeName).collect(Collectors.joining(", "))
+            paramTypes.stream().map(IDocType::getTypeName).collect(Collectors.joining(", "))
         );
     }
 
     @Override
-    public String transform(BiFunction<IType, String, String> transformer) {
+    public String transform(BiFunction<IDocType, String, String> transformer) {
         return transformer.apply(this, String.format("%s<%s>",rawType.transform(transformer), paramTypes.stream().map(t -> t.transform(transformer)).collect(Collectors.joining(", "))));
     }
 }

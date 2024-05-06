@@ -1,34 +1,33 @@
 package com.probejs.info.type;
 
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TypeInfoVariable implements ITypeInfo {
+public class TypeVariable implements IType {
 
     public static boolean test(Type type) {
-        return type instanceof TypeVariable;
+        return type instanceof java.lang.reflect.TypeVariable;
     }
 
-    private final TypeVariable<?> raw;
+    private final java.lang.reflect.TypeVariable<?> raw;
 
-    public TypeInfoVariable(Type type) {
-        this.raw = (TypeVariable<?>) type;
+    public TypeVariable(Type type) {
+        this.raw = (java.lang.reflect.TypeVariable<?>) type;
     }
 
-    private TypeInfoVariable(TypeVariable<?> inner) {
+    private TypeVariable(java.lang.reflect.TypeVariable<?> inner) {
         this.raw = inner;
     }
 
     @Override
-    public TypeVariable<?> getRaw() {
+    public java.lang.reflect.TypeVariable<?> getRaw() {
         return this.raw;
     }
 
     @Override
-    public ITypeInfo getBaseType() {
+    public IType getBaseType() {
         return this;
     }
 
@@ -38,13 +37,13 @@ public class TypeInfoVariable implements ITypeInfo {
     }
 
     @Override
-    public ITypeInfo copy() {
-        return new TypeInfoVariable(raw);
+    public IType copy() {
+        return new TypeVariable(raw);
     }
 
     @Override
-    public boolean assignableFrom(ITypeInfo info) {
-        return info instanceof TypeInfoVariable;
+    public boolean assignableFrom(IType info) {
+        return info instanceof TypeVariable;
     }
 
     @Override
@@ -52,12 +51,12 @@ public class TypeInfoVariable implements ITypeInfo {
         return Object.class;
     }
 
-    public List<ITypeInfo> getBounds() {
+    public List<IType> getBounds() {
         Type[] bounds = this.raw.getBounds();
         if (bounds.length == 1 && bounds[0] == Object.class) {
             return Collections.emptyList();
         }
-        List<ITypeInfo> boundTypes = new ArrayList<>(bounds.length);
+        List<IType> boundTypes = new ArrayList<>(bounds.length);
         for (Type bound : bounds) {
             boundTypes.add(TypeResolver.resolveType(bound));
         }

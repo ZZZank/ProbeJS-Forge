@@ -9,7 +9,7 @@ import com.probejs.ProbePaths;
 import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterComments;
 import com.probejs.info.EventInfo;
-import com.probejs.info.type.TypeInfoClass;
+import com.probejs.info.type.TypeClass;
 import dev.latvian.kubejs.event.EventJS;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class EventCompiler {
                 String.format(
                     "declare function onForgeEvent(name: %s, handler: (event: %s) => void): void;",
                     ProbeJS.GSON.toJson(clazz.getName()),
-                    FormatterClass.formatParameterized(new TypeInfoClass(clazz))
+                    FormatterClass.formatParameterized(new TypeClass(clazz))
                 )
             )
             .forEach(lines::add);
@@ -85,7 +85,7 @@ public class EventCompiler {
                 String.format(
                     "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void): void;",
                     id,
-                    FormatterClass.formatParameterized(new TypeInfoClass(wildcard.clazzRaw))
+                    FormatterClass.formatParameterized(new TypeClass(wildcard.clazzRaw))
                 )
             );
         }
@@ -119,7 +119,7 @@ public class EventCompiler {
                 String.format(
                     "declare function onEvent(name: \"%s\", handler: (event: %s) => void): void;",
                     id,
-                    FormatterClass.formatParameterized(new TypeInfoClass(eInfo.clazzRaw))
+                    FormatterClass.formatParameterized(new TypeClass(eInfo.clazzRaw))
                 )
             );
         }

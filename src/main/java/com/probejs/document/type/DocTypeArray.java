@@ -5,10 +5,10 @@ import lombok.Getter;
 import java.util.function.BiFunction;
 
 @Getter
-public class TypeArray implements IType {
-    private final IType component;
+public class DocTypeArray implements IDocType {
+    private final IDocType component;
 
-    public TypeArray(IType component) {
+    public DocTypeArray(IDocType component) {
         this.component = component;
     }
 
@@ -18,7 +18,7 @@ public class TypeArray implements IType {
     }
 
     @Override
-    public String transform(BiFunction<IType, String, String> transformer) {
+    public String transform(BiFunction<IDocType, String, String> transformer) {
         return transformer.apply(this, component.transform(transformer) + "[]");
     }
 }

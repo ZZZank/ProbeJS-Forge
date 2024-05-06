@@ -2,7 +2,7 @@ package com.probejs.document;
 
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.parser.processor.IDocumentProvider;
-import com.probejs.document.type.IType;
+import com.probejs.document.type.IDocType;
 import com.probejs.document.type.DocTypeResolver;
 import com.probejs.formatter.api.IFormatter;
 import com.probejs.util.PUtil;
@@ -21,9 +21,9 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
 
     private DocumentComment comment;
     private final String name;
-    private final IType type;
+    private final IDocType type;
 
-    public DocumentType(String name, IType type) {
+    public DocumentType(String name, IDocType type) {
         this.name = name;
         this.type = type;
     }
@@ -52,7 +52,7 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
                 "%stype %s = %s;",
                 PUtil.indent(indent),
                 name,
-                IType.defaultTransformer.apply(type, type.getTypeName())
+                IDocType.defaultTransformer.apply(type, type.getTypeName())
             )
         );
     }

@@ -7,12 +7,12 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 @Setter
-public class TypeInfoArray implements ITypeInfo {
+public class TypeArray implements IType {
 
     /**
      * inner type, e.g. "T" in "T[]"
      */
-    private ITypeInfo base;
+    private IType base;
 
     /**
      * @return {@code type instanceof GenericArrayType}
@@ -37,7 +37,7 @@ public class TypeInfoArray implements ITypeInfo {
         return isGenericArray(type) || isClassArray(type);
     }
 
-    public TypeInfoArray(Type type) {
+    public TypeArray(Type type) {
         if (isGenericArray(type)) {
             this.base = TypeResolver.resolveType(((GenericArrayType) type).getGenericComponentType());
         } else if (isClassArray(type)) {
@@ -48,12 +48,12 @@ public class TypeInfoArray implements ITypeInfo {
         }
     }
 
-    private TypeInfoArray(ITypeInfo inner) {
+    private TypeArray(IType inner) {
         this.base = inner;
     }
 
     @Override
-    public ITypeInfo getBaseType() {
+    public IType getBaseType() {
         return base;
     }
 
@@ -68,13 +68,13 @@ public class TypeInfoArray implements ITypeInfo {
     }
 
     @Override
-    public ITypeInfo copy() {
-        return new TypeInfoArray(base.copy());
+    public IType copy() {
+        return new TypeArray(base.copy());
     }
 
     @Override
-    public boolean assignableFrom(ITypeInfo info) {
-        return info instanceof TypeInfoArray && info.getBaseType().assignableFrom(base);
+    public boolean assignableFrom(IType info) {
+        return info instanceof TypeArray && info.getBaseType().assignableFrom(base);
     }
 
     @Override

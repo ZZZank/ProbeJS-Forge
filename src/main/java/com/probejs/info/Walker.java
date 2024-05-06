@@ -1,10 +1,10 @@
 package com.probejs.info;
 
-import com.probejs.info.MethodInfo.ParamInfo;
-import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.TypeInfoParameterized;
-import com.probejs.info.type.TypeInfoVariable;
-import com.probejs.info.type.TypeInfoWildcard;
+import com.probejs.info.clazz.*;
+import com.probejs.info.type.*;
+import com.probejs.info.type.IType;
+import com.probejs.info.type.TypeVariable;
+import lombok.val;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,19 +17,19 @@ public class Walker {
         this.initial = initial;
     }
 
-    private Set<Class<?>> walkType(ITypeInfo tInfo) {
+    private Set<Class<?>> walkType(IType tInfo) {
         Set<Class<?>> result = new HashSet<>();
-        if (tInfo instanceof TypeInfoParameterized) {
-            TypeInfoParameterized tInfoP = (TypeInfoParameterized) tInfo;
+        if (tInfo instanceof TypeParameterized) {
+            TypeParameterized tInfoP = (TypeParameterized) tInfo;
             result.add(tInfoP.getResolvedClass());
             result.addAll(walkTypes(tInfoP.getParamTypes()));
-        } else if (tInfo instanceof TypeInfoVariable) {
-            ((TypeInfoVariable) tInfo).getBounds()
+        } else if (tInfo instanceof TypeVariable) {
+            ((TypeVariable) tInfo).getBounds()
                 .stream()
-                .map(ITypeInfo::getResolvedClass)
+                .map(IType::getResolvedClass)
                 .forEach(result::add);
-        } else if (tInfo instanceof TypeInfoWildcard){
-            TypeInfoWildcard wInfo = (TypeInfoWildcard) tInfo;
+        } else if (tInfo instanceof TypeWildcard){
+            TypeWildcard wInfo = (TypeWildcard) tInfo;
             result.add(tInfo.getResolvedClass());
 //            result.addAll(walkTypes(wInfo.getLowerBounds()));
             result.addAll(walkTypes((wInfo.getUpperBounds())));
@@ -40,9 +40,9 @@ public class Walker {
         return result;
     }
 
-    private Set<Class<?>> walkTypes(Collection<? extends ITypeInfo> tInfos) {
+    private Set<Class<?>> walkTypes(Collection<? extends IType> tInfos) {
         Set<Class<?>> result = new HashSet<>();
-        for (ITypeInfo tInfo : tInfos) {
+        for (IType tInfo : tInfos) {
             result.addAll(walkType(tInfo));
         }
         return result;
@@ -51,11 +51,11 @@ public class Walker {
     private Set<Class<?>> touch(Set<Class<?>> classes) {
         Set<Class<?>> result = new HashSet<>();
         for (Class<?> clazz : classes) {
-            ClassInfo info = ClassInfo.ofCache(clazz);
+            val info = ClassInfo.ofCache(clazz);
             //self
             result.addAll(walkTypes(info.getTypeParameters()));
             //super
-            ClassInfo superclass = info.getSuperClass();
+            val superclass = info.getSuperClass();
             if (superclass != null) {
                 result.addAll(walkType(info.getSuperType()));
                 result.addAll(walkTypes(superclass.getTypeParameters()));
@@ -66,15 +66,15 @@ public class Walker {
                 result.addAll(walkType(fInfo.getType()));
             }
             //method
-            for (MethodInfo mInfo : info.getMethodInfos()) {
+            for (val mInfo : info.getMethodInfos()) {
                 result.addAll(walkType(mInfo.getReturnType()));
-                for (ParamInfo pInfo : mInfo.getParams()) {
+                for (val pInfo : mInfo.getParams()) {
                     result.addAll(walkType(pInfo.getType()));
                 }
             }
             //constructor
-            for (ConstructorInfo cInfo : info.getConstructorInfos()) {
-                for (ParamInfo pInfo : cInfo.getParams()) {
+            for (val cInfo : info.getConstructorInfos()) {
+                for (val pInfo : cInfo.getParams()) {
                     result.addAll(walkType(pInfo.getType()));
                 }
             }

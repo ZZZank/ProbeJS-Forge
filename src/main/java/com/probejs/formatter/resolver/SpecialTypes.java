@@ -1,13 +1,13 @@
 package com.probejs.formatter.resolver;
 
 import com.probejs.document.DocManager;
-import com.probejs.document.type.TypeRaw;
+import com.probejs.document.type.DocTypeRaw;
 import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterType;
 import com.probejs.info.SpecialData;
-import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.TypeInfoClass;
-import com.probejs.info.type.TypeInfoParameterized;
+import com.probejs.info.type.IType;
+import com.probejs.info.type.TypeClass;
+import com.probejs.info.type.TypeParameterized;
 import dev.latvian.mods.rhino.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,13 +17,13 @@ public class SpecialTypes {
 
     public static final Set<Class<?>> skippedSpecials = new HashSet<>();
 
-    public static String formatClassLike(ITypeInfo obj) {
-        ITypeInfo inner = null;
-        if (obj instanceof TypeInfoParameterized) {
-            TypeInfoParameterized cls = (TypeInfoParameterized) obj;
+    public static String formatClassLike(IType obj) {
+        IType inner = null;
+        if (obj instanceof TypeParameterized) {
+            TypeParameterized cls = (TypeParameterized) obj;
             inner = cls.getParamTypes().get(0);
-        } else if (obj instanceof TypeInfoClass) {
-            TypeInfoClass cls = (TypeInfoClass) obj;
+        } else if (obj instanceof TypeClass) {
+            TypeClass cls = (TypeClass) obj;
             inner = cls;
         }
         if (inner == null) {
@@ -41,7 +41,7 @@ public class SpecialTypes {
             ) {
                 NameResolver.resolveName(obj.getClass());
             }
-            formattedValue = FormatterClass.formatParameterized(new TypeInfoClass(obj.getClass()));
+            formattedValue = FormatterClass.formatParameterized(new TypeClass(obj.getClass()));
         }
         return formattedValue;
     }
@@ -150,7 +150,7 @@ public class SpecialTypes {
         NameResolver.specialClassAssigner.forEach((clazzName, assignProvider) -> {
             String name = clazzName.getName();
             for (String assignTo : assignProvider.get()) {
-                DocManager.addAssignable(name, new TypeRaw(assignTo));
+                DocManager.addAssignable(name, new DocTypeRaw(assignTo));
             }
         });
         //registry
@@ -165,7 +165,7 @@ public class SpecialTypes {
                     info.id.getNamespace(),
                     info.id.getPath().replace('/', '$')
                 );
-                DocManager.addAssignable(registrySuperType.getName(), new TypeRaw(name));
+                DocManager.addAssignable(registrySuperType.getName(), new DocTypeRaw(name));
             });
     }
 }

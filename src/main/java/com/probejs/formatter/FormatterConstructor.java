@@ -5,8 +5,8 @@ import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.ClassInfo;
 import com.probejs.info.ConstructorInfo;
 import com.probejs.info.MethodInfo;
-import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.TypeInfoClass;
+import com.probejs.info.type.IType;
+import com.probejs.info.type.TypeClass;
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +20,10 @@ public class FormatterConstructor implements IFormatter {
         this.constructor = constructor;
     }
 
-    private String formatTypeParameterized(ITypeInfo info) {
+    private String formatTypeParameterized(IType info) {
         StringBuilder sb = new StringBuilder(FormatterType.of(info).format());
-        if (info instanceof TypeInfoClass) {
-            TypeInfoClass clazz = (TypeInfoClass) info;
+        if (info instanceof TypeClass) {
+            TypeClass clazz = (TypeClass) info;
             ClassInfo classInfo = ClassInfo.ofCache(clazz.getResolvedClass());
             if (!classInfo.getTypeParameters().isEmpty()) {
                 sb.append('<');
@@ -31,7 +31,7 @@ public class FormatterConstructor implements IFormatter {
                     classInfo
                         .getTypeParameters()
                         .stream()
-                        .map(ITypeInfo::getTypeName)
+                        .map(IType::getTypeName)
                         .map(NameResolver::getResolvedName)
                         .map(NameResolver.ResolvedName::getFullName)
                         .collect(Collectors.joining(","))

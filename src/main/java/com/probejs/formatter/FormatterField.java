@@ -10,6 +10,8 @@ import com.probejs.info.FieldInfo;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,20 +20,17 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
 
     @Getter
     private final FieldInfo fieldInfo;
+    @Setter
     private boolean isFromInterface = false;
 
     public FormatterField(FieldInfo fieldInfo) {
         this.fieldInfo = fieldInfo;
     }
 
-    public void setFromInterface(boolean anInterface) {
-        isFromInterface = anInterface;
-    }
-
     @Override
     public List<String> format(int indent, int stepIndent) {
         List<String> lines = new ArrayList<>();
-        DocumentComment comment = document != null ? document.getComment() : null;
+        val comment = document != null ? document.getComment() : null;
         if (comment != null) {
             if (comment.getSpecialComment(CommentHidden.class) != null) {
                 return lines;
@@ -39,7 +38,7 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements I
             lines.addAll(comment.format(indent, stepIndent));
         }
 
-        StringBuilder builder = new StringBuilder(PUtil.indent(indent));
+        val builder = new StringBuilder(PUtil.indent(indent));
         if (fieldInfo.isStatic() && !isFromInterface) {
             builder.append("static ");
         }

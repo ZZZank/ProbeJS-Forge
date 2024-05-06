@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Setter
-public class TypeInfoParameterized implements ITypeInfo {
+public class TypeParameterized implements IType {
 
-    private ITypeInfo rawType;
+    private IType rawType;
     @Getter
-    private List<ITypeInfo> paramTypes;
+    private List<IType> paramTypes;
 
-    public TypeInfoParameterized(Type type) {
+    public TypeParameterized(Type type) {
         if (!test(type)) {
             throw new IllegalArgumentException("provided `type` is not an instance of ParameterizedType");
         }
@@ -29,7 +29,7 @@ public class TypeInfoParameterized implements ITypeInfo {
                 .collect(Collectors.toList());
     }
 
-    public TypeInfoParameterized(ITypeInfo rawType, List<? extends ITypeInfo> paramTypes) {
+    public TypeParameterized(IType rawType, List<? extends IType> paramTypes) {
         this.rawType = rawType;
         this.paramTypes = new ArrayList<>(paramTypes);
     }
@@ -39,7 +39,7 @@ public class TypeInfoParameterized implements ITypeInfo {
     }
 
     @Override
-    public ITypeInfo getBaseType() {
+    public IType getBaseType() {
         return rawType;
     }
 
@@ -52,22 +52,22 @@ public class TypeInfoParameterized implements ITypeInfo {
     public String getTypeName() {
         return String.format("%s<%s>",
             this.rawType.getTypeName(),
-            paramTypes.stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", "))
+            paramTypes.stream().map(IType::getTypeName).collect(Collectors.joining(", "))
         );
     }
 
     @Override
-    public ITypeInfo copy() {
-        return new TypeInfoParameterized(
+    public IType copy() {
+        return new TypeParameterized(
             rawType.copy(),
-            paramTypes.stream().map(ITypeInfo::copy).collect(Collectors.toList())
+            paramTypes.stream().map(IType::copy).collect(Collectors.toList())
         );
     }
 
     @Override
-    public boolean assignableFrom(ITypeInfo info) {
-        if (info instanceof TypeInfoParameterized) {
-            TypeInfoParameterized parType = (TypeInfoParameterized) info;
+    public boolean assignableFrom(IType info) {
+        if (info instanceof TypeParameterized) {
+            TypeParameterized parType = (TypeParameterized) info;
             if (parType.rawType.assignableFrom(rawType) && parType.paramTypes.size() == paramTypes.size()) {
                 for (int i = 0; i < paramTypes.size(); i++) {
                     if (!parType.paramTypes.get(i).assignableFrom(paramTypes.get(i))) {

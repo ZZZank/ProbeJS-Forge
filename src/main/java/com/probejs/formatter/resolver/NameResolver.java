@@ -1,7 +1,7 @@
 package com.probejs.formatter.resolver;
 
 import com.probejs.ProbeJS;
-import com.probejs.info.type.ITypeInfo;
+import com.probejs.info.type.IType;
 import dev.latvian.kubejs.block.MaterialJS;
 import dev.latvian.kubejs.block.MaterialListJS;
 import dev.latvian.kubejs.item.ingredient.IngredientJS;
@@ -62,7 +62,7 @@ public class NameResolver {
     }
 
     public static final HashMap<String, ResolvedName> resolvedNames = new HashMap<>();
-    public static final HashMap<Class<?>, Function<ITypeInfo, String>> specialTypeFormatters = new HashMap<>();
+    public static final HashMap<Class<?>, Function<IType, String>> specialTypeFormatters = new HashMap<>();
     public static final HashMap<Class<?>, Function<Object, String>> specialValueFormatters = new HashMap<>();
     public static final HashMap<Class<?>, Supplier<List<String>>> specialClassAssigner = new HashMap<>();
     public static final HashMap<Class<?>, Boolean> specialTypeGuards = new HashMap<>();
@@ -117,7 +117,7 @@ public class NameResolver {
         return resolvedNames.getOrDefault(className, ResolvedName.UNRESOLVED);
     }
 
-    public static void putTypeFormatter(Class<?> className, Function<ITypeInfo, String> formatter) {
+    public static void putTypeFormatter(Class<?> className, Function<IType, String> formatter) {
         specialTypeFormatters.put(className, formatter);
     }
 

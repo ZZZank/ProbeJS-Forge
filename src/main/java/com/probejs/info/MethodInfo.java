@@ -1,6 +1,6 @@
 package com.probejs.info;
 
-import com.probejs.info.type.ITypeInfo;
+import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.RemapperBridge;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -25,13 +25,13 @@ public class MethodInfo {
     private final Class<?> from;
     @Setter
     @Getter
-    private ITypeInfo returnType;
+    private IType returnType;
     @Setter
     @Getter
     private List<ParamInfo> params;
     @Setter
     @Getter
-    private List<ITypeInfo> typeVariables;
+    private List<IType> typeVariables;
 
     private static String getRemappedOrDefault(Method method, Class<?> from) {
         String mapped = RemapperBridge.getRemapper().getMappedMethod(from, method);
@@ -79,7 +79,7 @@ public class MethodInfo {
 
         private final String name;
         @Setter
-        private ITypeInfo type;
+        private IType type;
         private final boolean isVarArgs;
 
         public ParamInfo(Parameter parameter) {

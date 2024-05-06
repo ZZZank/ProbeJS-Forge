@@ -8,30 +8,30 @@ import java.util.stream.Collectors;
 
 public class DocTypeResolver {
 
-    public static IType resolve(String type) {
+    public static IDocType resolve(String type) {
         type = type.trim();
 
         //TODO: Resolve object type
         if (type.startsWith("{")) {
             // {[x in string]: string}
-            return new TypeRaw(type);
+            return new DocTypeRaw(type);
         }
 
         Pair<String, String> splitUnion = StringUtil.splitFirst(type, "<", ">", "|");
         if (splitUnion != null) {
-            return new TypeUnion(resolve(splitUnion.first()), resolve(splitUnion.second()));
+            return new DocTypeUnion(resolve(splitUnion.first()), resolve(splitUnion.second()));
         }
 
         Pair<String, String> splitIntersection = StringUtil.splitFirst(type, "<", ">", "&");
         if (splitIntersection != null) {
-            return new TypeIntersection(
+            return new DocTypeIntersection(
                 resolve(splitIntersection.first()),
                 resolve(splitIntersection.second())
             );
         }
 
         if (type.endsWith("[]")) {
-            return new TypeArray(resolve(type.substring(0, type.length() - 2)));
+            return new DocTypeArray(resolve(type.substring(0, type.length() - 2)));
         }
 
         if (type.endsWith(">")) {
@@ -39,39 +39,39 @@ public class DocTypeResolver {
             String rawType = type.substring(0, indexLeft);
             String typeParams = type.substring(indexLeft + 1, type.length() - 1);
             List<String> params = StringUtil.splitLayer(typeParams, "<", ">", ",");
-            return new TypeParameterized(
+            return new DocTypeParameterized(
                 resolve(rawType),
                 params.stream().map(DocTypeResolver::resolve).collect(Collectors.toList())
             );
         }
-        return new TypeNamed(type);
+        return new DocTypeNamed(type);
     }
 
-    public static boolean typeEquals(IType docType, ITypeInfo param) {
-        if (docType instanceof TypeUnion || docType instanceof TypeIntersection) {
+    public static boolean typeEquals(IDocType docType, com.probejs.info.type.IType param) {
+        if (docType instanceof DocTypeUnion || docType instanceof DocTypeIntersection) {
             return false;
         }
-        if (docType instanceof TypeArray && param instanceof TypeInfoArray) {
-            TypeInfoArray array = (TypeInfoArray) param;
-            return typeEquals(((TypeArray) docType).getComponent(), array.getBaseType());
+        if (docType instanceof DocTypeArray && param instanceof com.probejs.info.type.TypeArray) {
+            com.probejs.info.type.TypeArray array = (com.probejs.info.type.TypeArray) param;
+            return typeEquals(((DocTypeArray) docType).getComponent(), array.getBaseType());
         }
-        if (docType instanceof TypeParameterized && param instanceof TypeInfoParameterized) {
-            TypeInfoParameterized parameterized = (TypeInfoParameterized) param;
-            List<ITypeInfo> paramInfo = parameterized.getParamTypes();
-            List<IType> paramDoc = ((TypeParameterized) docType).getParamTypes();
+        if (docType instanceof DocTypeParameterized && param instanceof com.probejs.info.type.TypeParameterized) {
+            com.probejs.info.type.TypeParameterized parameterized = (com.probejs.info.type.TypeParameterized) param;
+            List<com.probejs.info.type.IType> paramInfo = parameterized.getParamTypes();
+            List<IDocType> paramDoc = ((DocTypeParameterized) docType).getParamTypes();
             if (paramDoc.size() != paramInfo.size()) {
                 return false;
             }
             for (int i = 0; i < paramDoc.size(); i++) {
                 if (!typeEquals(paramDoc.get(i), paramInfo.get(i))) return false;
             }
-            return typeEquals(((TypeParameterized) docType).getRawType(), parameterized.getBaseType());
+            return typeEquals(((DocTypeParameterized) docType).getRawType(), parameterized.getBaseType());
         }
         if (
-            docType instanceof TypeNamed &&
-            (param instanceof TypeInfoVariable || param instanceof TypeInfoClass)
+            docType instanceof DocTypeNamed &&
+            (param instanceof TypeVariable || param instanceof TypeClass)
         ) {
-            return ((TypeNamed) docType).getRawTypeName().equals(param.getTypeName());
+            return ((DocTypeNamed) docType).getRawTypeName().equals(param.getTypeName());
         }
 
         return false;

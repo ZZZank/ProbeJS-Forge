@@ -2,9 +2,7 @@ package com.probejs.formatter;
 
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.type.*;
-import com.probejs.info.type.ts.TypeIntersection;
-import com.probejs.info.type.ts.TypeLiteral;
-import com.probejs.info.type.ts.TypeUnion;
+import com.probejs.info.type.TypeLiteral;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,37 +10,35 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class FormatterType<T extends ITypeInfo> {
+public abstract class FormatterType<T extends IType> {
 
-    public static final Map<Class<? extends ITypeInfo>, Function<ITypeInfo, FormatterType<?>>> REGISTRIES = new HashMap<>();
+    public static final Map<Class<? extends IType>, Function<IType, FormatterType<?>>> REGISTRIES = new HashMap<>();
     public static final Literal LITERAL_ANY = new Literal("any");
     protected boolean underscored = false;
 
     static {
-        REGISTRIES.put(TypeInfoClass.class, Clazz::new);
-        REGISTRIES.put(TypeInfoArray.class, Array::new);
-        REGISTRIES.put(TypeInfoParameterized.class, Parameterized::new);
-        REGISTRIES.put(TypeInfoVariable.class, Variable::new);
-        REGISTRIES.put(TypeInfoWildcard.class, Wildcard::new);
-        REGISTRIES.put(TypeUnion.class, Union::new);
-        REGISTRIES.put(TypeIntersection.class, Intersection::new);
+        REGISTRIES.put(TypeClass.class, Clazz::new);
+        REGISTRIES.put(TypeArray.class, Array::new);
+        REGISTRIES.put(TypeParameterized.class, Parameterized::new);
+        REGISTRIES.put(TypeVariable.class, Variable::new);
+        REGISTRIES.put(TypeWildcard.class, Wildcard::new);
     }
 
-    public static FormatterType<? extends ITypeInfo> of(ITypeInfo tInfo) {
+    public static FormatterType<? extends IType> of(IType tInfo) {
         return of(tInfo, true);
     }
 
-    public static FormatterType<? extends ITypeInfo> of(ITypeInfo tInfo, boolean allowSpecial) {
+    public static FormatterType<? extends IType> of(IType tInfo, boolean allowSpecial) {
         //special
         if (allowSpecial) {
             Class<?> rawClass = tInfo.getResolvedClass();
-            Function<ITypeInfo, String> special = NameResolver.specialTypeFormatters.get(rawClass);
+            Function<IType, String> special = NameResolver.specialTypeFormatters.get(rawClass);
             if (special != null) {
                 return new Literal(special.apply(tInfo));
             }
         }
         //general
-        Function<ITypeInfo, FormatterType<?>> builder = REGISTRIES.get(tInfo.getClass());
+        Function<IType, FormatterType<?>> builder = REGISTRIES.get(tInfo.getClass());
         if (builder != null) {
             return builder.apply(tInfo);
         }
@@ -71,9 +67,9 @@ public abstract class FormatterType<T extends ITypeInfo> {
 
     /**
      * determine the value of "underscored" via provided {@link Predicate}, which will be applied to the
-     * {@link ITypeInfo} provided by {@code getInfo()}
+     * {@link IType} provided by {@code getInfo()}
      */
-    public FormatterType<T> underscored(Predicate<ITypeInfo> predicate) {
+    public FormatterType<T> underscored(Predicate<IType> predicate) {
         T info = this.getInfo();
         if (info != null) {
             this.underscored(predicate.test(info));
@@ -107,18 +103,18 @@ public abstract class FormatterType<T extends ITypeInfo> {
     /**
      * 'String', 'List'
      */
-    public static class Clazz extends FormatterType<TypeInfoClass> {
-        private final TypeInfoClass tInfo;
+    public static class Clazz extends FormatterType<TypeClass> {
+        private final TypeClass tInfo;
 
         /**
-         * use {@link FormatterType#of(ITypeInfo)} instead
+         * use {@link FormatterType#of(IType)} instead
          */
-        public Clazz(ITypeInfo tInfo) {
-            this.tInfo = (TypeInfoClass) tInfo;
+        public Clazz(IType tInfo) {
+            this.tInfo = (TypeClass) tInfo;
         }
 
         @Override
-        public TypeInfoClass getInfo() {
+        public TypeClass getInfo() {
             return this.tInfo;
         }
 
@@ -135,18 +131,18 @@ public abstract class FormatterType<T extends ITypeInfo> {
     /**
      * '?', '? extends Number', '? super Integer'
      */
-    public static class Wildcard extends FormatterType<TypeInfoWildcard> {
-        private final TypeInfoWildcard tInfo;
+    public static class Wildcard extends FormatterType<TypeWildcard> {
+        private final TypeWildcard tInfo;
 
         /**
-         * use {@link FormatterType#of(ITypeInfo)} instead
+         * use {@link FormatterType#of(IType)} instead
          */
-        public Wildcard(ITypeInfo tInfo) {
-            this.tInfo = (TypeInfoWildcard) tInfo;
+        public Wildcard(IType tInfo) {
+            this.tInfo = (TypeWildcard) tInfo;
         }
 
         @Override
-        public TypeInfoWildcard getInfo() {
+        public TypeWildcard getInfo() {
             return this.tInfo;
         }
 
@@ -159,18 +155,18 @@ public abstract class FormatterType<T extends ITypeInfo> {
     /**
      * 'T', 'K extends List'
      */
-    public static class Variable extends FormatterType<TypeInfoVariable> {
-        private final TypeInfoVariable tInfo;
+    public static class Variable extends FormatterType<TypeVariable> {
+        private final TypeVariable tInfo;
 
         /**
-         * use {@link FormatterType#of(ITypeInfo)} instead
+         * use {@link FormatterType#of(IType)} instead
          */
-        public Variable(ITypeInfo tInfo) {
-            this.tInfo = (TypeInfoVariable) tInfo;
+        public Variable(IType tInfo) {
+            this.tInfo = (TypeVariable) tInfo;
         }
 
         @Override
-        public TypeInfoVariable getInfo() {
+        public TypeVariable getInfo() {
             return this.tInfo;
         }
 
@@ -199,18 +195,18 @@ public abstract class FormatterType<T extends ITypeInfo> {
     /**
      * 'int[]'
      */
-    public static class Array extends FormatterType<TypeInfoArray> {
-        private final TypeInfoArray tInfo;
+    public static class Array extends FormatterType<TypeArray> {
+        private final TypeArray tInfo;
 
         /**
-         * use {@link FormatterType#of(ITypeInfo)} instead
+         * use {@link FormatterType#of(IType)} instead
          */
-        public Array(ITypeInfo tInfo) {
-            this.tInfo = (TypeInfoArray) tInfo;
+        public Array(IType tInfo) {
+            this.tInfo = (TypeArray) tInfo;
         }
 
         @Override
-        public TypeInfoArray getInfo() {
+        public TypeArray getInfo() {
             return this.tInfo;
         }
 
@@ -223,18 +219,18 @@ public abstract class FormatterType<T extends ITypeInfo> {
     /**
      * {@code Map<String, Boolean>}
      */
-    public static class Parameterized extends FormatterType<TypeInfoParameterized> {
-        private final TypeInfoParameterized tInfo;
+    public static class Parameterized extends FormatterType<TypeParameterized> {
+        private final TypeParameterized tInfo;
 
         /**
-         * use {@link FormatterType#of(ITypeInfo)} instead
+         * use {@link FormatterType#of(IType)} instead
          */
-        public Parameterized(ITypeInfo tInfo) {
-            this.tInfo = (TypeInfoParameterized) tInfo;
+        public Parameterized(IType tInfo) {
+            this.tInfo = (TypeParameterized) tInfo;
         }
 
         @Override
-        public TypeInfoParameterized getInfo() {
+        public TypeParameterized getInfo() {
             return this.tInfo;
         }
 
@@ -248,57 +244,6 @@ public abstract class FormatterType<T extends ITypeInfo> {
                     .map(FormatterType::format)
                     .collect(Collectors.joining(", "))
             );
-        }
-    }
-
-    /**
-     * 'string | number'
-     */
-    public static class Union extends FormatterType<TypeUnion> {
-        private final TypeUnion tInfo;
-
-        /**
-         * use {@link FormatterType#of(ITypeInfo)} instead
-         */
-        public Union(ITypeInfo tInfo) {
-            this.tInfo = (TypeUnion) tInfo;
-        }
-
-        @Override
-        public TypeUnion getInfo() {
-            return this.tInfo;
-        }
-
-        @Override
-        public String format() {
-            return FormatterType.of(this.tInfo.left()).underscored(this.underscored).format()
-                + " | "
-                + FormatterType.of(this.tInfo.right()).underscored(this.underscored).format();
-        }
-    }
-    /**
-     * 'string | number'
-     */
-    public static class Intersection extends FormatterType<TypeIntersection> {
-        private final TypeIntersection tInfo;
-
-        /**
-         * use {@link FormatterType#of(ITypeInfo)} instead
-         */
-        public Intersection(ITypeInfo tInfo) {
-            this.tInfo = (TypeIntersection) tInfo;
-        }
-
-        @Override
-        public TypeIntersection getInfo() {
-            return this.tInfo;
-        }
-
-        @Override
-        public String format() {
-            return FormatterType.of(this.tInfo.left()).underscored(this.underscored).format()
-                + " & "
-                + FormatterType.of(this.tInfo.right()).underscored(this.underscored).format();
         }
     }
 }

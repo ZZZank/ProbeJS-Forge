@@ -7,18 +7,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TypeInfoWildcard implements ITypeInfo {
+public class TypeWildcard implements IType {
 
     public static boolean test(Type type) {
         return type instanceof WildcardType;
     }
 
     private final WildcardType raw;
-    private final ITypeInfo base;
-    private final List<ITypeInfo> upper;
-    private final List<ITypeInfo> lower;
+    private final IType base;
+    private final List<IType> upper;
+    private final List<IType> lower;
 
-    public TypeInfoWildcard(Type type) {
+    public TypeWildcard(Type type) {
         this.raw = (WildcardType) type;
 
         Type[] upper = this.raw.getUpperBounds();
@@ -29,7 +29,7 @@ public class TypeInfoWildcard implements ITypeInfo {
         } else if (lower.length != 0) {
             this.base = TypeResolver.resolveType(lower[0]);
         } else {
-            this.base = new TypeInfoClass(Object.class);
+            this.base = new TypeClass(Object.class);
         }
 
         this.upper = upper[0] == Object.class
@@ -42,7 +42,7 @@ public class TypeInfoWildcard implements ITypeInfo {
     }
 
     @Override
-    public ITypeInfo getBaseType() {
+    public IType getBaseType() {
         return base;
     }
 
@@ -57,12 +57,12 @@ public class TypeInfoWildcard implements ITypeInfo {
     }
 
     @Override
-    public ITypeInfo copy() {
-        return new TypeInfoWildcard(this.raw);
+    public IType copy() {
+        return new TypeWildcard(this.raw);
     }
 
     @Override
-    public boolean assignableFrom(ITypeInfo info) {
+    public boolean assignableFrom(IType info) {
         return info.getBaseType().assignableFrom(base);
     }
 
@@ -71,11 +71,11 @@ public class TypeInfoWildcard implements ITypeInfo {
         return this.raw;
     }
 
-    public List<ITypeInfo> getUpperBounds() {
+    public List<IType> getUpperBounds() {
         return this.upper;
     }
 
-    public List<ITypeInfo> getLowerBounds() {
+    public List<IType> getLowerBounds() {
         return this.lower;
     }
 }

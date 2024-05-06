@@ -5,14 +5,14 @@ import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentReturns;
-import com.probejs.document.type.IType;
+import com.probejs.document.type.IDocType;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.IFormatter;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.MethodInfo;
-import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.TypeInfoClass;
-import com.probejs.info.type.TypeInfoVariable;
+import com.probejs.info.type.IType;
+import com.probejs.info.type.TypeClass;
+import com.probejs.info.type.TypeVariable;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
 import lombok.Getter;
@@ -26,8 +26,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     @Getter
     private final MethodInfo info;
-    private final Map<String, IType> paramModifiers;
-    private IType returnModifiers;
+    private final Map<String, IDocType> paramModifiers;
+    private IDocType returnModifiers;
     @Getter
     private final BeanType beanType;
 
@@ -59,9 +59,9 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             paramCount == 0 &&
             methodName.startsWith("is") &&
             (
-                //TODO: it seems that we can't pre-calculate the Boolean TypeInfoClass, why
-                info.getReturnType().assignableFrom(new TypeInfoClass(Boolean.class)) ||
-                info.getReturnType().assignableFrom(new TypeInfoClass(Boolean.TYPE))
+                //TODO: it seems that we can't pre-calculate the Boolean TypeClass, why
+                info.getReturnType().assignableFrom(new TypeClass(Boolean.class)) ||
+                info.getReturnType().assignableFrom(new TypeClass(Boolean.TYPE))
             )
         ) {
             return BeanType.GETTER_IS;
@@ -99,14 +99,14 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             : info.getParams().get(0).getType().getTypeName();
     }
 
-    public Map<String, IType> getParamModifiers() {
+    public Map<String, IDocType> getParamModifiers() {
         if (this.paramModifiers.isEmpty()) {
             refreshModifiers();
         }
         return paramModifiers;
     }
 
-    public IType getReturnModifiers() {
+    public IDocType getReturnModifiers() {
         if (this.returnModifiers == null) {
             refreshModifiers();
         }
@@ -128,11 +128,11 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         }
     }
 
-    private static String formatTypeParameterized(ITypeInfo info, boolean useSpecial) {
-        if (!(info instanceof TypeInfoClass)) {
+    private static String formatTypeParameterized(IType info, boolean useSpecial) {
+        if (!(info instanceof TypeClass)) {
             return FormatterType.of(info, useSpecial).format();
         }
-        final TypeInfoClass clazz = (TypeInfoClass) info;
+        final TypeClass clazz = (TypeClass) info;
         final StringBuilder sb = new StringBuilder(FormatterType.of(info, useSpecial).format());
         if (!NameResolver.isTypeSpecial(clazz.getResolvedClass()) && !clazz.getTypeVariables().isEmpty()) {
             sb.append('<');
@@ -143,7 +143,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     public String formatReturn() {
-        IType returnModifier = getReturnModifiers();
+        IDocType returnModifier = getReturnModifiers();
         if (returnModifier != null) {
             return returnModifier.getTypeName();
         }
@@ -151,7 +151,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     private String formatParam(MethodInfo.ParamInfo pInfo, boolean forceNoUnderscore) {
-        ITypeInfo info = pInfo.getType();
+        IType info = pInfo.getType();
         final Class<?> clazz = info.getResolvedClass();
         //No assigned types, and not enum, use normal route.
         if (!DocManager.typesAssignable.containsKey(clazz.getName()) && !clazz.isEnum()) {
@@ -166,7 +166,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                     if (forceNoUnderscore) {
                         return false;
                     }
-                    if (typeInfo instanceof TypeInfoClass) {
+                    if (typeInfo instanceof TypeClass) {
                         Class<?> c = typeInfo.getResolvedClass();
                         return !NameResolver.resolvedPrimitives.contains(c.getName());
                     }
@@ -174,15 +174,15 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 })
                 .format()
         );
-        if (info instanceof TypeInfoClass) {
-            final TypeInfoClass cInfo = (TypeInfoClass) info;
-            List<TypeInfoVariable> typeVariables = cInfo.getTypeVariables();
+        if (info instanceof TypeClass) {
+            final TypeClass cInfo = (TypeClass) info;
+            List<TypeVariable> typeVariables = cInfo.getTypeVariables();
             if (!typeVariables.isEmpty()) {
                 sb.append('<');
                 sb.append(
                     typeVariables
                         .stream()
-                        .map(ITypeInfo::getTypeName)
+                        .map(IType::getTypeName)
                         .map(NameResolver::getResolvedName)
                         .map(NameResolver.ResolvedName::getFullName)
                         .collect(Collectors.joining(","))
@@ -204,10 +204,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
      * Get a `a: string, b: number` style String representation of params of this method
      */
     public String formatParams(Map<String, String> renames, boolean forceNoUnderscore) {
-        final BiFunction<IType, String, String> typeTransformer = forceNoUnderscore
-            ? IType.dummyTransformer
-            : IType.defaultTransformer;
-        Map<String, IType> modifiers = getParamModifiers();
+        final BiFunction<IDocType, String, String> typeTransformer = forceNoUnderscore
+            ? IDocType.dummyTransformer
+            : IDocType.defaultTransformer;
+        Map<String, IDocType> modifiers = getParamModifiers();
         return info
             .getParams()
             .stream()
@@ -253,7 +253,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         builder.append(info.getName());
         if (!info.getTypeVariables().isEmpty()) {
             builder.append('<')
-                .append(info.getTypeVariables().stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", ")))
+                .append(info.getTypeVariables().stream().map(IType::getTypeName).collect(Collectors.joining(", ")))
                 .append('>');
         }
         builder

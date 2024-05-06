@@ -1,10 +1,8 @@
-package com.probejs.info.type.ts;
-
-import com.probejs.info.type.ITypeInfo;
+package com.probejs.info.type;
 
 import java.lang.reflect.Type;
 
-public class TypeLiteral implements ITypeInfo {
+public class TypeLiteral implements IType {
 
     private final String value;
 
@@ -18,7 +16,7 @@ public class TypeLiteral implements ITypeInfo {
     }
 
     @Override
-    public ITypeInfo getBaseType() {
+    public IType getBaseType() {
         return this;
     }
 
@@ -33,12 +31,12 @@ public class TypeLiteral implements ITypeInfo {
     }
 
     @Override
-    public ITypeInfo copy() {
+    public IType copy() {
         return this;
     }
 
     @Override
-    public boolean assignableFrom(ITypeInfo info) {
+    public boolean assignableFrom(IType info) {
         return false;
     }
 }

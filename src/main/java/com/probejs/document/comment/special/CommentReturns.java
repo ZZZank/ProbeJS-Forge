@@ -1,7 +1,7 @@
 package com.probejs.document.comment.special;
 
 import com.probejs.document.comment.AbstractComment;
-import com.probejs.document.type.IType;
+import com.probejs.document.type.IDocType;
 import com.probejs.document.type.DocTypeResolver;
 import lombok.Getter;
 
@@ -9,7 +9,7 @@ import lombok.Getter;
 public class CommentReturns extends AbstractComment {
 
     private static final int MARK_LEN = "@returns ".length();
-    private final IType returnType;
+    private final IDocType returnType;
 
     public CommentReturns(String line) {
         super(line);

@@ -10,22 +10,18 @@ import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.comment.CommentUtil;
-import com.probejs.document.type.IType;
+import com.probejs.document.type.IDocType;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.IFormatter;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.*;
-import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.TypeInfoClass;
-import com.probejs.info.type.TypeInfoParameterized;
-import com.probejs.info.type.TypeInfoVariable;
-import com.probejs.info.type.TypeResolver;
+import com.probejs.info.type.*;
+import com.probejs.info.type.IType;
 import com.probejs.util.PUtil;
 import lombok.Setter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.TypeVariable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,14 +49,14 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
 
     /**
      * similar to {@code new FormatterType(info,false).format(0,4)}, but with additional
-     * processing for TypeInfoClass. If its getTypeVariables() is not returning an empty
+     * processing for TypeClass. If its getTypeVariables() is not returning an empty
      * list, a {@code <any,any,...>} style type variable representation will be added to
      * the end of formatted string
      */
-    public static String formatParameterized(ITypeInfo info) {
+    public static String formatParameterized(IType info) {
         StringBuilder sb = new StringBuilder(FormatterType.of(info, false).format());
-        if (info instanceof TypeInfoClass) {
-            TypeInfoClass clazz = (TypeInfoClass) info;
+        if (info instanceof TypeClass) {
+            TypeClass clazz = (TypeClass) info;
             if (!clazz.getTypeVariables().isEmpty()) {
                 sb.append(
                     String.format(
@@ -68,7 +64,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                         clazz
                             .getTypeVariables()
                             .stream()
-                            .map(ITypeInfo::getTypeName)
+                            .map(IType::getTypeName)
                             .map(NameResolver::getResolvedName)
                             .map(NameResolver.ResolvedName::getFullName)
                             .collect(Collectors.joining(","))
@@ -93,7 +89,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         List<String> assignableTypes = DocManager.typesAssignable
             .getOrDefault(classInfo.getRaw().getName(), new ArrayList<>())
             .stream()
-            .map(t -> t.transform(IType.defaultTransformer))
+            .map(t -> t.transform(IDocType.defaultTransformer))
             .collect(Collectors.toList());
 
         if (classInfo.isEnum()) {
@@ -134,7 +130,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                     "<%s>",
                     Arrays
                         .stream(classInfo.getRaw().getTypeParameters())
-                        .map(TypeVariable::getName)
+                        .map(java.lang.reflect.TypeVariable::getName)
                         .collect(Collectors.joining(", "))
                 )
             );
@@ -280,19 +276,19 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
         if (NameResolver.specialTypeFormatters.containsKey(classInfo.getRaw())) {
             assignableTypes.add(
                 FormatterType.of(
-                    new TypeInfoParameterized(
-                        new TypeInfoClass(classInfo.getRaw()),
+                    new TypeParameterized(
+                        new TypeClass(classInfo.getRaw()),
                         classInfo.getTypeParameters()
                     )
                 )
                     .format()
             );
         }
-        List<TypeInfoVariable> params = classInfo.getTypeParameters();
+        List<TypeVariable> params = classInfo.getTypeParameters();
         if (!params.isEmpty()) {
             String paramString = String.format(
                 "<%s>",
-                params.stream().map(ITypeInfo::getTypeName).collect(Collectors.joining(", "))
+                params.stream().map(IType::getTypeName).collect(Collectors.joining(", "))
             );
             underName += paramString;
             origName += paramString;

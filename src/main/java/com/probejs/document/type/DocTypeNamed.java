@@ -2,11 +2,11 @@ package com.probejs.document.type;
 
 import com.probejs.formatter.resolver.NameResolver;
 
-public class TypeNamed implements IType {
+public class DocTypeNamed implements IDocType {
 
     private final String typeName;
 
-    public TypeNamed(String typeName) {
+    public DocTypeNamed(String typeName) {
         this.typeName = typeName;
     }
 

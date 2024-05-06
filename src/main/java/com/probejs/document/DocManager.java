@@ -8,7 +8,8 @@ import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentAssign;
 import com.probejs.document.comment.special.CommentTarget;
 import com.probejs.document.parser.processor.Document;
-import com.probejs.document.type.IType;
+import com.probejs.document.type.IDocType;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,7 +24,7 @@ import me.shedaniel.architectury.platform.Platform;
 public class DocManager {
 
     public static final Multimap<String, DocumentClass> classDocuments = ArrayListMultimap.create();
-    public static final Map<String, List<IType>> typesAssignable = new HashMap<>();
+    public static final Map<String, List<IDocType>> typesAssignable = new HashMap<>();
     public static final Map<String, List<DocumentClass>> classAdditions = new HashMap<>();
     public static final List<String> rawTSDoc = new ArrayList<>();
     public static final List<DocumentType> typeDocuments = new ArrayList<>();
@@ -75,7 +76,7 @@ public class DocManager {
         }
     }
 
-    public static void addAssignable(String className, IType type) {
+    public static void addAssignable(String className, IDocType type) {
         DocManager.typesAssignable.computeIfAbsent(className, k -> new ArrayList<>()).add(type);
     }
 

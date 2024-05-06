@@ -4,10 +4,9 @@ import com.probejs.ProbeJS;
 import com.probejs.formatter.resolver.ClazzFilter;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.formatter.FormatterMethod;
-import com.probejs.info.type.ITypeInfo;
-import com.probejs.info.type.TypeInfoParameterized;
-import com.probejs.info.type.TypeInfoVariable;
-import com.probejs.info.type.TypeResolver;
+import com.probejs.info.type.*;
+import com.probejs.info.type.IType;
+import com.probejs.info.type.TypeVariable;
 import lombok.Getter;
 
 import java.lang.reflect.Method;
@@ -48,7 +47,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private final boolean isInterface;
     private final boolean isFunctionalInterface;
     @Getter
-    private final List<TypeInfoVariable> typeParameters;
+    private final List<TypeVariable> typeParameters;
     /**
      * filtered view of {@link ClassInfo#allMethodInfos}
      */
@@ -64,9 +63,9 @@ public class ClassInfo implements Comparable<ClassInfo> {
     @Getter
     private final ClassInfo superClass;
     @Getter
-    private final ITypeInfo superType;
+    private final IType superType;
     @Getter
-    private final List<ITypeInfo> interfaces;
+    private final List<IType> interfaces;
     private final List<MethodInfo> allMethodInfos;
     private final List<FieldInfo> allFieldInfos;
 
@@ -98,7 +97,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
             typeParameters.addAll(
                 Arrays
                     .stream(raw.getTypeParameters())
-                    .map(TypeInfoVariable::new)
+                    .map(TypeVariable::new)
                     .collect(Collectors.toList())
             );
             //methods
@@ -151,15 +150,15 @@ public class ClassInfo implements Comparable<ClassInfo> {
         }
     }
 
-    private static Map<String, ITypeInfo> resolveTypeOverrides(ITypeInfo typeInfo) {
-        Map<String, ITypeInfo> caughtTypes = new HashMap<>();
-        if (typeInfo instanceof TypeInfoParameterized) {
-            TypeInfoParameterized parType = (TypeInfoParameterized) typeInfo;
-            List<ITypeInfo> rawClassNames = Arrays
+    private static Map<String, IType> resolveTypeOverrides(IType typeInfo) {
+        Map<String, IType> caughtTypes = new HashMap<>();
+        if (typeInfo instanceof TypeParameterized) {
+            TypeParameterized parType = (TypeParameterized) typeInfo;
+            List<IType> rawClassNames = Arrays
                 .stream(parType.getResolvedClass().getTypeParameters())
                 .map(TypeResolver::resolveType)
                 .collect(Collectors.toList());
-            List<ITypeInfo> parTypeNames = parType.getParamTypes();
+            List<IType> parTypeNames = parType.getParamTypes();
             for (int i = 0; i < parTypeNames.size(); i++) {
                 caughtTypes.put(rawClassNames.get(i).getTypeName(), parTypeNames.get(i));
             }
@@ -170,8 +169,8 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private void applySuperGenerics(List<MethodInfo> methodsToMutate, List<FieldInfo> fieldsToMutate) {
         if (superClass != null) {
             //Apply current level changes
-            ITypeInfo typeInfo = TypeResolver.resolveType(raw.getGenericSuperclass());
-            Map<String, ITypeInfo> internalGenericMap = resolveTypeOverrides(typeInfo);
+            IType typeInfo = TypeResolver.resolveType(raw.getGenericSuperclass());
+            Map<String, IType> internalGenericMap = resolveTypeOverrides(typeInfo);
             applyGenerics(internalGenericMap, methodsToMutate, fieldsToMutate);
             Arrays
                 .stream(raw.getGenericInterfaces())
@@ -209,17 +208,17 @@ public class ClassInfo implements Comparable<ClassInfo> {
     }
 
     private static void applyGenerics(
-        Map<String, ITypeInfo> internalGenericMap,
+        Map<String, IType> internalGenericMap,
         List<MethodInfo> methodInfo,
         List<FieldInfo> fieldInfo
     ) {
         for (MethodInfo method : methodInfo) {
-            Map<String, ITypeInfo> maskedNames = new HashMap<>();
+            Map<String, IType> maskedNames = new HashMap<>();
             method
                 .getTypeVariables()
                 .stream()
-                .filter(i -> i instanceof TypeInfoVariable)
-                .map(i -> (TypeInfoVariable) i)
+                .filter(i -> i instanceof TypeVariable)
+                .map(i -> (TypeVariable) i)
                 .forEach(v -> maskedNames.put(v.getTypeName(), v));
 
             method.setReturnType(TypeResolver.mutateTypeMap(method.getReturnType(), maskedNames));

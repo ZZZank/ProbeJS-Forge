@@ -1,6 +1,6 @@
 package com.probejs.info;
 
-import com.probejs.info.type.ITypeInfo;
+import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
 import com.probejs.util.RemapperBridge;
@@ -17,7 +17,7 @@ public class FieldInfo implements Comparable<FieldInfo> {
     @Getter
     private final String name;
     @Getter
-    private ITypeInfo type;
+    private IType type;
     private final int modifiers;
     private final boolean shouldHide;
     private final Object value;
@@ -57,7 +57,7 @@ public class FieldInfo implements Comparable<FieldInfo> {
         return value;
     }
 
-    public void setTypeInfo(ITypeInfo info) {
+    public void setTypeInfo(IType info) {
         this.type = info;
     }
 

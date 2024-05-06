@@ -1,11 +1,11 @@
 package com.probejs.info.type;
 
-import com.probejs.info.ClassInfo;
+import com.probejs.info.clazz.ClassInfo;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class TypeInfoClass implements ITypeInfo {
+public class TypeClass implements IType {
 
     public static boolean test(Type type) {
         return type instanceof Class<?>;
@@ -13,16 +13,16 @@ public class TypeInfoClass implements ITypeInfo {
 
     private final Class<?> raw;
 
-    public TypeInfoClass(Type type) {
+    public TypeClass(Type type) {
         this.raw = (Class<?>) type;
     }
 
-    private TypeInfoClass(Class<?> type) {
+    private TypeClass(Class<?> type) {
         this.raw = type;
     }
 
     @Override
-    public ITypeInfo getBaseType() {
+    public IType getBaseType() {
         return this;
     }
 
@@ -37,20 +37,20 @@ public class TypeInfoClass implements ITypeInfo {
     }
 
     @Override
-    public ITypeInfo copy() {
-        return new TypeInfoClass(raw);
+    public IType copy() {
+        return new TypeClass(raw);
     }
 
     @Override
-    public boolean assignableFrom(ITypeInfo info) {
-        if (!(info instanceof TypeInfoClass)) {
+    public boolean assignableFrom(IType info) {
+        if (!(info instanceof TypeClass)) {
             return false;
         }
-        TypeInfoClass clazz = (TypeInfoClass) info;
+        TypeClass clazz = (TypeClass) info;
         return clazz.raw.isAssignableFrom(raw);
     }
 
-    public List<TypeInfoVariable> getTypeVariables() {
+    public List<TypeVariable> getTypeVariables() {
         return ClassInfo.ofCache(this.raw).getTypeParameters();
     }
 

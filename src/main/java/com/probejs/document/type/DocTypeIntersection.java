@@ -2,11 +2,11 @@ package com.probejs.document.type;
 
 import java.util.function.BiFunction;
 
-public class TypeIntersection implements IType {
-    private final IType leftType;
-    private final IType rightType;
+public class DocTypeIntersection implements IDocType {
+    private final IDocType leftType;
+    private final IDocType rightType;
 
-    public TypeIntersection(IType leftType, IType rightType) {
+    public DocTypeIntersection(IDocType leftType, IDocType rightType) {
         this.leftType = leftType;
         this.rightType = rightType;
     }
@@ -17,7 +17,7 @@ public class TypeIntersection implements IType {
     }
 
     @Override
-    public String transform(BiFunction<IType, String, String> transformer) {
+    public String transform(BiFunction<IDocType, String, String> transformer) {
         return transformer.apply(this, leftType.transform(transformer) + " & " + rightType.transform(transformer));
     }
 }

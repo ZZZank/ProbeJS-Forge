@@ -1,10 +1,10 @@
 package com.probejs.document.type;
 
-public class TypeRaw implements IType {
+public class DocTypeRaw implements IDocType {
 
     private final String typeName;
 
-    public TypeRaw(String typeName) {
+    public DocTypeRaw(String typeName) {
         this.typeName = typeName;
     }
 

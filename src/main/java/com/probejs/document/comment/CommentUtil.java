@@ -5,7 +5,8 @@ import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.document.comment.special.CommentMod;
 import com.probejs.document.comment.special.CommentModify;
 import com.probejs.document.comment.special.CommentRename;
-import com.probejs.document.type.IType;
+import com.probejs.document.type.IDocType;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +29,8 @@ public class CommentUtil {
         return comment.getSpecialComment(CommentHidden.class) != null;
     }
 
-    public static Map<String, IType> getTypeModifiers(DocumentComment comment) {
-        Map<String, IType> modifiers = new HashMap<>();
+    public static Map<String, IDocType> getTypeModifiers(DocumentComment comment) {
+        Map<String, IDocType> modifiers = new HashMap<>();
         if (comment != null) {
             comment
                 .getSpecialComments(CommentModify.class)
