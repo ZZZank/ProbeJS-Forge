@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 
@@ -23,14 +22,12 @@ public class DocReader {
     private List<Path> paths;
     @Setter
     private boolean readModJars;
-    private final Document documentTarget;
-    private final List<String> rawDocTarget;
+    private final Document target;
 
-    public DocReader(Document documentTarget, List<String> rawDocTarget) {
+    public DocReader(Document target) {
         this.paths = new ArrayList<>();
         this.readModJars = false;
-        this.documentTarget = documentTarget;
-        this.rawDocTarget = rawDocTarget;
+        this.target = target;
     }
 
     public DocReader defaultSetup() {
@@ -147,9 +144,9 @@ public class DocReader {
 
     private void readOnce(boolean isRawDoc, BufferedReader reader) {
         if (isRawDoc) {
-            reader.lines().forEach(this.rawDocTarget::add);
+            reader.lines().forEach(this.target.getRawDocs()::add);
         } else {
-            reader.lines().forEach(this.documentTarget::step);
+            reader.lines().forEach(this.target::step);
         }
     }
 }

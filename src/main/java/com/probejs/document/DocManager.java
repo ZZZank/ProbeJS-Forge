@@ -27,7 +27,9 @@ public class DocManager {
         typeDocuments.clear();
         typesAssignable.clear();
 
-        new DocReader(documentState, rawTSDoc).defaultSetup().read();
+        new DocReader(documentState).defaultSetup().read();
+
+        rawTSDoc.addAll(documentState.getRawDocs());
 
         for (IDocument doc : documentState.getDocument().getDocuments()) {
             if (doc instanceof DocumentClass) {
@@ -67,4 +69,5 @@ public class DocManager {
     public static void addAdditions(String className, DocumentClass addition) {
         DocManager.classAdditions.computeIfAbsent(className, k -> new ArrayList<>()).add(addition);
     }
+
 }
