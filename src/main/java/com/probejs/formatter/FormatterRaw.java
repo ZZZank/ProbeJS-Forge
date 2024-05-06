@@ -1,6 +1,6 @@
 package com.probejs.formatter;
 
-import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.util.PUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FormatterRaw implements IFormatter {
+public class FormatterRaw implements MultiFormatter {
 
     private final List<String> docs;
     /**
@@ -31,7 +31,7 @@ public class FormatterRaw implements IFormatter {
     }
 
     @Override
-    public List<String> format(int indent, int stepIndent) {
+    public List<String> formatLines(int indent, int stepIndent) {
         List<String> lines = new ArrayList<>();
         String idnt = PUtil.indent(indent);
         if (commentMark) {

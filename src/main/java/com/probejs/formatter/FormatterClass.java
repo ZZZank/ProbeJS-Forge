@@ -12,7 +12,7 @@ import com.probejs.document.DocumentMethod;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.type.IDocType;
 import com.probejs.formatter.api.DocumentReceiver;
-import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.clazz.ClassInfo;
 import com.probejs.info.clazz.FieldInfo;
@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FormatterClass extends DocumentReceiver<DocumentClass> implements IFormatter {
+public class FormatterClass extends DocumentReceiver<DocumentClass> implements MultiFormatter {
 
     private final ClassInfo classInfo;
     private final Map<String, FormatterField> fieldFormatters;
@@ -78,14 +78,14 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
     }
 
     @Override
-    public List<String> format(int indent, int stepIndent) {
+    public List<String> formatLines(int indent, int stepIndent) {
         List<String> lines = new ArrayList<>();
         DocumentComment comment = document == null ? null : document.getComment();
         if (comment != null) {
             if (CommentUtil.isHidden(comment)) {
                 return lines;
             }
-            lines.addAll(comment.format(indent, stepIndent));
+            lines.addAll(comment.formatLines(indent, stepIndent));
         }
 
         List<String> assignableTypes = DocManager.typesAssignable
@@ -180,7 +180,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 //not static interface in namespace `Internal`
                 !(classInfo.isInterface() && fmtrMethod.getInfo().isStatic() && internal)
             )
-            .forEach(fmtrMethod -> lines.addAll(fmtrMethod.format(indent + stepIndent, stepIndent)));
+            .forEach(fmtrMethod -> lines.addAll(fmtrMethod.formatLines(indent + stepIndent, stepIndent)));
         //fields
         fieldFormatters
             .entrySet()
@@ -189,7 +189,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
             .filter(f -> !(classInfo.isInterface() && f.getValue().getFieldInfo().isStatic() && internal))
             .forEach(f -> {
                 f.getValue().setFromInterface(classInfo.isInterface());
-                lines.addAll(f.getValue().format(indent + stepIndent, stepIndent));
+                lines.addAll(f.getValue().formatLines(indent + stepIndent, stepIndent));
             });
 
         // beans
@@ -254,21 +254,21 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements I
                 lines.addAll(
                     new FormatterComments("Internal constructor, not callable unless via `java()`.")
                         .setStyle(FormatterComments.CommentStyle.J_DOC)
-                        .format(indent + stepIndent, stepIndent)
+                        .formatLines(indent + stepIndent, stepIndent)
                 );
             }
             classInfo
                 .getConstructors()
                 .stream()
                 .map(FormatterConstructor::new)
-                .forEach(f -> lines.addAll(f.format(indent + stepIndent, stepIndent)));
+                .forEach(f -> lines.addAll(f.formatLines(indent + stepIndent, stepIndent)));
         }
         // additions
         for (DocumentField fieldDoc : fieldAdditions) {
-            lines.addAll(fieldDoc.format(indent + stepIndent, stepIndent));
+            lines.addAll(fieldDoc.formatLines(indent + stepIndent, stepIndent));
         }
         for (DocumentMethod methodDoc : methodAdditions) {
-            lines.addAll(methodDoc.format(indent + stepIndent, stepIndent));
+            lines.addAll(methodDoc.formatLines(indent + stepIndent, stepIndent));
         }
         //end
         lines.add(PUtil.indent(indent) + "}");

@@ -76,7 +76,7 @@ public class EventInfo implements Comparable<EventInfo> {
             typeNames.add("unknown, info of this event seems fetched from an older version of cache");
         }
         return new FormatterComments("@cancellable " + canCancel, "@at " + String.join(", ", typeNames))
-            .format(0, 0);
+            .formatLines(0, 0);
     }
 
     @SuppressWarnings("unchecked")

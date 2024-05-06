@@ -4,7 +4,7 @@ import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IDocType;
 import com.probejs.document.type.DocTypeResolver;
-import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;
@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
-public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter, IConcrete {
+public class DocumentType implements IDocumentProvider<DocumentType>, MultiFormatter, IConcrete {
 
     //type <name> = <type>;
 
@@ -43,7 +43,7 @@ public class DocumentType implements IDocumentProvider<DocumentType>, IFormatter
     }
 
     @Override
-    public List<String> format(int indent, int stepIndent) {
+    public List<String> formatLines(int indent, int stepIndent) {
         if (!CommentUtil.isLoaded(comment) || CommentUtil.isHidden(comment)) {
             return new ArrayList<>(0);
         }

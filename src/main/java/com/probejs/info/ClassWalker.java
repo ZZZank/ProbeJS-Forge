@@ -13,8 +13,8 @@ public class ClassWalker {
 
     private final Set<Class<?>> initial;
 
-    public ClassWalker(Set<Class<?>> initial) {
-        this.initial = initial;
+    public ClassWalker(Collection<Class<?>> initial) {
+        this.initial = new HashSet<>(initial);
     }
 
     private Set<Class<?>> walkType(IType tInfo) {
@@ -42,7 +42,7 @@ public class ClassWalker {
 
     private Set<Class<?>> walkTypes(Collection<? extends IType> tInfos) {
         Set<Class<?>> result = new HashSet<>();
-        for (IType tInfo : tInfos) {
+        for (val tInfo : tInfos) {
             result.addAll(walkType(tInfo));
         }
         return result;
@@ -62,7 +62,7 @@ public class ClassWalker {
             }
             result.addAll(walkTypes(info.getInterfaces()));
             //field
-            for (FieldInfo fInfo : info.getFieldInfos()) {
+            for (val fInfo : info.getFieldInfos()) {
                 result.addAll(walkType(fInfo.getType()));
             }
             //method
@@ -89,7 +89,7 @@ public class ClassWalker {
 
         while (!current.isEmpty()) {
             result.addAll(current);
-            current = touch(current).stream().filter(c -> !result.contains(c)).collect(Collectors.toSet());
+            current = touch(current).parallelStream().filter(c -> !result.contains(c)).collect(Collectors.toSet());
         }
         return result;
     }

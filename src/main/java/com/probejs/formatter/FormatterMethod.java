@@ -7,7 +7,7 @@ import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentReturns;
 import com.probejs.document.type.IDocType;
 import com.probejs.formatter.api.DocumentReceiver;
-import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.clazz.MethodInfo;
 import com.probejs.info.type.IType;
@@ -22,7 +22,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
-public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements IFormatter {
+public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements MultiFormatter {
 
     @Getter
     private final MethodInfo info;
@@ -227,7 +227,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
     }
 
     @Override
-    public List<String> format(int indent, int stepIndent) {
+    public List<String> formatLines(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
 
         if (document != null) {
@@ -236,7 +236,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 return formatted;
             }
             if (comment != null) {
-                formatted.addAll(comment.format(indent, stepIndent));
+                formatted.addAll(comment.formatLines(indent, stepIndent));
             }
         }
 
@@ -276,7 +276,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         if (document != null) {
             DocumentComment comment = document.getComment();
             if (CommentUtil.isHidden(comment)) return lines;
-            if (comment != null) lines.addAll(comment.format(indent, stepIndent));
+            if (comment != null) lines.addAll(comment.formatLines(indent, stepIndent));
         }
 
         String idnt = PUtil.indent(indent);

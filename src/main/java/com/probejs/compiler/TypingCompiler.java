@@ -78,7 +78,7 @@ public class TypingCompiler {
 
             NameResolver.ResolvedName name = NameResolver.getResolvedName(clazz.getName());
             if (name.getNamespace().isEmpty()) {
-                for (String line : formatter.format(0, 4)) {
+                for (String line : formatter.formatLines(0, 4)) {
                     writer.write(line);
                     writer.write("\n");
                 }
@@ -96,7 +96,7 @@ public class TypingCompiler {
             val path = entry.getKey();
             val formatters = entry.getValue();
             val namespace = new FormatterNamespace(path, formatters);
-            for (val line : namespace.format(0, 4)) {
+            for (val line : namespace.formatLines(0, 4)) {
                 writer.write(line);
                 writer.write('\n');
             }
@@ -113,17 +113,17 @@ public class TypingCompiler {
             "Document",
             DocManager.classAdditions.values().stream().map(l -> l.get(0)).collect(Collectors.toList())
         )
-            .format(0, 4)) {
+            .formatLines(0, 4)) {
             writer.write(line);
             writer.write("\n");
         }
         //namespace::Type
-        for (String line : new FormatterNamespace("Type", DocManager.typeDocuments).format(0, 4)) {
+        for (String line : new FormatterNamespace("Type", DocManager.typeDocuments).formatLines(0, 4)) {
             writer.write(line);
             writer.write("\n");
         }
         //no namespace
-        for (String line : new FormatterRaw(DocManager.rawTSDoc).format(0, 4)) {
+        for (String line : new FormatterRaw(DocManager.rawTSDoc).formatLines(0, 4)) {
             writer.write(line);
             writer.write("\n");
         }

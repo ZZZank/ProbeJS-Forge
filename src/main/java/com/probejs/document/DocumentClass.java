@@ -1,7 +1,7 @@
 package com.probejs.document;
 
 import com.probejs.document.comment.CommentUtil;
-import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.util.PUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DocumentClass extends DocumentProperty implements IConcrete, IFormatter {
+public class DocumentClass extends DocumentProperty implements IConcrete, MultiFormatter {
 
     @Setter
     @Getter
@@ -48,7 +48,7 @@ public class DocumentClass extends DocumentProperty implements IConcrete, IForma
     }
 
     @Override
-    public List<String> format(int indent, int stepIndent) {
+    public List<String> formatLines(int indent, int stepIndent) {
         List<String> lines = new ArrayList<>();
         StringBuilder firstLine = new StringBuilder(PUtil.indent(indent))
             .append("class ")
@@ -61,8 +61,8 @@ public class DocumentClass extends DocumentProperty implements IConcrete, IForma
             firstLine.append("implements ").append(String.join(", ", this.interfaces)).append(' ');
         }
         lines.add(firstLine.append('{').toString());
-        this.fieldDocs.forEach(f -> lines.addAll(f.format(indent + stepIndent, stepIndent)));
-        this.methodDocs.forEach(m -> lines.addAll(m.format(indent + stepIndent, stepIndent)));
+        this.fieldDocs.forEach(f -> lines.addAll(f.formatLines(indent + stepIndent, stepIndent)));
+        this.methodDocs.forEach(m -> lines.addAll(m.formatLines(indent + stepIndent, stepIndent)));
         lines.add(PUtil.indent(indent) + "}");
         return lines;
     }

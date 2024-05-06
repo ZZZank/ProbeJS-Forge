@@ -36,7 +36,7 @@ public abstract class TagCompiler {
             )
             .collect(Collectors.toList());
         return new FormatterNamespace("Tag", new FormatterRaw(lines, false))
-            .format(indent, stepIndent);
+            .formatLines(indent, stepIndent);
     }
 
     public static void compile(BufferedWriter writer) throws IOException {

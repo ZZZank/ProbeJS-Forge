@@ -2,6 +2,7 @@ package com.probejs.compiler.rich.lang;
 
 import com.probejs.ProbeJS;
 import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.util.PUtil;
 import java.util.*;
 import java.util.function.Consumer;
@@ -13,7 +14,7 @@ import net.minecraft.client.resources.language.LanguageInfo;
 import net.minecraft.client.resources.language.LanguageManager;
 import net.minecraft.locale.Language;
 
-public class FormatterLang implements IFormatter {
+public class FormatterLang implements MultiFormatter {
 
     public static final LanguageInfo DEFAULT_LANGUAGE = new LanguageInfo("en_us", "US", "English", false);
     private static final Set<String> ALL_KEYS = new HashSet<>();
@@ -33,7 +34,7 @@ public class FormatterLang implements IFormatter {
     }
 
     @Override
-    public List<String> format(int indent, int stepIndent) {
+    public List<String> formatLines(int indent, int stepIndent) {
         if (!(Language.getInstance() instanceof ClientLanguage)) {
             return new ArrayList<>(0);
         }

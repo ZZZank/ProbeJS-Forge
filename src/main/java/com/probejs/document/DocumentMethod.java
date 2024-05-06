@@ -3,7 +3,7 @@ package com.probejs.document;
 import com.probejs.document.parser.processor.IDocumentProvider;
 import com.probejs.document.type.IDocType;
 import com.probejs.document.type.DocTypeResolver;
-import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.info.clazz.MethodInfo;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class DocumentMethod
     extends DocumentProperty
-    implements IDocumentProvider<DocumentMethod>, IFormatter {
+    implements IDocumentProvider<DocumentMethod>, MultiFormatter {
 
     @Override
     public DocumentMethod provide() {
@@ -30,9 +30,9 @@ public class DocumentMethod
     }
 
     @Override
-    public List<String> format(int indent, int stepIndent) {
+    public List<String> formatLines(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
-        if (comment != null) formatted.addAll(comment.format(indent, stepIndent));
+        if (comment != null) formatted.addAll(comment.formatLines(indent, stepIndent));
         String paramStr = getParams()
             .stream()
             .map(documentParam ->

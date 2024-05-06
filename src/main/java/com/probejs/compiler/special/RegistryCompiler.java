@@ -49,7 +49,7 @@ public class RegistryCompiler {
             formatters.add(new FormatterNamespace(namespace, new FormatterRaw(lines, false)));
         });
         val namespaced = new FormatterNamespace("Registry", formatters);
-        for (val line : namespaced.format(0, 4)) {
+        for (val line : namespaced.formatLines(0, 4)) {
             writer.write(line);
             writer.write('\n');
         }

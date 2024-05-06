@@ -24,7 +24,7 @@ public class PlatformDataCompiler {
         //more?
 
         for (final String line : new FormatterNamespace("platform", new FormatterRaw(lines, false))
-            .format(0, 4)) {
+            .formatLines(0, 4)) {
             writer.write(line);
             writer.write('\n');
         }

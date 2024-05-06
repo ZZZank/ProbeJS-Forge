@@ -4,6 +4,7 @@ import com.probejs.document.comment.AbstractComment;
 import com.probejs.document.comment.CommentHandler;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.util.PUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DocumentComment implements IDecorative, IFormatter {
+public class DocumentComment implements IDecorative, MultiFormatter {
 
     private final List<String> documentText;
     private final HashMap<Class<? extends AbstractComment>, List<AbstractComment>> abstractComments = new HashMap<>();
@@ -59,7 +60,7 @@ public class DocumentComment implements IDecorative, IFormatter {
     }
 
     @Override
-    public List<String> format(int indent, int stepIndent) {
+    public List<String> formatLines(int indent, int stepIndent) {
         return getDocumentText().stream().map(PUtil.indent(indent)::concat).collect(Collectors.toList());
     }
 }

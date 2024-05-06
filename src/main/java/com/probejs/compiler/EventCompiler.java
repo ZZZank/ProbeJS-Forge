@@ -95,7 +95,7 @@ public class EventCompiler {
                 "",
                 "E.g. `player.data_from_server.reload`, `ftbquests.completed.123456`"
             )
-                .format(0, 0)
+                .formatLines(0, 0)
         );
         lines.add(
             "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void): void;"

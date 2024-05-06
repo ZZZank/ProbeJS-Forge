@@ -1,6 +1,6 @@
 package com.probejs.formatter;
 
-import com.probejs.formatter.api.IFormatter;
+import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.clazz.ClassInfo;
 import com.probejs.info.clazz.ConstructorInfo;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FormatterConstructor implements IFormatter {
+public class FormatterConstructor implements MultiFormatter {
 
     private final ConstructorInfo constructor;
 
@@ -58,7 +58,7 @@ public class FormatterConstructor implements IFormatter {
     }
 
     @Override
-    public List<String> format(int indent, int stepIndent) {
+    public List<String> formatLines(int indent, int stepIndent) {
         List<String> lines = new ArrayList<>();
         lines.add(String.format("%sconstructor(%s);", PUtil.indent(indent), formatParams()));
         return lines;
