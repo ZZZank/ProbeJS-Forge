@@ -16,5 +16,4 @@ public abstract class DocumentProperty implements IConcrete {
             }
         }
     }
-
 }

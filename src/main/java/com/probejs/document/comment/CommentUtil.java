@@ -51,7 +51,7 @@ public class CommentUtil {
     }
 
     /**
-     * remove one star mark("*") at the front if any.
+     * remove one star-mark("*") at the front, if any. Processed str will also have opening/trailing space removed
      * @return processed string, or itself if it has no "*" at the front.
      */
     public static String removeStarMark(String line) {

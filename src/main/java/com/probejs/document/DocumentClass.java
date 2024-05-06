@@ -9,10 +9,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DocumentClass implements IConcrete, IFormatter {
+public class DocumentClass extends DocumentProperty implements IConcrete, IFormatter {
 
-    @Getter
-    private DocumentComment comment;
     @Setter
     @Getter
     private String name;
@@ -47,15 +45,6 @@ public class DocumentClass implements IConcrete, IFormatter {
         }
         fieldDocs.addAll(other.getFieldDocs());
         methodDocs.addAll(other.getMethodDocs());
-    }
-
-    @Override
-    public void acceptDeco(List<IDecorative> decorates) {
-        for (IDecorative decorative : decorates) {
-            if (decorative instanceof DocumentComment) {
-                this.comment = (DocumentComment) decorative;
-            }
-        }
     }
 
     @Override
