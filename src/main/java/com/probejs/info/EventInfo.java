@@ -57,20 +57,19 @@ public class EventInfo implements Comparable<EventInfo> {
     }
 
     public JsonObject toJson() {
-        val jObject = JObject.of()
+        return JObject.of()
             .add("id", id)
+            .ifThen(hasSub(), (jObj) -> jObj.add("sub", sub))
             .add("class", clazzRaw.getName())
-            .add("cancellable", this.cancellable);
-        if (hasSub()) {
-            jObject.add("sub", sub);
-        }
-        if (scriptTypes != null) {
-            jObject.add(
-                "type",
-                JArray.of().addAll(scriptTypes.stream().map(ScriptType::name).map(JPrimitive::of))
-            );
-        }
-        return jObject.build();
+            .ifThen(
+                scriptTypes != null,
+                jObj -> jObj.add(
+                    "type",
+                    JArray.of().addAll(scriptTypes.stream().map(ScriptType::name).map(JPrimitive::of))
+                )
+            )
+            .add("cancellable", this.cancellable)
+            .build();
     }
 
     /**
