@@ -51,13 +51,17 @@ public class CommentUtil {
     }
 
     /**
-     * remove one star-mark("*") at the front, if any. Processed str will also have opening/trailing space removed
+     * remove one star-mark with one space("* ") at the front, if any.
      * @return processed string, or itself if it has no "*" at the front.
      */
     public static String removeStarMark(String line) {
-        if (!line.startsWith("*")) {
+        line = line.trim();
+        if (line.equals("*")) {
+            return "";
+        }
+        if (!line.startsWith("* ")) {
             return line;
         }
-        return line.substring(1).trim();
+        return line.substring(2);
     }
 }
