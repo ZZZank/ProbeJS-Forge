@@ -226,28 +226,6 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
                 .ifPresent(fmtr -> lines.addAll(fmtr.formatBean(indent + stepIndent, stepIndent)));
         }
         //special processing for FunctionalInterface
-        if (classInfo.isFunctionalInterface()) {
-            val fnTargets = classInfo
-                .getMethodInfos()
-                .stream()
-                .filter(MethodInfo::isAbstract)
-                .findFirst();
-            if (fnTargets.isPresent()) {
-                FormatterMethod fnFormatter = new FormatterMethod(fnTargets.get());
-                DocumentMethod doc = fnFormatter.document;
-                lines.add(
-                    String.format(
-                        "%s(%s): %s;",
-                        PUtil.indent(indent + stepIndent),
-                        fnFormatter.formatParams(
-                            CommentUtil.getRenames(doc == null ? null : doc.getComment()),
-                            true
-                        ),
-                        fnFormatter.formatReturn()
-                    )
-                );
-            }
-        }
 
         // constructors
         if (!classInfo.isInterface()) {
