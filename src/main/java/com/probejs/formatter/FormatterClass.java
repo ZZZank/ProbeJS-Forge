@@ -6,7 +6,6 @@ import com.google.common.collect.Multimap;
 import com.probejs.ProbeJS;
 import com.probejs.document.DocManager;
 import com.probejs.document.DocumentClass;
-import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.comment.CommentUtil;
@@ -24,7 +23,6 @@ import lombok.Setter;
 import lombok.val;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,7 +51,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
     /**
      * similar to {@code new FormatterType(info,false).format(0,4)}, but with additional
      * processing for TypeClass. If its getTypeVariables() is not returning an empty
-     * list, a {@code <any,any,...>} style type variable representation will be added to
+     * list, a {@code <a,b,...>} style type variable representation will be added to
      * the end of formatted string
      */
     public static String formatParameterized(IType info) {
@@ -102,9 +100,9 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
                 val values = clazz.getMethod("values");
                 values.setAccessible(true);
                 val enumValues = (Object[]) values.invoke(null);
-                //Use the name() here so won't be affected by overrides
+                //Use the name() method here so won't be affected by overrides
                 val name = Enum.class.getMethod("name");
-                for (Object enumValue : enumValues) {
+                for (val enumValue : enumValues) {
                     assignableTypes.add(
                         ProbeJS.GSON.toJson(name.invoke(enumValue).toString().toLowerCase(Locale.ROOT))
                     );
@@ -225,7 +223,6 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
                 .findFirst()
                 .ifPresent(fmtr -> lines.addAll(fmtr.formatBean(indent + stepIndent, stepIndent)));
         }
-        //special processing for FunctionalInterface
 
         // constructors
         if (!classInfo.isInterface()) {

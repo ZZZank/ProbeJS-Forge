@@ -12,7 +12,6 @@ import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.clazz.MethodInfo;
 import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeClass;
-import com.probejs.info.type.TypeVariable;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
 import lombok.Getter;
@@ -167,7 +166,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                     if (forceNoUnderscore) {
                         return false;
                     }
-                    val base = typeInfo.getBaseType();
+                    val base = typeInfo.getBase();
                     if (base instanceof TypeClass) {
                         return !NameResolver.resolvedPrimitives.contains(base.getResolvedClass().getName());
                     }

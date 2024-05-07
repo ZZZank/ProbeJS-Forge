@@ -1,14 +1,13 @@
 package com.probejs.info.type;
 
+import lombok.Data;
+
 import java.lang.reflect.Type;
 
+@Data
 public class TypeLiteral implements IType {
 
     private final String value;
-
-    public TypeLiteral(String value) {
-        this.value = value;
-    }
 
     @Override
     public Type getRaw() {
@@ -16,7 +15,7 @@ public class TypeLiteral implements IType {
     }
 
     @Override
-    public IType getBaseType() {
+    public IType getBase() {
         return this;
     }
 

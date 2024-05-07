@@ -1,5 +1,7 @@
 package com.probejs.info.type;
 
+import lombok.Data;
+
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.Arrays;
@@ -7,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Data
 public class TypeWildcard implements IType {
 
     public static boolean test(Type type) {
@@ -15,8 +18,8 @@ public class TypeWildcard implements IType {
 
     private final WildcardType raw;
     private final IType base;
-    private final List<IType> upper;
-    private final List<IType> lower;
+    private final List<IType> upperBounds;
+    private final List<IType> lowerBounds;
 
     public TypeWildcard(Type type) {
         this.raw = (WildcardType) type;
@@ -32,17 +35,17 @@ public class TypeWildcard implements IType {
             this.base = new TypeClass(Object.class);
         }
 
-        this.upper = upper[0] == Object.class
+        this.upperBounds = upper[0] == Object.class
             ? Collections.emptyList()
             : Arrays.stream(upper).map(TypeResolver::resolveType).collect(Collectors.toList());
 
-        this.lower = lower.length == 0
+        this.lowerBounds = lower.length == 0
             ? Collections.emptyList()
             : Arrays.stream(lower).map(TypeResolver::resolveType).collect(Collectors.toList());
     }
 
     @Override
-    public IType getBaseType() {
+    public IType getBase() {
         return base;
     }
 
@@ -63,19 +66,7 @@ public class TypeWildcard implements IType {
 
     @Override
     public boolean assignableFrom(IType info) {
-        return info.getBaseType().assignableFrom(base);
+        return info.getBase().assignableFrom(base);
     }
 
-    @Override
-    public Type getRaw() {
-        return this.raw;
-    }
-
-    public List<IType> getUpperBounds() {
-        return this.upper;
-    }
-
-    public List<IType> getLowerBounds() {
-        return this.lower;
-    }
 }

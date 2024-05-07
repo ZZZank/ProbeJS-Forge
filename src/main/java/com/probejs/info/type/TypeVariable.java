@@ -1,10 +1,13 @@
 package com.probejs.info.type;
 
+import lombok.Data;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Data
 public class TypeVariable implements IType {
 
     public static boolean test(Type type) {
@@ -17,17 +20,13 @@ public class TypeVariable implements IType {
         this.raw = (java.lang.reflect.TypeVariable<?>) type;
     }
 
-    private TypeVariable(java.lang.reflect.TypeVariable<?> inner) {
-        this.raw = inner;
-    }
-
     @Override
     public java.lang.reflect.TypeVariable<?> getRaw() {
         return this.raw;
     }
 
     @Override
-    public IType getBaseType() {
+    public IType getBase() {
         return this;
     }
 

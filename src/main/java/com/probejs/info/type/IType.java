@@ -4,10 +4,10 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 public interface IType {
-    @Nullable
+
     Type getRaw();
 
-    IType getBaseType();
+    IType getBase();
 
     @Nullable
     Class<?> getResolvedClass();

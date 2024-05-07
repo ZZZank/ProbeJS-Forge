@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class TypeResolver {
+public abstract class TypeResolver {
 
     public static IType resolveType(Type type) {
         if (type == null) {
@@ -32,17 +32,17 @@ public class TypeResolver {
 
         if (typeInfo instanceof TypeWildcard) {
             TypeWildcard wild = (TypeWildcard) typeInfo;
-            return mutateTypeMap(wild.getBaseType(), toMutate);
+            return mutateTypeMap(wild.getBase(), toMutate);
         }
 
         if (typeInfo instanceof TypeArray) {
             TypeArray array = (TypeArray) typeInfo;
-            array.setBase(mutateTypeMap(array.getBaseType(), toMutate));
+            array.setBase(mutateTypeMap(array.getBase(), toMutate));
         }
 
         if (typeInfo instanceof TypeParameterized) {
             TypeParameterized parType = (TypeParameterized) typeInfo;
-            parType.setRawType(mutateTypeMap(parType.getBaseType(), toMutate));
+            parType.setRawType(mutateTypeMap(parType.getBase(), toMutate));
             parType.setParamTypes(
                 parType
                     .getParamTypes()
@@ -58,7 +58,7 @@ public class TypeResolver {
     public static IType getContainedTypeOrSelf(IType typeInfo) {
         if (typeInfo instanceof TypeParameterized) {
             TypeParameterized paramType = (TypeParameterized) typeInfo;
-            IType baseType = paramType.getBaseType();
+            IType baseType = paramType.getBase();
             if (
                 baseType.assignableFrom(resolveType(Collection.class)) && !paramType.getParamTypes().isEmpty()
             ) {

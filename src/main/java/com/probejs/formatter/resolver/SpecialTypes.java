@@ -29,7 +29,7 @@ public class SpecialTypes {
         if (inner == null) {
             return "any";
         }
-        return String.format("typeof %s", FormatterType.of(inner.getBaseType(), false).format());
+        return String.format("typeof %s", FormatterType.of(inner.getBase(), false).format());
     }
 
     private static String formatValueOrType(Object obj) {

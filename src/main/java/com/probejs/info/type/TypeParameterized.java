@@ -1,7 +1,6 @@
 package com.probejs.info.type;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -10,11 +9,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Setter
+
+@Data
 public class TypeParameterized implements IType {
 
     private IType rawType;
-    @Getter
     private List<IType> paramTypes;
 
     public TypeParameterized(Type type) {
@@ -39,7 +38,7 @@ public class TypeParameterized implements IType {
     }
 
     @Override
-    public IType getBaseType() {
+    public IType getBase() {
         return rawType;
     }
 

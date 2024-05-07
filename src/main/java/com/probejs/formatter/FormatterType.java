@@ -148,7 +148,7 @@ public abstract class FormatterType<T extends IType> {
 
         @Override
         public String format() {
-            return FormatterType.of(this.tInfo.getBaseType()).underscored(this.underscored).format();
+            return FormatterType.of(this.tInfo.getBase()).underscored(this.underscored).format();
         }
     }
 
@@ -212,7 +212,7 @@ public abstract class FormatterType<T extends IType> {
 
         @Override
         public String format() {
-            return FormatterType.of(this.tInfo.getBaseType()).underscored(this.underscored).format() + "[]";
+            return FormatterType.of(this.tInfo.getBase()).underscored(this.underscored).format() + "[]";
         }
     }
 
@@ -237,7 +237,7 @@ public abstract class FormatterType<T extends IType> {
         @Override
         public String format() {
             return String.format("%s<%s>",
-                FormatterType.of(this.tInfo.getBaseType()).underscored(this.underscored).format(),
+                FormatterType.of(this.tInfo.getBase()).underscored(this.underscored).format(),
                 this.tInfo.getParamTypes()
                     .stream()
                     .map(FormatterType::of)

@@ -1,10 +1,14 @@
 package com.probejs.info.type;
 
 import com.probejs.info.clazz.ClassInfo;
+import lombok.Data;
+import lombok.Getter;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
+@Getter
+@Data
 public class TypeClass implements IType {
 
     public static boolean test(Type type) {
@@ -17,12 +21,8 @@ public class TypeClass implements IType {
         this.raw = (Class<?>) type;
     }
 
-    private TypeClass(Class<?> type) {
-        this.raw = type;
-    }
-
     @Override
-    public IType getBaseType() {
+    public IType getBase() {
         return this;
     }
 
@@ -52,10 +52,5 @@ public class TypeClass implements IType {
 
     public List<TypeVariable> getTypeVariables() {
         return ClassInfo.ofCache(this.raw).getTypeParameters();
-    }
-
-    @Override
-    public Type getRaw() {
-        return this.raw;
     }
 }

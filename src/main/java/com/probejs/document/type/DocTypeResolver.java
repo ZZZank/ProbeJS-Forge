@@ -53,7 +53,7 @@ public class DocTypeResolver {
         }
         if (docType instanceof DocTypeArray && param instanceof com.probejs.info.type.TypeArray) {
             com.probejs.info.type.TypeArray array = (com.probejs.info.type.TypeArray) param;
-            return typeEquals(((DocTypeArray) docType).getComponent(), array.getBaseType());
+            return typeEquals(((DocTypeArray) docType).getComponent(), array.getBase());
         }
         if (docType instanceof DocTypeParameterized && param instanceof com.probejs.info.type.TypeParameterized) {
             com.probejs.info.type.TypeParameterized parameterized = (com.probejs.info.type.TypeParameterized) param;
@@ -65,7 +65,7 @@ public class DocTypeResolver {
             for (int i = 0; i < paramDoc.size(); i++) {
                 if (!typeEquals(paramDoc.get(i), paramInfo.get(i))) return false;
             }
-            return typeEquals(((DocTypeParameterized) docType).getRawType(), parameterized.getBaseType());
+            return typeEquals(((DocTypeParameterized) docType).getRawType(), parameterized.getBase());
         }
         if (
             docType instanceof DocTypeNamed &&

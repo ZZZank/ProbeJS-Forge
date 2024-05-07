@@ -1,12 +1,12 @@
 package com.probejs.info.type;
 
-import lombok.Setter;
+import lombok.Data;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-@Setter
+@Data
 public class TypeArray implements IType {
 
     /**
@@ -22,7 +22,7 @@ public class TypeArray implements IType {
     }
 
     /**
-     * @return true if it can be casted into {@code Class<?>} and {@code ((Class<?>) type).isArray()}
+     * @return true if it can be cast into {@code Class<?>} and {@code ((Class<?>) type).isArray()}
      * is true, otherwise false
      */
     public static boolean isClassArray(Type type) {
@@ -53,18 +53,13 @@ public class TypeArray implements IType {
     }
 
     @Override
-    public IType getBaseType() {
-        return base;
-    }
-
-    @Override
     public Class<?> getResolvedClass() {
         return List.class;
     }
 
     @Override
     public String getTypeName() {
-        return this.base.getTypeName()+"[]";
+        return this.base.getTypeName() + "[]";
     }
 
     @Override
@@ -74,7 +69,7 @@ public class TypeArray implements IType {
 
     @Override
     public boolean assignableFrom(IType info) {
-        return info instanceof TypeArray && info.getBaseType().assignableFrom(base);
+        return info instanceof TypeArray && info.getBase().assignableFrom(base);
     }
 
     @Override
