@@ -1,10 +1,10 @@
 package com.probejs.document.comment.special;
 
-import com.probejs.document.comment.AbstractComment;
+import com.probejs.document.comment.SpecialComment;
 import lombok.Getter;
 
 @Getter
-public class CommentRename extends AbstractComment {
+public class CommentRename extends SpecialComment {
 
     private final String name;
     private final String to;
@@ -16,5 +16,4 @@ public class CommentRename extends AbstractComment {
         name = nameTo[1];
         to = nameTo[2];
     }
-
 }

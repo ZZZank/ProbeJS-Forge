@@ -1,12 +1,12 @@
 package com.probejs.document.comment.special;
 
-import com.probejs.document.comment.AbstractComment;
+import com.probejs.document.comment.SpecialComment;
 import com.probejs.document.type.IDocType;
 import com.probejs.document.type.DocTypeResolver;
 import lombok.Getter;
 
 @Getter
-public class CommentModify extends AbstractComment {
+public class CommentModify extends SpecialComment {
 
     private static final int MARK_LEN = "@modify ".length();
     private final String name;
@@ -19,5 +19,4 @@ public class CommentModify extends AbstractComment {
         this.name = split[1];
         this.type = DocTypeResolver.resolve(split[2]);
     }
-
 }

@@ -1,9 +1,9 @@
 package com.probejs.document.comment.special;
 
-import com.probejs.document.comment.AbstractComment;
+import com.probejs.document.comment.SpecialComment;
 import me.shedaniel.architectury.platform.Platform;
 
-public class CommentMod extends AbstractComment {
+public class CommentMod extends SpecialComment {
 
     private static final int MARK_LEN = "@mod ".length();
     private final String mod;
