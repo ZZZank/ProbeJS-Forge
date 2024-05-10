@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+
+import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class SpecialCompiler {
@@ -19,13 +21,13 @@ public abstract class SpecialCompiler {
     public static final Path PATH = ProbePaths.GENERATED.resolve("special.d.ts");
 
     public static void compile(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) throws IOException {
-        final SpecialData data = SpecialData.fetch();
+        val data = SpecialData.instance();
 
         RegistryCompiler.init(data.registries);
         TagCompiler.init(data.tags);
         RecipeHoldersCompiler.init(recipeHandlers);
 
-        final BufferedWriter writer = Files.newBufferedWriter(PATH);
+        val writer = Files.newBufferedWriter(PATH);
 
         RegistryCompiler.compile(writer);
         TagCompiler.compile(writer);

@@ -57,8 +57,13 @@ public class SnippetCompiler {
     }
 
     private static void generateTagSnippet(JObject resultJson) {
-        for (val entry : SpecialData.computeTags().entrySet()) {
-            String type = String.format("%s_tag", entry.getKey());
+        val duped = new HashSet<String>();
+        for (val entry : SpecialData.instance().tags.entrySet()) {
+            String type = String.format("%s_tag", entry.getKey().getPath());
+            if (duped.contains(type)) {
+                type = type + "_" + entry.getKey().getNamespace();
+            }
+            duped.add(type);
             resultJson.add(
                 type,
                 JObject.of()

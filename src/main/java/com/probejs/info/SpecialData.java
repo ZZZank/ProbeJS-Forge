@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagCollection;
 import net.minecraftforge.registries.ForgeRegistry;
@@ -23,35 +25,36 @@ import net.minecraftforge.registries.RegistryManager;
 
 public class SpecialData {
 
-    public final Map<String, Collection<ResourceLocation>> tags;
+    private static SpecialData INSTANCE;
+    public final Map<ResourceLocation, Collection<ResourceLocation>> tags;
     public final Collection<RegistryInfo> registries;
 
-    public SpecialData(Map<String, Collection<ResourceLocation>> tags, Collection<RegistryInfo> registries) {
+    public SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> tags, Collection<RegistryInfo> registries) {
         this.tags = tags;
         this.registries = registries;
     }
 
-    private static void putTag(
-        Map<String, Collection<ResourceLocation>> target,
-        String type,
-        TagCollection<?> tagCollection
-    ) {
-        List<ResourceLocation> tagIds = new ArrayList<>(tagCollection.getAvailableTags());
-        tagIds.sort(null);
-        target.put(type, tagIds);
+    public static SpecialData instance() {
+        return INSTANCE;
     }
 
-    public static Map<String, Collection<ResourceLocation>> computeTags() {
-        final Map<String, Collection<ResourceLocation>> tags = new HashMap<>();
-        putTag(tags, "items", Tags.items());
-        putTag(tags, "blocks", Tags.blocks());
-        putTag(tags, "fluids", Tags.fluids());
-        putTag(tags, "entity_types", Tags.entityTypes());
+    public static void refresh() {
+        val rInfos = computeRegistryInfos();
+        SpecialData.INSTANCE = new SpecialData(extractTagsFrom(rInfos), rInfos);
+    }
+
+    private static Map<ResourceLocation, Collection<ResourceLocation>> extractTagsFrom(List<RegistryInfo> source) {
+        val tags = new HashMap<ResourceLocation, Collection<ResourceLocation>>();
+        for (val rInfo : source) {
+            val tagHelper = rInfo.tagHelper();
+            if (tagHelper == null) {
+                continue;
+            }
+            val names = tagHelper.getAllTags().getAvailableTags();
+            val id = rInfo.id();
+            tags.put(id, names);
+        }
         return tags;
-    }
-
-    public static SpecialData fetch() {
-        return new SpecialData(computeTags(), computeRegistryInfos());
     }
 
     @Override
