@@ -14,6 +14,7 @@ import com.probejs.document.comment.CommentHandler;
 import com.probejs.document.parser.processor.DocumentProviderManager;
 import com.probejs.formatter.resolver.ClazzFilter;
 import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.info.SpecialData;
 import com.probejs.util.RemapperBridge;
 import dev.latvian.kubejs.KubeJSPaths;
 
@@ -39,42 +40,7 @@ public class ProbeCommands {
                     Commands
                         .literal("dump")
                         .requires(source -> source.getServer().isSingleplayer())
-                        .executes(context -> {
-                            try {
-                                sendSuccess(context, "ProbeJS initializing...");
-                                RemapperBridge.refreshRemapper();
-                                DocumentProviderManager.init();
-                                CommentHandler.init();
-                                DocManager.init();
-                                ClazzFilter.init();
-                                NameResolver.init();
-                                sendSuccess(context, "Generating docs...");
-                                TypingCompiler.compile();
-                                sendSuccess(context, "Generating code snippets...");
-                                SnippetCompiler.compile();
-                                sendSuccess(context, "Generating rich display information...");
-                                RichFluidCompiler.compile();
-                                RichItemCompiler.compile();
-                                RichLangCompiler.compile();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                context.getSource().sendSuccess(new TextComponent(
-                                    "[ERROR]Uncaught exception happened, terminating typing generation...").withStyle(
-                                    ChatFormatting.RED), true);
-                                val githubLink = new TextComponent("ProbeJS Github")
-                                    .withStyle(Style.EMPTY.withUnderlined(true)
-                                        .withClickEvent(new ClickEvent(
-                                            ClickEvent.Action.OPEN_URL,
-                                            "https://github.com/ZZZank/ProbeJS-Forge/issues"
-                                        )));
-                                context.getSource()
-                                    .sendSuccess(new TextComponent("Please report this error to ")
-                                            .append(githubLink)
-                                            .append(" with complete latest.log.")
-                                        , true);
-                            }
-                            return sendSuccess(context, "ProbeJS typing generation finished.");
-                        })
+                        .executes(ProbeCommands::dump)
                 )
                 .then(
                     Commands
@@ -199,5 +165,39 @@ public class ProbeCommands {
      */
     private static int sendSuccess(CommandContext<CommandSourceStack> context, String message) {
         return sendSuccess(context.getSource(), message, true);
+    }
+
+    private static int dump(CommandContext<CommandSourceStack> context) {
+        try {
+            sendSuccess(context, "ProbeJS initializing...");
+            RemapperBridge.refreshRemapper();
+            DocumentProviderManager.init();
+            CommentHandler.init();
+            DocManager.init();
+            ClazzFilter.init();
+            NameResolver.init();
+            SpecialData.refresh();
+            sendSuccess(context, "Generating docs...");
+            TypingCompiler.compile();
+            sendSuccess(context, "Generating code snippets...");
+            SnippetCompiler.compile();
+            sendSuccess(context, "Generating rich display information...");
+            RichFluidCompiler.compile();
+            RichItemCompiler.compile();
+            RichLangCompiler.compile();
+        } catch (Exception e) {
+            e.printStackTrace();
+            context.getSource()
+                .sendSuccess(new TextComponent("[ERROR]Uncaught exception happened, terminating typing generation...").withStyle(
+                    ChatFormatting.RED), true);
+            val githubLink = new TextComponent("ProbeJS Github").withStyle(Style.EMPTY.withUnderlined(true)
+                .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
+                    "https://github.com/ZZZank/ProbeJS-Forge/issues"
+                )));
+            context.getSource()
+                .sendSuccess(new TextComponent("Please report this error to ").append(githubLink)
+                    .append(" with complete latest.log."), true);
+        }
+        return sendSuccess(context, "ProbeJS typing generation finished.");
     }
 }
