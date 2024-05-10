@@ -2,7 +2,7 @@ package com.probejs.mixin;
 
 import com.probejs.ProbeJS;
 import com.probejs.info.EventInfo;
-import com.probejs.plugin.CapturedClasses;
+import com.probejs.capture.CapturedClasses;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
 import org.spongepowered.asm.mixin.Mixin;

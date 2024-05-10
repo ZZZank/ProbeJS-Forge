@@ -1,6 +1,5 @@
-package com.probejs.plugin;
+package com.probejs;
 
-import com.probejs.ProbeJS;
 import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.mods.rhino.NativeJavaObject;

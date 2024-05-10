@@ -1,7 +1,7 @@
 package com.probejs.info;
 
 import com.google.common.collect.HashBiMap;
-import com.probejs.plugin.DummyBindingEvent;
+import com.probejs.capture.DummyBindingEvent;
 import com.probejs.util.PUtil;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;

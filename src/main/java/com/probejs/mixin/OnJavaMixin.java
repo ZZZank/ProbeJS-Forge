@@ -1,6 +1,6 @@
 package com.probejs.mixin;
 
-import com.probejs.plugin.CapturedClasses;
+import com.probejs.capture.CapturedClasses;
 import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.NativeJavaClass;
 import dev.latvian.mods.rhino.Scriptable;

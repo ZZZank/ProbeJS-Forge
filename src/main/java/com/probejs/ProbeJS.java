@@ -2,7 +2,7 @@ package com.probejs;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.probejs.plugin.CapturedClasses;
+import com.probejs.capture.CapturedClasses;
 import me.shedaniel.architectury.event.events.CommandRegistrationEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;

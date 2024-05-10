@@ -1,4 +1,4 @@
-package com.probejs.plugin;
+package com.probejs.capture;
 
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptManager;

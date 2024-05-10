@@ -1,4 +1,4 @@
-package com.probejs.plugin;
+package com.probejs.capture;
 
 import com.probejs.info.EventInfo;
 // import dev.latvian.kubejs.RegistryObjectBuilderTypes;
