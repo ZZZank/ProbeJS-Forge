@@ -7,9 +7,8 @@ import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
 import dev.latvian.kubejs.server.ServerScriptManager;
 import dev.latvian.kubejs.util.KubeJSPlugins;
-import dev.latvian.kubejs.util.Tags;
+
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagCollection;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
@@ -39,7 +37,12 @@ public class SpecialData {
     }
 
     public static void refresh() {
-        val rInfos = computeRegistryInfos();
+        val rInfos = SpecialData
+            .fetchRawRegistries()
+            .values()
+            .stream()
+            .map(RegistryInfo::new)
+            .collect(Collectors.toList());
         SpecialData.INSTANCE = new SpecialData(extractTagsFrom(rInfos), rInfos);
     }
 
@@ -60,15 +63,6 @@ public class SpecialData {
     @Override
     public String toString() {
         return String.format("SpecialData{tags=%s, registries=%s}", tags, registries);
-    }
-
-    public static List<RegistryInfo> computeRegistryInfos() {
-        return SpecialData
-            .fetchRawRegistries()
-            .values()
-            .stream()
-            .map(RegistryInfo::new)
-            .collect(Collectors.toList());
     }
 
     private static Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> fetchRawRegistries() {

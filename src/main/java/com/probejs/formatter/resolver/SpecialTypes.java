@@ -154,8 +154,8 @@ public class SpecialTypes {
             }
         });
         //registry
-        SpecialData
-            .computeRegistryInfos()
+        SpecialData.instance()
+            .registries
             .stream()
             .filter(info -> !info.names.isEmpty())
             .forEach(info -> {

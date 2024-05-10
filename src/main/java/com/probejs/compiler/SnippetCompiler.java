@@ -34,7 +34,7 @@ public class SnippetCompiler {
 
     private static void generateRegistrySnippet(JObject resultJson) {
         val paths = new HashSet<String>();
-        for (RegistryInfo info : SpecialData.computeRegistryInfos()) {
+        for (RegistryInfo info : SpecialData.instance().registries) {
             String type = info.id.getPath();
             if (paths.contains(type)) {
                 type = String.format("%s_%s", type, info.id.getNamespace());
