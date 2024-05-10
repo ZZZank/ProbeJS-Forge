@@ -5,6 +5,8 @@ import java.util.Set;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.StaticTagHelper;
+import net.minecraft.tags.StaticTags;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -16,6 +18,7 @@ public class RegistryInfo {
     public final ResourceLocation parentId;
     public final ResourceLocation id;
     public final Set<ResourceLocation> names;
+    private final StaticTagHelper<?> tagHelper;
 
     public RegistryInfo(ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRegistry) {
         this.raw = null;
@@ -24,6 +27,7 @@ public class RegistryInfo {
         this.parentId = resKey.getRegistryName();
         this.id = resKey.location();
         this.names = forgeRaw.getKeys();
+        this.tagHelper = StaticTags.get(this.id);
     }
 
     public RegistryInfo(Registry<?> registry) {
@@ -33,6 +37,7 @@ public class RegistryInfo {
         this.parentId = resKey.getRegistryName();
         this.id = resKey.location();
         this.names = raw.keySet();
+        this.tagHelper = StaticTags.get(this.id);
     }
 
     public Registry<?> raw() {
@@ -57,5 +62,9 @@ public class RegistryInfo {
 
     public Set<ResourceLocation> names() {
         return this.names;
+    }
+
+    public StaticTagHelper<?> tagHelper() {
+        return tagHelper;
     }
 }
