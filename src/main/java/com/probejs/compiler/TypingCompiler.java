@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
+import com.probejs.capture.EventCache;
 import com.probejs.document.DocManager;
 import com.probejs.formatter.resolver.ClazzFilter;
 import com.probejs.formatter.resolver.NameResolver;
@@ -190,11 +191,11 @@ public class TypingCompiler {
     }
 
     public static void compile() throws IOException {
-        final DummyBindingEvent bindingEvent = SpecialData.computeBindingEvent();
-        final Map<ResourceLocation, RecipeTypeJS> typeMap = SpecialData.computeRecipeTypes();
-        final Map<String, EventInfo> knownEvents = EventCompiler.readCachedEvents();
+        val bindingEvent = SpecialData.computeBindingEvent();
+        val typeMap = SpecialData.computeRecipeTypes();
+        val knownEvents = EventCache.readKjs();
         knownEvents.putAll(CapturedClasses.capturedEvents);
-        final Map<String, Class<?>> knownRawEvents = EventCompiler.readCachedForgeEvents();
+        val knownRawEvents = EventCache.readForge();
         knownRawEvents.putAll(CapturedClasses.capturedRawEvents);
 
         final Set<Class<?>> cachedClasses = knownEvents
@@ -205,11 +206,11 @@ public class TypingCompiler {
         cachedClasses.addAll(knownRawEvents.values());
 
         //global class
-        final Set<Class<?>> globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
+        val globalClasses = fetchClasses(typeMap, bindingEvent, cachedClasses);
         globalClasses.removeIf(ClazzFilter::shouldSkip);
 
         bindingEvent.getClassDumpReversed().forEach((c, names) -> {
-            final String base = names.get(0);
+            val base = names.get(0);
             NameResolver.putResolvedName(c, base);
             for (int i = 1; i < names.size(); i++) {
                 DocManager.rawTSDoc.add(String.format("declare const %s = %s", names.get(i), base));
@@ -225,7 +226,7 @@ public class TypingCompiler {
         compileConstants(bindingEvent);
         compileJava(globalClasses);
         compileJSConfig();
-        EventCompiler.compileEventsCache(knownEvents);
-        EventCompiler.compileForgeEventsCache(knownRawEvents);
+        EventCache.writeKjs(knownEvents);
+        EventCache.writeForge(knownRawEvents);
     }
 }

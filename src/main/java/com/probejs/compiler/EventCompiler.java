@@ -1,19 +1,11 @@
 package com.probejs.compiler;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.mojang.datafixers.util.Pair;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterComments;
 import com.probejs.info.EventInfo;
 import com.probejs.info.type.TypeClass;
-import com.probejs.util.json.JObject;
-import dev.latvian.kubejs.event.EventJS;
-import lombok.val;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -23,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -143,89 +134,4 @@ public class EventCompiler {
         }
     }
 
-    public static Map<String, EventInfo> readCachedEvents() throws IOException {
-        final Map<String, EventInfo> cachedEvents = new HashMap<>();
-        if (!Files.exists(EVENT_CACHE_PATH)) {
-            return cachedEvents;
-        }
-        try {
-            val cachedMap = ProbeJS.GSON.fromJson(
-                Files.newBufferedReader(EVENT_CACHE_PATH),
-                JsonObject.class
-            );
-            if (cachedMap == null) {
-                return cachedEvents;
-            }
-            for (Map.Entry<String, JsonElement> entry : cachedMap.entrySet()) {
-                final String key = entry.getKey();
-                final JsonElement value = entry.getValue();
-                if (!value.isJsonObject()) {
-                    //old cache is string, which means JsonElement, so not JsonObject
-                    break;
-                }
-                EventInfo.fromJson(value.getAsJsonObject()).ifPresent(event -> cachedEvents.put(key, event));
-            }
-        } catch (JsonSyntaxException | JsonIOException e) {
-            ProbeJS.LOGGER.warn("Cannot read malformed cache, ignoring.");
-        }
-        return cachedEvents;
-    }
-
-    public static void compileEventsCache(Map<String, EventInfo> events) throws IOException {
-        val cacheWriter = Files.newBufferedWriter(EVENT_CACHE_PATH);
-        val outJson = JObject.of()
-            .addAll(events.entrySet()
-                .stream()
-                .map(entry -> new Pair<>(entry.getKey(), JObject.of(entry.getValue().toJson())))
-            )
-            .build();
-        ProbeJS.GSON.toJson(outJson, cacheWriter);
-        cacheWriter.close();
-    }
-
-    public static Map<String, Class<?>> readCachedForgeEvents() throws IOException {
-        final Map<String, Class<?>> cachedEvents = new HashMap<>();
-        if (!Files.exists(FORGE_EVENT_CACHE_PATH)) {
-            ProbeJS.LOGGER.warn("No event cache file: {}", FORGE_EVENT_CACHE_NAME);
-            return cachedEvents;
-        }
-        try {
-            final Map<?, ?> fileCache = ProbeJS.GSON.fromJson(
-                Files.newBufferedReader(FORGE_EVENT_CACHE_PATH),
-                Map.class
-            );
-            if (fileCache == null) {
-                return cachedEvents;
-            }
-            fileCache.forEach((k, v) -> {
-                if (!(k instanceof String) || !(v instanceof String)) {
-                    ProbeJS.LOGGER.warn("Unexpected entry in class cache: {}, {}", k, v);
-                    return;
-                }
-                try {
-                    final Class<?> clazz = Class.forName((String) v);
-                    if (EventJS.class.isAssignableFrom(clazz)) {
-                        cachedEvents.put((String) k, clazz);
-                    }
-                } catch (ClassNotFoundException e) {
-                    ProbeJS.LOGGER.warn("Class {} was in the cache, but disappeared in packages now.", v);
-                }
-            });
-        } catch (JsonSyntaxException | JsonIOException e) {
-            ProbeJS.LOGGER.warn("Cannot read malformed cache, ignoring.");
-        }
-        return cachedEvents;
-    }
-
-    public static void compileForgeEventsCache(Map<String, Class<?>> events) throws IOException {
-        final BufferedWriter cacheWriter = Files.newBufferedWriter(FORGE_EVENT_CACHE_PATH);
-        final JsonObject outJson = new JsonObject();
-        for (Map.Entry<String, Class<?>> entry : events.entrySet()) {
-            final String eventName = entry.getKey();
-            final Class<?> eventClass = entry.getValue();
-            outJson.addProperty(eventName, eventClass.getName());
-        }
-        ProbeJS.GSON.toJson(outJson, cacheWriter);
-        cacheWriter.close();
-    }
 }
