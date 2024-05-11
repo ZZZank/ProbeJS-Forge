@@ -2,6 +2,7 @@ package com.probejs.compiler;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.gson.JsonObject;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import com.probejs.capture.EventCacheIO;
@@ -20,6 +21,10 @@ import com.probejs.info.ClassWalker;
 import com.probejs.info.type.TypeClass;
 import com.probejs.capture.CapturedClasses;
 import com.probejs.capture.DummyBindingEvent;
+import com.probejs.util.PUtil;
+import com.probejs.util.json.JArray;
+import com.probejs.util.json.JObject;
+import com.probejs.util.json.JPrimitive;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.server.ServerScriptManager;
@@ -28,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
@@ -169,19 +175,33 @@ public class TypingCompiler {
     }
 
     public static void compileJSConfig() throws IOException {
-        val writer = Files.newBufferedWriter(KubeJSPaths.DIRECTORY.resolve("jsconfig.json"));
-        val lines = String
-            .join(
-                "\n",
-                "{",
-                "    'compilerOptions': {",
-                "        'lib': ['ES5', 'ES2015'],",
-                "        'rootDirs': ['probe/generated', 'probe/user', 'server_scripts', 'startup_scripts', 'client_scripts'],",
-                "    }",
-                "}"
+        val path = KubeJSPaths.DIRECTORY.resolve("jsconfig.json");
+        val cfg = JObject.of()
+            .add("compilerOptions",
+                JObject.of()
+                    .add("lib", JArray.of().add("ES6"))
+                    .add("rootDirs",
+                        JArray.of()
+                            .addAll(Stream.of("probe/generated",
+                                    "probe/user",
+                                    "server_scripts",
+                                    "startup_scripts",
+                                    "client_scripts"
+                                )
+                                .map(JPrimitive::of))
+                    )
             )
-            .replace("'", "\"");
-        writer.write(lines);
+            .build();
+        if (Files.exists(path)) {
+            try (val reader = Files.newBufferedReader(path)) {
+                val existed = ProbeJS.GSON.fromJson(reader, JsonObject.class);
+                PUtil.mergeJsonRecursive(cfg, existed);
+            } catch (Exception ignored) {
+            }
+        }
+        val writer = Files.newBufferedWriter(path);
+
+        ProbeJS.GSON.toJson(cfg, writer);
         writer.close();
     }
 

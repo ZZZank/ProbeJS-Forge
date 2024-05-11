@@ -1,5 +1,8 @@
 package com.probejs.util;
 
+import com.google.gson.JsonObject;
+import lombok.val;
+
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Map;
@@ -12,6 +15,20 @@ public class PUtil {
         INDENT_CACHE = new String[12 + 1];
         for (int i = 0; i < INDENT_CACHE.length; i++) {
             INDENT_CACHE[i] = String.join("", Collections.nCopies(i, " "));
+        }
+    }
+
+    public static void mergeJsonRecursive(JsonObject base, JsonObject addition) {
+        for (val entry : addition.entrySet()) {
+            val key = entry.getKey();
+            val baseChild = base.get(key);
+            val additionChild = entry.getValue();
+            if (baseChild == null || !baseChild.isJsonObject() || !additionChild.isJsonObject()) {
+                //add or overwrite
+                base.add(key, additionChild);
+            } else {
+                mergeJsonRecursive(baseChild.getAsJsonObject(), additionChild.getAsJsonObject());
+            }
         }
     }
 
@@ -36,7 +53,7 @@ public class PUtil {
 
     @SuppressWarnings("unchecked")
     public static <E> E castedGetOrDef(Object key, Map<?, ?> values, E defaultValue) {
-        Object v = values.get(key);
+        val v = values.get(key);
         return v == null ? defaultValue : (E) v;
     }
 

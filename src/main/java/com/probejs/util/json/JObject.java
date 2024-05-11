@@ -2,6 +2,8 @@ package com.probejs.util.json;
 
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
+import lombok.val;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -71,6 +73,13 @@ public class JObject implements IJsonBuilder<JsonObject> {
 
     public JObject addAll(Map<String, IJsonBuilder<?>> members) {
         members.forEach(this::add);
+        return this;
+    }
+
+    public JObject addAll(JsonObject members) {
+        for (val entry : members.entrySet()) {
+            this.add(entry.getKey(), JWrapper.of(entry.getValue()));
+        }
         return this;
     }
 
