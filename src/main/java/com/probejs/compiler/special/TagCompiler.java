@@ -50,6 +50,6 @@ public abstract class TagCompiler {
             writer.write('\n');
         }
         writer.write('\n');
-        tags.clear();
+        tags = null;
     }
 }
