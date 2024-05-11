@@ -6,6 +6,7 @@ import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterComments;
 import com.probejs.info.EventInfo;
 import com.probejs.info.type.TypeClass;
+import com.probejs.util.PUtil;
 import lombok.val;
 
 import java.io.BufferedWriter;
@@ -64,10 +65,7 @@ public class EventCompiler {
             )
             .forEach(lines::add);
         lines.add("");
-        for (final String line : lines) {
-            writer.write(line);
-            writer.write("\n");
-        }
+        PUtil.writeLines(writer, lines);
     }
 
     private static void writeWildcardEvents(BufferedWriter writer) throws IOException {
@@ -95,10 +93,7 @@ public class EventCompiler {
             "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void): void;"
         );
         lines.add("");
-        for (val line : lines) {
-            writer.write(line);
-            writer.write("\n");
-        }
+        PUtil.writeLines(writer, lines);
     }
 
     private static void writeEvents(BufferedWriter writer) throws IOException {
@@ -127,10 +122,6 @@ public class EventCompiler {
                 ""
             )
         );
-        for (final String line : lines) {
-            writer.write(line);
-            writer.write("\n");
-        }
+        PUtil.writeLines(writer, lines);
     }
-
 }

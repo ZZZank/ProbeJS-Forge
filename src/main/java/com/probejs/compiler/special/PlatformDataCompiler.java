@@ -8,14 +8,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.probejs.util.PUtil;
+import lombok.val;
 import me.shedaniel.architectury.platform.Platform;
 
 public class PlatformDataCompiler {
 
     public static void compile(BufferedWriter writer) throws IOException {
-        final List<String> lines = new ArrayList<>();
+        val lines = new ArrayList<String>();
         //modids
-        final String modids = Platform
+        val modids = Platform
             .getModIds()
             .stream()
             .map(ProbeJS.GSON::toJson)
@@ -23,11 +26,10 @@ public class PlatformDataCompiler {
         lines.add(String.format("type modids = %s;", modids));
         //more?
 
-        for (final String line : new FormatterNamespace("platform", new FormatterRaw(lines, false))
-            .formatLines(0, 4)) {
-            writer.write(line);
-            writer.write('\n');
-        }
+        PUtil.writeLines(
+            writer,
+            new FormatterNamespace("platform", new FormatterRaw(lines, false)).formatLines(0, 4)
+        );
         writer.write('\n');
     }
 }

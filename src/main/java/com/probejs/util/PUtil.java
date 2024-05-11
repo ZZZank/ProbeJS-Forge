@@ -3,11 +3,14 @@ package com.probejs.util;
 import com.google.gson.JsonObject;
 import lombok.val;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
-public class PUtil {
+public abstract class PUtil {
 
     private static final String[] INDENT_CACHE;
 
@@ -15,6 +18,13 @@ public class PUtil {
         INDENT_CACHE = new String[12 + 1];
         for (int i = 0; i < INDENT_CACHE.length; i++) {
             INDENT_CACHE[i] = String.join("", Collections.nCopies(i, " "));
+        }
+    }
+
+    public static void writeLines(Writer writer, List<String> lines) throws IOException {
+        for (val line : lines) {
+            writer.write(line);
+            writer.write('\n');
         }
     }
 

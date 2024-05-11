@@ -13,6 +13,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+
+import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class RecipeHoldersCompiler {
@@ -25,17 +27,17 @@ public abstract class RecipeHoldersCompiler {
     public static void init(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) {
         namespace2Method.clear();
         recipeHandlers.forEach((key, value) -> {
-            String namespace = key.getNamespace();
-            String invoke = key.getPath();
-            String recipeJSName = NameResolver.resolveName(value.factory.get().getClass()).getFullName();
+            val namespace = key.getNamespace();
+            val invoke = key.getPath();
+            val recipeJSName = NameResolver.resolveName(value.factory.get().getClass()).getFullName();
 
             namespace2Method.put(namespace, new Pair<>(invoke, recipeJSName));
         });
     }
 
     public static List<String> format(int indent, int stepIndent) {
-        final List<IFormatter> namespecedFmtr = new ArrayList<>();
-        final String step = PUtil.indent(stepIndent);
+        val namespecedFmtr = new ArrayList<IFormatter>();
+        val step = PUtil.indent(stepIndent);
 
         {
             List<String> base = new ArrayList<>();
@@ -50,7 +52,7 @@ public abstract class RecipeHoldersCompiler {
         }
 
         for (Entry<String, Collection<Pair<String, String>>> entry : namespace2Method.asMap().entrySet()) {
-            String name = entry.getKey();
+            val name = entry.getKey();
             List<String> lines = new ArrayList<>();
             //name
             lines.add(String.format("class %s {", name));
@@ -70,10 +72,7 @@ public abstract class RecipeHoldersCompiler {
     }
 
     public static void compile(BufferedWriter writer) throws IOException {
-        for (String line : format(0, 4)) {
-            writer.write(line);
-            writer.write('\n');
-        }
+        PUtil.writeLines(writer, format(0, 4));
         writer.write('\n');
         namespace2Method.clear();
     }

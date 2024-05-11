@@ -1,14 +1,16 @@
 package com.probejs.util;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@AllArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class Pair<F, S> {
 
     private final F first;
     private final S second;
-
-    public Pair(F first, S second) {
-        this.first = first;
-        this.second = second;
-    }
 
     /**
      * get the first element in such pair
@@ -22,27 +24,5 @@ public class Pair<F, S> {
      */
     public S second() {
         return second;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Pair{first=%s, second=%s}", this.first, this.second);
-    }
-
-    @Override
-    public int hashCode() {
-        return java.util.Objects.hash(this.first, this.second);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof Pair)) {
-            return false;
-        }
-        Pair<?, ?> p = (Pair<?, ?>) obj;
-        return this.first.equals(p.first) && this.second.equals(p.second);
     }
 }

@@ -16,11 +16,15 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.val;
 import net.minecraft.world.damagesource.DamageSource;
 
 public class NameResolver {
 
+    @EqualsAndHashCode
+    @ToString
     public static class ResolvedName {
 
         public static final ResolvedName UNRESOLVED = new ResolvedName(Collections.singletonList("Unresolved"));
@@ -40,24 +44,6 @@ public class NameResolver {
 
         public String getLastName() {
             return names.get(names.size() - 1);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ResolvedName that = (ResolvedName) o;
-            return names.equals(that.names);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(names);
-        }
-
-        @Override
-        public String toString() {
-            return "ResolvedName{" + "names=" + names + '}';
         }
     }
 

@@ -96,18 +96,18 @@ public class SnippetCompiler {
     private static void compileClassNames() throws IOException {
         JsonObject resultJson = new JsonObject();
         for (Map.Entry<String, NameResolver.ResolvedName> entry : NameResolver.resolvedNames.entrySet()) {
-            final String className = entry.getKey();
-            final NameResolver.ResolvedName resolvedName = entry.getValue();
-            final JsonObject classJson = new JsonObject();
-            final JsonArray prefix = new JsonArray();
+            val className = entry.getKey();
+            val resolvedName = entry.getValue();
+            val classJson = new JsonObject();
+            val prefix = new JsonArray();
             prefix.add(String.format("!%s", resolvedName.getFullName()));
             classJson.add("prefix", prefix);
             classJson.addProperty("body", className);
             resultJson.add(resolvedName.getFullName(), classJson);
         }
 
-        Path codeFile = ProbePaths.WORKSPACE.resolve("classNames.code-snippets");
-        BufferedWriter writer = Files.newBufferedWriter(codeFile);
+        val codeFile = ProbePaths.WORKSPACE.resolve("classNames.code-snippets");
+        val writer = Files.newBufferedWriter(codeFile);
         ProbeJS.GSON.toJson(resultJson, writer);
         writer.close();
     }

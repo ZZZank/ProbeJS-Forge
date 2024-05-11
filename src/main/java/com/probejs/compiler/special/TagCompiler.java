@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.probejs.info.SpecialData;
+import com.probejs.util.PUtil;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 
@@ -40,10 +41,7 @@ public abstract class TagCompiler {
     }
 
     public static void compile(BufferedWriter writer) throws IOException {
-        for (String line : TagCompiler.format(0, 4)) {
-            writer.write(line);
-            writer.write('\n');
-        }
+        PUtil.writeLines(writer, TagCompiler.format(0, 4));
         writer.write('\n');
     }
 }

@@ -98,10 +98,7 @@ public class TypingCompiler {
             val path = entry.getKey();
             val formatters = entry.getValue();
             val namespace = new FormatterNamespace(path, formatters);
-            for (val line : namespace.formatLines(0, 4)) {
-                writer.write(line);
-                writer.write('\n');
-            }
+            PUtil.writeLines(writer, namespace.formatLines(0, 4));
         }
 
         for (val entry : DocManager.classAdditions.entrySet()) {
@@ -111,24 +108,14 @@ public class TypingCompiler {
         }
 
         //namespace::Document
-        for (String line : new FormatterNamespace(
+        PUtil.writeLines(writer, new FormatterNamespace(
             "Document",
             DocManager.classAdditions.values().stream().map(l -> l.get(0)).collect(Collectors.toList())
-        )
-            .formatLines(0, 4)) {
-            writer.write(line);
-            writer.write("\n");
-        }
+        ).formatLines(0, 4));
         //namespace::Type
-        for (String line : new FormatterNamespace("Type", DocManager.typeDocuments).formatLines(0, 4)) {
-            writer.write(line);
-            writer.write("\n");
-        }
+        PUtil.writeLines(writer, new FormatterNamespace("Type", DocManager.typeDocuments).formatLines(0, 4));
         //no namespace
-        for (String line : new FormatterRaw(DocManager.rawTSDoc).formatLines(0, 4)) {
-            writer.write(line);
-            writer.write("\n");
-        }
+        PUtil.writeLines(writer, new FormatterRaw(DocManager.rawTSDoc).formatLines(0, 4));
 
         writer.close();
     }
