@@ -33,13 +33,13 @@ public class SnippetCompiler {
     }
 
     private static void generateRegistrySnippet(JObject resultJson) {
-        val paths = new HashSet<String>();
+        val duped = new HashSet<String>();
         for (RegistryInfo info : SpecialData.instance().registries) {
             String type = info.id.getPath();
-            if (paths.contains(type)) {
+            if (duped.contains(type)) {
                 type = String.format("%s_%s", type, info.id.getNamespace());
             } else {
-                paths.add(type);
+                duped.add(type);
             }
             resultJson.add(
                 type,
@@ -59,22 +59,23 @@ public class SnippetCompiler {
     private static void generateTagSnippet(JObject resultJson) {
         val duped = new HashSet<String>();
         for (val entry : SpecialData.instance().tags.entrySet()) {
+            //type name
             String type = String.format("%s_tag", entry.getKey().getPath());
             if (duped.contains(type)) {
                 type = type + "_" + entry.getKey().getNamespace();
             }
             duped.add(type);
+            //entries in it
+            val names = entry.getValue().stream().map(ResourceLocation::toString).collect(Collectors.joining(","));
+            if (names.isEmpty()) {
+                continue;
+            }
+            //add
             resultJson.add(
                 type,
                 JObject.of()
                     .add("prefix", JArray.of().add("@" + type))
-                    .add(
-                        "body",
-                        String.format(
-                            "\"#${1|%s|}\"",
-                            entry.getValue().stream().map(ResourceLocation::toString).collect(Collectors.joining(","))
-                        )
-                    )
+                    .add("body", String.format("\"#${1|%s|}\"", names))
             );
         }
     }
