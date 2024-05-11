@@ -7,6 +7,7 @@ import com.probejs.formatter.FormatterNamespace;
 import com.probejs.formatter.FormatterRaw;
 import com.probejs.formatter.api.IFormatter;
 import com.probejs.info.RegistryInfo;
+import com.probejs.info.SpecialData;
 import lombok.val;
 
 import java.io.BufferedWriter;
@@ -16,15 +17,9 @@ import java.util.stream.Collectors;
 
 public class RegistryCompiler {
 
-    private static Collection<RegistryInfo> rInfos;
-
-    public static void init(Collection<RegistryInfo> registries) {
-        rInfos = registries;
-    }
-
     public static void compile(BufferedWriter writer) throws IOException {
         Multimap<String, RegistryInfo> infoByMods = ArrayListMultimap.create();
-        for (RegistryInfo info : RegistryCompiler.rInfos) {
+        for (RegistryInfo info : SpecialData.instance().registries) {
             infoByMods.put(info.id.getNamespace(), info);
         }
         List<IFormatter> formatters = new ArrayList<>();
@@ -54,6 +49,5 @@ public class RegistryCompiler {
             writer.write('\n');
         }
         writer.write('\n');
-        rInfos = null;
     }
 }

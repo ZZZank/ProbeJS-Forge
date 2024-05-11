@@ -18,13 +18,13 @@ import javax.annotation.Nullable;
 
 public class EventInfo implements Comparable<EventInfo> {
 
-    public final Class<? extends EventJS> clazzRaw;
-    public final String id;
-    public final boolean cancellable;
-    public final EnumSet<ScriptType> scriptTypes;
+    private final Class<? extends EventJS> clazzRaw;
+    private final String id;
+    private final boolean cancellable;
+    private final EnumSet<ScriptType> scriptTypes;
 
     @Nullable
-    public final String sub;
+    private final String sub;
 
     public EventInfo(
         Class<? extends EventJS> captured,
@@ -78,7 +78,7 @@ public class EventInfo implements Comparable<EventInfo> {
      */
     public List<String> getBuiltinPropAsComment() {
         String canCancel = this.cancellable ? "Yes" : "No";
-        List<String> typeNames =
+        val typeNames =
             this.scriptTypes.stream().map(type -> type.name).collect(Collectors.toList());
         if (typeNames.isEmpty()) {
             canCancel = "unknown";
@@ -92,7 +92,7 @@ public class EventInfo implements Comparable<EventInfo> {
     @SuppressWarnings("unchecked")
     public static Optional<EventInfo> fromJson(JsonObject json) {
         //id
-        String id = json.get("id").getAsString();
+        val id = json.get("id").getAsString();
         //class
         Class<?> clazz;
         try {
@@ -101,15 +101,15 @@ public class EventInfo implements Comparable<EventInfo> {
             return Optional.empty();
         }
         //type
-        EnumSet<ScriptType> types = EnumSet.noneOf(ScriptType.class);
+        val types = EnumSet.noneOf(ScriptType.class);
         if (json.has("type")) {
             JsonArray jArray = json.get("type").getAsJsonArray();
             jArray.forEach(jElement -> types.add(ScriptType.valueOf(jElement.getAsString())));
         }
         //sub
-        String sub = json.has("sub") ? json.get("sub").getAsString() : null;
+        val sub = json.has("sub") ? json.get("sub").getAsString() : null;
         //cancellable
-        boolean cancellable = json.has("cancellable") && json.get("cancellable").getAsBoolean();
+        val cancellable = json.has("cancellable") && json.get("cancellable").getAsBoolean();
 
         return Optional.of(new EventInfo((Class<? extends EventJS>) clazz, id, sub, types, cancellable));
     }
@@ -117,5 +117,26 @@ public class EventInfo implements Comparable<EventInfo> {
     @Override
     public int compareTo(EventInfo o) {
         return this.id.compareTo(o.id);
+    }
+
+    public Class<? extends EventJS> clazzRaw() {
+        return clazzRaw;
+    }
+
+    public String id() {
+        return id;
+    }
+
+    public boolean cancellable() {
+        return cancellable;
+    }
+
+    public EnumSet<ScriptType> scriptTypes() {
+        return scriptTypes;
+    }
+
+    @Nullable
+    public String sub() {
+        return sub;
     }
 }

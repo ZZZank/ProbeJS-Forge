@@ -20,7 +20,7 @@ public class ProbeJS {
         .serializeSpecialFloatingPointValues()
         .disableHtmlEscaping()
         .create();
-    public static final ProbeConfig CONFIG = ProbeConfig.getInstance();
+    public static final ProbeConfig CONFIG = ProbeConfig.instance();
     public static final boolean ENABLED = CONFIG.enabled;
 
     public ProbeJS() {

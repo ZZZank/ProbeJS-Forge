@@ -13,8 +13,8 @@ import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterNamespace;
 import com.probejs.formatter.FormatterRaw;
 import com.probejs.formatter.api.IFormatter;
-import com.probejs.info.clazz.ClassInfo;
 import com.probejs.info.EventInfo;
+import com.probejs.info.clazz.ClassInfo;
 import com.probejs.info.SpecialData;
 import com.probejs.info.ClassWalker;
 import com.probejs.info.type.TypeClass;
@@ -45,7 +45,7 @@ public class TypingCompiler {
         CapturedClasses.capturedEvents
             .values()
             .stream()
-            .map(eventInfo -> eventInfo.clazzRaw)
+            .map(EventInfo::clazzRaw)
             .forEach(touchableClasses::add);
         touchableClasses.addAll(CapturedClasses.capturedRawEvents.values());
         touchableClasses.addAll(CapturedClasses.capturedJavaClasses);
@@ -56,13 +56,8 @@ public class TypingCompiler {
             .map(recipeTypeJS -> recipeTypeJS.factory.get().getClass())
             .forEach(touchableClasses::add);
         //binding event
-        bindingEvent
-            .getConstantDumpMap()
-            .values()
-            .stream()
-            .map(DummyBindingEvent::touchConstantClassRecursive)
-            .forEach(touchableClasses::addAll);
-        touchableClasses.addAll(bindingEvent.getClassDumpReversed().keySet());
+        touchableClasses.addAll(bindingEvent.getTouchedConstantDump());
+        touchableClasses.addAll(bindingEvent.getClassDumpMap().values());
 
         ClassWalker walker = new ClassWalker(touchableClasses);
         return walker.walk();
@@ -201,7 +196,7 @@ public class TypingCompiler {
         final Set<Class<?>> cachedClasses = knownEvents
             .values()
             .stream()
-            .map(eventInfo -> eventInfo.clazzRaw)
+            .map(eventInfo -> eventInfo.clazzRaw())
             .collect(Collectors.toSet());
         cachedClasses.addAll(knownRawEvents.values());
 

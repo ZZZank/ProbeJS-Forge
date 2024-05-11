@@ -5,6 +5,7 @@ import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.ScriptableObject;
 import lombok.Getter;
+import lombok.val;
 
 import java.util.*;
 
@@ -38,7 +39,15 @@ public class DummyBindingEvent extends BindingsEvent {
         return reversed;
     }
 
-    public static Set<Class<?>> touchConstantClassRecursive(Object constantDump) {
+    public Set<Class<?>> getTouchedConstantDump() {
+        val touched = new HashSet<Class<?>>();
+        for (val constant : getConstantDumpMap().values()) {
+            touched.addAll(touchConstantClassRecursive(constant));
+        }
+        return touched;
+    }
+
+    private static Set<Class<?>> touchConstantClassRecursive(Object constantDump) {
         Set<Class<?>> result = new HashSet<>();
         if (constantDump == null) {
             return result;

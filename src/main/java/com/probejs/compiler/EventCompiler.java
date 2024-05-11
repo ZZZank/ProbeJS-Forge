@@ -6,6 +6,7 @@ import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterComments;
 import com.probejs.info.EventInfo;
 import com.probejs.info.type.TypeClass;
+import lombok.val;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class EventCompiler {
     }
 
     private static void writeForgeEvents(BufferedWriter writer) throws IOException {
-        final List<String> lines = new ArrayList<>();
+        val lines = new ArrayList<String>();
         knownForgeEvents
             .stream()
             .sorted(Comparator.comparing(Class::getName))
@@ -72,15 +73,15 @@ public class EventCompiler {
     }
 
     private static void writeWildcardEvents(BufferedWriter writer) throws IOException {
-        final List<String> lines = new ArrayList<>();
+        val lines = new ArrayList<String>();
         for (EventInfo wildcard : (new TreeSet<>(wildcards))) {
-            String id = wildcard.id;
+            val id = wildcard.id();
             lines.addAll(wildcard.getBuiltinPropAsComment());
             lines.add(
                 String.format(
                     "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void): void;",
                     id,
-                    FormatterClass.formatParameterized(new TypeClass(wildcard.clazzRaw))
+                    FormatterClass.formatParameterized(new TypeClass(wildcard.clazzRaw()))
                 )
             );
         }
@@ -96,25 +97,25 @@ public class EventCompiler {
             "declare function onEvent(name: `${string}.${string}`, handler: (event: Internal.EventJS) => void): void;"
         );
         lines.add("");
-        for (final String line : lines) {
+        for (val line : lines) {
             writer.write(line);
             writer.write("\n");
         }
     }
 
     private static void writeEvents(BufferedWriter writer) throws IOException {
-        final List<String> lines = new ArrayList<>();
+        val lines = new ArrayList<String>();
         for (EventInfo eInfo : (new TreeSet<>(knownEvents))) {
-            String id = eInfo.id;
+            String id = eInfo.id();
             if (eInfo.hasSub()) {
-                id = id + "." + eInfo.sub;
+                id = id + "." + eInfo.sub();
             }
             lines.addAll(eInfo.getBuiltinPropAsComment());
             lines.add(
                 String.format(
                     "declare function onEvent(name: \"%s\", handler: (event: %s) => void): void;",
                     id,
-                    FormatterClass.formatParameterized(new TypeClass(eInfo.clazzRaw))
+                    FormatterClass.formatParameterized(new TypeClass(eInfo.clazzRaw()))
                 )
             );
         }

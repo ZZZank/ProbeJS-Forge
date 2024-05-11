@@ -5,9 +5,7 @@ import com.probejs.compiler.special.PlatformDataCompiler;
 import com.probejs.compiler.special.RecipeHoldersCompiler;
 import com.probejs.compiler.special.RegistryCompiler;
 import com.probejs.compiler.special.TagCompiler;
-import com.probejs.info.SpecialData;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,10 +19,7 @@ public abstract class SpecialCompiler {
     public static final Path PATH = ProbePaths.GENERATED.resolve("special.d.ts");
 
     public static void compile(Map<ResourceLocation, RecipeTypeJS> recipeHandlers) throws IOException {
-        val data = SpecialData.instance();
 
-        RegistryCompiler.init(data.registries);
-        TagCompiler.init(data.tags);
         RecipeHoldersCompiler.init(recipeHandlers);
 
         val writer = Files.newBufferedWriter(PATH);

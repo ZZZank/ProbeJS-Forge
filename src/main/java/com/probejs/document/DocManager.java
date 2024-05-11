@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentAssign;
 import com.probejs.document.comment.special.CommentTarget;
+import com.probejs.document.parser.DocReader;
 import com.probejs.document.parser.processor.Document;
 import com.probejs.document.type.IDocType;
 

@@ -8,21 +8,16 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.probejs.info.SpecialData;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class TagCompiler {
 
-    private static Map<ResourceLocation, Collection<ResourceLocation>> tags;
-
-    public static void init(Map<ResourceLocation, Collection<ResourceLocation>> tags) {
-        TagCompiler.tags = tags;
-    }
-
     public static List<String> format(int indent, int stepIndent) {
         val lines = new ArrayList<String>();
         val duped = new HashSet<String>();
-        tags.forEach((id, entriesRl) -> {
+        SpecialData.instance().tags.forEach((id, entriesRl) -> {
             //name
             String name = id.getPath();
             if (duped.contains(name)) {
@@ -50,6 +45,5 @@ public abstract class TagCompiler {
             writer.write('\n');
         }
         writer.write('\n');
-        tags = null;
     }
 }

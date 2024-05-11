@@ -11,12 +11,12 @@ import java.util.Map;
 
 /**
  * Implementations of ProbeJS config system. For config instance ProbeJS is using,
- * see {@code ProbeJS.CONFIG}
+ * see {@link ProbeJS#CONFIG}
  * @see com.probejs.ProbeJS#CONFIG
  */
 public class ProbeConfig {
 
-    private static ProbeConfig cfgReference = null;
+    private static ProbeConfig INSTANCE = null;
     public static final Path PATH = KubeJSPaths.CONFIG.resolve("probejs.json");
     public boolean keepBeaned = true;
     public boolean enabled = true;
@@ -24,11 +24,11 @@ public class ProbeConfig {
     public boolean exportClassNames = false;
     public boolean trimming = true;
 
-    public static ProbeConfig getInstance() {
-        if (cfgReference == null) {
-            ProbeConfig.cfgReference = new ProbeConfig(ProbeConfig.PATH);
+    public static ProbeConfig instance() {
+        if (INSTANCE == null) {
+            ProbeConfig.INSTANCE = new ProbeConfig(ProbeConfig.PATH);
         }
-        return ProbeConfig.cfgReference;
+        return ProbeConfig.INSTANCE;
     }
 
     private ProbeConfig(Path path) {
@@ -40,7 +40,7 @@ public class ProbeConfig {
                 vanillaOrder = PUtil.castedGetOrDef("vanillaOrder", obj, true);
                 exportClassNames = PUtil.castedGetOrDef("exportClassNames", obj, false);
                 trimming = PUtil.castedGetOrDef("trimming", obj, false);
-
+                //update from old config
                 Object cfgDisabled = obj.get("disabled");
                 if (cfgDisabled != null) {
                     this.enabled = !(boolean) cfgDisabled;

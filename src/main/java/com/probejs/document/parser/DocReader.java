@@ -1,4 +1,4 @@
-package com.probejs.document;
+package com.probejs.document.parser;
 
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;

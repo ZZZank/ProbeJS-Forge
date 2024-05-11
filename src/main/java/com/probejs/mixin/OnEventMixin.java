@@ -23,7 +23,7 @@ public class OnEventMixin {
             if (!CapturedClasses.capturedEvents.containsKey(id)) {
                 CapturedClasses.capturedEvents.put(id, new EventInfo(t, (EventJS) (Object) this, id, null));
             } else {
-                CapturedClasses.capturedEvents.get(id).scriptTypes.add(t);
+                CapturedClasses.capturedEvents.get(id).scriptTypes().add(t);
             }
         }
     }
@@ -41,7 +41,7 @@ public class OnEventMixin {
                     new EventInfo(t, (EventJS) (Object) this, id, sub)
                 );
             } else {
-                CapturedClasses.capturedEvents.get(id).scriptTypes.add(t);
+                CapturedClasses.capturedEvents.get(id).scriptTypes().add(t);
             }
         }
     }

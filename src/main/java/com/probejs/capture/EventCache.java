@@ -33,8 +33,8 @@ public abstract class EventCache {
                 return cachedEvents;
             }
             for (Map.Entry<String, JsonElement> entry : cachedMap.entrySet()) {
-                final String key = entry.getKey();
-                final JsonElement value = entry.getValue();
+                val key = entry.getKey();
+                val value = entry.getValue();
                 if (!value.isJsonObject()) {
                     //old cache is string, which means JsonElement, so not JsonObject
                     break;
@@ -79,7 +79,7 @@ public abstract class EventCache {
                     return;
                 }
                 try {
-                    final Class<?> clazz = Class.forName((String) v);
+                    val clazz = Class.forName((String) v);
                     if (EventJS.class.isAssignableFrom(clazz)) {
                         cachedEvents.put((String) k, clazz);
                     }
@@ -94,11 +94,11 @@ public abstract class EventCache {
     }
 
     public static void writeForge(Map<String, Class<?>> events) throws IOException {
-        final BufferedWriter cacheWriter = Files.newBufferedWriter(EventCompiler.FORGE_EVENT_CACHE_PATH);
-        final JsonObject outJson = new JsonObject();
+        val cacheWriter = Files.newBufferedWriter(EventCompiler.FORGE_EVENT_CACHE_PATH);
+        val outJson = new JsonObject();
         for (Map.Entry<String, Class<?>> entry : events.entrySet()) {
-            final String eventName = entry.getKey();
-            final Class<?> eventClass = entry.getValue();
+            val eventName = entry.getKey();
+            val eventClass = entry.getValue();
             outJson.addProperty(eventName, eventClass.getName());
         }
         ProbeJS.GSON.toJson(outJson, cacheWriter);
