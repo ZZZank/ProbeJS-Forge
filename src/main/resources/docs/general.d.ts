@@ -47,7 +47,7 @@ class ItemStackJS {
  * @assign "" | "-" | "air" | "minecraft:air"
  * @assign `%${string}`
  * @assign `@${platform.modids}`
- * @assign `#${Tag.items}`
+ * @assign `#${Tag.item}`
  * @assign RegExp
  * @assign Internal.Ingredient
  * @assign dev.latvian.kubejs.item.ingredient.IngredientJS[]
@@ -189,7 +189,7 @@ class RecipeFilter {
  * @assign {or?: Internal.BlockStatePredicate_, not?: Internal.BlockStatePredicate_}
  * @assign net.minecraft.block.Block
  * @assign net.minecraft.block.BlockState
- * @assign `#${string}`
+ * @assign `#${Tag.block}`
  * @assign RegExp
  */
 class BlockStatePredicate {
