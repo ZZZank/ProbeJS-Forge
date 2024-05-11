@@ -4,7 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
-import com.probejs.capture.EventCache;
+import com.probejs.capture.EventCacheIO;
 import com.probejs.document.DocManager;
 import com.probejs.formatter.resolver.ClazzFilter;
 import com.probejs.formatter.resolver.NameResolver;
@@ -64,15 +64,15 @@ public class TypingCompiler {
     }
 
     public static void compileGlobal(Set<Class<?>> globalClasses) throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("globals.d.ts"));
+        val writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("globals.d.ts"));
         writer.write("/// <reference path=\"./special.d.ts\" />\n");
         Multimap<String, IFormatter> namespaced = ArrayListMultimap.create();
 
         for (Class<?> clazz : globalClasses) {
-            FormatterClass formatter = new FormatterClass(ClassInfo.ofCache(clazz));
+            val formatter = new FormatterClass(ClassInfo.ofCache(clazz));
             DocManager.classDocuments.get(clazz.getName()).forEach(formatter::addDocument);
 
-            NameResolver.ResolvedName name = NameResolver.getResolvedName(clazz.getName());
+            val name = NameResolver.getResolvedName(clazz.getName());
             if (name.getNamespace().isEmpty()) {
                 for (String line : formatter.formatLines(0, 4)) {
                     writer.write(line);
@@ -133,8 +133,8 @@ public class TypingCompiler {
         for (Map.Entry<String, Object> entry : (
             new TreeMap<>(bindingEvent.getConstantDumpMap())
         ).entrySet()) {
-            String name = entry.getKey();
-            Object value = entry.getValue();
+            val name = entry.getKey();
+            val value = entry.getValue();
             String resolved = NameResolver.formatValue(value);
             if (resolved == null) {
                 resolved = FormatterClass.formatParameterized(new TypeClass(value.getClass()));
@@ -145,8 +145,8 @@ public class TypingCompiler {
     }
 
     public static void compileJava(Set<Class<?>> globalClasses) throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("java.d.ts"));
-        List<String> lines = new ArrayList<>(100);
+        val writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("java.d.ts"));
+        val lines = new ArrayList<String>(100);
         lines.add("/// <reference path=\"./globals.d.ts\" />");
         lines.add("");
         globalClasses
@@ -188,15 +188,15 @@ public class TypingCompiler {
     public static void compile() throws IOException {
         val bindingEvent = SpecialData.computeBindingEvent();
         val typeMap = SpecialData.computeRecipeTypes();
-        val knownEvents = EventCache.readKjs();
+        val knownEvents = EventCacheIO.readKjs();
         knownEvents.putAll(CapturedClasses.capturedEvents);
-        val knownRawEvents = EventCache.readForge();
+        val knownRawEvents = EventCacheIO.readForge();
         knownRawEvents.putAll(CapturedClasses.capturedRawEvents);
 
         final Set<Class<?>> cachedClasses = knownEvents
             .values()
             .stream()
-            .map(eventInfo -> eventInfo.clazzRaw())
+            .map(EventInfo::clazzRaw)
             .collect(Collectors.toSet());
         cachedClasses.addAll(knownRawEvents.values());
 
@@ -221,7 +221,7 @@ public class TypingCompiler {
         compileConstants(bindingEvent);
         compileJava(globalClasses);
         compileJSConfig();
-        EventCache.writeKjs(knownEvents);
-        EventCache.writeForge(knownRawEvents);
+        EventCacheIO.writeKjs(knownEvents);
+        EventCacheIO.writeForge(knownRawEvents);
     }
 }
