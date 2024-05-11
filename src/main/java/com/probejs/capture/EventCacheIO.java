@@ -12,13 +12,12 @@ import com.probejs.util.json.JObject;
 import dev.latvian.kubejs.event.EventJS;
 import lombok.val;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class EventCache {
+public abstract class EventCacheIO {
     public static Map<String, EventInfo> readKjs() throws IOException {
         final Map<String, EventInfo> cachedEvents = new HashMap<>();
         if (!Files.exists(EventCompiler.EVENT_CACHE_PATH)) {

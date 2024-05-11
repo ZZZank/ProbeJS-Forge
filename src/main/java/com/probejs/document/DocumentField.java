@@ -30,11 +30,11 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
         boolean f = false;
         boolean s = false;
         for (boolean flag = true; flag;) {
-            if (line.startsWith("readonly")) {
-                line = line.substring(8).trim();
+            if (line.startsWith("readonly ")) {
+                line = line.substring(9).trim();
                 f = true;
-            } else if (line.startsWith("static")) {
-                line = line.substring(6).trim();
+            } else if (line.startsWith("static ")) {
+                line = line.substring(7).trim();
                 s = true;
             } else {
                 flag = false;

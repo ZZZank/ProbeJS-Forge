@@ -41,8 +41,8 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private final boolean isInterface;
     private final boolean isFunctionalInterface;
     private final List<TypeVariable> typeParameters;
-    private final List<MethodInfo> methodInfos;
-    private final List<FieldInfo> fieldInfos;
+    private final List<MethodInfo> methods;
+    private final List<FieldInfo> fields;
     private final List<ConstructorInfo> constructors;
     private final ClassInfo superClass;
     private final IType superType;
@@ -62,8 +62,8 @@ public class ClassInfo implements Comparable<ClassInfo> {
         this.interfaces = new ArrayList<>(0);
         this.constructors = new ArrayList<>(0);
         this.typeParameters = new ArrayList<>(0);
-        this.methodInfos = new ArrayList<>(0);
-        this.fieldInfos = new ArrayList<>(0);
+        this.methods = new ArrayList<>(0);
+        this.fields = new ArrayList<>(0);
         try {
             interfaces.addAll(
                 Arrays
@@ -95,7 +95,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
                 })
                 .filter(m -> ClazzFilter.acceptMethod(m.getName()))
                 .filter(m -> !m.isShouldHide())
-                .forEach(methodInfos::add);
+                .forEach(methods::add);
             //fields
             Arrays
                 .stream(raw.getFields())
@@ -103,17 +103,17 @@ public class ClassInfo implements Comparable<ClassInfo> {
                 .filter(fInfo -> !ProbeJS.CONFIG.trimming || fInfo.getRaw().getDeclaringClass() == raw)
                 .filter(f -> ClazzFilter.acceptField(f.getName()))
                 .filter(f -> !f.isShouldHide())
-                .forEach(fieldInfos::add);
+                .forEach(fields::add);
         } catch (NoClassDefFoundError e) {
             // https://github.com/ZZZank/ProbeJS-Forge/issues/2
             ProbeJS.LOGGER.error("Unable to fetch infos for class '{}'", raw.getName());
             e.printStackTrace();
         }
         //Resolve types - rollback everything till Object
-        applySuperGenerics(methodInfos, fieldInfos);
+        applySuperGenerics(methods, fields);
         //Functional Interfaces
         List<MethodInfo> abstracts =
-            this.methodInfos.stream().filter(MethodInfo::isAbstract).collect(Collectors.toList());
+            this.methods.stream().filter(MethodInfo::isAbstract).collect(Collectors.toList());
         this.isFunctionalInterface = isInterface && abstracts.size() == 1;
         if (this.isFunctionalInterface) {
             NameResolver.addSpecialAssignments(this.raw, () -> {

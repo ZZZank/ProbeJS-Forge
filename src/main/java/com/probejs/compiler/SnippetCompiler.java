@@ -23,9 +23,9 @@ public class SnippetCompiler {
 
     public static JsonObject toSnippet() {
         val resultJson = JObject.of();
+
         // Compile normal entries to snippet
         generateRegistrySnippet(resultJson);
-
         // Compile tag entries to snippet
         generateTagSnippet(resultJson);
 

@@ -12,7 +12,6 @@ public class FormatterRaw implements MultiFormatter {
 
     private final List<String> docs;
     /**
-     * -- SETTER --
      *  if true, there will be two new lines as the begining and end of formatted strings
      *  that can mark the start and end of raw doc
      */

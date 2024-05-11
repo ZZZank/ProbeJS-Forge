@@ -39,11 +39,11 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
     public FormatterClass(ClassInfo classInfo) {
         this.classInfo = classInfo;
         this.methodFormatters = ArrayListMultimap.create();
-        for (MethodInfo methodInfo : classInfo.getMethodInfos()) {
+        for (MethodInfo methodInfo : classInfo.getMethods()) {
             methodFormatters.put(methodInfo.getName(), new FormatterMethod(methodInfo));
         }
         this.fieldFormatters = new HashMap<>();
-        for (FieldInfo fieldInfo : classInfo.getFieldInfos()) {
+        for (FieldInfo fieldInfo : classInfo.getFields()) {
             fieldFormatters.put(fieldInfo.getName(), new FormatterField(fieldInfo));
         }
     }

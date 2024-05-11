@@ -8,6 +8,7 @@ import com.probejs.info.clazz.MethodInfo;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
 import lombok.Getter;
+import lombok.val;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,19 +22,13 @@ public class DocumentMethod
         return this;
     }
 
-    public String getMethodBody() {
-        StringBuilder sb = new StringBuilder();
-        if (isStatic) {
-            sb.append("static ");
-        }
-        return sb.append(name).append("(%s): ").append(returnType.getTypeName()).append(";").toString();
-    }
-
     @Override
     public List<String> formatLines(int indent, int stepIndent) {
         List<String> formatted = new ArrayList<>();
-        if (comment != null) formatted.addAll(comment.formatLines(indent, stepIndent));
-        String paramStr = getParams()
+        if (comment != null) {
+            formatted.addAll(comment.formatLines(indent, stepIndent));
+        }
+        val paramStr = getParams()
             .stream()
             .map(documentParam ->
                 String.format(
@@ -43,7 +38,12 @@ public class DocumentMethod
                 )
             )
             .collect(Collectors.joining(", "));
-        formatted.add(PUtil.indent(indent) + String.format(getMethodBody(), paramStr));
+        val sb = new StringBuilder(PUtil.indent(indent));
+        if (isStatic) {
+            sb.append("static ");
+        }
+        sb.append(String.format("%s(%s): %s;", name, paramStr, returnType.getTypeName()));
+        formatted.add(sb.toString());
         return formatted;
     }
 
@@ -57,7 +57,6 @@ public class DocumentMethod
             this.name = name;
             this.type = type;
         }
-
     }
 
     private final boolean isStatic;
@@ -108,7 +107,7 @@ public class DocumentMethod
             return paramList;
         }
         for (String paramStr : StringUtil.splitLayer(paramsStr, ",")) {
-            String[] nameAndType = paramStr.trim().split(":", 2);
+            val nameAndType = paramStr.trim().split(":", 2);
             paramList.add(new DocumentParam(nameAndType[0].trim(), DocTypeResolver.resolve(nameAndType[1])));
         }
         return paramList;

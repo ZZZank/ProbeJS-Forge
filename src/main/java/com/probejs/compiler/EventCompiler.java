@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -37,8 +36,7 @@ public class EventCompiler {
         throws IOException {
         EventCompiler.knownEvents = knownEvents.values();
         EventCompiler.knownForgeEvents = knownForgeEvents.values();
-        EventCompiler.wildcards =
-            knownEvents.values().stream().filter(EventInfo::hasSub).collect(Collectors.toSet());
+        EventCompiler.wildcards = knownEvents.values().stream().filter(EventInfo::hasSub).collect(Collectors.toSet());
         BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("events.d.ts"));
 
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");

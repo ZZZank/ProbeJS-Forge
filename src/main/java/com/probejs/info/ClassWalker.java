@@ -62,11 +62,11 @@ public class ClassWalker {
             }
             result.addAll(walkTypes(info.getInterfaces()));
             //field
-            for (val fInfo : info.getFieldInfos()) {
+            for (val fInfo : info.getFields()) {
                 result.addAll(walkType(fInfo.getType()));
             }
             //method
-            for (val mInfo : info.getMethodInfos()) {
+            for (val mInfo : info.getMethods()) {
                 result.addAll(walkType(mInfo.getType()));
                 for (val pInfo : mInfo.getParams()) {
                     result.addAll(walkType(pInfo.getType()));
