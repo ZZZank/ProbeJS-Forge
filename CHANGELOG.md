@@ -1,15 +1,52 @@
+# ProbeJS Legacy 3.1.0 -> 3.9.9
+
+tag dumping++ & snippet rework
+
+## What's new?
+
+- all available tag types will now be dumped
+    - e.g. slurry tag dumping when you have Mekanism installed: `type slurry = "mekanism:dirty"|"mekanism:clean";`
+- new snippet format
+    - e.g. `{some modid}.item.tag` -> `item_tag`
+    - the usage of `.` in snippet is removed because `.` will actually break snippets.
+    - snippet name is now much shorter, and with modid removed. Should be more accessible. 
+- fix multiple reference names for global class only have one applied
+    - an example: `Vec3d` and `Vec3` are linked to the same class, and now ProbeJS will provide type alias for them. 
+    - `declare const Vec3d = Vec3`
+    - This was previously done by manually adding alias via raw docs, and was incomplete
+- better underscore handling for types
+- impl jsconfig merging
+    - config values added to jsconfig will be preserved after jsconfig dumping
+    - e.g. `"checkJs": true` in `"compilerOptions"` scope will not be removed after jsconfig dumping.
+- ProbeJS Legacy will now make JS type check targeting ES6 instead of ES5.
+- comment improvements
+    - the format of comments, actually. Comments marks at the front of each line will look much better. 
+- some more fail-safe for horribly malformed json file
+- confusing "hybrid" type is removed
+    - previously used for FunctionalInterfaces type checking, but we have lambda type alias for it. 
+- return type of onEvent/onForgeEvent is now explicitly marked as `void`
+- ProbeJS Legacy will now walk types in constructors
+- Some more type docs to support PonderJS better.
+
+NOTE: Most features in this version are initially for 4.0.0, a huge rewrite. If you're interested in it, you can see [dev note](https://github.com/ZZZank/ProbeJS-Forge/blob/1.16.5/dev_note.md) for the overall code structure of 4.0.0
+
+---
+
 # ProbeJS Legacy 3.1.0 -> 3.2.0
 
 Rhizo(not typo) support
 
 ## What's new?
 
--   Rhizo(not typo) support
-  - ProbeJS Legacy now supports Rhizo, which adds method/field remapper for 1.16.5
-  - With Rhizo, you can access methods/fields using readable MCP names like `getOpPermissionLevel()` instead of SRG names like `func_110455_j()`
-  - ProbeJS Legacy specially supports Rhizo's remapper, and can dump mapped MCP name for typing.
-  - If you're not using Rhizo, ProbeJS Legacy will automatically skip remapper accessing, so old Rhino is still compatible. 
-- ProbeJS Legacy will now walk type parameters of superclass/interfaces more completely. 
+- Rhizo(not typo) support
+    - ProbeJS Legacy now supports Rhizo, which adds method/field remapper for 1.16.5
+    - With Rhizo, you can access methods/fields using readable MCP names like `getOpPermissionLevel()` instead of SRG
+      names like `func_110455_j()`
+    - ProbeJS Legacy specially supports Rhizo's remapper, and can dump mapped MCP name for typing.
+    - If you're not using Rhizo, ProbeJS Legacy will automatically skip remapper accessing, so old Rhino is still
+      compatible.
+- ProbeJS Legacy will now walk type parameters of superclass/interfaces more completely.
+- Some more type docs to support PonderJS better.
 
 ---
 
