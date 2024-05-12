@@ -115,21 +115,6 @@ public class ProbeCommands {
                         )
                         .then(
                             Commands
-                                .literal("toggle_snippet_order")
-                                .executes(context -> {
-                                    ProbeJS.CONFIG.vanillaOrder = !ProbeJS.CONFIG.vanillaOrder;
-                                    ProbeJS.CONFIG.save();
-                                    return sendSuccess(
-                                        context,
-                                        String.format(
-                                            "In snippets, which will appear first: %s",
-                                            ProbeJS.CONFIG.vanillaOrder ? "mod_id" : "member_type"
-                                        )
-                                    );
-                                })
-                        )
-                        .then(
-                            Commands
                                 .literal("toggle_classname_snippets")
                                 .executes(context -> {
                                     ProbeJS.CONFIG.exportClassNames = !ProbeJS.CONFIG.exportClassNames;

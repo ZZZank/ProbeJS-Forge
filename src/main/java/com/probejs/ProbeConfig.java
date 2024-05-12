@@ -20,7 +20,6 @@ public class ProbeConfig {
     public static final Path PATH = KubeJSPaths.CONFIG.resolve("probejs.json");
     public boolean keepBeaned = true;
     public boolean enabled = true;
-    public boolean vanillaOrder = true;
     public boolean exportClassNames = false;
     public boolean trimming = true;
 
@@ -37,7 +36,6 @@ public class ProbeConfig {
                 Map<?, ?> obj = ProbeJS.GSON.fromJson(Files.newBufferedReader(path), Map.class);
                 keepBeaned = PUtil.castedGetOrDef("keepBeaned", obj, true);
                 enabled = PUtil.castedGetOrDef("enabled", obj, true);
-                vanillaOrder = PUtil.castedGetOrDef("vanillaOrder", obj, true);
                 exportClassNames = PUtil.castedGetOrDef("exportClassNames", obj, false);
                 trimming = PUtil.castedGetOrDef("trimming", obj, false);
                 //update from old config
