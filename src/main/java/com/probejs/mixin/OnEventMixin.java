@@ -19,12 +19,13 @@ public class OnEventMixin {
         remap = false
     )
     private void captureKjsEvents(ScriptType t, String id, CallbackInfoReturnable<Boolean> returns) {
-        if (ProbeJS.ENABLED && !CapturedClasses.isEventIgnored(this.getClass())) {
-            if (!CapturedClasses.capturedEvents.containsKey(id)) {
-                CapturedClasses.capturedEvents.put(id, new EventInfo(t, (EventJS) (Object) this, id, null));
-            } else {
-                CapturedClasses.capturedEvents.get(id).scriptTypes().add(t);
-            }
+        if (!ProbeJS.ENABLED || CapturedClasses.isEventIgnored(this.getClass())) {
+            return;
+        }
+        if (!CapturedClasses.capturedEvents.containsKey(id)) {
+            CapturedClasses.capturedEvents.put(id, new EventInfo(t, (EventJS) (Object) this, id, null));
+        } else {
+            CapturedClasses.capturedEvents.get(id).scriptTypes().add(t);
         }
     }
 
@@ -34,15 +35,16 @@ public class OnEventMixin {
         remap = false
     )
     private void captureKjsSubEvents(ScriptType t, String id, String sub, CallbackInfoReturnable<Boolean> returns) {
-        if (ProbeJS.ENABLED && !CapturedClasses.isEventIgnored(this.getClass())) {
-            if (!CapturedClasses.capturedEvents.containsKey(id)) {
-                CapturedClasses.capturedEvents.put(
-                    id + "." + sub,
-                    new EventInfo(t, (EventJS) (Object) this, id, sub)
-                );
-            } else {
-                CapturedClasses.capturedEvents.get(id).scriptTypes().add(t);
-            }
+        if (!ProbeJS.ENABLED || CapturedClasses.isEventIgnored(this.getClass())) {
+            return;
+        }
+        if (!CapturedClasses.capturedEvents.containsKey(id)) {
+            CapturedClasses.capturedEvents.put(
+                id + "." + sub,
+                new EventInfo(t, (EventJS) (Object) this, id, sub)
+            );
+        } else {
+            CapturedClasses.capturedEvents.get(id).scriptTypes().add(t);
         }
     }
 }

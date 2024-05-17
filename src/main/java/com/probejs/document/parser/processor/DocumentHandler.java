@@ -6,6 +6,8 @@ import com.probejs.document.IDocument;
 import com.probejs.document.parser.handler.IMultiHandler;
 import com.probejs.document.parser.handler.IStateHandler;
 import com.probejs.util.Pair;
+import lombok.val;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -30,10 +32,10 @@ public class DocumentHandler implements IStateHandler<String> {
     }
 
     public List<IDocument> getDocuments() {
-        List<IDecorative> decos = new ArrayList<>();
-        List<IDocument> elements = new ArrayList<>();
+        val decos = new ArrayList<IDecorative>();
+        val elements = new ArrayList<IDocument>();
         for (IDocumentProvider<?> document : this.elements) {
-            IDocument doc = document.provide();
+            val doc = document.provide();
             if (doc instanceof IDecorative) {
                 decos.add((IDecorative) doc);
             } else {
@@ -55,7 +57,7 @@ public class DocumentHandler implements IStateHandler<String> {
                 //skip if condition not met
                 continue;
             }
-            IStateHandler<String> layer = handler.second().apply(line, this);
+            val layer = handler.second().apply(line, this);
             if (layer != null) {
                 layer.trial(line, stack);
                 stack.add(layer);

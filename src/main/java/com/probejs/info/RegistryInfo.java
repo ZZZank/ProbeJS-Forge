@@ -9,6 +9,7 @@ import net.minecraft.tags.StaticTagHelper;
 import net.minecraft.tags.StaticTags;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import org.jetbrains.annotations.Nullable;
 
 public class RegistryInfo {
 
@@ -18,6 +19,7 @@ public class RegistryInfo {
     public final ResourceLocation parentId;
     public final ResourceLocation id;
     public final Set<ResourceLocation> names;
+    @Nullable
     private final StaticTagHelper<?> tagHelper;
 
     public RegistryInfo(ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRegistry) {

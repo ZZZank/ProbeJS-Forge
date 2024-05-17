@@ -46,9 +46,9 @@ public class SpecialData {
         SpecialData.INSTANCE = new SpecialData(extractTagsFrom(rInfos), rInfos);
     }
 
-    private static Map<ResourceLocation, Collection<ResourceLocation>> extractTagsFrom(List<RegistryInfo> source) {
+    private static Map<ResourceLocation, Collection<ResourceLocation>> extractTagsFrom(List<RegistryInfo> registries) {
         val tags = new HashMap<ResourceLocation, Collection<ResourceLocation>>();
-        for (val rInfo : source) {
+        for (val rInfo : registries) {
             val tagHelper = rInfo.tagHelper();
             if (tagHelper == null) {
                 continue;
@@ -82,16 +82,14 @@ public class SpecialData {
     }
 
     public static DummyBindingEvent computeBindingEvent() {
-        final DummyBindingEvent bindingEvent = new DummyBindingEvent(
-            ServerScriptManager.instance.scriptManager
-        );
+        val bindingEvent = new DummyBindingEvent(ServerScriptManager.instance.scriptManager);
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(bindingEvent));
         return bindingEvent;
     }
 
     public static Map<ResourceLocation, RecipeTypeJS> computeRecipeTypes() {
-        final Map<ResourceLocation, RecipeTypeJS> typeMap = new HashMap<>();
-        final RegisterRecipeHandlersEvent recipeEvent = new RegisterRecipeHandlersEvent(typeMap);
+        val typeMap = new HashMap<ResourceLocation, RecipeTypeJS>();
+        val recipeEvent = new RegisterRecipeHandlersEvent(typeMap);
 
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
         return typeMap;

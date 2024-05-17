@@ -7,7 +7,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import me.shedaniel.architectury.platform.Platform;
 
-public class ProbePaths {
+public abstract class ProbePaths {
 
     public static final Path CACHE = KubeJSPaths.EXPORTED;
     public static final Path PROBE = KubeJSPaths.DIRECTORY.resolve("probe");
