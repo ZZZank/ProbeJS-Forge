@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -38,6 +39,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private final Class<?> raw;
     private final String name;
     private final int modifiers;
+    private final List<Annotation> annotations;
     private final boolean isInterface;
     private final boolean isFunctionalInterface;
     private final List<TypeVariable> typeParameters;
@@ -58,29 +60,24 @@ public class ClassInfo implements Comparable<ClassInfo> {
         this.isInterface = raw.isInterface();
         this.superClass = ofCache(raw.getSuperclass());
         this.superType = TypeResolver.resolveType(clazz.getGenericSuperclass());
+        this.interfaces = Arrays
+            .stream(clazz.getGenericInterfaces())
+            .map(TypeResolver::resolveType)
+            .collect(Collectors.toList());
+        this.typeParameters = Arrays
+            .stream(raw.getTypeParameters())
+            .map(TypeVariable::new)
+            .collect(Collectors.toList());
+        this.annotations = Arrays.asList(raw.getAnnotations());
 
-        this.interfaces = new ArrayList<>(0);
         this.constructors = new ArrayList<>(0);
-        this.typeParameters = new ArrayList<>(0);
         this.methods = new ArrayList<>(0);
         this.fields = new ArrayList<>(0);
         try {
-            interfaces.addAll(
-                Arrays
-                    .stream(clazz.getGenericInterfaces())
-                    .map(TypeResolver::resolveType)
-                    .collect(Collectors.toList())
-            );
             constructors.addAll(
                 Arrays
                     .stream(raw.getConstructors())
                     .map(ConstructorInfo::new)
-                    .collect(Collectors.toList())
-            );
-            typeParameters.addAll(
-                Arrays
-                    .stream(raw.getTypeParameters())
-                    .map(TypeVariable::new)
                     .collect(Collectors.toList())
             );
             //methods
