@@ -104,11 +104,14 @@ dependencies {
     // at runtime, use the full JEI jar
     // modRuntimeOnly "mezz.jei:jei-1.16.5:${jei_version}"
     modApi "dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}"
-
+    //lombok
     compileOnly "org.projectlombok:lombok:${rootProject.lombok_version}"
     annotationProcessor "org.projectlombok:lombok:${rootProject.lombok_version}"
     testCompileOnly "org.projectlombok:lombok:${rootProject.lombok_version}"
     testAnnotationProcessor "org.projectlombok:lombok:${rootProject.lombok_version}"
+    //jabel
+    annotationProcessor 'com.github.bsideup.jabel:jabel-javac-plugin:1.0.0'
+    compileOnly 'com.github.bsideup.jabel:jabel-javac-plugin:1.0.0'
 }
 
 processResources {
@@ -128,6 +131,7 @@ tasks.withType(JavaCompile) {
     // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
     // If Javadoc is generated, this must be specified in that task too.
     options.encoding = "UTF-8"
+    sourceCompatibility = 16
 
     // The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
     // JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
