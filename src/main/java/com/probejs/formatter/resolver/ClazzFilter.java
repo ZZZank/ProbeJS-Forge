@@ -1,12 +1,18 @@
 package com.probejs.formatter.resolver;
 
+import com.probejs.ProbeJS;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public class ClazzFilter {
 
     public static final Set<Class<?>> skipped = new HashSet<>();
+    private static final Pattern methodPattern = Pattern.compile("^func_\\d+_\\w+$");
+    private static final Pattern fieldPattern = Pattern.compile("^field_\\d+_\\w+$");
 
     public static boolean shouldSkip(Class<?> clazz) {
         return skipped.contains(clazz);
@@ -17,13 +23,23 @@ public class ClazzFilter {
     }
 
     public static boolean acceptMethod(String methodName) {
-        return !methodName.equals("constructor");
-//            && !Pattern.matches("^[fm]_[\\d_]+$", methodName);
+        if (!ProbeJS.RHIZO_LOADED) {
+            //fallback for Rhino
+            return !methodName.equals("constructor");
+        }
+        //we can filter out unmapped method because not being mapped means the unmapped method is mapped in a class that
+        //should be the superclass of current class
+        return !methodName.equals("constructor") && !methodPattern.matcher(methodName).matches();
     }
 
     public static boolean acceptField(String fieldName) {
-        return !fieldName.equals("constructor");
-//            && !Pattern.matches("^[fm]_[\\d_]+$", fieldName);
+        if (!ProbeJS.RHIZO_LOADED) {
+            //fallback for Rhino
+            return !fieldName.equals("constructor");
+        }
+        //we can filter out unmapped field because not being mapped means the unmapped field is mapped in a class that
+        //should be the superclass of current class
+        return !fieldName.equals("constructor") && !fieldPattern.matcher(fieldName).matches();
     }
 
     public static void init() {
