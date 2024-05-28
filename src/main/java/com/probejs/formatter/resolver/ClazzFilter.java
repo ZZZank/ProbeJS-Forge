@@ -22,7 +22,7 @@ public class ClazzFilter {
     }
 
     public static boolean acceptMethod(String methodName) {
-        if (!ProbeJS.RHIZO_LOADED) {
+        if (!ProbeJS.isRhizoLoaded()) {
             //fallback for Rhino
             return !methodName.equals("constructor");
         }
@@ -32,7 +32,7 @@ public class ClazzFilter {
     }
 
     public static boolean acceptField(String fieldName) {
-        if (!ProbeJS.RHIZO_LOADED) {
+        if (!ProbeJS.isRhizoLoaded()) {
             //fallback for Rhino
             return !fieldName.equals("constructor");
         }

@@ -106,7 +106,7 @@ public class ProbeCommands {
     }
 
     private static int dump(CommandContext<CommandSourceStack> context) {
-        if (!ProbeJS.RHIZO_LOADED) {
+        if (!ProbeJS.isRhizoLoaded()) {
             sendSuccess(PText.translatable("probejs.rhizo_missing").withStyle(ChatFormatting.RED), context);
             sendSuccess(PText.translatable("probejs.download_rhizo_help")
                 .append(PText.url("CurseForge",

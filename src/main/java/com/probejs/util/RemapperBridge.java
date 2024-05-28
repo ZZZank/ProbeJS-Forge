@@ -16,7 +16,7 @@ public abstract class RemapperBridge {
     }
 
     public static void refreshRemapper() {
-        if (!ProbeJS.RHIZO_LOADED) {
+        if (!ProbeJS.isRhizoLoaded()) {
             ProbeJS.LOGGER.warn("You seem to be using Rhino instead of newer Rhizo, skipping Remapper check");
             return;
         }
