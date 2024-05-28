@@ -3,7 +3,6 @@ package com.probejs;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.util.UtilsJS;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import me.shedaniel.architectury.platform.Platform;
 
@@ -17,19 +16,19 @@ public abstract class ProbePaths {
     public static final Path WORKSPACE = Platform.getGameFolder().resolve(".vscode");
 
     public static void init() {
-        if (Files.notExists(PROBE, new LinkOption[0])) {
+        if (Files.notExists(PROBE)) {
             UtilsJS.tryIO(() -> Files.createDirectories(PROBE));
         }
-        if (Files.notExists(DOCS, new LinkOption[0])) {
+        if (Files.notExists(DOCS)) {
             UtilsJS.tryIO(() -> Files.createDirectories(DOCS));
         }
-        if (Files.notExists(GENERATED, new LinkOption[0])) {
+        if (Files.notExists(GENERATED)) {
             UtilsJS.tryIO(() -> Files.createDirectories(GENERATED));
         }
-        if (Files.notExists(USER_DEFINED, new LinkOption[0])) {
+        if (Files.notExists(USER_DEFINED)) {
             UtilsJS.tryIO(() -> Files.createDirectories(USER_DEFINED));
         }
-        if (Files.notExists(WORKSPACE, new LinkOption[0])) {
+        if (Files.notExists(WORKSPACE)) {
             UtilsJS.tryIO(() -> Files.createDirectories(WORKSPACE));
         }
     }

@@ -18,7 +18,7 @@ public abstract class TagCompiler {
     public static List<String> format(int indent, int stepIndent) {
         val lines = new ArrayList<String>();
         val duped = new HashSet<String>();
-        SpecialData.instance().tags.forEach((id, entriesRl) -> {
+        SpecialData.instance().tags().forEach((id, entriesRl) -> {
             //name
             String name = id.getPath();
             if (duped.contains(name)) {

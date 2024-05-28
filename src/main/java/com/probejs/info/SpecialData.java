@@ -1,5 +1,6 @@
 package com.probejs.info;
 
+import com.github.bsideup.jabel.Desugar;
 import com.google.common.collect.HashBiMap;
 import com.probejs.capture.DummyBindingEvent;
 import com.probejs.util.PUtil;
@@ -21,16 +22,11 @@ import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
 
-public class SpecialData {
+@Desugar
+public record SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> tags,
+                          Collection<RegistryInfo> registries) {
 
     private static SpecialData INSTANCE;
-    public final Map<ResourceLocation, Collection<ResourceLocation>> tags;
-    public final Collection<RegistryInfo> registries;
-
-    public SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> tags, Collection<RegistryInfo> registries) {
-        this.tags = tags;
-        this.registries = registries;
-    }
 
     public static SpecialData instance() {
         return INSTANCE;
@@ -58,11 +54,6 @@ public class SpecialData {
             tags.put(id, names);
         }
         return tags;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("SpecialData{tags=%s, registries=%s}", tags, registries);
     }
 
     private static Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> fetchRawRegistries() {

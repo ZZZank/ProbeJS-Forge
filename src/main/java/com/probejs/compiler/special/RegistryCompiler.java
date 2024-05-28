@@ -19,7 +19,7 @@ public class RegistryCompiler {
 
     public static void compile(BufferedWriter writer) throws IOException {
         Multimap<String, RegistryInfo> infoByMods = ArrayListMultimap.create();
-        for (RegistryInfo info : SpecialData.instance().registries) {
+        for (RegistryInfo info : SpecialData.instance().registries()) {
             infoByMods.put(info.id.getNamespace(), info);
         }
         List<IFormatter> formatters = new ArrayList<>();

@@ -1,28 +1,28 @@
 package com.probejs.util;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import com.github.bsideup.jabel.Desugar;
 
-@AllArgsConstructor
-@EqualsAndHashCode
-@ToString
-public class Pair<F, S> {
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-    private final F first;
-    private final S second;
+@Desugar
+public record Pair<F, S>(F first, S second) {
 
-    /**
-     * get the first element in such pair
-     */
-    public F first() {
-        return first;
+    public static <F, S> Collector<Pair<F, S>, ?, Map<F, S>> toMapCollector() {
+        return Collectors.toMap(Pair::first, Pair::second);
     }
 
-    /**
-     * get the second element in such pair
-     */
-    public S second() {
-        return second;
+    public Pair<S, F> swap() {
+        return new Pair<>(second, first);
+    }
+
+    public <F2> Pair<F2, S> mapFirst(final Function<F, ? extends F2> function) {
+        return new Pair<>(function.apply(first), second);
+    }
+
+    public <S2> Pair<F, S2> mapSecond(final Function<S, ? extends S2> function) {
+        return new Pair<>(first, function.apply(second));
     }
 }

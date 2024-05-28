@@ -2,7 +2,6 @@ package com.probejs.util;
 
 import com.probejs.ProbeJS;
 import dev.latvian.mods.rhino.Context;
-import me.shedaniel.architectury.platform.Platform;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

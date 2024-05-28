@@ -34,7 +34,7 @@ public class SnippetCompiler {
 
     private static void generateRegistrySnippet(JObject resultJson) {
         val duped = new HashSet<String>();
-        for (RegistryInfo info : SpecialData.instance().registries) {
+        for (RegistryInfo info : SpecialData.instance().registries()) {
             String type = info.id.getPath();
             if (duped.contains(type)) {
                 type = String.format("%s_%s", type, info.id.getNamespace());
@@ -58,7 +58,7 @@ public class SnippetCompiler {
 
     private static void generateTagSnippet(JObject resultJson) {
         val duped = new HashSet<String>();
-        for (val entry : SpecialData.instance().tags.entrySet()) {
+        for (val entry : SpecialData.instance().tags().entrySet()) {
             //type name
             String type = String.format("%s_tag", entry.getKey().getPath());
             if (duped.contains(type)) {
