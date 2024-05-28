@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.probejs.capture.CapturedClasses;
 import me.shedaniel.architectury.event.events.CommandRegistrationEvent;
+import me.shedaniel.architectury.platform.Platform;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -22,6 +23,7 @@ public class ProbeJS {
         .create();
     public static final ProbeConfig CONFIG = ProbeConfig.instance();
     public static final boolean ENABLED = CONFIG.enabled;
+    public static final boolean RHIZO_LOADED = Platform.isModLoaded("rhizo");
 
     public ProbeJS() {
         CommandRegistrationEvent.EVENT.register(ProbeCommands::register);

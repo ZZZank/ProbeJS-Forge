@@ -1,0 +1,4 @@
+{
+  "probejs.rhizo_missing": "Rhizo is not installed. This will partially break method/field filtering, and lead to confusing naming of most methods and fields.",
+  "probejs.download_rhizo": "You can download Rhizo via CurseForge or Github Release page. "
+}

@@ -17,8 +17,8 @@ public abstract class RemapperBridge {
     }
 
     public static void refreshRemapper() {
-        if (!Platform.getMod("rhino").getName().equals("Rhizo")) {
-            ProbeJS.LOGGER.warn("The game seems to be using Rhino instead of newer Rhizo, skipping Remapper check");
+        if (!ProbeJS.RHIZO_LOADED) {
+            ProbeJS.LOGGER.warn("You seem to be using Rhino instead of newer Rhizo, skipping Remapper check");
             return;
         }
         ProbeJS.LOGGER.info("Refreshing Remapper reference");

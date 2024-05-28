@@ -1,7 +1,11 @@
 package com.probejs.util;
 
 import com.google.gson.JsonObject;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
 import lombok.val;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.TextComponent;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -48,6 +52,26 @@ public abstract class PUtil {
         } catch (Exception e) {
             return defaultValue;
         }
+    }
+
+    /**
+     * @param source  The command source, usually avaliable in Command.executes() callback,
+     *                via {@code Command.executes(context -> context.getSource())}
+     * @param message The message you want to send
+     * @return Will always be `Command.SINGLE_SUCCESS`
+     */
+    private static int sendSuccess(CommandSourceStack source, String message, boolean allowLogging) {
+        source.sendSuccess(new TextComponent(message), allowLogging);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    /**
+     * @param context The command context, usually avaliable in Command.executes() callback
+     * @param message The message you want to send
+     * @return Will always be `Command.SINGLE_SUCCESS`
+     */
+    public static int sendSuccess(CommandContext<CommandSourceStack> context, String message) {
+        return sendSuccess(context.getSource(), message, true);
     }
 
     public interface TrySupplier<T> {
