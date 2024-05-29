@@ -24,8 +24,7 @@ public class FormatterConstructor implements MultiFormatter {
 
     private String formatTypeParameterized(IType info) {
         val sb = new StringBuilder(FormatterType.of(info).format());
-        if (info instanceof TypeClass) {
-            val clazz = (TypeClass) info;
+        if (info instanceof TypeClass clazz) {
             val classInfo = ClassInfo.ofCache(clazz.getResolvedClass());
             if (!classInfo.getTypeParameters().isEmpty()) {
                 sb.append('<');

@@ -1,7 +1,7 @@
 package com.probejs.util.json;
 
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
+import com.probejs.util.Pair;
 import lombok.val;
 
 import java.util.HashMap;
@@ -85,15 +85,15 @@ public class JObject implements IJsonBuilder<JsonObject> {
 
     public JObject addAll(Iterable<Pair<String, IJsonBuilder<?>>> members) {
         for (Pair<String, IJsonBuilder<?>> member : members) {
-            if (member.getSecond() != null) {
-                this.members.put(member.getFirst(), member.getSecond());
+            if (member.second() != null) {
+                this.members.put(member.first(), member.second());
             }
         }
         return this;
     }
 
     public JObject addAll(Stream<Pair<String, IJsonBuilder<?>>> members) {
-        members.forEach(entry -> this.members.put(entry.getFirst(), entry.getSecond()));
+        members.forEach(entry -> this.members.put(entry.first(), entry.second()));
         return this;
     }
 

@@ -3,6 +3,7 @@ package com.probejs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.probejs.capture.CapturedClasses;
+import lombok.val;
 import me.shedaniel.architectury.event.events.CommandRegistrationEvent;
 import me.shedaniel.architectury.platform.Platform;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,14 +36,14 @@ public class ProbeJS {
                 true,
                 Event.class,
                 event -> {
-                    Class<? extends Event> clazz = event.getClass();
+                    val clazz = event.getClass();
                     CapturedClasses.capturedRawEvents.putIfAbsent(clazz.getName(), clazz);
                 }
             );
         }
     }
 
-    public static boolean isRhizoLoaded() {
+    public static Boolean isRhizoLoaded() {
         if (RHIZO_LOADED == null) {
             RHIZO_LOADED = Platform.isModLoaded("rhizo");
         }

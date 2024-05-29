@@ -126,8 +126,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
 
     private static Map<String, IType> resolveTypeOverrides(IType typeInfo) {
         Map<String, IType> caughtTypes = new HashMap<>();
-        if (typeInfo instanceof TypeParameterized) {
-            val parType = (TypeParameterized) typeInfo;
+        if (typeInfo instanceof TypeParameterized parType) {
             val rawClassNames = Arrays
                 .stream(parType.getResolvedClass().getTypeParameters())
                 .map(TypeVariable::new)

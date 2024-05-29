@@ -1,13 +1,12 @@
 package com.probejs.capture;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.datafixers.util.Pair;
 import com.probejs.ProbeJS;
 import com.probejs.compiler.EventCompiler;
 import com.probejs.info.EventInfo;
+import com.probejs.util.Pair;
 import com.probejs.util.json.JObject;
 import dev.latvian.kubejs.event.EventJS;
 import lombok.val;
@@ -19,7 +18,7 @@ import java.util.Map;
 
 public abstract class EventCacheIO {
     public static Map<String, EventInfo> readKjs() throws IOException {
-        final Map<String, EventInfo> cachedEvents = new HashMap<>();
+        val cachedEvents = new HashMap<String, EventInfo>();
         if (!Files.exists(EventCompiler.EVENT_CACHE_PATH)) {
             return cachedEvents;
         }
@@ -31,7 +30,7 @@ public abstract class EventCacheIO {
             if (cachedMap == null) {
                 return cachedEvents;
             }
-            for (Map.Entry<String, JsonElement> entry : cachedMap.entrySet()) {
+            for (val entry : cachedMap.entrySet()) {
                 val key = entry.getKey();
                 val value = entry.getValue();
                 if (!value.isJsonObject()) {
@@ -59,7 +58,7 @@ public abstract class EventCacheIO {
     }
 
     public static Map<String, Class<?>> readForge() throws IOException {
-        final Map<String, Class<?>> cachedEvents = new HashMap<>();
+        val cachedEvents = new HashMap<String, Class<?>>();
         if (!Files.exists(EventCompiler.FORGE_EVENT_CACHE_PATH)) {
             ProbeJS.LOGGER.warn("No event cache file: {}", EventCompiler.FORGE_EVENT_CACHE_NAME);
             return cachedEvents;

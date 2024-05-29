@@ -32,7 +32,7 @@ public class DummyBindingEvent extends BindingsEvent {
     }
 
     public Map<Class<?>, List<String>> getClassDumpReversed() {
-        final Map<Class<?>, List<String>> reversed = new HashMap<>();
+        val reversed = new HashMap<Class<?>, List<String>>();
         this.classDumpMap.forEach((name, clazz) -> {
             reversed.computeIfAbsent(clazz, (k) -> new ArrayList<>()).add(name);
         });
@@ -48,23 +48,20 @@ public class DummyBindingEvent extends BindingsEvent {
     }
 
     private static Set<Class<?>> touchConstantClassRecursive(Object constantDump) {
-        Set<Class<?>> result = new HashSet<>();
+        val result = new HashSet<Class<?>>();
         if (constantDump == null) {
             return result;
         }
-        if (constantDump instanceof ScriptableObject) {
-            ScriptableObject scriptable = (ScriptableObject) constantDump;
+        if (constantDump instanceof ScriptableObject scriptable) {
             Arrays
                 .stream(scriptable.getIds())
                 .map(scriptable::get)
                 .map(DummyBindingEvent::touchConstantClassRecursive)
                 .forEach(result::addAll);
-        } else if (constantDump instanceof Map<?, ?>) {
-            Map<?, ?> map = (Map<?, ?>) constantDump;
+        } else if (constantDump instanceof Map<?, ?> map) {
             map.keySet().stream().map(DummyBindingEvent::touchConstantClassRecursive).forEach(result::addAll);
             map.values().stream().map(DummyBindingEvent::touchConstantClassRecursive).forEach(result::addAll);
-        } else if (constantDump instanceof Collection<?>) {
-            Collection<?> collection = (Collection<?>) constantDump;
+        } else if (constantDump instanceof Collection<?> collection) {
             collection.stream().map(DummyBindingEvent::touchConstantClassRecursive).forEach(result::addAll);
         } else {
             result.add(constantDump.getClass());
