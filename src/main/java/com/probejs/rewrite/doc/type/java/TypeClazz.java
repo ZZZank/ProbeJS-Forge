@@ -1,30 +1,31 @@
-package com.probejs.rewrite.doc.type;
+package com.probejs.rewrite.doc.type.java;
 
 import com.probejs.info.clazz.ClassInfo;
 import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeClass;
 import com.probejs.rewrite.ClazzPath;
 import com.probejs.rewrite.doc.DocClazz;
+import com.probejs.rewrite.doc.type.DocType;
 import lombok.Getter;
 
 @Getter
-public class DocTypeClazz implements DocType {
+public class TypeClazz implements DocType {
 
     private final ClazzPath path;
     private final DocClazz doc;
     private final boolean assigned;
 
-    DocTypeClazz(Class<?> clazz) {
+    TypeClazz(Class<?> clazz) {
         this.doc = DocClazz.of(clazz);
         this.path = this.doc.getPath();
         this.assigned = !this.doc.getAssignables().isEmpty();
     }
 
-    DocTypeClazz(ClassInfo clazz) {
+    TypeClazz(ClassInfo clazz) {
         this(clazz.getRaw());
     }
 
-    public DocTypeClazz(IType iType) {
+    public TypeClazz(IType iType) {
         this(((TypeClass) iType).getRaw());
     }
 }
