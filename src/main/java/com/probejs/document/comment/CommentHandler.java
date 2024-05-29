@@ -1,6 +1,8 @@
 package com.probejs.document.comment;
 
 import com.probejs.document.comment.special.*;
+import lombok.val;
+
 import java.util.HashMap;
 import java.util.function.Function;
 
@@ -10,7 +12,7 @@ public class CommentHandler {
      * key -> ((s: str)=>AbstractComment)
      * , where key should start with "@"
      */
-    public static final HashMap<String, Function<String, SpecialComment>> specialCommentHandler = new HashMap<>();
+    private static final HashMap<String, Function<String, SpecialComment>> specialCommentHandler = new HashMap<>();
 
     /**
      * determine if a line in comment block is special
@@ -32,7 +34,11 @@ public class CommentHandler {
         if (!line.startsWith("@")) {
             return null;
         }
-        return specialCommentHandler.get(line.split(" ")[0]).apply(line);
+        val handler = specialCommentHandler.get(line.split(" ")[0]);
+        if (handler == null) {
+            return null;
+        }
+        return handler.apply(line);
     }
 
     public static void init() {
