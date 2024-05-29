@@ -1,6 +1,8 @@
 package com.probejs.rewrite.doc.type;
 
 import com.probejs.info.clazz.ClassInfo;
+import com.probejs.info.type.IType;
+import com.probejs.info.type.TypeClass;
 import com.probejs.rewrite.ClazzPath;
 import com.probejs.rewrite.doc.DocClazz;
 import lombok.Getter;
@@ -20,5 +22,9 @@ public class DocTypeClazz implements DocType {
 
     DocTypeClazz(ClassInfo clazz) {
         this(clazz.getRaw());
+    }
+
+    public DocTypeClazz(IType iType) {
+        this(((TypeClass) iType).getRaw());
     }
 }

@@ -13,8 +13,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ClazzPath {
     public static final List<String> NAMESPACE_INTERNAL = Collections.singletonList("Internal");
+    public static final List<String> NAMESPACE_NONE = Collections.emptyList();
     public static final String NAME_UNRESOLVED = "Unresolved";
-    public static final ClazzPath UNRESOLVED = new ClazzPath(Collections.emptyList(), NAME_UNRESOLVED, false);
+    public static final ClazzPath UNRESOLVED = new ClazzPath(NAMESPACE_NONE, NAME_UNRESOLVED, false);
 
     private final List<String> namespace;
     private final String name;
@@ -28,12 +29,6 @@ public class ClazzPath {
         this.namespace = path.subList(1, path.size());
         this.name = path.get(0);
         this.isInternal = false;
-    }
-
-    public List<String> getNamespace() {
-        return this.isInternal && !this.namespace.isEmpty()
-            ? ClazzPath.NAMESPACE_INTERNAL
-            : this.namespace;
     }
 
     public String asStrPath(String delimiter) {

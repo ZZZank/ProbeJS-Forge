@@ -27,6 +27,14 @@ public class CommentHandler {
         return specialCommentHandler.containsKey(line.split(" ", 2)[0]);
     }
 
+    public static SpecialComment tryParseSpecialComment(String line) {
+        line = line.trim();
+        if (!line.startsWith("@")) {
+            return null;
+        }
+        return specialCommentHandler.get(line.split(" ")[0]).apply(line);
+    }
+
     public static void init() {
         specialCommentHandler.put("@hidden", CommentHidden::new);
         specialCommentHandler.put("@modify", CommentModify::new);

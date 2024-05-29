@@ -26,12 +26,13 @@ public class DocClazz implements CommentHolder {
     private final List<DocType> assignables;
 
     private DocClazz(Class<?> clazz) {
+        //doc properties
         val cInfo = ClassInfo.ofCache(clazz);
         this.path = PathResolver.resolve(cInfo.getRaw());
         REGISTRIES.put(clazz, this);
         this.assignables = new ArrayList<>();
         this.comment = new DocComment();
-
+        //properties from ClassInfo
         this.fields = cInfo.getFields().stream().map(DocField::new).collect(Collectors.toList());
         this.methods = cInfo.getMethods().stream().map(DocMethod::new).collect(Collectors.toList());
     }

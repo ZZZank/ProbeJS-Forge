@@ -11,6 +11,7 @@ import com.probejs.formatter.api.MultiFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class DocumentComment implements IDecorative, MultiFormatter {
@@ -48,8 +49,8 @@ public class DocumentComment implements IDecorative, MultiFormatter {
             .map(String::trim)
             .collect(Collectors.toList());
         this.rawLines.stream()
-            .filter(CommentHandler::isCommentLineSpecial)
-            .map(t -> CommentHandler.specialCommentHandler.get(t.split(" ", 2)[0]).apply(t))
+            .map(CommentHandler::tryParseSpecialComment)
+            .filter(Objects::nonNull)
             .forEach(c -> specials.put(c.getClass(), c));
     }
 

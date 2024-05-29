@@ -5,6 +5,9 @@ import com.probejs.document.type.IDocType;
 import com.probejs.document.type.DocTypeResolver;
 import lombok.Getter;
 
+/**
+ * type modify
+ */
 @Getter
 public class CommentModify extends SpecialComment {
 

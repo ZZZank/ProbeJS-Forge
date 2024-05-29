@@ -4,6 +4,7 @@ import com.probejs.info.clazz.FieldInfo;
 import com.probejs.info.type.IType;
 import com.probejs.rewrite.doc.comments.CommentHolder;
 import lombok.Getter;
+import lombok.val;
 
 @Getter
 public class DocField implements CommentHolder {
@@ -21,6 +22,6 @@ public class DocField implements CommentHolder {
 
     @Override
     public void applyComment() {
-
+        val specials = this.comment.getSpecials();
     }
 }
