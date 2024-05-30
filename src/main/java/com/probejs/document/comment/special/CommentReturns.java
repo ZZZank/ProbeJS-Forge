@@ -8,11 +8,11 @@ import lombok.Getter;
 @Getter
 public class CommentReturns extends SpecialComment {
 
-    private static final int MARK_LEN = "@returns ".length();
+    public static final String MARK = "@returns";
     private final IDocType returnType;
 
     public CommentReturns(String line) {
         super(line);
-        returnType = DocTypeResolver.resolve(line.substring(MARK_LEN));
+        returnType = DocTypeResolver.resolve(line.substring(MARK.length()+1));
     }
 }

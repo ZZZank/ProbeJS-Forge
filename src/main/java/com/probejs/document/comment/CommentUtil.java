@@ -6,13 +6,16 @@ import com.probejs.document.comment.special.CommentMod;
 import com.probejs.document.comment.special.CommentModify;
 import com.probejs.document.comment.special.CommentRename;
 import com.probejs.document.type.IDocType;
+import lombok.val;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class CommentUtil {
+import static com.probejs.formatter.FormatterComments.CommentStyle.J_DOC;
 
-    public static boolean isLoaded(DocumentComment comment) {
+public interface CommentUtil {
+
+    static boolean isLoaded(DocumentComment comment) {
         if (comment == null) {
             return true;
         }
@@ -22,14 +25,14 @@ public class CommentUtil {
             .allMatch(CommentMod::isLoaded);
     }
 
-    public static boolean isHidden(DocumentComment comment) {
+    static boolean isHidden(DocumentComment comment) {
         if (comment == null) {
             return false;
         }
         return comment.getSpecialComment(CommentHidden.class) != null;
     }
 
-    public static Map<String, IDocType> getTypeModifiers(DocumentComment comment) {
+    static Map<String, IDocType> getTypeModifiers(DocumentComment comment) {
         Map<String, IDocType> modifiers = new HashMap<>();
         if (comment != null) {
             comment
@@ -39,7 +42,7 @@ public class CommentUtil {
         return modifiers;
     }
 
-    public static Map<String, String> getRenames(DocumentComment comment) {
+    static Map<String, String> getRenames(DocumentComment comment) {
         Map<String, String> renames = new HashMap<>();
         if (comment == null) {
             return renames;
@@ -51,17 +54,53 @@ public class CommentUtil {
     }
 
     /**
+     * "/**" -> null
+     * "/*   " -> null
+     * "/**wow" -> " * wow"
+     */
+    @Nullable
+    static String convertFirstLine(String line) {
+        line = line.trim();
+        if ("/*".equals(line) || "/**".equals(line)) {
+            return null;
+        }
+        if (line.startsWith("/**")) {
+            return J_DOC.getInline() + line.substring(3);
+        }
+        return line;
+    }
+
+    /**
+     * " *\/" -> null
+     * "okkkk*\/" -> " * okkk"
+     */
+    @Nullable
+    static String convertLastLine(String line) {
+        line = line.trim();
+        if ("*/".equals(line)) {
+            return null;
+        }
+        if (line.endsWith("*/")) {
+            val start = line.startsWith("* ") ? 2 : 0;
+            val end = line.length() - 2;
+            return J_DOC.getInline() + line.substring(start, end);
+        }
+        return line;
+    }
+
+    /**
      * remove one star-mark with one space("* ") at the front, if any.
+     *
      * @return processed string, or itself if it has no "*" at the front.
      */
-    public static String removeStarMark(String line) {
+    static String trimInnerLine(String line) {
         line = line.trim();
         if (line.equals("*")) {
             return "";
         }
-        if (!line.startsWith("* ")) {
-            return line;
+        if (line.startsWith("* ")) {
+            return line.substring(2);
         }
-        return line.substring(2);
+        return line;
     }
 }

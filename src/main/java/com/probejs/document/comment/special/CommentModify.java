@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class CommentModify extends SpecialComment {
 
-    private static final int MARK_LEN = "@modify ".length();
+    public static final String MARK = "@modify";
     private final String name;
     private final IDocType type;
 

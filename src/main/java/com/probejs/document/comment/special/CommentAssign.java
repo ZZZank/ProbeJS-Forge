@@ -8,11 +8,11 @@ import lombok.Getter;
 @Getter
 public class CommentAssign extends SpecialComment {
 
-    private static final int MARK_LEN = "@assign ".length();
+    public static final String MARK = "@assign";
     private final IDocType type;
 
     public CommentAssign(String line) {
         super(line);
-        type = DocTypeResolver.resolve(line.substring(MARK_LEN));
+        type = DocTypeResolver.resolve(line.substring(MARK.length() + 1));
     }
 }

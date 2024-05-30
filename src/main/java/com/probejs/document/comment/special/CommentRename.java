@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 public class CommentRename extends SpecialComment {
 
+    public static final String MARK = "@rename";
     private final String name;
     private final String to;
 
