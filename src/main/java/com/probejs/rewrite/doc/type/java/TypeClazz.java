@@ -8,8 +8,12 @@ import com.probejs.rewrite.doc.DocClazz;
 import com.probejs.rewrite.doc.type.DocType;
 import lombok.Getter;
 
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
+
 @Getter
-public class TypeClazz implements DocType {
+public class TypeClazz implements JavaType {
 
     private final ClazzPath path;
     private final DocClazz doc;
@@ -25,7 +29,24 @@ public class TypeClazz implements DocType {
         this(clazz.getRaw());
     }
 
-    public TypeClazz(IType iType) {
-        this(((TypeClass) iType).getRaw());
+    public TypeClazz(Type type) {
+
+        this(ClassInfo.ofCache((Class<?>) type));
+    }
+
+    @Override
+    public Type raw() {
+        return doc.getInfo().getRaw();
+    }
+
+    @Override
+    public JavaType base() {
+        return this;
+    }
+
+    @Override
+    public Collection<Class<?>> relatedClasses() {
+        //TODO: could be related to ClassWalker
+        return List.of();
     }
 }

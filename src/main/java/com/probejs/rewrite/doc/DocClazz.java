@@ -24,6 +24,7 @@ public class DocClazz implements CommentHolder {
     private final DocComment comment;
     private final ClazzPath path;
     private final List<DocType> assignables;
+    private final ClassInfo info;
 
     private DocClazz(Class<?> clazz) {
         //doc properties
@@ -33,6 +34,7 @@ public class DocClazz implements CommentHolder {
         this.assignables = new ArrayList<>();
         this.comment = new DocComment();
         //properties from ClassInfo
+        this.info = cInfo;
         this.fields = cInfo.getFields().stream().map(DocField::new).collect(Collectors.toList());
         this.methods = cInfo.getMethods().stream().map(DocMethod::new).collect(Collectors.toList());
     }
