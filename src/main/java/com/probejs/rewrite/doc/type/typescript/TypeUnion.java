@@ -1,5 +1,6 @@
 package com.probejs.rewrite.doc.type.typescript;
 
+import com.github.bsideup.jabel.Desugar;
 import com.probejs.rewrite.doc.type.DocType;
 
 /**
@@ -7,5 +8,6 @@ import com.probejs.rewrite.doc.type.DocType;
  *
  * @author ZZZank
  */
+@Desugar
 public record TypeUnion(DocType left, DocType right) implements TSType {
 }

@@ -47,6 +47,6 @@ public class TypeClazz implements JavaType {
     @Override
     public Collection<Class<?>> relatedClasses() {
         //TODO: could be related to ClassWalker
-        return List.of();
+        return null;
     }
 }

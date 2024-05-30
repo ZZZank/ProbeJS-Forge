@@ -1,7 +1,6 @@
 package com.probejs.compiler.rich.lang;
 
 import com.google.gson.JsonArray;
-import com.mojang.datafixers.util.Pair;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
 import java.io.BufferedWriter;
@@ -11,6 +10,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.probejs.util.Pair;
 import com.probejs.util.json.JObject;
 import com.probejs.util.json.JPrimitive;
 import lombok.val;
