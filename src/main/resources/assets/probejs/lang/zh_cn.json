@@ -1,0 +1,4 @@
+{
+  "probejs.rhizo_missing": "Rhizo未安装。这会部分地破坏针对方法/字段的过滤功能，并导致大部分方法/字段的命名令人发懵。",
+  "probejs.download_rhizo_help": "你可以通过CurseForge或者Github的Release页面下载Rhizo。"
+}

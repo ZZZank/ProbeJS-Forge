@@ -31,22 +31,23 @@ public class ProbeConfig {
     }
 
     private ProbeConfig(Path path) {
-        if (Files.exists(path)) {
-            try {
-                Map<?, ?> obj = ProbeJS.GSON.fromJson(Files.newBufferedReader(path), Map.class);
-                keepBeaned = PUtil.castedGetOrDef("keepBeaned", obj, true);
-                enabled = PUtil.castedGetOrDef("enabled", obj, true);
-                exportClassNames = PUtil.castedGetOrDef("exportClassNames", obj, false);
-                trimming = PUtil.castedGetOrDef("trimming", obj, false);
-                //update from old config
-                Object cfgDisabled = obj.get("disabled");
-                if (cfgDisabled != null) {
-                    this.enabled = !(boolean) cfgDisabled;
-                    save();
-                }
-            } catch (IOException e) {
-                ProbeJS.LOGGER.warn("Cannot read config properties, falling back to defaults.");
+        if (!Files.exists(path)) {
+            return;
+        }
+        try {
+            Map<?, ?> obj = ProbeJS.GSON.fromJson(Files.newBufferedReader(path), Map.class);
+            keepBeaned = PUtil.castedGetOrDef("keepBeaned", obj, true);
+            enabled = PUtil.castedGetOrDef("enabled", obj, true);
+            exportClassNames = PUtil.castedGetOrDef("exportClassNames", obj, false);
+            trimming = PUtil.castedGetOrDef("trimming", obj, false);
+            //update from old config
+            Object cfgDisabled = obj.get("disabled");
+            if (cfgDisabled != null) {
+                this.enabled = !(boolean) cfgDisabled;
+                save();
             }
+        } catch (IOException e) {
+            ProbeJS.LOGGER.warn("Cannot read config properties, falling back to defaults.");
         }
     }
 

@@ -16,7 +16,7 @@ class Vec3i {
 }
 
 /**
- * @target net.minecraft.world.item.ItemStack
+ * @target net.minecraft.item.ItemStack
  * @assign Internal.ItemStackJS_
  */
 class ItemStack {

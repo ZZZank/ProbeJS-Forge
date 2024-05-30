@@ -1,4 +1,9 @@
 {
   "probejs.rhizo_missing": "Rhizo is not installed. This will partially break method/field filtering, and lead to confusing naming of most methods and fields.",
-  "probejs.download_rhizo_help": "You can download Rhizo via CurseForge or Github Release page. "
+  "probejs.download_rhizo_help": "You can download Rhizo via CurseForge or Github Release page. ",
+
+  "probejs.config.enable": "Capture fired events. Changes will be applied next time you start the game.",
+  "probejs.config.dump_class_name": "Export class name to snippets.",
+  "probejs.config.trimming": "Trim duplicated methods/fields.",
+  "probejs.config.keep_beaned": "Keep the original form of beaned methods."
 }
