@@ -1,7 +1,7 @@
 package com.probejs.formatter.resolver;
 
 import com.probejs.document.DocManager;
-import com.probejs.document.type.DocTypeRaw;
+import com.probejs.document.type.TypeLiteral;
 import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterType;
 import com.probejs.info.SpecialData;
@@ -147,7 +147,7 @@ public class SpecialTypes {
         NameResolver.specialClassAssigner.forEach((clazz, assignProvider) -> {
             val name = clazz.getName();
             for (val assignTo : assignProvider.get()) {
-                DocManager.addAssignable(name, new DocTypeRaw(assignTo));
+                DocManager.addAssignable(name, new TypeLiteral(assignTo));
             }
         });
         //registry
@@ -162,7 +162,7 @@ public class SpecialTypes {
                     info.id.getNamespace(),
                     info.id.getPath().replace('/', '$')
                 );
-                DocManager.addAssignable(registrySuperType.getName(), new DocTypeRaw(name));
+                DocManager.addAssignable(registrySuperType.getName(), new TypeLiteral(name));
             });
     }
 

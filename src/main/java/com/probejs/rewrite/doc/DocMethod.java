@@ -3,7 +3,7 @@ package com.probejs.rewrite.doc;
 import com.probejs.document.comment.SpecialComment;
 import com.probejs.document.comment.special.CommentModify;
 import com.probejs.document.comment.special.CommentRename;
-import com.probejs.document.type.IDocType;
+import com.probejs.document.type.DocType;
 import com.probejs.info.clazz.MethodInfo;
 import com.probejs.rewrite.doc.comments.CommentHolder;
 import lombok.Getter;
@@ -18,13 +18,13 @@ public class DocMethod implements CommentHolder {
 
     private final DocComment comment;
     private final List<DocParam> params;
-    private IDocType returnType;
+    private DocType returnType;
 
     DocMethod(MethodInfo mInfo) {
         this.comment = new DocComment();
         this.params = mInfo.getParams().stream().map(DocParam::new).collect(Collectors.toList());
         //TODO: doc type
-        this.returnType = (IDocType) mInfo.getType();
+        this.returnType = (DocType) mInfo.getType();
     }
 
     @Override
@@ -52,12 +52,12 @@ public class DocMethod implements CommentHolder {
     public static class DocParam {
 
         private String name;
-        private IDocType type;
+        private DocType type;
 
         DocParam(MethodInfo.ParamInfo pInfo) {
             this.name = pInfo.getName();
             //TODO: doc type
-            this.type = (IDocType) pInfo.getType();
+            this.type = (DocType) pInfo.getType();
         }
 
         public boolean applyComment(SpecialComment comment) {

@@ -2,7 +2,7 @@ package com.probejs.document;
 
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.parser.processor.IDocumentProvider;
-import com.probejs.document.type.IDocType;
+import com.probejs.document.type.DocType;
 import com.probejs.document.type.DocTypeResolver;
 import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.util.PUtil;
@@ -21,9 +21,9 @@ public class DocumentType implements IDocumentProvider<DocumentType>, MultiForma
 
     private DocumentComment comment;
     private final String name;
-    private final IDocType type;
+    private final DocType type;
 
-    public DocumentType(String name, IDocType type) {
+    public DocumentType(String name, DocType type) {
         this.name = name;
         this.type = type;
     }
@@ -52,7 +52,7 @@ public class DocumentType implements IDocumentProvider<DocumentType>, MultiForma
                 "%stype %s = %s;",
                 PUtil.indent(indent),
                 name,
-                IDocType.defaultTransformer.apply(type, type.getTypeName())
+                DocType.defaultTransformer.apply(type, type.getTypeName())
             )
         );
     }

@@ -1,7 +1,7 @@
 package com.probejs.document;
 
 import com.probejs.document.parser.processor.IDocumentProvider;
-import com.probejs.document.type.IDocType;
+import com.probejs.document.type.DocType;
 import com.probejs.document.type.DocTypeResolver;
 import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.util.PUtil;
@@ -19,7 +19,7 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
     @Getter
     private final String name;
     @Getter
-    private final IDocType type;
+    private final DocType type;
 
     public DocumentField(String line) {
         line = line.trim();

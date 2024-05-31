@@ -1,7 +1,7 @@
 package com.probejs.document;
 
 import com.probejs.document.parser.processor.IDocumentProvider;
-import com.probejs.document.type.IDocType;
+import com.probejs.document.type.DocType;
 import com.probejs.document.type.DocTypeResolver;
 import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.info.clazz.MethodInfo;
@@ -34,7 +34,7 @@ public class DocumentMethod
                 String.format(
                     "%s: %s",
                     documentParam.getName(),
-                    documentParam.getType().transform(IDocType.defaultTransformer)
+                    documentParam.getType().transform(DocType.defaultTransformer)
                 )
             )
             .collect(Collectors.joining(", "));
@@ -51,9 +51,9 @@ public class DocumentMethod
     public static class DocumentParam {
 
         private final String name;
-        private final IDocType type;
+        private final DocType type;
 
-        private DocumentParam(String name, IDocType type) {
+        private DocumentParam(String name, DocType type) {
             this.name = name;
             this.type = type;
         }
@@ -63,7 +63,7 @@ public class DocumentMethod
     @Getter
     private final String name;
     @Getter
-    private final IDocType returnType;
+    private final DocType returnType;
     @Getter
     private final List<DocumentParam> params;
 

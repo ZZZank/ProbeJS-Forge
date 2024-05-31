@@ -9,7 +9,7 @@ import com.probejs.document.DocumentClass;
 import com.probejs.document.DocumentField;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.comment.CommentUtil;
-import com.probejs.document.type.IDocType;
+import com.probejs.document.type.DocType;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.formatter.resolver.NameResolver;
@@ -216,7 +216,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         DocManager.typesAssignable
             .getOrDefault(classInfo.getRaw().getName(), Collections.emptyList())
             .stream()
-            .map(t -> t.transform(IDocType.defaultTransformer))
+            .map(t -> t.transform(DocType.defaultTransformer))
             .forEach(assignables::add);
         if (NameResolver.specialTypeFormatters.containsKey(classInfo.getRaw())) {
             assignables.add(

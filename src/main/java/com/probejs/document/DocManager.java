@@ -7,7 +7,7 @@ import com.probejs.document.comment.special.CommentAssign;
 import com.probejs.document.comment.special.CommentTarget;
 import com.probejs.document.parser.DocReader;
 import com.probejs.document.parser.processor.Document;
-import com.probejs.document.type.IDocType;
+import com.probejs.document.type.DocType;
 import lombok.val;
 
 import java.util.*;
@@ -15,7 +15,7 @@ import java.util.*;
 public class DocManager {
 
     public static final Multimap<String, DocumentClass> classDocuments = ArrayListMultimap.create();
-    public static final Map<String, List<IDocType>> typesAssignable = new HashMap<>();
+    public static final Map<String, List<DocType>> typesAssignable = new HashMap<>();
     public static final Map<String, List<DocumentClass>> classAdditions = new HashMap<>();
     public static final List<String> rawTSDoc = new ArrayList<>();
     public static final List<DocumentType> typeDocuments = new ArrayList<>();
@@ -62,7 +62,7 @@ public class DocManager {
         }
     }
 
-    public static void addAssignable(String className, IDocType type) {
+    public static void addAssignable(String className, DocType type) {
         DocManager.typesAssignable.computeIfAbsent(className, k -> new ArrayList<>()).add(type);
     }
 

@@ -5,7 +5,7 @@ import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.document.comment.special.CommentMod;
 import com.probejs.document.comment.special.CommentModify;
 import com.probejs.document.comment.special.CommentRename;
-import com.probejs.document.type.IDocType;
+import com.probejs.document.type.DocType;
 import lombok.val;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,8 +32,8 @@ public interface CommentUtil {
         return comment.getSpecialComment(CommentHidden.class) != null;
     }
 
-    static Map<String, IDocType> getTypeModifiers(DocumentComment comment) {
-        Map<String, IDocType> modifiers = new HashMap<>();
+    static Map<String, DocType> getTypeModifiers(DocumentComment comment) {
+        Map<String, DocType> modifiers = new HashMap<>();
         if (comment != null) {
             comment
                 .getSpecialComments(CommentModify.class)

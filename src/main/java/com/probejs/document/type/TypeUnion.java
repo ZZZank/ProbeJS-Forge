@@ -2,11 +2,11 @@ package com.probejs.document.type;
 
 import java.util.function.BiFunction;
 
-public class DocTypeUnion implements IDocType {
-    private final IDocType leftType;
-    private final IDocType rightType;
+public class TypeUnion implements DocType {
+    private final DocType leftType;
+    private final DocType rightType;
 
-    public DocTypeUnion(IDocType leftType, IDocType rightType) {
+    public TypeUnion(DocType leftType, DocType rightType) {
         this.leftType = leftType;
         this.rightType = rightType;
     }
@@ -17,7 +17,7 @@ public class DocTypeUnion implements IDocType {
     }
 
     @Override
-    public String transform(BiFunction<IDocType, String, String> transformer) {
+    public String transform(BiFunction<DocType, String, String> transformer) {
         return transformer.apply(this, leftType.transform(transformer) + " | " + rightType.transform(transformer));
     }
 }

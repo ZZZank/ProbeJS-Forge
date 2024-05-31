@@ -5,7 +5,7 @@ import com.probejs.document.DocumentComment;
 import com.probejs.document.DocumentMethod;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentReturns;
-import com.probejs.document.type.IDocType;
+import com.probejs.document.type.DocType;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.formatter.resolver.NameResolver;
@@ -26,8 +26,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     @Getter
     private final MethodInfo info;
-    private final Map<String, IDocType> paramModifiers;
-    private IDocType returnModifiers;
+    private final Map<String, DocType> paramModifiers;
+    private DocType returnModifiers;
     @Getter
     private final BeanType beanType;
 
@@ -94,14 +94,14 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             : info.getParams().get(0).getType().getTypeName();
     }
 
-    public Map<String, IDocType> getParamModifiers() {
+    public Map<String, DocType> getParamModifiers() {
         if (this.paramModifiers.isEmpty()) {
             refreshModifiers();
         }
         return paramModifiers;
     }
 
-    public IDocType getReturnModifiers() {
+    public DocType getReturnModifiers() {
         if (this.returnModifiers == null) {
             refreshModifiers();
         }
@@ -161,8 +161,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
      */
     public String formatParams(Map<String, String> renames, boolean forceNoUnderscore) {
         val typeTransformer = forceNoUnderscore
-            ? IDocType.dummyTransformer
-            : IDocType.defaultTransformer;
+            ? DocType.dummyTransformer
+            : DocType.defaultTransformer;
         val modifiers = getParamModifiers();
         return info
             .getParams()

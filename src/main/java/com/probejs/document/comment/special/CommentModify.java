@@ -1,7 +1,7 @@
 package com.probejs.document.comment.special;
 
 import com.probejs.document.comment.SpecialComment;
-import com.probejs.document.type.IDocType;
+import com.probejs.document.type.DocType;
 import com.probejs.document.type.DocTypeResolver;
 import lombok.Getter;
 
@@ -13,7 +13,7 @@ public class CommentModify extends SpecialComment {
 
     public static final String MARK = "@modify";
     private final String name;
-    private final IDocType type;
+    private final DocType type;
 
     public CommentModify(String line) {
         super(line);
