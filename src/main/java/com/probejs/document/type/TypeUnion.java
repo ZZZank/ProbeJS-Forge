@@ -2,6 +2,10 @@ package com.probejs.document.type;
 
 import java.util.function.BiFunction;
 
+/**
+ * "string | number"
+ * @author ZZZank
+ */
 public class TypeUnion implements DocType {
     private final DocType leftType;
     private final DocType rightType;

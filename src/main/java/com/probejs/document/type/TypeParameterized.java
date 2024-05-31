@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+/**
+ * "Map<string, number>"
+ * @author ZZZank
+ */
 @Getter
 public class TypeParameterized implements DocType {
 

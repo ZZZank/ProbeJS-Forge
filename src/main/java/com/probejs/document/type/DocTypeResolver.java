@@ -1,7 +1,6 @@
 package com.probejs.document.type;
 
 import com.probejs.info.type.*;
-import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;
 import lombok.val;
 
@@ -39,17 +38,17 @@ public class DocTypeResolver {
         type = type.trim();
 
         //TODO: Resolve object type
-        if (type.startsWith("{")) {
-            // {[x in string]: string}
+        if (type.startsWith("{") || type.startsWith("[")) {
+            // {[x in string]: string}, or [int, int, int]
             return new TypeLiteral(type);
         }
 
-        Pair<String, String> splitUnion = StringUtil.splitFirst(type, "<", ">", "|");
+        val splitUnion = StringUtil.splitFirst(type, "|");
         if (splitUnion != null) {
             return new TypeUnion(resolve(splitUnion.first()), resolve(splitUnion.second()));
         }
 
-        Pair<String, String> splitIntersection = StringUtil.splitFirst(type, "<", ">", "&");
+        val splitIntersection = StringUtil.splitFirst(type, "&");
         if (splitIntersection != null) {
             return new TypeIntersection(
                 resolve(splitIntersection.first()),
@@ -62,10 +61,10 @@ public class DocTypeResolver {
         }
 
         if (type.endsWith(">")) {
-            int indexLeft = type.indexOf("<");
-            String rawType = type.substring(0, indexLeft);
-            String typeParams = type.substring(indexLeft + 1, type.length() - 1);
-            List<String> params = StringUtil.splitLayer(typeParams, "<", ">", ",");
+            val indexLeft = type.indexOf("<");
+            val rawType = type.substring(0, indexLeft);
+            val typeParams = type.substring(indexLeft + 1, type.length() - 1);
+            val params = StringUtil.splitLayer(typeParams, ",");
             return new TypeParameterized(
                 resolve(rawType),
                 params.stream().map(DocTypeResolver::resolve).collect(Collectors.toList())
@@ -82,8 +81,8 @@ public class DocTypeResolver {
             return typeEquals(((TypeArray) docType).getBase(), array.getBase());
         }
         if (docType instanceof TypeParameterized && param instanceof JavaTypeParameterized parameterized) {
-            List<JavaType> paramInfo = parameterized.getParamTypes();
-            List<DocType> paramDoc = ((TypeParameterized) docType).getParamTypes();
+            val paramInfo = parameterized.getParamTypes();
+            val paramDoc = ((TypeParameterized) docType).getParamTypes();
             if (paramDoc.size() != paramInfo.size()) {
                 return false;
             }

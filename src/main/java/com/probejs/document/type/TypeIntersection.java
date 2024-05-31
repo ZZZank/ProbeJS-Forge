@@ -2,6 +2,11 @@ package com.probejs.document.type;
 
 import java.util.function.BiFunction;
 
+/**
+ * "Formatter & Document"
+ * "string & number"
+ * @author ZZZank
+ */
 public class TypeIntersection implements DocType {
     private final DocType leftType;
     private final DocType rightType;

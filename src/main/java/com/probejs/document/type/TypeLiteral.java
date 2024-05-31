@@ -1,5 +1,9 @@
 package com.probejs.document.type;
 
+/**
+ * string literal
+ * @author ZZZank
+ */
 public class TypeLiteral implements DocType {
 
     private final String literal;

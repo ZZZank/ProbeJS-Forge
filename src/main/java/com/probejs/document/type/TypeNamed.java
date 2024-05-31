@@ -2,6 +2,9 @@ package com.probejs.document.type;
 
 import com.probejs.formatter.resolver.NameResolver;
 
+/**
+ * also literal, but allows underscore
+ */
 public class TypeNamed implements DocType {
 
     private final String typeName;

@@ -5,6 +5,10 @@ import lombok.Getter;
 
 import java.util.function.BiFunction;
 
+/**
+ * "string[]"
+ * @author ZZZank
+ */
 @Getter
 public class TypeArray implements DocType {
     private final DocType base;

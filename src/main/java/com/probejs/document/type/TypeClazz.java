@@ -3,6 +3,8 @@ package com.probejs.document.type;
 import com.probejs.info.type.JavaTypeClass;
 
 /**
+ * "String", "Map"
+ * note that there's no attached type variables
  * @author ZZZank
  */
 public class TypeClazz implements DocType {
