@@ -3,6 +3,10 @@ package com.probejs.document.type;
 import com.probejs.info.type.*;
 import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;
+import lombok.val;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,11 +20,19 @@ public class DocTypeResolver {
             case JavaTypeClass c -> new TypeClazz(c);
             case JavaTypeArray a -> new TypeArray(a);
             case JavaTypeParameterized p -> new TypeParameterized(p);
-            case JavaTypeVariable v -> null;
-            case JavaTypeWildcard w -> null;
+            case JavaTypeVariable v -> new TypeVariable(v);
+            case JavaTypeWildcard w -> new TypeWildcard(w);
             case com.probejs.info.type.TypeLiteral l -> throw new IllegalArgumentException("");
             default -> throw new IllegalStateException("Not instance of JavaType: " + type);
         };
+    }
+
+    public static List<DocType> fromJava(Collection<JavaType> types) {
+        val resolved = new ArrayList<DocType>(types.size());
+        for (val jType : types) {
+            resolved.add(fromJava(jType));
+        }
+        return resolved;
     }
 
     public static DocType resolve(String type) {
