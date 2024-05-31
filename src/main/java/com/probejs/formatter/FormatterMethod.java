@@ -11,8 +11,8 @@ import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.formatter.resolver.SpecialTypes;
 import com.probejs.info.clazz.MethodInfo;
-import com.probejs.info.type.IType;
-import com.probejs.info.type.TypeClass;
+import com.probejs.info.type.JavaType;
+import com.probejs.info.type.JavaTypeClass;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
 import lombok.Getter;
@@ -60,8 +60,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
             methodName.startsWith("is") &&
             (
                 //TODO: it seems that we can't pre-calculate the Boolean TypeClass, why
-                info.getType().assignableFrom(new TypeClass(Boolean.class)) ||
-                info.getType().assignableFrom(new TypeClass(Boolean.TYPE))
+                info.getType().assignableFrom(new JavaTypeClass(Boolean.class)) ||
+                info.getType().assignableFrom(new JavaTypeClass(Boolean.TYPE))
             )
         ) {
             return BeanType.GETTER_IS;
@@ -131,26 +131,22 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         return FormatterType.of(info.getType())
             .underscored(false)
             .format()
-            .concat(info.getType() instanceof TypeClass c ? SpecialTypes.attachedTypeVar(c) : "");
+            .concat(SpecialTypes.attachedClassTypeVar(info.getType()));
     }
 
-    private String formatParam(MethodInfo.ParamInfo pInfo, boolean forceNoUnderscore) {
-        val info = pInfo.getType();
-        val clazz = info.getResolvedClass();
-        return FormatterType.of(pInfo.getType(), false)
-            .underscored(type -> {
+    private String formatParamType(MethodInfo.ParamInfo pInfo, boolean forceNoUnderscore) {
+        val type = pInfo.getType();
+        return FormatterType.of(type, false)
+            .underscored(t -> {
                 if (forceNoUnderscore) {
                     return false;
                 }
-                val base = type.getBase();
-                if (base instanceof TypeClass) {
-                    return DocManager.typesAssignable.containsKey(clazz.getName())
-                        && !NameResolver.resolvedPrimitives.contains(base.getResolvedClass().getName());
-                }
-                return false;
+                return t.getBase() instanceof JavaTypeClass c &&
+                    DocManager.typesAssignable.containsKey(c.getResolvedClass().getName())
+                    && !NameResolver.resolvedPrimitives.contains(c.getResolvedClass().getName());
             })
             .format()
-            .concat((info instanceof TypeClass c) ? SpecialTypes.attachedTypeVar(c) : "");
+            .concat(SpecialTypes.attachedClassTypeVar(type));
     }
 
     /**
@@ -175,7 +171,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 val nameRaw = pInfo.getName();
                 val paramType = modifiers.containsKey(nameRaw)
                     ? modifiers.get(nameRaw).transform(typeTransformer)
-                    : formatParam(pInfo, forceNoUnderscore);
+                    : formatParamType(pInfo, forceNoUnderscore);
                 return String.format(
                     "%s%s: %s",
                     pInfo.isVarArgs() ? "..." : "",
@@ -213,7 +209,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         builder.append(info.getName());
         if (!info.getTypeVariables().isEmpty()) {
             builder.append('<')
-                .append(info.getTypeVariables().stream().map(IType::getTypeName).collect(Collectors.joining(", ")))
+                .append(info.getTypeVariables().stream().map(JavaType::getTypeName).collect(Collectors.joining(", ")))
                 .append('>');
         }
         builder

@@ -1,6 +1,6 @@
 package com.probejs.info.clazz;
 
-import com.probejs.info.type.IType;
+import com.probejs.info.type.JavaType;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.RemapperBridge;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -27,7 +27,7 @@ public class MethodInfo extends BaseMemberInfo {
     @Setter
     private List<ParamInfo> params;
     @Setter
-    private List<IType> typeVariables;
+    private List<JavaType> typeVariables;
 
     private static String getRemappedOrDefault(Method method, Class<?> from) {
         String mapped = RemapperBridge.getRemapper().getMappedMethod(from, method);
@@ -38,14 +38,14 @@ public class MethodInfo extends BaseMemberInfo {
     }
 
     public MethodInfo(Method method, Class<?> from) {
-        super(getRemappedOrDefault(method, from), TypeResolver.resolveType(method.getGenericReturnType()));
+        super(getRemappedOrDefault(method, from), TypeResolver.resolve(method.getGenericReturnType()));
         this.raw = method;
         this.shouldHide = method.getAnnotation(HideFromJS.class) != null;
         this.from = ClassInfo.ofCache(from);
         this.modifiers = method.getModifiers();
         this.params = Arrays.stream(method.getParameters()).map(ParamInfo::new).collect(Collectors.toList());
         this.typeVariables = Arrays.stream(method.getTypeParameters())
-            .map(TypeResolver::resolveType)
+            .map(TypeResolver::resolve)
             .collect(Collectors.toList());
     }
 
@@ -63,7 +63,7 @@ public class MethodInfo extends BaseMemberInfo {
         private final boolean isVarArgs;
 
         public ParamInfo(Parameter parameter) {
-            super(parameter.getName(), TypeResolver.resolveType(parameter.getParameterizedType()));
+            super(parameter.getName(), TypeResolver.resolve(parameter.getParameterizedType()));
             this.isVarArgs = parameter.isVarArgs();
         }
     }

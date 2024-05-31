@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Data
-public class TypeClass implements IType {
+public class JavaTypeClass implements JavaType {
 
     public static boolean test(Type type) {
         return type instanceof Class<?>;
@@ -17,12 +17,12 @@ public class TypeClass implements IType {
 
     private final Class<?> raw;
 
-    public TypeClass(Type type) {
+    public JavaTypeClass(Type type) {
         this.raw = (Class<?>) type;
     }
 
     @Override
-    public IType getBase() {
+    public JavaType getBase() {
         return this;
     }
 
@@ -37,19 +37,19 @@ public class TypeClass implements IType {
     }
 
     @Override
-    public IType copy() {
-        return new TypeClass(raw);
+    public JavaType copy() {
+        return new JavaTypeClass(raw);
     }
 
     @Override
-    public boolean assignableFrom(IType info) {
-        if (!(info instanceof TypeClass clazz)) {
+    public boolean assignableFrom(JavaType info) {
+        if (!(info instanceof JavaTypeClass clazz)) {
             return false;
         }
         return clazz.raw.isAssignableFrom(raw);
     }
 
-    public List<TypeVariable> getTypeVariables() {
+    public List<JavaTypeVariable> getTypeVariables() {
         return ClassInfo.ofCache(this.raw).getTypeParameters();
     }
 }

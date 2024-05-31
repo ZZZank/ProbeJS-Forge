@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Data
-public class TypeVariable implements IType {
+public class JavaTypeVariable implements JavaType {
 
     public static boolean test(Type type) {
         return type instanceof java.lang.reflect.TypeVariable;
@@ -16,7 +16,7 @@ public class TypeVariable implements IType {
 
     private final java.lang.reflect.TypeVariable<?> raw;
 
-    public TypeVariable(Type type) {
+    public JavaTypeVariable(Type type) {
         this.raw = (java.lang.reflect.TypeVariable<?>) type;
     }
 
@@ -26,7 +26,7 @@ public class TypeVariable implements IType {
     }
 
     @Override
-    public IType getBase() {
+    public JavaType getBase() {
         return this;
     }
 
@@ -36,13 +36,13 @@ public class TypeVariable implements IType {
     }
 
     @Override
-    public IType copy() {
-        return new TypeVariable(raw);
+    public JavaType copy() {
+        return new JavaTypeVariable(raw);
     }
 
     @Override
-    public boolean assignableFrom(IType info) {
-        return info instanceof TypeVariable;
+    public boolean assignableFrom(JavaType info) {
+        return info instanceof JavaTypeVariable;
     }
 
     @Override
@@ -50,14 +50,14 @@ public class TypeVariable implements IType {
         return Object.class;
     }
 
-    public List<IType> getBounds() {
+    public List<JavaType> getBounds() {
         Type[] bounds = this.raw.getBounds();
         if (bounds.length == 1 && bounds[0] == Object.class) {
             return Collections.emptyList();
         }
-        List<IType> boundTypes = new ArrayList<>(bounds.length);
+        List<JavaType> boundTypes = new ArrayList<>(bounds.length);
         for (Type bound : bounds) {
-            boundTypes.add(TypeResolver.resolveType(bound));
+            boundTypes.add(TypeResolver.resolve(bound));
         }
         return boundTypes;
     }

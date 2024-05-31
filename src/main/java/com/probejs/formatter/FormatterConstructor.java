@@ -4,8 +4,8 @@ import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.formatter.resolver.SpecialTypes;
 import com.probejs.info.clazz.ConstructorInfo;
-import com.probejs.info.type.IType;
-import com.probejs.info.type.TypeClass;
+import com.probejs.info.type.JavaType;
+import com.probejs.info.type.JavaTypeClass;
 import com.probejs.util.PUtil;
 
 import java.util.ArrayList;
@@ -20,10 +20,10 @@ public class FormatterConstructor implements MultiFormatter {
         this.constructor = constructor;
     }
 
-    private String formatType(IType info) {
+    private String formatType(JavaType info) {
         return FormatterType.of(info)
             .format()
-            .concat(info instanceof TypeClass clazz ? SpecialTypes.attachedTypeVar(clazz) : "");
+            .concat(info instanceof JavaTypeClass clazz ? SpecialTypes.attachedTypeVar(clazz) : "");
     }
 
     private String formatParams() {

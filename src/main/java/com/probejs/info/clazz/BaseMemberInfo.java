@@ -1,6 +1,6 @@
 package com.probejs.info.clazz;
 
-import com.probejs.info.type.IType;
+import com.probejs.info.type.JavaType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,5 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class BaseMemberInfo {
     protected String name;
-    protected IType type;
+    protected JavaType type;
 }

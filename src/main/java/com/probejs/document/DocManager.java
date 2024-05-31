@@ -8,6 +8,7 @@ import com.probejs.document.comment.special.CommentTarget;
 import com.probejs.document.parser.DocReader;
 import com.probejs.document.parser.processor.Document;
 import com.probejs.document.type.IDocType;
+import lombok.val;
 
 import java.util.*;
 
@@ -32,7 +33,7 @@ public class DocManager {
 
         rawTSDoc.addAll(documentState.getRawDocs());
 
-        for (IDocument doc : documentState.getDocument().getDocuments()) {
+        for (val doc : documentState.getDocument().getDocuments()) {
             if (doc instanceof DocumentClass classDoc) {
                 if (!CommentUtil.isLoaded(classDoc.getComment())) {
                     continue;
@@ -68,5 +69,4 @@ public class DocManager {
     public static void addAdditions(String className, DocumentClass addition) {
         DocManager.classAdditions.computeIfAbsent(className, k -> new ArrayList<>()).add(addition);
     }
-
 }

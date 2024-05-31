@@ -15,17 +15,17 @@ public class ClassWalker {
         this.initial = new HashSet<>(initial);
     }
 
-    private Set<Class<?>> walkType(IType tInfo) {
+    private Set<Class<?>> walkType(JavaType tInfo) {
         Set<Class<?>> result = new HashSet<>();
-        if (tInfo instanceof TypeParameterized tInfoP) {
+        if (tInfo instanceof JavaTypeParameterized tInfoP) {
             result.add(tInfoP.getResolvedClass());
             result.addAll(walkTypes(tInfoP.getParamTypes()));
-        } else if (tInfo instanceof TypeVariable) {
-            ((TypeVariable) tInfo).getBounds()
+        } else if (tInfo instanceof JavaTypeVariable) {
+            ((JavaTypeVariable) tInfo).getBounds()
                 .stream()
-                .map(IType::getResolvedClass)
+                .map(JavaType::getResolvedClass)
                 .forEach(result::add);
-        } else if (tInfo instanceof TypeWildcard wInfo){
+        } else if (tInfo instanceof JavaTypeWildcard wInfo){
             result.add(tInfo.getResolvedClass());
 //            result.addAll(walkTypes(wInfo.getLowerBounds()));
             result.addAll(walkTypes((wInfo.getUpperBounds())));
@@ -36,7 +36,7 @@ public class ClassWalker {
         return result;
     }
 
-    private Set<Class<?>> walkTypes(Collection<? extends IType> tInfos) {
+    private Set<Class<?>> walkTypes(Collection<? extends JavaType> tInfos) {
         Set<Class<?>> result = new HashSet<>();
         for (val tInfo : tInfos) {
             result.addAll(walkType(tInfo));

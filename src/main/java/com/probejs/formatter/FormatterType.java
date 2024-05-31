@@ -9,35 +9,35 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class FormatterType<T extends IType> {
+public abstract class FormatterType<T extends JavaType> {
 
-    public static final Map<Class<? extends IType>, Function<IType, FormatterType<?>>> REGISTRIES = new HashMap<>();
+    public static final Map<Class<? extends JavaType>, Function<JavaType, FormatterType<?>>> REGISTRIES = new HashMap<>();
     public static final Literal LITERAL_ANY = new Literal("any");
     protected boolean underscored = false;
 
     static {
-        REGISTRIES.put(TypeClass.class, Clazz::new);
-        REGISTRIES.put(TypeArray.class, Array::new);
-        REGISTRIES.put(TypeParameterized.class, Parameterized::new);
-        REGISTRIES.put(TypeVariable.class, Variable::new);
-        REGISTRIES.put(TypeWildcard.class, Wildcard::new);
+        REGISTRIES.put(JavaTypeClass.class, Clazz::new);
+        REGISTRIES.put(JavaTypeArray.class, Array::new);
+        REGISTRIES.put(JavaTypeParameterized.class, Parameterized::new);
+        REGISTRIES.put(JavaTypeVariable.class, Variable::new);
+        REGISTRIES.put(JavaTypeWildcard.class, Wildcard::new);
     }
 
-    public static FormatterType<? extends IType> of(IType tInfo) {
+    public static FormatterType<? extends JavaType> of(JavaType tInfo) {
         return of(tInfo, true);
     }
 
-    public static FormatterType<? extends IType> of(IType tInfo, boolean allowSpecial) {
+    public static FormatterType<? extends JavaType> of(JavaType tInfo, boolean allowSpecial) {
         //special
         if (allowSpecial) {
             Class<?> rawClass = tInfo.getResolvedClass();
-            Function<IType, String> special = NameResolver.specialTypeFormatters.get(rawClass);
+            Function<JavaType, String> special = NameResolver.specialTypeFormatters.get(rawClass);
             if (special != null) {
                 return new Literal(special.apply(tInfo));
             }
         }
         //general
-        Function<IType, FormatterType<?>> builder = REGISTRIES.get(tInfo.getClass());
+        Function<JavaType, FormatterType<?>> builder = REGISTRIES.get(tInfo.getClass());
         if (builder != null) {
             return builder.apply(tInfo);
         }
@@ -66,9 +66,9 @@ public abstract class FormatterType<T extends IType> {
 
     /**
      * determine the value of "underscored" via provided {@link Predicate}, which will be applied to the
-     * {@link IType} provided by {@code getInfo()}
+     * {@link JavaType} provided by {@code getInfo()}
      */
-    public FormatterType<T> underscored(Predicate<IType> predicate) {
+    public FormatterType<T> underscored(Predicate<JavaType> predicate) {
         T info = this.getInfo();
         if (info != null) {
             this.underscored(predicate.test(info));
@@ -102,18 +102,18 @@ public abstract class FormatterType<T extends IType> {
     /**
      * 'String', 'List'
      */
-    public static class Clazz extends FormatterType<TypeClass> {
-        private final TypeClass tInfo;
+    public static class Clazz extends FormatterType<JavaTypeClass> {
+        private final JavaTypeClass tInfo;
 
         /**
-         * use {@link FormatterType#of(IType)} instead
+         * use {@link FormatterType#of(JavaType)} instead
          */
-        public Clazz(IType tInfo) {
-            this.tInfo = (TypeClass) tInfo;
+        public Clazz(JavaType tInfo) {
+            this.tInfo = (JavaTypeClass) tInfo;
         }
 
         @Override
-        public TypeClass getInfo() {
+        public JavaTypeClass getInfo() {
             return this.tInfo;
         }
 
@@ -130,18 +130,18 @@ public abstract class FormatterType<T extends IType> {
     /**
      * '?', '? extends Number', '? super Integer'
      */
-    public static class Wildcard extends FormatterType<TypeWildcard> {
-        private final TypeWildcard tInfo;
+    public static class Wildcard extends FormatterType<JavaTypeWildcard> {
+        private final JavaTypeWildcard tInfo;
 
         /**
-         * use {@link FormatterType#of(IType)} instead
+         * use {@link FormatterType#of(JavaType)} instead
          */
-        public Wildcard(IType tInfo) {
-            this.tInfo = (TypeWildcard) tInfo;
+        public Wildcard(JavaType tInfo) {
+            this.tInfo = (JavaTypeWildcard) tInfo;
         }
 
         @Override
-        public TypeWildcard getInfo() {
+        public JavaTypeWildcard getInfo() {
             return this.tInfo;
         }
 
@@ -154,18 +154,18 @@ public abstract class FormatterType<T extends IType> {
     /**
      * 'T', 'K extends List'
      */
-    public static class Variable extends FormatterType<TypeVariable> {
-        private final TypeVariable tInfo;
+    public static class Variable extends FormatterType<JavaTypeVariable> {
+        private final JavaTypeVariable tInfo;
 
         /**
-         * use {@link FormatterType#of(IType)} instead
+         * use {@link FormatterType#of(JavaType)} instead
          */
-        public Variable(IType tInfo) {
-            this.tInfo = (TypeVariable) tInfo;
+        public Variable(JavaType tInfo) {
+            this.tInfo = (JavaTypeVariable) tInfo;
         }
 
         @Override
-        public TypeVariable getInfo() {
+        public JavaTypeVariable getInfo() {
             return this.tInfo;
         }
 
@@ -194,18 +194,18 @@ public abstract class FormatterType<T extends IType> {
     /**
      * 'int[]'
      */
-    public static class Array extends FormatterType<TypeArray> {
-        private final TypeArray tInfo;
+    public static class Array extends FormatterType<JavaTypeArray> {
+        private final JavaTypeArray tInfo;
 
         /**
-         * use {@link FormatterType#of(IType)} instead
+         * use {@link FormatterType#of(JavaType)} instead
          */
-        public Array(IType tInfo) {
-            this.tInfo = (TypeArray) tInfo;
+        public Array(JavaType tInfo) {
+            this.tInfo = (JavaTypeArray) tInfo;
         }
 
         @Override
-        public TypeArray getInfo() {
+        public JavaTypeArray getInfo() {
             return this.tInfo;
         }
 
@@ -218,18 +218,18 @@ public abstract class FormatterType<T extends IType> {
     /**
      * {@code Map<String, Boolean>}
      */
-    public static class Parameterized extends FormatterType<TypeParameterized> {
-        private final TypeParameterized tInfo;
+    public static class Parameterized extends FormatterType<JavaTypeParameterized> {
+        private final JavaTypeParameterized tInfo;
 
         /**
-         * use {@link FormatterType#of(IType)} instead
+         * use {@link FormatterType#of(JavaType)} instead
          */
-        public Parameterized(IType tInfo) {
-            this.tInfo = (TypeParameterized) tInfo;
+        public Parameterized(JavaType tInfo) {
+            this.tInfo = (JavaTypeParameterized) tInfo;
         }
 
         @Override
-        public TypeParameterized getInfo() {
+        public JavaTypeParameterized getInfo() {
             return this.tInfo;
         }
 

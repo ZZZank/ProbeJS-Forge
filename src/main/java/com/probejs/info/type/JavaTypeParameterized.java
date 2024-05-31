@@ -11,24 +11,24 @@ import java.util.stream.Collectors;
 
 
 @Data
-public class TypeParameterized implements IType {
+public class JavaTypeParameterized implements JavaType {
 
-    private IType rawType;
-    private List<IType> paramTypes;
+    private JavaType rawType;
+    private List<JavaType> paramTypes;
 
-    public TypeParameterized(Type type) {
+    public JavaTypeParameterized(Type type) {
         if (!test(type)) {
             throw new IllegalArgumentException("provided `type` is not an instance of ParameterizedType");
         }
         ParameterizedType parType = (ParameterizedType) type;
-        rawType = TypeResolver.resolveType(parType.getRawType());
+        rawType = TypeResolver.resolve(parType.getRawType());
         paramTypes = Arrays
                 .stream(parType.getActualTypeArguments())
-                .map(TypeResolver::resolveType)
+                .map(TypeResolver::resolve)
                 .collect(Collectors.toList());
     }
 
-    public TypeParameterized(IType rawType, List<? extends IType> paramTypes) {
+    public JavaTypeParameterized(JavaType rawType, List<? extends JavaType> paramTypes) {
         this.rawType = rawType;
         this.paramTypes = new ArrayList<>(paramTypes);
     }
@@ -38,7 +38,7 @@ public class TypeParameterized implements IType {
     }
 
     @Override
-    public IType getBase() {
+    public JavaType getBase() {
         return rawType;
     }
 
@@ -51,21 +51,21 @@ public class TypeParameterized implements IType {
     public String getTypeName() {
         return String.format("%s<%s>",
             this.rawType.getTypeName(),
-            paramTypes.stream().map(IType::getTypeName).collect(Collectors.joining(", "))
+            paramTypes.stream().map(JavaType::getTypeName).collect(Collectors.joining(", "))
         );
     }
 
     @Override
-    public IType copy() {
-        return new TypeParameterized(
+    public JavaType copy() {
+        return new JavaTypeParameterized(
             rawType.copy(),
-            paramTypes.stream().map(IType::copy).collect(Collectors.toList())
+            paramTypes.stream().map(JavaType::copy).collect(Collectors.toList())
         );
     }
 
     @Override
-    public boolean assignableFrom(IType info) {
-        if (info instanceof TypeParameterized parType) {
+    public boolean assignableFrom(JavaType info) {
+        if (info instanceof JavaTypeParameterized parType) {
             if (parType.rawType.assignableFrom(rawType) && parType.paramTypes.size() == paramTypes.size()) {
                 for (int i = 0; i < paramTypes.size(); i++) {
                     if (!parType.paramTypes.get(i).assignableFrom(paramTypes.get(i))) {

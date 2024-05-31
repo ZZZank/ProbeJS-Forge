@@ -5,11 +5,12 @@ import com.probejs.document.type.DocTypeRaw;
 import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterType;
 import com.probejs.info.SpecialData;
-import com.probejs.info.type.IType;
-import com.probejs.info.type.TypeClass;
-import com.probejs.info.type.TypeParameterized;
+import com.probejs.info.type.JavaType;
+import com.probejs.info.type.JavaTypeClass;
+import com.probejs.info.type.JavaTypeParameterized;
 import dev.latvian.mods.rhino.*;
 import lombok.val;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,11 +20,11 @@ public class SpecialTypes {
 
     public static final Set<Class<?>> skippedSpecials = new HashSet<>();
 
-    public static String formatClassLike(IType obj) {
-        IType inner = null;
-        if (obj instanceof TypeParameterized cls) {
+    public static String formatClassLike(JavaType obj) {
+        JavaType inner = null;
+        if (obj instanceof JavaTypeParameterized cls) {
             inner = cls.getParamTypes().get(0);
-        } else if (obj instanceof TypeClass cls) {
+        } else if (obj instanceof JavaTypeClass cls) {
             inner = cls;
         }
         if (inner == null) {
@@ -41,7 +42,7 @@ public class SpecialTypes {
             ) {
                 NameResolver.resolveName(obj.getClass());
             }
-            formattedValue = FormatterClass.formatParameterized(new TypeClass(obj.getClass()));
+            formattedValue = FormatterClass.formatParameterized(new JavaTypeClass(obj.getClass()));
         }
         return formattedValue;
     }
@@ -51,14 +52,14 @@ public class SpecialTypes {
             return "{}";
         }
         List<String> values = new ArrayList<>();
-        for (Map.Entry<?, ?> entry : map.entrySet()) {
-            Object key = entry.getKey();
-            Object value = entry.getValue();
-            String formattedKey = NameResolver.formatValue(key);
+        for (val entry : map.entrySet()) {
+            val key = entry.getKey();
+            val value = entry.getValue();
+            val formattedKey = NameResolver.formatValue(key);
             if (formattedKey == null) {
                 continue;
             }
-            String formattedValue = formatValueOrType(value);
+            val formattedValue = formatValueOrType(value);
             values.add(String.format("%s:%s", formattedKey, formattedValue));
         }
         return String.format("{%s}", String.join(",", values));
@@ -69,9 +70,11 @@ public class SpecialTypes {
             return "[]";
         }
         List<String> values = new ArrayList<>();
-        for (Object o : list) {
+        for (val o : list) {
             String formattedValue = NameResolver.formatValue(o);
-            if (formattedValue == null) formattedValue = "undefined";
+            if (formattedValue == null) {
+                formattedValue = "undefined";
+            }
             values.add(formattedValue);
         }
         return String.format("[%s]", String.join(", ", values));
@@ -84,7 +87,7 @@ public class SpecialTypes {
         }
         List<String> values = new ArrayList<>();
 
-        Scriptable prototype = scriptable.getPrototype();
+        val prototype = scriptable.getPrototype();
         if (prototype.get("constructor", prototype) instanceof BaseFunction func) {
             //Resolves Object since they're not typed
             if (!func.getFunctionName().isEmpty() && !func.getFunctionName().equals("Object")) {
@@ -92,28 +95,28 @@ public class SpecialTypes {
             }
         }
 
-        for (Object id : scriptable.getIds()) {
-            String formattedKey = NameResolver.formatValue(id);
+        for (val id : scriptable.getIds()) {
+            val formattedKey = NameResolver.formatValue(id);
             Object value;
             if (id instanceof Number) {
                 value = scriptable.get((Integer) id, scriptable);
             } else {
                 value = scriptable.get((String) id, scriptable);
             }
-            String formattedValue = formatValueOrType(value);
+            val formattedValue = formatValueOrType(value);
             values.add(String.format("%s:%s", formattedKey, formattedValue));
         }
 
-        Scriptable proto = scriptable.getPrototype();
-        for (Object id : proto.getIds()) {
-            String formattedKey = NameResolver.formatValue(id);
+        val proto = scriptable.getPrototype();
+        for (val id : proto.getIds()) {
+            val formattedKey = NameResolver.formatValue(id);
             Object value;
             if (id instanceof Number) {
                 value = proto.get((Integer) id, scriptable);
             } else {
                 value = proto.get((String) id, scriptable);
             }
-            String formattedValue = formatValueOrType(value);
+            val formattedValue = formatValueOrType(value);
             values.add(String.format("%s:%s", formattedKey, formattedValue));
         }
         return String.format("{%s}", String.join(",", values));
@@ -141,9 +144,9 @@ public class SpecialTypes {
 
     public static void processSpecialAssignments() {
         //specialClassAssigner
-        NameResolver.specialClassAssigner.forEach((clazzName, assignProvider) -> {
-            String name = clazzName.getName();
-            for (String assignTo : assignProvider.get()) {
+        NameResolver.specialClassAssigner.forEach((clazz, assignProvider) -> {
+            val name = clazz.getName();
+            for (val assignTo : assignProvider.get()) {
                 DocManager.addAssignable(name, new DocTypeRaw(assignTo));
             }
         });
@@ -153,8 +156,8 @@ public class SpecialTypes {
             .stream()
             .filter(info -> !info.names.isEmpty())
             .forEach(info -> {
-                Class<?> registrySuperType = info.forgeRaw.getRegistrySuperType();
-                String name = String.format(
+                val registrySuperType = info.forgeRaw.getRegistrySuperType();
+                val name = String.format(
                     "Registry.%s.%s",
                     info.id.getNamespace(),
                     info.id.getPath().replace('/', '$')
@@ -163,16 +166,27 @@ public class SpecialTypes {
             });
     }
 
-    public static String attachedTypeVar(TypeClass type) {
+    public static String attachedTypeVar(JavaTypeClass type) {
         val typeVariables = type.getTypeVariables();
         if (typeVariables.isEmpty()) {
             return "";
         }
         return typeVariables
             .stream()
-            .map(IType::getTypeName)
+            .map(JavaType::getTypeName)
             .map(NameResolver::getResolvedName)
             .map(NameResolver.ResolvedName::getFullName)
             .collect(Collectors.joining(","));
+    }
+
+    /**
+     * @return {@link SpecialTypes#attachedTypeVar(JavaTypeClass)} if {@code type} is an instance of
+     * {@link JavaTypeClass}, otherwise an empty string
+     */
+    @NotNull
+    public static String attachedClassTypeVar(JavaType type) {
+        return type instanceof JavaTypeClass clazz
+            ? attachedTypeVar(clazz)
+            : "";
     }
 }

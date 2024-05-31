@@ -4,9 +4,9 @@ import com.probejs.ProbeJS;
 import com.probejs.formatter.resolver.ClazzFilter;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.formatter.FormatterMethod;
-import com.probejs.info.type.IType;
-import com.probejs.info.type.TypeParameterized;
-import com.probejs.info.type.TypeVariable;
+import com.probejs.info.type.JavaType;
+import com.probejs.info.type.JavaTypeParameterized;
+import com.probejs.info.type.JavaTypeVariable;
 import com.probejs.info.type.TypeResolver;
 import lombok.Getter;
 import lombok.val;
@@ -44,13 +44,13 @@ public class ClassInfo implements Comparable<ClassInfo> {
     private final List<Annotation> annotations;
     private final boolean isInterface;
     private final boolean isFunctionalInterface;
-    private final List<TypeVariable> typeParameters;
+    private final List<JavaTypeVariable> typeParameters;
     private final List<MethodInfo> methods;
     private final List<FieldInfo> fields;
     private final List<ConstructorInfo> constructors;
     private final ClassInfo superClass;
-    private final IType superType;
-    private final List<IType> interfaces;
+    private final JavaType superType;
+    private final List<JavaType> interfaces;
 
     private ClassInfo(Class<?> clazz, boolean putInCache) {
         if (putInCache) {
@@ -61,14 +61,14 @@ public class ClassInfo implements Comparable<ClassInfo> {
         this.modifiers = raw.getModifiers();
         this.isInterface = raw.isInterface();
         this.superClass = ofCache(raw.getSuperclass());
-        this.superType = TypeResolver.resolveType(clazz.getGenericSuperclass());
+        this.superType = TypeResolver.resolve(clazz.getGenericSuperclass());
         this.interfaces = Arrays
             .stream(clazz.getGenericInterfaces())
-            .map(TypeResolver::resolveType)
+            .map(TypeResolver::resolve)
             .collect(Collectors.toList());
         this.typeParameters = Arrays
             .stream(raw.getTypeParameters())
-            .map(TypeVariable::new)
+            .map(JavaTypeVariable::new)
             .collect(Collectors.toList());
         this.annotations = Arrays.asList(raw.getAnnotations());
 
@@ -76,12 +76,10 @@ public class ClassInfo implements Comparable<ClassInfo> {
         this.methods = new ArrayList<>(0);
         this.fields = new ArrayList<>(0);
         try {
-            constructors.addAll(
-                Arrays
-                    .stream(raw.getConstructors())
-                    .map(ConstructorInfo::new)
-                    .collect(Collectors.toList())
-            );
+            //constructors
+            for (val constructor : raw.getConstructors()) {
+                constructors.add(new ConstructorInfo(constructor));
+            }
             //methods
             Arrays
                 .stream(raw.getMethods())
@@ -111,14 +109,14 @@ public class ClassInfo implements Comparable<ClassInfo> {
         //Resolve types - rollback everything till Object
         applySuperGenerics(methods, fields);
         //Functional Interfaces
-        List<MethodInfo> abstracts =
+        val abstracts =
             this.methods.stream().filter(MethodInfo::isAbstract).collect(Collectors.toList());
         this.isFunctionalInterface = isInterface && abstracts.size() == 1;
         //type alias: Functional Interfaces
         if (this.isFunctionalInterface) {
             NameResolver.addSpecialAssignments(this.raw, () -> {
-                FormatterMethod formatterLambda = new FormatterMethod(abstracts.get(0));
-                String lambdaStr = String.format("((%s)=>%s)",
+                val formatterLambda = new FormatterMethod(abstracts.get(0));
+                val lambdaStr = String.format("((%s)=>%s)",
                     formatterLambda.formatParams(Collections.emptyMap(), true),
                     formatterLambda.formatReturn()
                 );
@@ -156,12 +154,12 @@ public class ClassInfo implements Comparable<ClassInfo> {
         }
     }
 
-    private static Map<String, IType> resolveTypeOverrides(IType typeInfo) {
-        Map<String, IType> caughtTypes = new HashMap<>();
-        if (typeInfo instanceof TypeParameterized parType) {
+    private static Map<String, JavaType> resolveTypeOverrides(JavaType typeInfo) {
+        Map<String, JavaType> caughtTypes = new HashMap<>();
+        if (typeInfo instanceof JavaTypeParameterized parType) {
             val rawClassNames = Arrays
                 .stream(parType.getResolvedClass().getTypeParameters())
-                .map(TypeVariable::new)
+                .map(JavaTypeVariable::new)
                 .collect(Collectors.toList());
             val paramTypes = parType.getParamTypes();
             for (int i = 0; i < paramTypes.size(); i++) {
@@ -178,7 +176,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
             applyGenerics(internalGenericMap, methodsToMutate, fieldsToMutate);
             Arrays
                 .stream(raw.getGenericInterfaces())
-                .map(TypeResolver::resolveType)
+                .map(TypeResolver::resolve)
                 .map(ClassInfo::resolveTypeOverrides)
                 .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
             //Step to next level
@@ -187,7 +185,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
             applyGenerics(internalGenericMap, methodsToMutate, fieldsToMutate);
             Arrays
                 .stream(raw.getGenericInterfaces())
-                .map(TypeResolver::resolveType)
+                .map(TypeResolver::resolve)
                 .map(ClassInfo::resolveTypeOverrides)
                 .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
         }
@@ -198,7 +196,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         //Apply current level changes
         Arrays
             .stream(raw.getGenericInterfaces())
-            .map(TypeResolver::resolveType)
+            .map(TypeResolver::resolve)
             .map(ClassInfo::resolveTypeOverrides)
             .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
         //Step to next level
@@ -206,23 +204,23 @@ public class ClassInfo implements Comparable<ClassInfo> {
         //Rewind
         Arrays
             .stream(raw.getGenericInterfaces())
-            .map(TypeResolver::resolveType)
+            .map(TypeResolver::resolve)
             .map(ClassInfo::resolveTypeOverrides)
             .forEach(m -> applyGenerics(m, methodsToMutate, fieldsToMutate));
     }
 
     private static void applyGenerics(
-        Map<String, IType> internalGenericMap,
+        Map<String, JavaType> internalGenericMap,
         List<MethodInfo> methodInfo,
         List<FieldInfo> fieldInfo
     ) {
         for (MethodInfo method : methodInfo) {
-            Map<String, IType> maskedNames = new HashMap<>();
+            Map<String, JavaType> maskedNames = new HashMap<>();
             method
                 .getTypeVariables()
                 .stream()
-                .filter(i -> i instanceof TypeVariable)
-                .map(i -> (TypeVariable) i)
+                .filter(i -> i instanceof JavaTypeVariable)
+                .map(i -> (JavaTypeVariable) i)
                 .forEach(v -> maskedNames.put(v.getTypeName(), v));
 
             method.setType(TypeResolver.mutateTypeMap(method.getType(), maskedNames));

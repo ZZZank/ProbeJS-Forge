@@ -53,10 +53,10 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
      * list, a {@code <a,b,...>} style type variable representation will be added to
      * the end of formatted string
      */
-    public static String formatParameterized(IType info) {
+    public static String formatParameterized(JavaType info) {
         return FormatterType.of(info, false)
             .format()
-            .concat(info instanceof TypeClass clazz ? SpecialTypes.attachedTypeVar(clazz) : "");
+            .concat(SpecialTypes.attachedClassTypeVar(info));
     }
 
     @Override
@@ -99,7 +99,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
             firstLine.add("extends");
             val superC = classInfo.getSuperClass().getRaw() == Object.class
                 ? "Document.Object"
-                : formatParameterized(TypeResolver.resolveType(classInfo.getRaw().getGenericSuperclass()));
+                : formatParameterized(TypeResolver.resolve(classInfo.getRaw().getGenericSuperclass()));
             firstLine.add(superC);
         }
         // interface
@@ -108,7 +108,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
             firstLine.add(
                 Arrays
                     .stream(classInfo.getRaw().getGenericInterfaces())
-                    .map(TypeResolver::resolveType)
+                    .map(TypeResolver::resolve)
                     .map(FormatterClass::formatParameterized)
                     .collect(Collectors.joining(", "))
             );
@@ -205,7 +205,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         if (!params.isEmpty()) {
             val paramString = String.format(
                 "<%s>",
-                params.stream().map(IType::getTypeName).collect(Collectors.joining(", "))
+                params.stream().map(JavaType::getTypeName).collect(Collectors.joining(", "))
             );
             underName += paramString;
             origName += paramString;
@@ -221,8 +221,8 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         if (NameResolver.specialTypeFormatters.containsKey(classInfo.getRaw())) {
             assignables.add(
                 FormatterType.of(
-                    new TypeParameterized(
-                        new TypeClass(classInfo.getRaw()),
+                    new JavaTypeParameterized(
+                        new JavaTypeClass(classInfo.getRaw()),
                         classInfo.getTypeParameters()
                     )
                 )

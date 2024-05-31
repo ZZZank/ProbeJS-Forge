@@ -27,7 +27,7 @@ public class FieldInfo extends BaseMemberInfo implements Comparable<FieldInfo> {
     }
 
     public FieldInfo(Field field, Class<?> clazz) {
-        super(getRemappedOrDefault(field, clazz), TypeResolver.resolveType(field.getGenericType()));
+        super(getRemappedOrDefault(field, clazz), TypeResolver.resolve(field.getGenericType()));
         this.raw = field;
         this.from = ClassInfo.ofCache(clazz);
         this.modifiers = field.getModifiers();

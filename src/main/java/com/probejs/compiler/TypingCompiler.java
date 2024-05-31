@@ -18,7 +18,7 @@ import com.probejs.info.EventInfo;
 import com.probejs.info.clazz.ClassInfo;
 import com.probejs.info.SpecialData;
 import com.probejs.info.ClassWalker;
-import com.probejs.info.type.TypeClass;
+import com.probejs.info.type.JavaTypeClass;
 import com.probejs.capture.CapturedClasses;
 import com.probejs.capture.DummyBindingEvent;
 import com.probejs.util.PUtil;
@@ -130,7 +130,7 @@ public class TypingCompiler {
             val value = entry.getValue();
             String resolved = NameResolver.formatValue(value);
             if (resolved == null) {
-                resolved = FormatterClass.formatParameterized(new TypeClass(value.getClass()));
+                resolved = FormatterClass.formatParameterized(new JavaTypeClass(value.getClass()));
             }
             writer.write(String.format("declare const %s: %s;\n", name, resolved));
         }
@@ -150,7 +150,7 @@ public class TypingCompiler {
                 String.format(
                     "declare function java(name: %s): typeof %s;",
                     ProbeJS.GSON.toJson(c.getName()),
-                    FormatterClass.formatParameterized(new TypeClass(c))
+                    FormatterClass.formatParameterized(new JavaTypeClass(c))
                 )
             )
             .forEach(lines::add);

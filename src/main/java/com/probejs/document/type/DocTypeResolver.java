@@ -47,15 +47,15 @@ public class DocTypeResolver {
         return new DocTypeNamed(type);
     }
 
-    public static boolean typeEquals(IDocType docType, com.probejs.info.type.IType param) {
+    public static boolean typeEquals(IDocType docType, JavaType param) {
         if (docType instanceof DocTypeUnion || docType instanceof DocTypeIntersection) {
             return false;
         }
-        if (docType instanceof DocTypeArray && param instanceof TypeArray array) {
+        if (docType instanceof DocTypeArray && param instanceof JavaTypeArray array) {
             return typeEquals(((DocTypeArray) docType).getComponent(), array.getBase());
         }
-        if (docType instanceof DocTypeParameterized && param instanceof TypeParameterized parameterized) {
-            List<com.probejs.info.type.IType> paramInfo = parameterized.getParamTypes();
+        if (docType instanceof DocTypeParameterized && param instanceof JavaTypeParameterized parameterized) {
+            List<JavaType> paramInfo = parameterized.getParamTypes();
             List<IDocType> paramDoc = ((DocTypeParameterized) docType).getParamTypes();
             if (paramDoc.size() != paramInfo.size()) {
                 return false;
@@ -67,7 +67,7 @@ public class DocTypeResolver {
         }
         if (
             docType instanceof DocTypeNamed &&
-            (param instanceof TypeVariable || param instanceof TypeClass)
+            (param instanceof JavaTypeVariable || param instanceof JavaTypeClass)
         ) {
             return ((DocTypeNamed) docType).getRawTypeName().equals(param.getTypeName());
         }

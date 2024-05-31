@@ -2,17 +2,17 @@ package com.probejs.info.type;
 
 import java.lang.reflect.Type;
 
-public interface IType {
+public interface JavaType {
 
     Type getRaw();
 
-    IType getBase();
+    JavaType getBase();
 
     Class<?> getResolvedClass();
 
     String getTypeName();
 
-    IType copy();
+    JavaType copy();
 
-    boolean assignableFrom(IType info);
+    boolean assignableFrom(JavaType info);
 }

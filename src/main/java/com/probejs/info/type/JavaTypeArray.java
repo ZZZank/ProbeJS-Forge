@@ -6,12 +6,12 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
 
 @Data
-public class TypeArray implements IType {
+public class JavaTypeArray implements JavaType {
 
     /**
      * inner type, e.g. "T" in "T[]"
      */
-    private IType base;
+    private JavaType base;
 
     /**
      * @return {@code type instanceof GenericArrayType}
@@ -35,18 +35,18 @@ public class TypeArray implements IType {
         return isGenericArray(type) || isClassArray(type);
     }
 
-    public TypeArray(Type type) {
+    public JavaTypeArray(Type type) {
         if (isGenericArray(type)) {
-            this.base = TypeResolver.resolveType(((GenericArrayType) type).getGenericComponentType());
+            this.base = TypeResolver.resolve(((GenericArrayType) type).getGenericComponentType());
         } else if (isClassArray(type)) {
             assert type instanceof Class<?>;
-            this.base = TypeResolver.resolveType(((Class<?>) type).getComponentType());
+            this.base = TypeResolver.resolve(((Class<?>) type).getComponentType());
         } else {
             throw new IllegalArgumentException("Argument 'type' is not array");
         }
     }
 
-    private TypeArray(IType inner) {
+    private JavaTypeArray(JavaType inner) {
         this.base = inner;
     }
 
@@ -61,13 +61,13 @@ public class TypeArray implements IType {
     }
 
     @Override
-    public IType copy() {
-        return new TypeArray(base.copy());
+    public JavaType copy() {
+        return new JavaTypeArray(base.copy());
     }
 
     @Override
-    public boolean assignableFrom(IType info) {
-        return info instanceof TypeArray && info.getBase().assignableFrom(base);
+    public boolean assignableFrom(JavaType info) {
+        return info instanceof JavaTypeArray && info.getBase().assignableFrom(base);
     }
 
     @Override

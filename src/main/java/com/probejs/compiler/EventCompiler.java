@@ -5,7 +5,7 @@ import com.probejs.ProbePaths;
 import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterComments;
 import com.probejs.info.EventInfo;
-import com.probejs.info.type.TypeClass;
+import com.probejs.info.type.JavaTypeClass;
 import com.probejs.util.PUtil;
 import lombok.val;
 
@@ -60,7 +60,7 @@ public class EventCompiler {
                 String.format(
                     "declare function onForgeEvent(name: %s, handler: (event: %s) => void): void;",
                     ProbeJS.GSON.toJson(clazz.getName()),
-                    FormatterClass.formatParameterized(new TypeClass(clazz))
+                    FormatterClass.formatParameterized(new JavaTypeClass(clazz))
                 )
             )
             .forEach(lines::add);
@@ -77,7 +77,7 @@ public class EventCompiler {
                 String.format(
                     "declare function onEvent(name: `%s.${string}`, handler: (event: %s) => void): void;",
                     id,
-                    FormatterClass.formatParameterized(new TypeClass(wildcard.clazzRaw()))
+                    FormatterClass.formatParameterized(new JavaTypeClass(wildcard.clazzRaw()))
                 )
             );
         }
@@ -108,7 +108,7 @@ public class EventCompiler {
                 String.format(
                     "declare function onEvent(name: \"%s\", handler: (event: %s) => void): void;",
                     id,
-                    FormatterClass.formatParameterized(new TypeClass(eInfo.clazzRaw()))
+                    FormatterClass.formatParameterized(new JavaTypeClass(eInfo.clazzRaw()))
                 )
             );
         }

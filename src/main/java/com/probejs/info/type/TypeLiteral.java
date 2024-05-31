@@ -5,7 +5,7 @@ import lombok.Data;
 import java.lang.reflect.Type;
 
 @Data
-public class TypeLiteral implements IType {
+public class TypeLiteral implements JavaType {
 
     private final String value;
 
@@ -15,7 +15,7 @@ public class TypeLiteral implements IType {
     }
 
     @Override
-    public IType getBase() {
+    public JavaType getBase() {
         return this;
     }
 
@@ -30,12 +30,15 @@ public class TypeLiteral implements IType {
     }
 
     @Override
-    public IType copy() {
+    public JavaType copy() {
         return this;
     }
 
     @Override
-    public boolean assignableFrom(IType info) {
-        return false;
+    public boolean assignableFrom(JavaType info) {
+        if (!(info instanceof JavaTypeClass clazz)) {
+            return false;
+        }
+        return clazz.getRaw().isAssignableFrom(String.class);
     }
 }
