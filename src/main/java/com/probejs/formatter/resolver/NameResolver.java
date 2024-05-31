@@ -174,7 +174,7 @@ public class NameResolver {
      * existed assigns, call specialClassAssigner#put instead
      */
     public static void addSpecialAssignments(Class<?> clazz, Supplier<List<String>> assigns) {
-        Supplier<List<String>> concat = specialClassAssigner.containsKey(clazz)
+        val concat = specialClassAssigner.containsKey(clazz)
             ? new Supplier<List<String>>() {
                 private final Supplier<List<String>> lastSupplier = specialClassAssigner.get(clazz);
                 private final Supplier<List<String>> thenSupplier = assigns;

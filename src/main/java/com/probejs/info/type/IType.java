@@ -1,6 +1,5 @@
 package com.probejs.info.type;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 public interface IType {
@@ -9,7 +8,6 @@ public interface IType {
 
     IType getBase();
 
-    @Nullable
     Class<?> getResolvedClass();
 
     String getTypeName();

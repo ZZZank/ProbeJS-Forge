@@ -7,10 +7,9 @@ import com.probejs.ProbePaths;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.RegistryInfo;
 import com.probejs.info.SpecialData;
-import java.io.BufferedWriter;
+
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 

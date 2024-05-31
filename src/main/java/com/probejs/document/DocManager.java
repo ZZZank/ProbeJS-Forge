@@ -33,8 +33,7 @@ public class DocManager {
         rawTSDoc.addAll(documentState.getRawDocs());
 
         for (IDocument doc : documentState.getDocument().getDocuments()) {
-            if (doc instanceof DocumentClass) {
-                DocumentClass classDoc = (DocumentClass) doc;
+            if (doc instanceof DocumentClass classDoc) {
                 if (!CommentUtil.isLoaded(classDoc.getComment())) {
                     continue;
                 }
@@ -52,8 +51,7 @@ public class DocManager {
                     }
                 }
                 addAdditions(classDoc.getName(), classDoc);
-            } else if (doc instanceof DocumentType) {
-                DocumentType typeDoc = (DocumentType) doc;
+            } else if (doc instanceof DocumentType typeDoc) {
                 if (CommentUtil.isLoaded(typeDoc.getComment())) {
                     typeDocuments.add(typeDoc);
                 }

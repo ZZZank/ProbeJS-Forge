@@ -2,8 +2,6 @@ package com.probejs.info;
 
 import com.probejs.info.clazz.*;
 import com.probejs.info.type.*;
-import com.probejs.info.type.IType;
-import com.probejs.info.type.TypeVariable;
 import lombok.val;
 
 import java.util.*;
@@ -19,8 +17,7 @@ public class ClassWalker {
 
     private Set<Class<?>> walkType(IType tInfo) {
         Set<Class<?>> result = new HashSet<>();
-        if (tInfo instanceof TypeParameterized) {
-            TypeParameterized tInfoP = (TypeParameterized) tInfo;
+        if (tInfo instanceof TypeParameterized tInfoP) {
             result.add(tInfoP.getResolvedClass());
             result.addAll(walkTypes(tInfoP.getParamTypes()));
         } else if (tInfo instanceof TypeVariable) {
@@ -28,8 +25,7 @@ public class ClassWalker {
                 .stream()
                 .map(IType::getResolvedClass)
                 .forEach(result::add);
-        } else if (tInfo instanceof TypeWildcard){
-            TypeWildcard wInfo = (TypeWildcard) tInfo;
+        } else if (tInfo instanceof TypeWildcard wInfo){
             result.add(tInfo.getResolvedClass());
 //            result.addAll(walkTypes(wInfo.getLowerBounds()));
             result.addAll(walkTypes((wInfo.getUpperBounds())));

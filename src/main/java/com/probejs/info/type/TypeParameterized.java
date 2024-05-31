@@ -65,8 +65,7 @@ public class TypeParameterized implements IType {
 
     @Override
     public boolean assignableFrom(IType info) {
-        if (info instanceof TypeParameterized) {
-            TypeParameterized parType = (TypeParameterized) info;
+        if (info instanceof TypeParameterized parType) {
             if (parType.rawType.assignableFrom(rawType) && parType.paramTypes.size() == paramTypes.size()) {
                 for (int i = 0; i < paramTypes.size(); i++) {
                     if (!parType.paramTypes.get(i).assignableFrom(paramTypes.get(i))) {

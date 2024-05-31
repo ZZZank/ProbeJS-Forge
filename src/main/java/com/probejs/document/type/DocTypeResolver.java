@@ -51,12 +51,10 @@ public class DocTypeResolver {
         if (docType instanceof DocTypeUnion || docType instanceof DocTypeIntersection) {
             return false;
         }
-        if (docType instanceof DocTypeArray && param instanceof com.probejs.info.type.TypeArray) {
-            com.probejs.info.type.TypeArray array = (com.probejs.info.type.TypeArray) param;
+        if (docType instanceof DocTypeArray && param instanceof TypeArray array) {
             return typeEquals(((DocTypeArray) docType).getComponent(), array.getBase());
         }
-        if (docType instanceof DocTypeParameterized && param instanceof com.probejs.info.type.TypeParameterized) {
-            com.probejs.info.type.TypeParameterized parameterized = (com.probejs.info.type.TypeParameterized) param;
+        if (docType instanceof DocTypeParameterized && param instanceof TypeParameterized parameterized) {
             List<com.probejs.info.type.IType> paramInfo = parameterized.getParamTypes();
             List<IDocType> paramDoc = ((DocTypeParameterized) docType).getParamTypes();
             if (paramDoc.size() != paramInfo.size()) {

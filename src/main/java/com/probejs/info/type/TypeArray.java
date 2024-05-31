@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
-import java.util.List;
 
 @Data
 public class TypeArray implements IType {
@@ -26,8 +25,7 @@ public class TypeArray implements IType {
      * is true, otherwise false
      */
     public static boolean isClassArray(Type type) {
-        if (type instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type;
+        if (type instanceof Class<?> clazz) {
             return clazz.isArray();
         }
         return false;
@@ -54,7 +52,7 @@ public class TypeArray implements IType {
 
     @Override
     public Class<?> getResolvedClass() {
-        return List.class;
+        return this.base.getResolvedClass();
     }
 
     @Override

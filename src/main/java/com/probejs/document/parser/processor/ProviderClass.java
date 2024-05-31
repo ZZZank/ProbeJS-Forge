@@ -7,6 +7,7 @@ import com.probejs.document.IDocument;
 import com.probejs.document.parser.handler.IStateHandler;
 import com.probejs.util.Pair;
 import lombok.Getter;
+import lombok.val;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,18 +57,15 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
         // "    class A implements List, Wow extends B {"
         line = line.trim();
         if (line.startsWith("class ")) {
-            final int indexExtd = line.indexOf(" extends ");
-            final int indexImpl = line.indexOf(" implements ");
-            /**
-             * holds some critical indexes that marks start/end of certain parts
-             */
-            List<Integer> anchors = new ArrayList<>();
+            List<Integer> anchors = new ArrayList<>(); //holds some critical indexes that marks start/end of certain parts
             anchors.add("class ".length()); //start
             anchors.add(line.length() - (line.endsWith("{") ? 1 : 0)); //end
+            val indexExtd = line.indexOf(" extends ");
             if (indexExtd != -1) {
                 anchors.add(indexExtd);
                 anchors.add(indexExtd + " extends ".length());
             }
+            val indexImpl = line.indexOf(" implements ");
             if (indexImpl != -1) {
                 anchors.add(indexImpl);
                 anchors.add(indexImpl + " implements ".length());

@@ -34,8 +34,6 @@ public class MethodInfo extends BaseMemberInfo {
         if (!mapped.isEmpty()) {
             return mapped;
         }
-        // String s = REMAPPER.getMappedMethod(from, method);
-        // return s.isEmpty() ? method.getName() : s;
         return method.getName();
     }
 

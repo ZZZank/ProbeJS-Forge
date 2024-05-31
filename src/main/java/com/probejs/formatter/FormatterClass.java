@@ -17,12 +17,10 @@ import com.probejs.info.clazz.ClassInfo;
 import com.probejs.info.clazz.FieldInfo;
 import com.probejs.info.clazz.MethodInfo;
 import com.probejs.info.type.*;
-import com.probejs.info.type.IType;
 import com.probejs.util.PUtil;
 import lombok.Setter;
 import lombok.val;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -220,9 +218,9 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         //type conversion
         String origName = NameResolver.getResolvedName(classInfo.getName()).getLastName();
         String underName = origName + "_";
-        List<TypeVariable> params = classInfo.getTypeParameters();
+        val params = classInfo.getTypeParameters();
         if (!params.isEmpty()) {
-            String paramString = String.format(
+            val paramString = String.format(
                 "<%s>",
                 params.stream().map(IType::getTypeName).collect(Collectors.joining(", "))
             );

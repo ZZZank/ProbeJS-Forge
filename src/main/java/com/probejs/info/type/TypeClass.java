@@ -43,10 +43,9 @@ public class TypeClass implements IType {
 
     @Override
     public boolean assignableFrom(IType info) {
-        if (!(info instanceof TypeClass)) {
+        if (!(info instanceof TypeClass clazz)) {
             return false;
         }
-        TypeClass clazz = (TypeClass) info;
         return clazz.raw.isAssignableFrom(raw);
     }
 

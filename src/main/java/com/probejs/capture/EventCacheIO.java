@@ -40,7 +40,7 @@ public abstract class EventCacheIO {
                 EventInfo.fromJson(value.getAsJsonObject()).ifPresent(event -> cachedEvents.put(key, event));
             }
         } catch (JsonSyntaxException | JsonIOException e) {
-            ProbeJS.LOGGER.warn("Cannot read malformed cache, ignoring.");
+            ProbeJS.LOGGER.warn("Cannot read malformed KubeJS event cache, ignoring.");
         }
         return cachedEvents;
     }
@@ -86,7 +86,7 @@ public abstract class EventCacheIO {
                 }
             });
         } catch (JsonSyntaxException | JsonIOException e) {
-            ProbeJS.LOGGER.warn("Cannot read malformed cache, ignoring.");
+            ProbeJS.LOGGER.warn("Cannot read malformed Forge event cache, ignoring.");
         }
         return cachedEvents;
     }

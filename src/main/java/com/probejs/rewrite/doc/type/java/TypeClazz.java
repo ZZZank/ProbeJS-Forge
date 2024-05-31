@@ -1,16 +1,12 @@
 package com.probejs.rewrite.doc.type.java;
 
 import com.probejs.info.clazz.ClassInfo;
-import com.probejs.info.type.IType;
-import com.probejs.info.type.TypeClass;
 import com.probejs.rewrite.ClazzPath;
 import com.probejs.rewrite.doc.DocClazz;
-import com.probejs.rewrite.doc.type.DocType;
 import lombok.Getter;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.List;
 
 @Getter
 public class TypeClazz implements JavaType {

@@ -21,7 +21,7 @@ public class TypeLiteral implements IType {
 
     @Override
     public Class<?> getResolvedClass() {
-        return null;
+        return String.class;
     }
 
     @Override

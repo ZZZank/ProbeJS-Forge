@@ -6,7 +6,6 @@ import com.probejs.formatter.FormatterRaw;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import com.probejs.util.PUtil;

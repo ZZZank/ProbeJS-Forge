@@ -73,8 +73,7 @@ public class ItemAttribute {
                 .add("alwaysEdible", food.canAlwaysEat()));
         }
         //block
-        if (itemRepr instanceof BlockItem) {
-            BlockItem blockItem = (BlockItem) itemRepr;
+        if (itemRepr instanceof BlockItem blockItem) {
             prop.add("block", JObject.of().add("crop", blockItem.getBlock() instanceof CropBlock));
         }
         return prop.build();

@@ -30,18 +30,15 @@ public abstract class TypeResolver {
 
         typeInfo = typeInfo.copy();
 
-        if (typeInfo instanceof TypeWildcard) {
-            TypeWildcard wild = (TypeWildcard) typeInfo;
+        if (typeInfo instanceof TypeWildcard wild) {
             return mutateTypeMap(wild.getBase(), toMutate);
         }
 
-        if (typeInfo instanceof TypeArray) {
-            TypeArray array = (TypeArray) typeInfo;
+        if (typeInfo instanceof TypeArray array) {
             array.setBase(mutateTypeMap(array.getBase(), toMutate));
         }
 
-        if (typeInfo instanceof TypeParameterized) {
-            TypeParameterized parType = (TypeParameterized) typeInfo;
+        if (typeInfo instanceof TypeParameterized parType) {
             parType.setRawType(mutateTypeMap(parType.getBase(), toMutate));
             parType.setParamTypes(
                 parType
@@ -56,8 +53,7 @@ public abstract class TypeResolver {
     }
 
     public static IType getContainedTypeOrSelf(IType typeInfo) {
-        if (typeInfo instanceof TypeParameterized) {
-            TypeParameterized paramType = (TypeParameterized) typeInfo;
+        if (typeInfo instanceof TypeParameterized paramType) {
             IType baseType = paramType.getBase();
             if (
                 baseType.assignableFrom(resolveType(Collection.class)) && !paramType.getParamTypes().isEmpty()

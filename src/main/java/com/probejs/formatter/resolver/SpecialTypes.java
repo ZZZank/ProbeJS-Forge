@@ -19,11 +19,9 @@ public class SpecialTypes {
 
     public static String formatClassLike(IType obj) {
         IType inner = null;
-        if (obj instanceof TypeParameterized) {
-            TypeParameterized cls = (TypeParameterized) obj;
+        if (obj instanceof TypeParameterized cls) {
             inner = cls.getParamTypes().get(0);
-        } else if (obj instanceof TypeClass) {
-            TypeClass cls = (TypeClass) obj;
+        } else if (obj instanceof TypeClass cls) {
             inner = cls;
         }
         if (inner == null) {
@@ -47,11 +45,10 @@ public class SpecialTypes {
     }
 
     public static String formatMap(Object obj) {
-        if (!(obj instanceof Map<?, ?>)) {
+        if (!(obj instanceof Map<?, ?> map)) {
             return "{}";
         }
         List<String> values = new ArrayList<>();
-        Map<?, ?> map = (Map<?, ?>) obj;
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             Object key = entry.getKey();
             Object value = entry.getValue();
@@ -66,11 +63,10 @@ public class SpecialTypes {
     }
 
     public static String formatList(Object obj) {
-        if (!(obj instanceof List<?>)) {
+        if (!(obj instanceof List<?> list)) {
             return "[]";
         }
         List<String> values = new ArrayList<>();
-        List<?> list = (List<?>) obj;
         for (Object o : list) {
             String formattedValue = NameResolver.formatValue(o);
             if (formattedValue == null) formattedValue = "undefined";
@@ -80,16 +76,14 @@ public class SpecialTypes {
     }
 
     public static String formatScriptable(Object obj) {
-        if (!(obj instanceof ScriptableObject)) {
+        if (!(obj instanceof ScriptableObject scriptable)) {
             // if not Scriptable, why call this
             return "{}";
         }
         List<String> values = new ArrayList<>();
-        ScriptableObject scriptable = (ScriptableObject) obj;
 
         Scriptable prototype = scriptable.getPrototype();
-        if (prototype.get("constructor", prototype) instanceof BaseFunction) {
-            BaseFunction func = (BaseFunction) prototype.get("constructor", prototype);
+        if (prototype.get("constructor", prototype) instanceof BaseFunction func) {
             //Resolves Object since they're not typed
             if (!func.getFunctionName().isEmpty() && !func.getFunctionName().equals("Object")) {
                 return func.getFunctionName();
@@ -124,10 +118,9 @@ public class SpecialTypes {
     }
 
     public static String formatFunction(Object obj) {
-        if (!(obj instanceof BaseFunction)) {
+        if (!(obj instanceof BaseFunction function)) {
             return null;
         }
-        BaseFunction function = (BaseFunction) obj;
         return String.format(
             "(%s) => any",
             IntStream
@@ -138,10 +131,9 @@ public class SpecialTypes {
     }
 
     public static String formatNJO(Object obj) {
-        if (!(obj instanceof NativeJavaObject)) {
+        if (!(obj instanceof NativeJavaObject njo)) {
             return null;
         }
-        NativeJavaObject njo = (NativeJavaObject) obj;
         return formatValueOrType(njo.unwrap());
     }
 

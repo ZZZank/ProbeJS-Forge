@@ -13,8 +13,7 @@ public class ProbeJSPlugin extends KubeJSPlugin {
             "inspect",
             os -> {
                 for (Object o : os) {
-                    if (o instanceof NativeJavaObject) {
-                        NativeJavaObject njo = (NativeJavaObject) o;
+                    if (o instanceof NativeJavaObject njo) {
                         ProbeJS.LOGGER.info(o);
                         ProbeJS.LOGGER.info(njo.getClassName());
                         Arrays.stream((njo).getIds()).map(Object::toString).forEach(ProbeJS.LOGGER::info);

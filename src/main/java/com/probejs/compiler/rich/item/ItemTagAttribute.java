@@ -22,17 +22,6 @@ public class ItemTagAttribute {
         this.itemsOfTag = entry.getValue().getValues();
     }
 
-    /*
-    public ItemTagAttribute(Tag<Item> itemTag) {
-        this.id = itemTag.location().toString();
-        this.itemsOfTag = new ArrayList<>();
-        Tags.items().getTag(this.id);
-        for (Holder<Item> holder : RegistryInfo.ITEM.getVanillaRegistry().getTagOrEmpty(itemTag)) {
-            itemsOfTag.add(holder.value());
-        }
-    }
-     */
-
     public JsonObject serialize() {
         return JObject.of()
             .add("id", id)
