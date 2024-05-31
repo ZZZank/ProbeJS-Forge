@@ -13,6 +13,7 @@ import com.probejs.document.type.IDocType;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.SpecialTypes;
 import com.probejs.info.clazz.ClassInfo;
 import com.probejs.info.clazz.FieldInfo;
 import com.probejs.info.clazz.MethodInfo;
@@ -53,21 +54,9 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
      * the end of formatted string
      */
     public static String formatParameterized(IType info) {
-        StringBuilder sb = new StringBuilder(FormatterType.of(info, false).format());
-        if (info instanceof TypeClass clazz) {
-            if (!clazz.getTypeVariables().isEmpty()) {
-                sb.append("<")
-                    .append(clazz
-                        .getTypeVariables()
-                        .stream()
-                        .map(IType::getTypeName)
-                        .map(NameResolver::getResolvedName)
-                        .map(NameResolver.ResolvedName::getFullName)
-                        .collect(Collectors.joining(",")))
-                    .append(">");
-            }
-        }
-        return sb.toString();
+        return FormatterType.of(info, false)
+            .format()
+            .concat(info instanceof TypeClass clazz ? SpecialTypes.attachedTypeVar(clazz) : "");
     }
 
     @Override
@@ -108,16 +97,10 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         // super class
         if (classInfo.getSuperClass() != null) {
             firstLine.add("extends");
-            if (classInfo.getSuperClass().getRaw() == Object.class) {
-                // redirect to another `Object` so that we can bypass replacement of original `Object`
-                firstLine.add("Document.Object");
-            } else {
-                firstLine.add(
-                    formatParameterized(
-                        TypeResolver.resolveType(classInfo.getRaw().getGenericSuperclass())
-                    )
-                );
-            }
+            val superC = classInfo.getSuperClass().getRaw() == Object.class
+                ? "Document.Object"
+                : formatParameterized(TypeResolver.resolveType(classInfo.getRaw().getGenericSuperclass()));
+            firstLine.add(superC);
         }
         // interface
         if (!classInfo.getInterfaces().isEmpty()) {
@@ -161,7 +144,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
             .entrySet()
             .stream()
             .filter(e -> !methodFormatters.containsKey(e.getKey()))
-            .filter(f -> !(classInfo.isInterface() && f.getValue().getFieldInfo().isStatic() && internal))
+            .filter(f -> !(classInfo.isInterface() && f.getValue().getFInfo().isStatic() && internal))
             .forEach(f -> {
                 f.getValue().setFromInterface(classInfo.isInterface());
                 lines.addAll(f.getValue().formatLines(indent + stepIndent, stepIndent));
@@ -228,16 +211,15 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
             origName += paramString;
         }
 
-        val assignableTypes = new ArrayList<String>();
-        assignableTypes.add(origName);
+        val assignables = new ArrayList<String>();
+        assignables.add(origName);
         DocManager.typesAssignable
             .getOrDefault(classInfo.getRaw().getName(), Collections.emptyList())
             .stream()
             .map(t -> t.transform(IDocType.defaultTransformer))
-            .forEach(assignableTypes::add);
-
+            .forEach(assignables::add);
         if (NameResolver.specialTypeFormatters.containsKey(classInfo.getRaw())) {
-            assignableTypes.add(
+            assignables.add(
                 FormatterType.of(
                     new TypeParameterized(
                         new TypeClass(classInfo.getRaw()),
@@ -248,40 +230,36 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
             );
         }
 
-        lines.add(
-            PUtil.indent(indent) +
-            String.format("type %s = %s;", underName, String.join(" | ", assignableTypes))
-        );
+        lines.add(String.format(
+            "%stype %s = %s;",
+            PUtil.indent(indent),
+            underName,
+            String.join(" | ", assignables)
+        ));
         return lines;
     }
 
     @Override
     public void addDocument(DocumentClass document) {
         super.addDocument(document);
-        document
-            .getFieldDocs()
-            .forEach(documentField -> {
-                if (fieldFormatters.containsKey(documentField.getName())) {
-                    fieldFormatters.get(documentField.getName()).addDocument(documentField);
-                } else {
-                    fieldAdditions.add(documentField);
-                }
-            });
+        for (val documentField : document.getFieldDocs()) {
+            if (fieldFormatters.containsKey(documentField.getName())) {
+                fieldFormatters.get(documentField.getName()).addDocument(documentField);
+            } else {
+                fieldAdditions.add(documentField);
+            }
+        }
 
-        document
-            .getMethodDocs()
-            .forEach(documentMethod -> {
-                if (methodFormatters.containsKey(documentMethod.getName())) {
-                    methodFormatters
-                        .get(documentMethod.getName())
-                        .forEach(formatterMethod -> {
-                            if (documentMethod.testMethod(formatterMethod.getInfo())) {
-                                formatterMethod.addDocument(documentMethod);
-                            }
-                        });
-                } else {
-                    methodAdditions.add(documentMethod);
-                }
-            });
+        for (val documentMethod : document.getMethodDocs()) {
+            if (methodFormatters.containsKey(documentMethod.getName())) {
+                methodFormatters
+                    .get(documentMethod.getName())
+                    .stream()
+                    .filter(formatterMethod -> documentMethod.testMethod(formatterMethod.getInfo()))
+                    .forEach(formatterMethod -> formatterMethod.addDocument(documentMethod));
+            } else {
+                methodAdditions.add(documentMethod);
+            }
+        }
     }
 }

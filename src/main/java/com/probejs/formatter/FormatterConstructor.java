@@ -2,13 +2,11 @@ package com.probejs.formatter;
 
 import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.formatter.resolver.NameResolver;
-import com.probejs.info.clazz.ClassInfo;
+import com.probejs.formatter.resolver.SpecialTypes;
 import com.probejs.info.clazz.ConstructorInfo;
-import com.probejs.info.clazz.MethodInfo;
 import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeClass;
 import com.probejs.util.PUtil;
-import lombok.val;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,40 +20,21 @@ public class FormatterConstructor implements MultiFormatter {
         this.constructor = constructor;
     }
 
-    private String formatTypeParameterized(IType info) {
-        val sb = new StringBuilder(FormatterType.of(info).format());
-        if (info instanceof TypeClass clazz) {
-            val classInfo = ClassInfo.ofCache(clazz.getResolvedClass());
-            if (!classInfo.getTypeParameters().isEmpty()) {
-                sb.append('<');
-                sb.append(
-                    classInfo
-                        .getTypeParameters()
-                        .stream()
-                        .map(IType::getTypeName)
-                        .map(NameResolver::getResolvedName)
-                        .map(NameResolver.ResolvedName::getFullName)
-                        .collect(Collectors.joining(","))
-                );
-                sb.append('>');
-            }
-        }
-        return sb.toString();
+    private String formatType(IType info) {
+        return FormatterType.of(info)
+            .format()
+            .concat(info instanceof TypeClass clazz ? SpecialTypes.attachedTypeVar(clazz) : "");
     }
 
     private String formatParams() {
-        List<MethodInfo.ParamInfo> params = constructor.getParams();
-        List<String> paramStrings = new ArrayList<>();
-        for (MethodInfo.ParamInfo param : params) {
-            paramStrings.add(
-                String.format(
-                    "%s: %s",
-                    NameResolver.getNameSafe(param.getName()),
-                    formatTypeParameterized(param.getType())
-                )
-            );
-        }
-        return String.join(", ", paramStrings);
+        return constructor
+            .getParams()
+            .stream()
+            .map(param -> String.format("%s: %s",
+                NameResolver.getNameSafe(param.getName()),
+                formatType(param.getType())
+            ))
+            .collect(Collectors.joining(", "));
     }
 
     @Override

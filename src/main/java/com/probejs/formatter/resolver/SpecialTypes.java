@@ -9,6 +9,8 @@ import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeClass;
 import com.probejs.info.type.TypeParameterized;
 import dev.latvian.mods.rhino.*;
+import lombok.val;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -159,5 +161,18 @@ public class SpecialTypes {
                 );
                 DocManager.addAssignable(registrySuperType.getName(), new DocTypeRaw(name));
             });
+    }
+
+    public static String attachedTypeVar(TypeClass type) {
+        val typeVariables = type.getTypeVariables();
+        if (typeVariables.isEmpty()) {
+            return "";
+        }
+        return typeVariables
+            .stream()
+            .map(IType::getTypeName)
+            .map(NameResolver::getResolvedName)
+            .map(NameResolver.ResolvedName::getFullName)
+            .collect(Collectors.joining(","));
     }
 }

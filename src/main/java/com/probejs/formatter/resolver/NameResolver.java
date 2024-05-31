@@ -130,7 +130,7 @@ public class NameResolver {
         if (specialValueFormatters.containsKey(object.getClass())) {
             return specialValueFormatters.get(object.getClass()).apply(object);
         }
-        for (Map.Entry<Class<?>, Function<Object, String>> entry : specialValueFormatters.entrySet()) {
+        for (val entry : specialValueFormatters.entrySet()) {
             if (entry.getKey().isAssignableFrom(object.getClass())) {
                 return entry.getValue().apply(object);
             }

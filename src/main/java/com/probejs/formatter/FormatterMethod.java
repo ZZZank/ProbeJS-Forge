@@ -9,6 +9,7 @@ import com.probejs.document.type.IDocType;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.SpecialTypes;
 import com.probejs.info.clazz.MethodInfo;
 import com.probejs.info.type.IType;
 import com.probejs.info.type.TypeClass;
@@ -127,7 +128,10 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         if (returnModifier != null) {
             return returnModifier.getTypeName();
         }
-        return FormatterType.of(info.getType()).underscored(false).format();
+        return FormatterType.of(info.getType())
+            .underscored(false)
+            .format()
+            .concat(info.getType() instanceof TypeClass c ? SpecialTypes.attachedTypeVar(c) : "");
     }
 
     private String formatParam(MethodInfo.ParamInfo pInfo, boolean forceNoUnderscore) {
@@ -145,7 +149,8 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 }
                 return false;
             })
-            .format();
+            .format()
+            .concat((info instanceof TypeClass c) ? SpecialTypes.attachedTypeVar(c) : "");
     }
 
     /**

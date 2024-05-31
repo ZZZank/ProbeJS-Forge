@@ -18,12 +18,12 @@ import java.util.List;
 public class FormatterField extends DocumentReceiver<DocumentField> implements MultiFormatter {
 
     @Getter
-    private final FieldInfo fieldInfo;
+    private final FieldInfo fInfo;
     @Setter
     private boolean isFromInterface = false;
 
-    public FormatterField(FieldInfo fieldInfo) {
-        this.fieldInfo = fieldInfo;
+    public FormatterField(FieldInfo fInfo) {
+        this.fInfo = fInfo;
     }
 
     @Override
@@ -38,25 +38,25 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements M
         }
 
         val builder = new StringBuilder(PUtil.indent(indent));
-        if (fieldInfo.isStatic() && !isFromInterface) {
+        if (fInfo.isStatic() && !isFromInterface) {
             builder.append("static ");
         }
-        if (fieldInfo.isFinal()) {
+        if (fInfo.isFinal()) {
             builder.append("readonly ");
         }
-        builder.append(fieldInfo.getName());
+        builder.append(fInfo.getName());
         builder.append(": ");
 
         if (document != null) {
             builder.append(document.getType().getTypeName());
-        } else if (fieldInfo.isStatic() && NameResolver.formatValue(fieldInfo.getStaticValue()) != null) {
-            builder.append(NameResolver.formatValue(fieldInfo.getStaticValue()));
+        } else if (fInfo.isStatic() && NameResolver.formatValue(fInfo.getStaticValue()) != null) {
+            builder.append(NameResolver.formatValue(fInfo.getStaticValue()));
         } else {
             builder.append(
                 FormatterType.of(
-                    fieldInfo.getType(),
+                    fInfo.getType(),
                     NameResolver.specialTypeGuards.getOrDefault(
-                        TypeResolver.getContainedTypeOrSelf(fieldInfo.getType()).getResolvedClass(),
+                        TypeResolver.getContainedTypeOrSelf(fInfo.getType()).getResolvedClass(),
                         true
                     )
                 )
