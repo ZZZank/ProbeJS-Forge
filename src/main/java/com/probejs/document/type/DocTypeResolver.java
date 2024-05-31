@@ -14,16 +14,20 @@ public class DocTypeResolver {
     public static DocType fromJava(JavaType type) {
         if (type == null) {
             return null;
+        } else if (type instanceof JavaTypeClass c) {
+            return new TypeClazz(c);
+        } else if (type instanceof JavaTypeArray a) {
+            return new TypeArray(a);
+        } else if (type instanceof JavaTypeParameterized p) {
+            return new TypeParameterized(p);
+        } else if (type instanceof JavaTypeVariable v) {
+            return new TypeVariable(v);
+        } else if (type instanceof JavaTypeWildcard w) {
+            return new TypeWildcard(w);
+        } else if (type instanceof com.probejs.info.type.TypeLiteral) {
+            throw new IllegalArgumentException("");
         }
-        return switch (type) {
-            case JavaTypeClass c -> new TypeClazz(c);
-            case JavaTypeArray a -> new TypeArray(a);
-            case JavaTypeParameterized p -> new TypeParameterized(p);
-            case JavaTypeVariable v -> new TypeVariable(v);
-            case JavaTypeWildcard w -> new TypeWildcard(w);
-            case com.probejs.info.type.TypeLiteral l -> throw new IllegalArgumentException("");
-            default -> throw new IllegalStateException("Not instance of JavaType: " + type);
-        };
+        throw new IllegalStateException("Not instance of JavaType: " + type);
     }
 
     public static List<DocType> fromJava(Collection<JavaType> types) {
