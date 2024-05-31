@@ -36,7 +36,7 @@ public class ClazzFilter {
             //fallback for Rhino
             return !fieldName.equals("constructor");
         }
-        //we can filter out unmapped field because not being mapped means the unmapped field is mapped in a class that
+        //we can filter out unmapped field because 'not being mapped' means the unmapped field is mapped in a class that
         //should be the superclass of current class
         return !fieldName.equals("constructor") && !fieldPattern.matcher(fieldName).matches();
     }

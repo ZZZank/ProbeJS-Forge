@@ -1,4 +1,3 @@
-
 # 4.0.0 steps
 
 - class capturing
@@ -18,7 +17,7 @@
 ## info
 
 - class walker
-  - should add special handling for JS obj
+    - should add special handling for JS obj
 - mostly data class, immutable, like `record`
 - (maybe)no logic, except for class walker
 
@@ -26,8 +25,8 @@
 
 - info -> doc, as base
 - read external doc
-- parse external doc and add into base  
-- apply generics  
+- parse external doc and add into base
+- apply generics
 - method/field filtering
 
 ## formatter

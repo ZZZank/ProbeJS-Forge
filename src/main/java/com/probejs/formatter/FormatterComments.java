@@ -74,7 +74,7 @@ public class FormatterComments implements MultiFormatter {
         if (this.style.begin != null) {
             lines.add(idnt + this.style.begin);
         }
-        for (final String line : this.raw) {
+        for (val line : this.raw) {
             lines.add(String.format("%s%s%s", idnt, this.style.inline, line));
         }
         if (this.style.end != null) {
