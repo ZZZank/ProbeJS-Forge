@@ -164,11 +164,11 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
 
         // beans
         if (!classInfo.isInterface()) {
-            Map<String, FormatterMethod> getterMap = new HashMap<>();
-            ListMultimap<String, FormatterMethod> setterMap = ArrayListMultimap.create();
+            val getters = new HashMap<String, FormatterMethod>();
+            ListMultimap<String, FormatterMethod> setters = ArrayListMultimap.create();
 
-            for (FormatterMethod m : methodFormatters.values()) {
-                String beanName = m.getBeanedName();
+            for (val m : methodFormatters.values()) {
+                val beanName = m.getBeanedName();
                 if (
                     beanName == null ||
                         !Character.isAlphabetic(beanName.charAt(0)) ||
@@ -178,21 +178,18 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
                     continue;
                 }
                 if (m.isGetter()) {
-                    getterMap.put(beanName, m);
+                    getters.put(beanName, m);
                 } else {
-                    setterMap.put(beanName, m);
+                    setters.put(beanName, m);
                 }
             }
 
-            getterMap.forEach((k, v) -> lines.addAll(v.formatBean(indent + stepIndent, stepIndent)));
-            setterMap.values()
-                .stream()
-                .filter(m ->
-                    !getterMap.containsKey(m.getBeanedName()) ||
-                        getterMap.get(m.getBeanedName()).getBeanTypeString().equals(m.getBeanTypeString())
-                )
-                .findFirst()
-                .ifPresent(fmtr -> lines.addAll(fmtr.formatBean(indent + stepIndent, stepIndent)));
+            for (val getter: getters.values()) {
+                lines.addAll(getter.formatBean(indent+stepIndent, stepIndent));
+            }
+            for (val setter: setters.values()) {
+                lines.addAll(setter.formatBean(indent+stepIndent, stepIndent));
+            }
         }
 
         // constructors
