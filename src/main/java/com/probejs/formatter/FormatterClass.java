@@ -136,6 +136,13 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         lines.add(PUtil.indent(indent) + String.join(" ", firstLine));
         // first line processing, end
 
+        // additions
+        for (DocumentField fieldDoc : fieldAdditions) {
+            lines.addAll(fieldDoc.formatLines(indent + stepIndent, stepIndent));
+        }
+        for (DocumentMethod methodDoc : methodAdditions) {
+            lines.addAll(methodDoc.formatLines(indent + stepIndent, stepIndent));
+        }
         // methods
         methodFormatters
             .values()
@@ -206,13 +213,6 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
                 .stream()
                 .map(FormatterConstructor::new)
                 .forEach(f -> lines.addAll(f.formatLines(indent + stepIndent, stepIndent)));
-        }
-        // additions
-        for (DocumentField fieldDoc : fieldAdditions) {
-            lines.addAll(fieldDoc.formatLines(indent + stepIndent, stepIndent));
-        }
-        for (DocumentMethod methodDoc : methodAdditions) {
-            lines.addAll(methodDoc.formatLines(indent + stepIndent, stepIndent));
         }
         //end
         lines.add(PUtil.indent(indent) + "}");
