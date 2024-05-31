@@ -109,9 +109,9 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${rootProject.lombok_version}"
     testCompileOnly "org.projectlombok:lombok:${rootProject.lombok_version}"
     testAnnotationProcessor "org.projectlombok:lombok:${rootProject.lombok_version}"
-    //jabel
-    annotationProcessor 'com.github.bsideup.jabel:jabel-javac-plugin:1.0.0'
-    compileOnly 'com.github.bsideup.jabel:jabel-javac-plugin:1.0.0'
+    // https://mvnrepository.com/artifact/com.pkware.jabel/jabel-javac-plugin
+    annotationProcessor 'com.pkware.jabel:jabel-javac-plugin:1.0.1-1'
+    compileOnly 'com.pkware.jabel:jabel-javac-plugin:1.0.1-1'
 }
 
 processResources {
