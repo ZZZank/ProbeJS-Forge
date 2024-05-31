@@ -18,7 +18,6 @@ import lombok.Getter;
 import lombok.val;
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
@@ -38,7 +37,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         this.beanType = caculateBeanType(this.info);
     }
 
-    public static enum BeanType {
+    public enum BeanType {
         NONE,
         GETTER,
         SETTER,
@@ -77,16 +76,11 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
 
     @Nullable
     public String getBeanedName() {
-        switch (this.beanType) {
-            case NONE:
-                return null;
-            case GETTER:
-            case SETTER:
-                return StringUtil.withLowerCaseHead(info.getName().substring(3));
-            case GETTER_IS:
-                return StringUtil.withLowerCaseHead(info.getName().substring(2));
-        }
-        return null;
+        return switch (this.beanType) {
+            case NONE -> null;
+            case GETTER, SETTER -> StringUtil.withLowerCaseHead(info.getName().substring(3));
+            case GETTER_IS -> StringUtil.withLowerCaseHead(info.getName().substring(2));
+        };
     }
 
     public boolean isGetter() {
@@ -128,69 +122,33 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         }
     }
 
-    private static String formatTypeParameterized(IType info, boolean useSpecial) {
-        if (!(info instanceof TypeClass)) {
-            return FormatterType.of(info, useSpecial).format();
-        }
-        val clazz = (TypeClass) info;
-        val sb = new StringBuilder(FormatterType.of(info, useSpecial).format());
-        if (!NameResolver.isTypeSpecial(clazz.getResolvedClass()) && !clazz.getTypeVariables().isEmpty()) {
-            sb.append('<');
-            sb.append(String.join(", ", Collections.nCopies(clazz.getTypeVariables().size(), "any")));
-            sb.append('>');
-        }
-        return sb.toString();
-    }
-
     public String formatReturn() {
         val returnModifier = getReturnModifiers();
         if (returnModifier != null) {
             return returnModifier.getTypeName();
         }
-        return formatTypeParameterized(info.getType(), false);
+        return FormatterType.of(info.getType()).underscored(false).format();
     }
 
     private String formatParam(MethodInfo.ParamInfo pInfo, boolean forceNoUnderscore) {
         val info = pInfo.getType();
         val clazz = info.getResolvedClass();
-        //No assigned types, and not enum, use normal route.
-        if (!DocManager.typesAssignable.containsKey(clazz.getName()) && !clazz.isEnum()) {
-            return formatTypeParameterized(info, true);
-        }
-
-        val sb = new StringBuilder();
-        sb.append(
-            FormatterType
-                .of(info, false)
-                .underscored((typeInfo) -> {
-                    if (forceNoUnderscore) {
-                        return false;
-                    }
-                    val base = typeInfo.getBase();
-                    if (base instanceof TypeClass) {
-                        return !NameResolver.resolvedPrimitives.contains(base.getResolvedClass().getName());
-                    }
+        return FormatterType.of(pInfo.getType(), false)
+            .underscored(type -> {
+                if (forceNoUnderscore) {
                     return false;
-                })
-                .format()
-        );
-        if (info instanceof TypeClass) {
-            val cInfo = (TypeClass) info;
-            val typeVariables = cInfo.getTypeVariables();
-            if (!typeVariables.isEmpty()) {
-                sb.append('<');
-                sb.append(
-                    typeVariables
-                        .stream()
-                        .map(IType::getTypeName)
-                        .map(NameResolver::getResolvedName)
-                        .map(NameResolver.ResolvedName::getFullName)
-                        .collect(Collectors.joining(","))
-                );
-                sb.append('>');
-            }
-        }
-        return sb.toString();
+                }
+                if (clazz.isEnum()) {
+                    return true; //TODO: use assignables to handle Enum
+                }
+                val base = type.getBase();
+                if (base instanceof TypeClass) {
+                    return DocManager.typesAssignable.containsKey(clazz.getName())
+                        && !NameResolver.resolvedPrimitives.contains(base.getResolvedClass().getName());
+                }
+                return false;
+            })
+            .format();
     }
 
     /**
@@ -204,16 +162,16 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
      * Get a `a: string, b: number` style String representation of params of this method
      */
     public String formatParams(Map<String, String> renames, boolean forceNoUnderscore) {
-        final BiFunction<IDocType, String, String> typeTransformer = forceNoUnderscore
+        val typeTransformer = forceNoUnderscore
             ? IDocType.dummyTransformer
             : IDocType.defaultTransformer;
-        Map<String, IDocType> modifiers = getParamModifiers();
+        val modifiers = getParamModifiers();
         return info
             .getParams()
             .stream()
             .map(pInfo -> {
-                String nameRaw = pInfo.getName();
-                String paramType = modifiers.containsKey(nameRaw)
+                val nameRaw = pInfo.getName();
+                val paramType = modifiers.containsKey(nameRaw)
                     ? modifiers.get(nameRaw).transform(typeTransformer)
                     : formatParam(pInfo, forceNoUnderscore);
                 return String.format(
