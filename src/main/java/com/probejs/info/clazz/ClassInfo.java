@@ -13,9 +13,11 @@ import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Getter
@@ -112,6 +114,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         List<MethodInfo> abstracts =
             this.methods.stream().filter(MethodInfo::isAbstract).collect(Collectors.toList());
         this.isFunctionalInterface = isInterface && abstracts.size() == 1;
+        //type alias: Functional Interfaces
         if (this.isFunctionalInterface) {
             NameResolver.addSpecialAssignments(this.raw, () -> {
                 FormatterMethod formatterLambda = new FormatterMethod(abstracts.get(0));
@@ -121,6 +124,35 @@ public class ClassInfo implements Comparable<ClassInfo> {
                 );
                 return Collections.singletonList(lambdaStr);
             });
+        }
+        //type alias: Enum
+        if (isEnum()) {
+            Supplier<List<String>> assign = () -> {
+                try {
+                    val values = clazz.getMethod("values");
+                    values.setAccessible(true);
+                    val enumValues = (Object[]) values.invoke(null);
+                    //Use the name() method here so won't be affected by overrides
+                    val name = Enum.class.getMethod("name");
+                    return Arrays.stream(enumValues)
+                        .map(obj -> {
+                            try {
+                                return name.invoke(obj);
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
+                        .map(Object::toString)
+                        .map(String::toLowerCase)
+                        .map(ProbeJS.GSON::toJson)
+                        .collect(Collectors.toList());
+                } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                return Collections.emptyList();
+            };
+            NameResolver.addSpecialAssignments(raw, assign);
         }
     }
 

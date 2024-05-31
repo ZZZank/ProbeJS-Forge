@@ -56,21 +56,17 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
      */
     public static String formatParameterized(IType info) {
         StringBuilder sb = new StringBuilder(FormatterType.of(info, false).format());
-        if (info instanceof TypeClass) {
-            TypeClass clazz = (TypeClass) info;
+        if (info instanceof TypeClass clazz) {
             if (!clazz.getTypeVariables().isEmpty()) {
-                sb.append(
-                    String.format(
-                        "<%s>",
-                        clazz
-                            .getTypeVariables()
-                            .stream()
-                            .map(IType::getTypeName)
-                            .map(NameResolver::getResolvedName)
-                            .map(NameResolver.ResolvedName::getFullName)
-                            .collect(Collectors.joining(","))
-                    )
-                );
+                sb.append("<")
+                    .append(clazz
+                        .getTypeVariables()
+                        .stream()
+                        .map(IType::getTypeName)
+                        .map(NameResolver::getResolvedName)
+                        .map(NameResolver.ResolvedName::getFullName)
+                        .collect(Collectors.joining(",")))
+                    .append(">");
             }
         }
         return sb.toString();
@@ -85,31 +81,6 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
                 return lines;
             }
             lines.addAll(comment.formatLines(indent, stepIndent));
-        }
-
-        val assignableTypes = DocManager.typesAssignable
-            .getOrDefault(classInfo.getRaw().getName(), Collections.emptyList())
-            .stream()
-            .map(t -> t.transform(IDocType.defaultTransformer))
-            .collect(Collectors.toList());
-
-        if (classInfo.isEnum()) {
-            //TODO: add special processing for KubeJS
-            val clazz = classInfo.getRaw();
-            try {
-                val values = clazz.getMethod("values");
-                values.setAccessible(true);
-                val enumValues = (Object[]) values.invoke(null);
-                //Use the name() method here so won't be affected by overrides
-                val name = Enum.class.getMethod("name");
-                for (val enumValue : enumValues) {
-                    assignableTypes.add(
-                        ProbeJS.GSON.toJson(name.invoke(enumValue).toString().toLowerCase(Locale.ROOT))
-                    );
-                }
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
         }
 
         // First line
@@ -248,9 +219,28 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         }
         //end
         lines.add(PUtil.indent(indent) + "}");
+
         //type conversion
         String origName = NameResolver.getResolvedName(classInfo.getName()).getLastName();
         String underName = origName + "_";
+        List<TypeVariable> params = classInfo.getTypeParameters();
+        if (!params.isEmpty()) {
+            String paramString = String.format(
+                "<%s>",
+                params.stream().map(IType::getTypeName).collect(Collectors.joining(", "))
+            );
+            underName += paramString;
+            origName += paramString;
+        }
+
+        val assignableTypes = new ArrayList<String>();
+        assignableTypes.add(origName);
+        DocManager.typesAssignable
+            .getOrDefault(classInfo.getRaw().getName(), Collections.emptyList())
+            .stream()
+            .map(t -> t.transform(IDocType.defaultTransformer))
+            .forEach(assignableTypes::add);
+
         if (NameResolver.specialTypeFormatters.containsKey(classInfo.getRaw())) {
             assignableTypes.add(
                 FormatterType.of(
@@ -262,17 +252,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
                     .format()
             );
         }
-        List<TypeVariable> params = classInfo.getTypeParameters();
-        if (!params.isEmpty()) {
-            String paramString = String.format(
-                "<%s>",
-                params.stream().map(IType::getTypeName).collect(Collectors.joining(", "))
-            );
-            underName += paramString;
-            origName += paramString;
-        }
 
-        assignableTypes.add(origName);
         lines.add(
             PUtil.indent(indent) +
             String.format("type %s = %s;", underName, String.join(" | ", assignableTypes))

@@ -138,9 +138,6 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
                 if (forceNoUnderscore) {
                     return false;
                 }
-                if (clazz.isEnum()) {
-                    return true; //TODO: use assignables to handle Enum
-                }
                 val base = type.getBase();
                 if (base instanceof TypeClass) {
                     return DocManager.typesAssignable.containsKey(clazz.getName())
