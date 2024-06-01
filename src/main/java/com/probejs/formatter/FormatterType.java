@@ -2,6 +2,7 @@ package com.probejs.formatter;
 
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.type.*;
+import lombok.val;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,14 +31,14 @@ public abstract class FormatterType<T extends JavaType> {
     public static FormatterType<? extends JavaType> of(JavaType tInfo, boolean allowSpecial) {
         //special
         if (allowSpecial) {
-            Class<?> rawClass = tInfo.getResolvedClass();
-            Function<JavaType, String> special = NameResolver.specialTypeFormatters.get(rawClass);
+            val rawClass = tInfo.getResolvedClass();
+            val special = NameResolver.specialTypeFormatters.get(rawClass);
             if (special != null) {
                 return new Literal(special.apply(tInfo));
             }
         }
         //general
-        Function<JavaType, FormatterType<?>> builder = REGISTRIES.get(tInfo.getClass());
+        val builder = REGISTRIES.get(tInfo.getClass());
         if (builder != null) {
             return builder.apply(tInfo);
         }
@@ -119,7 +120,7 @@ public abstract class FormatterType<T extends JavaType> {
 
         @Override
         public String format() {
-            String s = NameResolver.getResolvedName(this.tInfo.getTypeName()).getFullName();
+            val s = NameResolver.getResolvedName(this.tInfo.getTypeName()).getFullName();
             if (!underscored) {
                 return s;
             }

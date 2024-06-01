@@ -127,11 +127,13 @@ public class NameResolver {
         if (object == null) {
             return null;
         }
-        if (specialValueFormatters.containsKey(object.getClass())) {
-            return specialValueFormatters.get(object.getClass()).apply(object);
+        val clazz = object.getClass();
+        val direct = specialValueFormatters.get(clazz);
+        if (direct != null) {
+            return direct.apply(object);
         }
         for (val entry : specialValueFormatters.entrySet()) {
-            if (entry.getKey().isAssignableFrom(object.getClass())) {
+            if (entry.getKey().isAssignableFrom(clazz)) {
                 return entry.getValue().apply(object);
             }
         }
@@ -141,8 +143,8 @@ public class NameResolver {
     public static ResolvedName resolveName(Class<?> clazz) {
         // String remappedName = MethodInfo.RUNTIME.getMappedClass(clazz);
         // ResolvedName resolved = new ResolvedName(Arrays.asList(remappedName.split("\\.")));
-        final ResolvedName resolved = new ResolvedName(Arrays.asList(clazz.getName().split("\\.")));
-        final ResolvedName internal = new ResolvedName(Arrays.asList("Internal", resolved.getLastName()));
+        val resolved = new ResolvedName(Arrays.asList(clazz.getName().split("\\.")));
+        val internal = new ResolvedName(Arrays.asList("Internal", resolved.getLastName()));
         if (resolvedNames.containsValue(internal)) {
             return putResolvedName(clazz.getName(), resolved);
         } else {

@@ -230,13 +230,13 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         List<String> lines = new ArrayList<>();
 
         if (document != null) {
-            DocumentComment comment = document.getComment();
+            val comment = document.getComment();
             if (CommentUtil.isHidden(comment)) return lines;
             if (comment != null) lines.addAll(comment.formatLines(indent, stepIndent));
         }
 
-        String idnt = PUtil.indent(indent);
-        String beaned = getBeanedName();
+        val idnt = PUtil.indent(indent);
+        val beaned = getBeanedName();
         if (this.beanType == BeanType.GETTER_IS) {
             lines.add(String.format("%sget %s(): boolean;", idnt, beaned));
         } else if (this.beanType == BeanType.GETTER) {
