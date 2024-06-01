@@ -2,7 +2,6 @@ package com.probejs.formatter.resolver;
 
 import com.probejs.document.DocManager;
 import com.probejs.document.type.TypeLiteral;
-import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterType;
 import com.probejs.info.SpecialData;
 import com.probejs.info.type.JavaType;
@@ -42,7 +41,7 @@ public class SpecialTypes {
             ) {
                 NameResolver.resolveName(obj.getClass());
             }
-            formattedValue = FormatterClass.formatParameterized(new JavaTypeClass(obj.getClass()));
+            formattedValue = forceParameterizedFormat(new JavaTypeClass(obj.getClass()));
         }
         return formattedValue;
     }
@@ -166,27 +165,42 @@ public class SpecialTypes {
             });
     }
 
-    public static String attachedTypeVar(JavaTypeClass type) {
-        val typeVariables = type.getTypeVariables();
-        if (typeVariables.isEmpty()) {
-            return "";
-        }
-        return typeVariables
-            .stream()
-            .map(JavaType::getTypeName)
-            .map(NameResolver::getResolvedName)
-            .map(NameResolver.ResolvedName::getFullName)
-            .collect(Collectors.joining(","));
-    }
-
     /**
-     * @return {@link SpecialTypes#attachedTypeVar(JavaTypeClass)} if {@code type} is an instance of
+     * @return attached type variables if {@code type} is an instance of
      * {@link JavaTypeClass}, otherwise an empty string
      */
     @NotNull
     public static String attachedClassTypeVar(JavaType type) {
-        return type instanceof JavaTypeClass clazz
-            ? attachedTypeVar(clazz)
-            : "";
+        if (!(type instanceof JavaTypeClass clazz)) {
+            return "";
+        }
+        val typeVariables = clazz.getTypeVariables();
+        if (typeVariables.isEmpty()) {
+            return "";
+        }
+        return "<" + typeVariables
+            .stream()
+            .map(JavaType::getTypeName)
+            .map(NameResolver::getResolvedName)
+            .map(NameResolver.ResolvedName::getFullName)
+            .collect(Collectors.joining(",")) + ">";
+    }
+
+    /**
+     * no underscore, but
+     * class with generics formatted in this way is guaranteed to include generics.
+     * e.g. {@code PlayerJS<any>}
+     */
+    public static String forceParameterizedFormat(JavaType type, boolean allowSpecial) {
+        return FormatterType.of(type, allowSpecial)
+            .format()
+            .concat(SpecialTypes.attachedClassTypeVar(type));
+    }
+
+    /**
+     * @see SpecialTypes#forceParameterizedFormat(JavaType, boolean)
+     */
+    public static String forceParameterizedFormat(JavaType type) {
+        return forceParameterizedFormat(type, true);
     }
 }

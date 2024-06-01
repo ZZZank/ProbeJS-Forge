@@ -47,18 +47,6 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         }
     }
 
-    /**
-     * similar to {@code new FormatterType(info,false).format(0,4)}, but with additional
-     * processing for TypeClass. If its getTypeVariables() is not returning an empty
-     * list, a {@code <a,b,...>} style type variable representation will be added to
-     * the end of formatted string
-     */
-    public static String formatParameterized(JavaType info) {
-        return FormatterType.of(info, false)
-            .format()
-            .concat(SpecialTypes.attachedClassTypeVar(info));
-    }
-
     @Override
     public List<String> formatLines(int indent, int stepIndent) {
         val lines = new ArrayList<String>();
@@ -87,9 +75,9 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
             firstLine.add(
                 String.format(
                     "<%s>",
-                    Arrays
-                        .stream(classInfo.getRaw().getTypeParameters())
-                        .map(java.lang.reflect.TypeVariable::getName)
+                    classInfo.getTypeParameters()
+                        .stream()
+                        .map(JavaTypeVariable::getTypeName)
                         .collect(Collectors.joining(", "))
                 )
             );
@@ -99,29 +87,26 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
             firstLine.add("extends");
             val superC = classInfo.getSuperClass().getRaw() == Object.class
                 ? "Document.Object"
-                : formatParameterized(TypeResolver.resolve(classInfo.getRaw().getGenericSuperclass()));
+                : SpecialTypes.forceParameterizedFormat(classInfo.getSuperType());
             firstLine.add(superC);
         }
         // interface
         if (!classInfo.getInterfaces().isEmpty()) {
             firstLine.add(classInfo.isInterface() ? "extends" : "implements");
-            firstLine.add(
-                Arrays
-                    .stream(classInfo.getRaw().getGenericInterfaces())
-                    .map(TypeResolver::resolve)
-                    .map(FormatterClass::formatParameterized)
-                    .collect(Collectors.joining(", "))
-            );
+            firstLine.add(classInfo.getInterfaces()
+                .stream()
+                .map(SpecialTypes::forceParameterizedFormat)
+                .collect(Collectors.joining(", ")));
         }
         firstLine.add("{");
         lines.add(PUtil.indent(indent) + String.join(" ", firstLine));
         // first line processing, end
 
         // additions
-        for (DocumentField fieldDoc : fieldAdditions) {
+        for (val fieldDoc : fieldAdditions) {
             lines.addAll(fieldDoc.formatLines(indent + stepIndent, stepIndent));
         }
-        for (DocumentMethod methodDoc : methodAdditions) {
+        for (val methodDoc : methodAdditions) {
             lines.addAll(methodDoc.formatLines(indent + stepIndent, stepIndent));
         }
         // methods
@@ -143,12 +128,9 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         fieldFormatters
             .entrySet()
             .stream()
-            .filter(e -> !methodFormatters.containsKey(e.getKey()))
-            .filter(f -> !(classInfo.isInterface() && f.getValue().getFInfo().isStatic() && internal))
-            .forEach(f -> {
-                f.getValue().setFromInterface(classInfo.isInterface());
-                lines.addAll(f.getValue().formatLines(indent + stepIndent, stepIndent));
-            });
+            .filter(e -> !methodFormatters.containsKey(e.getKey())) //stupid JavaScript
+            .filter(f -> !(classInfo.isInterface() && f.getValue().getInfo().isStatic() && internal))
+            .forEach(f -> lines.addAll(f.getValue().formatLines(indent + stepIndent, stepIndent)));
 
         // beans
         if (!classInfo.isInterface()) {

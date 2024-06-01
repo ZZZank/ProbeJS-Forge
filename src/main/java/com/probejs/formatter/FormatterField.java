@@ -9,7 +9,6 @@ import com.probejs.info.clazz.FieldInfo;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
 
 import java.util.ArrayList;
@@ -18,12 +17,12 @@ import java.util.List;
 public class FormatterField extends DocumentReceiver<DocumentField> implements MultiFormatter {
 
     @Getter
-    private final FieldInfo fInfo;
-    @Setter
-    private boolean isFromInterface = false;
+    private final FieldInfo info;
+    private final boolean isFromInterface;
 
-    public FormatterField(FieldInfo fInfo) {
-        this.fInfo = fInfo;
+    public FormatterField(FieldInfo info) {
+        this.info = info;
+        this.isFromInterface = info.getFrom().isInterface();
     }
 
     @Override
@@ -38,25 +37,25 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements M
         }
 
         val builder = new StringBuilder(PUtil.indent(indent));
-        if (fInfo.isStatic() && !isFromInterface) {
+        if (info.isStatic() && !isFromInterface) {
             builder.append("static ");
         }
-        if (fInfo.isFinal()) {
+        if (info.isFinal()) {
             builder.append("readonly ");
         }
-        builder.append(fInfo.getName());
+        builder.append(info.getName());
         builder.append(": ");
 
         if (document != null) {
             builder.append(document.getType().getTypeName());
-        } else if (fInfo.isStatic() && NameResolver.formatValue(fInfo.getStaticValue()) != null) {
-            builder.append(NameResolver.formatValue(fInfo.getStaticValue()));
+        } else if (info.isStatic() && NameResolver.formatValue(info.getStaticValue()) != null) {
+            builder.append(NameResolver.formatValue(info.getStaticValue()));
         } else {
             builder.append(
                 FormatterType.of(
-                    fInfo.getType(),
+                    info.getType(),
                     NameResolver.specialTypeGuards.getOrDefault(
-                        TypeResolver.getContainedTypeOrSelf(fInfo.getType()).getResolvedClass(),
+                        TypeResolver.getContainedTypeOrSelf(info.getType()).getResolvedClass(),
                         true
                     )
                 )
@@ -67,5 +66,4 @@ public class FormatterField extends DocumentReceiver<DocumentField> implements M
         lines.add(builder.toString());
         return lines;
     }
-
 }

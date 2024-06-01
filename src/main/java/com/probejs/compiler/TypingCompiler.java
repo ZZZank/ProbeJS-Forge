@@ -121,16 +121,14 @@ public class TypingCompiler {
     }
 
     public static void compileConstants(DummyBindingEvent bindingEvent) throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("constants.d.ts"));
+        val writer = Files.newBufferedWriter(ProbePaths.GENERATED.resolve("constants.d.ts"));
         writer.write("/// <reference path=\"./globals.d.ts\" />\n");
-        for (Map.Entry<String, Object> entry : (
-            new TreeMap<>(bindingEvent.getConstantDumpMap())
-        ).entrySet()) {
+        for (val entry : (new TreeMap<>(bindingEvent.getConstantDumpMap())).entrySet()) {
             val name = entry.getKey();
             val value = entry.getValue();
             String resolved = NameResolver.formatValue(value);
             if (resolved == null) {
-                resolved = FormatterClass.formatParameterized(new JavaTypeClass(value.getClass()));
+                resolved = SpecialTypes.forceParameterizedFormat(new JavaTypeClass(value.getClass()));
             }
             writer.write(String.format("declare const %s: %s;\n", name, resolved));
         }
@@ -150,7 +148,7 @@ public class TypingCompiler {
                 String.format(
                     "declare function java(name: %s): typeof %s;",
                     ProbeJS.GSON.toJson(c.getName()),
-                    FormatterClass.formatParameterized(new JavaTypeClass(c))
+                    SpecialTypes.forceParameterizedFormat(new JavaTypeClass(c))
                 )
             )
             .forEach(lines::add);
