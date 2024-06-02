@@ -30,8 +30,8 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
     private final ClassInfo classInfo;
     private final Map<String, FormatterField> fieldFormatters;
     private final Multimap<String, FormatterMethod> methodFormatters;
-    private final List<DocumentField> fieldAdditions = new ArrayList<>();
-    private final List<DocumentMethod> methodAdditions = new ArrayList<>();
+    private final List<DocumentField> fieldAdditions;
+    private final List<DocumentMethod> methodAdditions;
     @Setter
     private boolean internal = false;
 
@@ -45,6 +45,8 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
         for (FieldInfo fieldInfo : classInfo.getFields()) {
             fieldFormatters.put(fieldInfo.getName(), new FormatterField(fieldInfo));
         }
+        fieldAdditions = new ArrayList<>();
+        methodAdditions = new ArrayList<>();
     }
 
     @Override
@@ -71,7 +73,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
             firstLine.add("class");
         }
         firstLine.add(NameResolver.getResolvedName(classInfo.getName()).getLastName());
-        if (classInfo.getRaw().getTypeParameters().length != 0) {
+        if (!classInfo.getTypeParameters().isEmpty()) {
             firstLine.add(
                 String.format(
                     "<%s>",

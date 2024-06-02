@@ -45,7 +45,6 @@ public class DocumentComment implements IDecorative, MultiFormatter {
             });
     }
 
-
     @SuppressWarnings("unchecked")
     public <T extends SpecialComment> List<T> getSpecialComments(Class<? extends T> clazz) {
         return specials
@@ -73,7 +72,7 @@ public class DocumentComment implements IDecorative, MultiFormatter {
         if (this.normals.isEmpty()) {
             return Collections.emptyList();
         }
-        return new FormatterComments(this.getNormalComments())
+        return new FormatterComments(this.normals)
             .setStyle(FormatterComments.CommentStyle.J_DOC)
             .formatLines(indent, stepIndent);
     }

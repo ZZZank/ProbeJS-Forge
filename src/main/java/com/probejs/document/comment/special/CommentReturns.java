@@ -13,6 +13,6 @@ public class CommentReturns extends SpecialComment {
 
     public CommentReturns(String line) {
         super(line);
-        returnType = DocTypeResolver.resolve(line.substring(MARK.length()+1));
+        returnType = DocTypeResolver.resolve(line.substring(MARK.length() + 1));
     }
 }

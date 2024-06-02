@@ -12,13 +12,12 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class DocumentField extends DocumentProperty implements IDocumentProvider<DocumentField>, MultiFormatter {
 
     private final boolean isFinal;
     private final boolean isStatic;
-    @Getter
     private final String name;
-    @Getter
     private final DocType type;
 
     public DocumentField(String line) {
@@ -45,14 +44,6 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
         this.type = DocTypeResolver.resolve(parts.second().trim());
         this.isFinal = f;
         this.isStatic = s;
-    }
-
-    public boolean isFinal() {
-        return isFinal;
-    }
-
-    public boolean isStatic() {
-        return isStatic;
     }
 
     @Override

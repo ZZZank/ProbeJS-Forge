@@ -39,7 +39,7 @@ public class DocManager {
                 }
                 DocumentComment comment = classDoc.getComment();
                 if (comment != null) {
-                    CommentTarget target = comment.getSpecialComment(CommentTarget.class);
+                    val target = comment.getSpecialComment(CommentTarget.class);
                     if (target != null) {
                         classDocuments.put(target.getTargetName(), classDoc);
                         comment

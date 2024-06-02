@@ -13,6 +13,7 @@ public abstract class DocumentProperty implements IConcrete {
         for (IDecorative decorative : decorates) {
             if (decorative instanceof DocumentComment) {
                 this.comment = (DocumentComment) decorative;
+                break;
             }
         }
     }

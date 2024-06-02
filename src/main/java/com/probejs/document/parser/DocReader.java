@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Stream;
 import java.util.zip.ZipFile;
 
 
@@ -79,9 +80,11 @@ public class DocReader {
                 docName = docName.substring(1);
             }
             //check mod installing condition
-            if (!modConditionMet(docName)) {
+            val condAndName = docName.split(" ");
+            if (condAndName.length > 1 && !Arrays.stream(condAndName[1].split("&")).allMatch(Platform::isModLoaded)) {
                 continue;
             }
+            docName = condAndName[condAndName.length - 1];
             //read doc
             val docEntry = zip.getEntry(docName);
             if (docEntry == null) {
@@ -89,28 +92,15 @@ public class DocReader {
                 continue;
             }
             ProbeJS.LOGGER.info("Loading document inside jar - {}", docName);
-            BufferedReader docReader = new BufferedReader(
+            val docReader = new BufferedReader(
                 new InputStreamReader(
                     new BufferedInputStream(zip.getInputStream(docEntry)),
                     StandardCharsets.UTF_8
                 )
             );
-            readOnce(isRawDoc, docReader);
+            readOneFile(isRawDoc, docReader.lines());
         }
         zip.close();
-    }
-
-    private static boolean modConditionMet(String name) {
-        val i = name.indexOf(" ");
-        if (i < 0) {
-            return true;
-        }
-        for (val modId : name.substring(0, i).split("&")) {
-            if (!Platform.isModLoaded(modId)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void readFromPath(Path path) {
@@ -130,21 +120,23 @@ public class DocReader {
         if (isRawDoc) {
             fName = fName.substring(1);
         }
-        if (!modConditionMet(fName)) {
+        val condAndName = fName.split(" ");
+        if (condAndName.length > 1 && !Arrays.stream(condAndName[1].split("&")).allMatch(Platform::isModLoaded)) {
             return;
         }
+//        fName = condAndName[condAndName.length - 1];
         try (BufferedReader reader = Files.newBufferedReader(f.toPath())) {
-            readOnce(isRawDoc, reader);
+            readOneFile(isRawDoc, reader.lines());
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Cannot read {}", f.getPath());
         }
     }
 
-    private void readOnce(boolean isRawDoc, BufferedReader reader) {
+    private void readOneFile(boolean isRawDoc, Stream<String> lines) {
         if (isRawDoc) {
-            reader.lines().forEach(this.target.getRawDocs()::add);
+            lines.forEach(this.target.getRawDocs()::add);
         } else {
-            reader.lines().forEach(this.target::step);
+            lines.forEach(this.target::step);
         }
     }
 }
