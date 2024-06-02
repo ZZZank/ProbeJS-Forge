@@ -10,7 +10,7 @@ public class CommentMod extends SpecialComment {
 
     public CommentMod(String line) {
         super(line);
-        mod = line.substring(MARK.length());
+        mod = line.substring(MARK.length() + 1).trim();
     }
 
     public boolean isLoaded() {
