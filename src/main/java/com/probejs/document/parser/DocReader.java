@@ -2,7 +2,6 @@ package com.probejs.document.parser;
 
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
-import com.probejs.document.parser.processor.Document;
 import lombok.Setter;
 import lombok.val;
 import me.shedaniel.architectury.platform.Mod;
@@ -24,7 +23,7 @@ public class DocReader {
     private boolean readModJars;
     private final Document target;
 
-    public DocReader(Document target) {
+    DocReader(Document target) {
         this.paths = new ArrayList<>();
         this.readModJars = false;
         this.target = target;

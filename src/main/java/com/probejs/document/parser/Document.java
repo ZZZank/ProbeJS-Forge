@@ -1,6 +1,7 @@
-package com.probejs.document.parser.processor;
+package com.probejs.document.parser;
 
 import com.probejs.document.parser.handler.AbstractStackedMachine;
+import com.probejs.document.parser.processor.DocumentHandler;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -16,6 +17,10 @@ public class Document extends AbstractStackedMachine<String> {
         this.rawDocs = new ArrayList<>();
         document = new DocumentHandler();
         this.stack.add(document);
+    }
+
+    public DocReader reader() {
+        return new DocReader(this);
     }
 
     @Override

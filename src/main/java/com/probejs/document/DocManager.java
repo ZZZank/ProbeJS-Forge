@@ -5,8 +5,7 @@ import com.google.common.collect.Multimap;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentAssign;
 import com.probejs.document.comment.special.CommentTarget;
-import com.probejs.document.parser.DocReader;
-import com.probejs.document.parser.processor.Document;
+import com.probejs.document.parser.Document;
 import com.probejs.document.type.DocType;
 import lombok.val;
 
@@ -21,7 +20,7 @@ public class DocManager {
     public static final List<DocumentType> typeDocuments = new ArrayList<>();
 
     public static void init() {
-        Document documentState = new Document();
+        Document document = new Document();
 
         rawTSDoc.clear();
         classDocuments.clear();
@@ -29,11 +28,11 @@ public class DocManager {
         typeDocuments.clear();
         typesAssignable.clear();
 
-        new DocReader(documentState).defaultSetup().read();
+        document.reader().defaultSetup().read();
 
-        rawTSDoc.addAll(documentState.getRawDocs());
+        rawTSDoc.addAll(document.getRawDocs());
 
-        for (val doc : documentState.getDocument().getDocuments()) {
+        for (val doc : document.getDocument().getDocuments()) {
             if (doc instanceof DocumentClass classDoc) {
                 if (!CommentUtil.isLoaded(classDoc.getComment())) {
                     continue;
