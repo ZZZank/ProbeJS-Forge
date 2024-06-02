@@ -41,9 +41,13 @@ public class DocTypeResolver {
     public static DocType resolve(String type) {
         type = type.trim();
 
+        if (TypeTuple.test(type)) { //[int, int, int]
+            return new TypeTuple(type);
+        }
+
         //TODO: Resolve object type
-        if (type.startsWith("{") || type.startsWith("[")) {
-            // {[x in string]: string}, or [int, int, int]
+        if (type.startsWith("{")) {
+            // {[x in string]: string}
             return new TypeLiteral(type);
         }
 
