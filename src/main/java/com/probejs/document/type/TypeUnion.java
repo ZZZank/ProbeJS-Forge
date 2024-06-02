@@ -1,19 +1,17 @@
 package com.probejs.document.type;
 
+import lombok.AllArgsConstructor;
+
 import java.util.function.BiFunction;
 
 /**
  * "string | number"
  * @author ZZZank
  */
+@AllArgsConstructor
 public class TypeUnion implements DocType {
     private final DocType leftType;
     private final DocType rightType;
-
-    public TypeUnion(DocType leftType, DocType rightType) {
-        this.leftType = leftType;
-        this.rightType = rightType;
-    }
 
     @Override
     public String getTypeName() {

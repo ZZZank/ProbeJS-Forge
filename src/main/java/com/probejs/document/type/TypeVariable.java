@@ -27,10 +27,11 @@ public class TypeVariable implements DocType {
         if (bounds.isEmpty()) {
             return name;
         }
-        return String.format("%s extends %s",
-            name,
-            //TODO: bounds formatting
-            null
-        );
+        return name;
+//        return String.format("%s extends %s",
+//            name,
+//            //TODO: bounds formatting
+//            null
+//        );
     }
 }

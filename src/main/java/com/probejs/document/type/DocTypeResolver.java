@@ -86,7 +86,7 @@ public class DocTypeResolver {
             return false;
         }
         if (docType instanceof TypeArray && param instanceof JavaTypeArray array) {
-            return typeEquals(((TypeArray) docType).getBase(), array.getBase());
+            return typeEquals(((TypeArray) docType).getComponent(), array.getBase());
         }
         if (docType instanceof TypeParameterized && param instanceof JavaTypeParameterized parameterized) {
             val paramInfo = parameterized.getParamTypes();

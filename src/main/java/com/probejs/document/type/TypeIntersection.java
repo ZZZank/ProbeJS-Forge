@@ -1,5 +1,7 @@
 package com.probejs.document.type;
 
+import lombok.AllArgsConstructor;
+
 import java.util.function.BiFunction;
 
 /**
@@ -7,14 +9,10 @@ import java.util.function.BiFunction;
  * "string & number"
  * @author ZZZank
  */
+@AllArgsConstructor
 public class TypeIntersection implements DocType {
     private final DocType leftType;
     private final DocType rightType;
-
-    public TypeIntersection(DocType leftType, DocType rightType) {
-        this.leftType = leftType;
-        this.rightType = rightType;
-    }
 
     @Override
     public String getTypeName() {

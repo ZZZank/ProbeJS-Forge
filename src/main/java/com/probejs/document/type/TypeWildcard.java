@@ -21,6 +21,6 @@ public class TypeWildcard implements DocType {
 
     @Override
     public String getTypeName() {
-        return "";
+        return bound.getTypeName();
     }
 }

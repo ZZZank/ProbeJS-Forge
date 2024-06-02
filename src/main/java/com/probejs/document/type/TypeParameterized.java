@@ -1,6 +1,7 @@
 package com.probejs.document.type;
 
 import com.probejs.info.type.JavaTypeParameterized;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
@@ -11,16 +12,12 @@ import java.util.stream.Collectors;
  * "Map<string, number>"
  * @author ZZZank
  */
+@AllArgsConstructor
 @Getter
 public class TypeParameterized implements DocType {
 
     private final DocType rawType;
     private final List<DocType> paramTypes;
-
-    public TypeParameterized(DocType rawType, List<DocType> paramTypes) {
-        this.rawType = rawType;
-        this.paramTypes = paramTypes;
-    }
 
     public TypeParameterized(JavaTypeParameterized jType) {
         this.rawType = DocTypeResolver.fromJava(jType.getRawType());
@@ -38,6 +35,13 @@ public class TypeParameterized implements DocType {
 
     @Override
     public String transform(BiFunction<DocType, String, String> transformer) {
-        return transformer.apply(this, String.format("%s<%s>",rawType.transform(transformer), paramTypes.stream().map(t -> t.transform(transformer)).collect(Collectors.joining(", "))));
+        return transformer.apply(
+            this,
+            String.format(
+                "%s<%s>",
+                rawType.transform(transformer),
+                paramTypes.stream().map(DocType::getTypeName).collect(Collectors.joining(", "))
+            )
+        );
     }
 }
