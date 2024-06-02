@@ -26,6 +26,6 @@ public class TypeArray implements DocType {
 
     @Override
     public String transform(BiFunction<DocType, String, String> transformer) {
-        return transformer.apply(this, component.transform(transformer) + "[]");
+        return component.transform(transformer) + "[]";
     }
 }

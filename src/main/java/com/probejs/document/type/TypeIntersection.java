@@ -21,6 +21,6 @@ public class TypeIntersection implements DocType {
 
     @Override
     public String transform(BiFunction<DocType, String, String> transformer) {
-        return transformer.apply(this, leftType.transform(transformer) + " & " + rightType.transform(transformer));
+        return leftType.transform(transformer) + " & " + rightType.transform(transformer);
     }
 }
