@@ -3,7 +3,7 @@
  * @target dev.latvian.kubejs.recipe.ingredientaction.IngredientActionFilter
  * @assign number
  * @assign dev.latvian.kubejs.item.ingredient.IngredientJS
- * @assign {index: number, item: Internal.IngredientJS_}
+ * @assign {index: number, item: dev.latvian.kubejs.item.ingredient.IngredientJS}
  */
 class IngredientActionFilter {
 }
@@ -40,7 +40,6 @@ class ItemStackJS {
 
 /**
  * @target dev.latvian.kubejs.item.ingredient.IngredientJS
- * 
  * @assign dev.latvian.kubejs.item.ItemStackJS
  * @assign dev.latvian.kubejs.fluid.FluidStackJS
  * @assign "*"
@@ -51,9 +50,9 @@ class ItemStackJS {
  * @assign RegExp
  * @assign Internal.Ingredient
  * @assign dev.latvian.kubejs.item.ingredient.IngredientJS[]
- * @assign {type: string}
- * @assign {item: Internal.ItemStackJS_, count?: number}
- * @assign {fluid: Internal.FluidStackJS_}
+ * @assign {type: string, [x in string]: any}
+ * @assign {item: dev.latvian.kubejs.item.ItemStackJS, count?: number}
+ * @assign {fluid: dev.latvian.kubejs.fluid.FluidStackJS}
  * @assign {value: object}
  * @assign {ingredient: object}
  * Represents an Ingredient, which can match one or multiple ItemStacks.
@@ -96,7 +95,7 @@ class ResourceLocation {
 /**
  * @target net.minecraft.nbt.CompoundTag
  * @assign string
- * @assign {[x in string]: (string | number | boolean | Internal.CompoundTag_)}
+ * @assign {[x in string]: (string | number | boolean | net.minecraft.nbt.CompoundTag)}
  */
 class CompoundTag {
 }
@@ -146,7 +145,7 @@ class Object {
 
 /**
  * @target net.minecraft.nbt.CompoundNBT
- * @assign {[x in string]: (string | number | boolean | Internal.CompoundNBT_)}
+ * @assign {[x in string]: (string | number | boolean | net.minecraft.nbt.CompoundNBT)}
  * @assign string
  * @assign object
  */
@@ -186,7 +185,7 @@ class RecipeFilter {
 /**
  * @target dev.latvian.kubejs.block.BlockStatePredicate
  * @assign dev.latvian.kubejs.block.BlockStatePredicate[]
- * @assign {or?: Internal.BlockStatePredicate_, not?: Internal.BlockStatePredicate_}
+ * @assign {or?: dev.latvian.kubejs.block.BlockStatePredicate[], not?: dev.latvian.kubejs.block.BlockStatePredicate[]}
  * @assign net.minecraft.block.Block
  * @assign net.minecraft.block.BlockState
  * @assign `#${Tag.block}`
