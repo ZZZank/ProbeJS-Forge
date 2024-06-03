@@ -40,6 +40,6 @@ public class TypeTuple implements DocType {
 
     @Override
     public String transform(BiFunction<DocType, String, String> transformer) {
-        return getTypeName();
+        return "[" + elements.stream().map(type -> type.transform(transformer)).collect(Collectors.joining(",")) + "]";
     }
 }
