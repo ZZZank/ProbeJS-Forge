@@ -1,3 +1,23 @@
+# ProbeJS Legacy 3.9.9 -> 3.10.0
+
+Rhizo 3.0 support
+
+## What's new?
+
+-   Use a new way of detecting Remapper, to properly support Rhizo 3.0.
+-   ProbeJS Legacy will now warn users when Rhizo is not installed.
+    -   not installing Rhizo can lead to problems like broken filtering for methods/fields.
+-   Comment handling is further improved.
+-   Excessive setter filtering is now removed, allowing more possible setter to be dumped.
+-   Methods/fields additions from user docs will now show up at the front.
+    -   this allows manually added methods/fields to have the highest priority when being parsed.
+-   Internal cleanups for ProbeJS Legacy 4.0.0.
+-   Doc type parsing for objects and tuples.
+
+NOTE: 4.0.0 is still under development. If you're interested in it, you can see [dev note](https://github.com/ZZZank/ProbeJS-Forge/blob/1.16.5/dev_note.md) for the overall code structure of 4.0.0
+
+---
+
 # ProbeJS Legacy 3.2.0 -> 3.9.9
 
 tag dumping++ & snippet rework

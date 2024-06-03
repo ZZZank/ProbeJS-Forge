@@ -25,8 +25,13 @@
 
 - info -> doc, as base
 - read external doc
+  - Token based? TokenStream?
+  - currently using line as an element, not flexible enough
+  - but a full parser for `.d.ts` seems overkill
 - parse external doc and add into base
+  - there should be a way of manually creating doc element, e.g. class, namespace, method
 - apply generics
+  - attached type params, `{[x in string]: DocType}`
 - method/field filtering
 
 ## formatter
