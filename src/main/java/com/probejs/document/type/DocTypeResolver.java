@@ -45,10 +45,8 @@ public class DocTypeResolver {
             return new TypeTuple(type);
         }
 
-        //TODO: Resolve object type
-        if (type.startsWith("{")) {
-            // {[x in string]: string}
-            return new TypeLiteral(type);
+        if (TypeObject.test(type)) {
+            return new TypeObject(type);
         }
 
         val splitUnion = StringUtil.splitFirst(type, "|");
