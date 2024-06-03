@@ -1,10 +1,10 @@
 package com.probejs.rewrite.doc;
 
+import com.probejs.document.type.DocType;
 import com.probejs.info.clazz.ClassInfo;
 import com.probejs.rewrite.ClazzPath;
 import com.probejs.rewrite.PathResolver;
 import com.probejs.rewrite.doc.comments.CommentHolder;
-import com.probejs.rewrite.doc.type.DocType;
 import lombok.Getter;
 import lombok.val;
 
