@@ -19,29 +19,29 @@ public abstract class PathResolver {
         //pre-resolve primitive
         val ANY = new ClazzPath(Collections.emptyList(), "any", false);
         resolvePrimitive(Object.class, ANY);
-        val STR = new ClazzPath(Collections.emptyList(), "string", false);
-        resolvePrimitive(String.class, STR);
-        resolvePrimitive(Character.class, STR);
-        resolvePrimitive(Character.TYPE, STR);
+        val STRING = new ClazzPath(Collections.emptyList(), "string", false);
+        resolvePrimitive(String.class, STRING);
+        resolvePrimitive(Character.class, STRING);
+        resolvePrimitive(Character.TYPE, STRING);
         val VOID = new ClazzPath(Collections.emptyList(), "void", false);
         resolvePrimitive(Void.class, VOID);
         resolvePrimitive(Void.TYPE, VOID);
-        val NUM = new ClazzPath(Collections.emptyList(), "number", false);
-        resolvePrimitive(Long.class, NUM);
-        resolvePrimitive(Long.TYPE, NUM);
-        resolvePrimitive(Integer.class, NUM);
-        resolvePrimitive(Integer.TYPE, NUM);
-        resolvePrimitive(Short.class, NUM);
-        resolvePrimitive(Short.TYPE, NUM);
-        resolvePrimitive(Byte.class, NUM);
-        resolvePrimitive(Byte.TYPE, NUM);
-        resolvePrimitive(Double.class, NUM);
-        resolvePrimitive(Double.TYPE, NUM);
-        resolvePrimitive(Float.class, NUM);
-        resolvePrimitive(Float.TYPE, NUM);
-        val BOOL = new ClazzPath(Collections.emptyList(), "boolean", false);
-        resolvePrimitive(Boolean.class, BOOL);
-        resolvePrimitive(Boolean.TYPE, BOOL);
+        val NUMBER = new ClazzPath(Collections.emptyList(), "number", false);
+        resolvePrimitive(Long.class, NUMBER);
+        resolvePrimitive(Long.TYPE, NUMBER);
+        resolvePrimitive(Integer.class, NUMBER);
+        resolvePrimitive(Integer.TYPE, NUMBER);
+        resolvePrimitive(Short.class, NUMBER);
+        resolvePrimitive(Short.TYPE, NUMBER);
+        resolvePrimitive(Byte.class, NUMBER);
+        resolvePrimitive(Byte.TYPE, NUMBER);
+        resolvePrimitive(Double.class, NUMBER);
+        resolvePrimitive(Double.TYPE, NUMBER);
+        resolvePrimitive(Float.class, NUMBER);
+        resolvePrimitive(Float.TYPE, NUMBER);
+        val BOOLEAN = new ClazzPath(Collections.emptyList(), "boolean", false);
+        resolvePrimitive(Boolean.class, BOOLEAN);
+        resolvePrimitive(Boolean.TYPE, BOOLEAN);
     }
 
     public static void resolvePrimitive(Class<?> clazz, ClazzPath resolvedPath) {

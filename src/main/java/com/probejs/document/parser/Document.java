@@ -23,6 +23,10 @@ public class Document extends AbstractStackedMachine<String> {
         return new DocReader(this);
     }
 
+    public DocParser parser() {
+        return new DocParser(this);
+    }
+
     @Override
     public void step(String element) {
         super.step(element);

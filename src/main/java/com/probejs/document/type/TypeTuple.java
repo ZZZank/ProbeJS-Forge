@@ -8,8 +8,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
- * "[int,int,int]"
- *
+ * {@code [int,int,int]}
  * @author ZZZank
  */
 @Getter

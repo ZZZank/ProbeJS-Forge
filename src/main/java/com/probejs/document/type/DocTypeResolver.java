@@ -38,45 +38,48 @@ public class DocTypeResolver {
         return resolved;
     }
 
-    public static DocType resolve(String type) {
-        type = type.trim();
-
-        if (TypeTuple.test(type)) { //[int, int, int]
-            return new TypeTuple(type);
+    public static DocType resolve(String typeStr) {
+        typeStr = typeStr.trim();
+        //---complex types
+        //tuple
+        if (TypeTuple.test(typeStr)) {
+            return new TypeTuple(typeStr);
         }
-
-        if (TypeObject.test(type)) {
-            return new TypeObject(type);
+        //object
+        if (TypeObject.test(typeStr)) {
+            return new TypeObject(typeStr);
         }
-
-        val splitUnion = StringUtil.splitFirst(type, "|");
+        //union
+        val splitUnion = StringUtil.splitFirst(typeStr, "|");
         if (splitUnion != null) {
             return new TypeUnion(resolve(splitUnion.first()), resolve(splitUnion.second()));
         }
-
-        val splitIntersection = StringUtil.splitFirst(type, "&");
+        //intersection
+        val splitIntersection = StringUtil.splitFirst(typeStr, "&");
         if (splitIntersection != null) {
             return new TypeIntersection(
                 resolve(splitIntersection.first()),
                 resolve(splitIntersection.second())
             );
         }
-
-        if (type.endsWith("[]")) {
-            return new TypeArray(resolve(type.substring(0, type.length() - 2)));
+        //---simple types
+        //array
+        if (typeStr.endsWith("[]")) {
+            return new TypeArray(resolve(typeStr.substring(0, typeStr.length() - 2)));
         }
-
-        if (type.endsWith(">")) {
-            val indexLeft = type.indexOf("<");
-            val rawType = type.substring(0, indexLeft);
-            val typeParams = type.substring(indexLeft + 1, type.length() - 1);
+        //parameterized
+        if (typeStr.endsWith(">")) {
+            val indexLeft = typeStr.indexOf("<");
+            val rawType = typeStr.substring(0, indexLeft);
+            val typeParams = typeStr.substring(indexLeft + 1, typeStr.length() - 1);
             val params = StringUtil.splitLayer(typeParams, ",");
             return new TypeParameterized(
                 resolve(rawType),
                 params.stream().map(DocTypeResolver::resolve).collect(Collectors.toList())
             );
         }
-        return new TypeNamed(type);
+        //base
+        return new TypeNamed(typeStr);
     }
 
     public static boolean typeEquals(DocType docType, JavaType param) {
