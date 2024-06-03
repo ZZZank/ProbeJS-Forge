@@ -26,9 +26,10 @@ public class TypeObject implements DocType {
             throw new IllegalArgumentException();
         }
         this.raw = new HashMap<>();
-        StringUtil.splitLayer(typeStr, ",")
+        StringUtil.splitLayer(typeStr.substring(1, typeStr.length() - 1), ",")
             .stream()
             .map(String::trim)
+            .filter(s -> !s.isEmpty())
             .map(s -> StringUtil.splitFirst(s, ":"))
             .forEach(p -> raw.put(p.first().trim(), DocTypeResolver.resolve(p.second())));
     }
