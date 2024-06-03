@@ -44,6 +44,6 @@ public class TypeObject implements DocType {
         return "{" + raw.entrySet()
             .stream()
             .map(entry -> String.format("%s: %s", entry.getKey(), entry.getValue().transform(transformer)))
-            .collect(Collectors.joining(", ")) + "}";
+            .collect(Collectors.joining("; ")) + "}";
     }
 }
