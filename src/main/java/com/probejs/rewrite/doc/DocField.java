@@ -1,23 +1,25 @@
 package com.probejs.rewrite.doc;
 
+import com.probejs.document.type.DocType;
+import com.probejs.document.type.DocTypeResolver;
 import com.probejs.info.clazz.FieldInfo;
-import com.probejs.info.type.JavaType;
 import com.probejs.rewrite.doc.comments.CommentHolder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 
 @Getter
+@Setter
 public class DocField implements CommentHolder {
 
     private final DocComment comment;
     private String name;
-    private JavaType type;
+    private DocType type;
 
     DocField(FieldInfo raw) {
         this.comment = new DocComment();
-        //TODO: doc type
         this.name = raw.getName();
-        this.type = raw.getType();
+        this.type = DocTypeResolver.fromJava(raw.getType());
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.probejs.rewrite.doc;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.probejs.document.type.DocType;
 import com.probejs.info.clazz.ClassInfo;
 import com.probejs.rewrite.ClazzPath;
@@ -12,35 +14,46 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Getter
 public class DocClazz implements CommentHolder {
 
-    private static final Map<Class<?>, DocClazz> REGISTRIES = new HashMap<>();
+    private static final Map<String, DocClazz> ALL = new HashMap<>();
 
-    private final List<DocMethod> methods;
-    private final List<DocField> fields;
+    private final ListMultimap<String, DocMethod> methods;
+    private final ListMultimap<String, DocField> fields;
     private final DocComment comment;
     private final ClazzPath path;
     private final List<DocType> assignables;
     private final ClassInfo info;
 
-    private DocClazz(Class<?> clazz) {
+    public DocClazz(Class<?> clazz, ClazzPath path) {
         //doc properties
         val cInfo = ClassInfo.ofCache(clazz);
-        this.path = PathResolver.resolve(cInfo.getRaw());
-        REGISTRIES.put(clazz, this);
+        this.path = path;
+        ALL.put(clazz.getName(), this);
         this.assignables = new ArrayList<>();
         this.comment = new DocComment();
         //properties from ClassInfo
-        this.info = cInfo;
-        this.fields = cInfo.getFields().stream().map(DocField::new).collect(Collectors.toList());
-        this.methods = cInfo.getMethods().stream().map(DocMethod::new).collect(Collectors.toList());
+        info = cInfo;
+        fields = ArrayListMultimap.create();
+        for (val field : cInfo.getFields()) {
+            val doc = new DocField(field);
+            fields.put(doc.getName(), doc);
+        }
+        methods = ArrayListMultimap.create();
+        for (val method : cInfo.getMethods()) {
+            val doc = new DocMethod(method);
+            methods.put(doc.getName(), doc);
+        }
+    }
+
+    public DocClazz(Class<?> clazz) {
+        this(clazz, PathResolver.resolve(clazz));
     }
 
     public static DocClazz of(Class<?> clazz) {
-        val doc = REGISTRIES.get(clazz);
+        val doc = ALL.get(clazz.getName());
         if (doc != null) {
             return doc;
         }
