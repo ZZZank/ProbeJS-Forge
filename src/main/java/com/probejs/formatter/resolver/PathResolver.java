@@ -254,7 +254,6 @@ public class PathResolver {
         putTypeGuard(true, Class.class);
         putTypeGuard(false, IngredientJS.class);
 
-        // putTypeFormatter(Class.class, SpecialTypes::formatClassLike);
         //keywords
         langKeywords.addAll(Arrays.asList(
             "abstract",

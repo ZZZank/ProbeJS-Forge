@@ -7,17 +7,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-
+@Setter
 public class DocClass extends DocumentProperty implements IConcrete, MultiFormatter {
+    public static final Map<String, DocClass> ALL = new HashMap<>();
 
-    @Setter
     @Getter
     private String name;
-    @Setter
     private String superClass;
-    @Setter
     private List<String> interfaces;
     @Getter
     private final List<DocField> fieldDocs = new ArrayList<>();
