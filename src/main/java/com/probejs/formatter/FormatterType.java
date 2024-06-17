@@ -1,6 +1,6 @@
 package com.probejs.formatter;
 
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.info.type.*;
 import lombok.val;
 
@@ -32,7 +32,7 @@ public abstract class FormatterType<T extends JavaType> {
         //special
         if (allowSpecial) {
             val rawClass = tInfo.getResolvedClass();
-            val special = NameResolver.specialTypeFormatters.get(rawClass);
+            val special = PathResolver.specialTypeFormatters.get(rawClass);
             if (special != null) {
                 return new Literal(special.apply(tInfo));
             }
@@ -120,7 +120,7 @@ public abstract class FormatterType<T extends JavaType> {
 
         @Override
         public String format() {
-            val s = NameResolver.getResolvedName(this.tInfo.getTypeName()).getFullName();
+            val s = PathResolver.getResolvedName(this.tInfo.getTypeName()).fullPath();
             if (!underscored) {
                 return s;
             }

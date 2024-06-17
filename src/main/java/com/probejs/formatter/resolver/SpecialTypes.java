@@ -33,13 +33,13 @@ public class SpecialTypes {
     }
 
     private static String formatValueOrType(Object obj) {
-        String formattedValue = NameResolver.formatValue(obj);
+        String formattedValue = PathResolver.formatValue(obj);
         if (formattedValue == null) {
             if (
-                !NameResolver.resolvedNames.containsKey(obj.getClass().getName()) &&
+                !PathResolver.resolved.containsKey(obj.getClass().getName()) &&
                 !obj.getClass().getName().contains("$Lambda")
             ) {
-                NameResolver.resolveName(obj.getClass());
+                PathResolver.resolveName(obj.getClass());
             }
             formattedValue = forceParameterizedFormat(new JavaTypeClass(obj.getClass()));
         }
@@ -54,7 +54,7 @@ public class SpecialTypes {
         for (val entry : map.entrySet()) {
             val key = entry.getKey();
             val value = entry.getValue();
-            val formattedKey = NameResolver.formatValue(key);
+            val formattedKey = PathResolver.formatValue(key);
             if (formattedKey == null) {
                 continue;
             }
@@ -70,7 +70,7 @@ public class SpecialTypes {
         }
         List<String> values = new ArrayList<>();
         for (val o : list) {
-            String formattedValue = NameResolver.formatValue(o);
+            String formattedValue = PathResolver.formatValue(o);
             if (formattedValue == null) {
                 formattedValue = "undefined";
             }
@@ -95,7 +95,7 @@ public class SpecialTypes {
         }
 
         for (val id : scriptable.getIds()) {
-            val formattedKey = NameResolver.formatValue(id);
+            val formattedKey = PathResolver.formatValue(id);
             Object value;
             if (id instanceof Number) {
                 value = scriptable.get((Integer) id, scriptable);
@@ -108,7 +108,7 @@ public class SpecialTypes {
 
         val proto = scriptable.getPrototype();
         for (val id : proto.getIds()) {
-            val formattedKey = NameResolver.formatValue(id);
+            val formattedKey = PathResolver.formatValue(id);
             Object value;
             if (id instanceof Number) {
                 value = proto.get((Integer) id, scriptable);
@@ -143,7 +143,7 @@ public class SpecialTypes {
 
     public static void processSpecialAssignments() {
         //specialClassAssigner
-        NameResolver.specialClassAssigner.forEach((clazz, assignProvider) -> {
+        PathResolver.specialClassAssigner.forEach((clazz, assignProvider) -> {
             val name = clazz.getName();
             for (val assignTo : assignProvider.get()) {
                 DocManager.addAssignable(name, new TypeLiteral(assignTo));
@@ -181,8 +181,8 @@ public class SpecialTypes {
         return "<" + typeVariables
             .stream()
             .map(JavaType::getTypeName)
-            .map(NameResolver::getResolvedName)
-            .map(NameResolver.ResolvedName::getFullName)
+            .map(PathResolver::getResolvedName)
+            .map(ClassPath::fullPath)
             .collect(Collectors.joining(",")) + ">";
     }
 

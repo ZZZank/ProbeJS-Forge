@@ -12,7 +12,7 @@ import com.probejs.document.DocManager;
 import com.probejs.document.comment.CommentHandler;
 import com.probejs.document.parser.processor.DocumentProviderManager;
 import com.probejs.formatter.resolver.ClazzFilter;
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.info.SpecialData;
 import com.probejs.util.PText;
 import com.probejs.util.RemapperBridge;
@@ -122,7 +122,7 @@ public class ProbeCommands {
             CommentHandler.init();
             DocManager.init();
             ClazzFilter.init();
-            NameResolver.init();
+            PathResolver.init();
             SpecialData.refresh();
             sendSuccess("Generating docs...", context);
             TypingCompiler.compile();

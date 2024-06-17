@@ -2,7 +2,7 @@ package com.probejs.info.clazz;
 
 import com.probejs.ProbeJS;
 import com.probejs.formatter.resolver.ClazzFilter;
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.formatter.FormatterMethod;
 import com.probejs.info.type.JavaType;
 import com.probejs.info.type.JavaTypeParameterized;
@@ -114,7 +114,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
         this.isFunctionalInterface = isInterface && abstracts.size() == 1;
         //type alias: Functional Interfaces
         if (this.isFunctionalInterface) {
-            NameResolver.addSpecialAssignments(this.raw, () -> {
+            PathResolver.addSpecialAssignments(this.raw, () -> {
                 val formatterLambda = new FormatterMethod(abstracts.get(0));
                 val lambdaStr = String.format("((%s)=>%s)",
                     formatterLambda.formatParams(Collections.emptyMap(), true),
@@ -150,7 +150,7 @@ public class ClassInfo implements Comparable<ClassInfo> {
                 }
                 return Collections.emptyList();
             };
-            NameResolver.addSpecialAssignments(raw, assign);
+            PathResolver.addSpecialAssignments(raw, assign);
         }
     }
 

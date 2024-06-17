@@ -1,10 +1,11 @@
 package com.probejs.document.type;
 
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
+import com.probejs.formatter.resolver.ClassPath;
 import lombok.AllArgsConstructor;
 
 /**
- * also literal, but allows underscore, and will check resolved names from {@link NameResolver#resolvedNames}
+ * also literal, but allows underscore, and will check resolved names from {@link PathResolver#resolved}
  */
 @AllArgsConstructor
 public class TypeNamed implements DocType {
@@ -17,10 +18,10 @@ public class TypeNamed implements DocType {
 
     @Override
     public String getTypeName() {
-        NameResolver.ResolvedName resolved = NameResolver.resolvedNames.get(name);
+        ClassPath resolved = PathResolver.resolved.get(name);
         if (resolved == null) {
             return name;
         }
-        return resolved.getFullName();
+        return resolved.fullPath();
     }
 }

@@ -16,51 +16,25 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import lombok.val;
 import net.minecraft.world.damagesource.DamageSource;
 
-public class NameResolver {
+public class PathResolver {
 
-    @EqualsAndHashCode
-    @ToString
-    public static class ResolvedName {
-
-        public static final ResolvedName UNRESOLVED = new ResolvedName(Collections.singletonList("Unresolved"));
-        private final List<String> names;
-
-        private ResolvedName(List<String> names) {
-            this.names = names.stream().map(NameResolver::getNameSafe).collect(Collectors.toList());
-        }
-
-        public String getFullName() {
-            return String.join(".", names);
-        }
-
-        public String getNamespace() {
-            return String.join(".", names.subList(0, names.size() - 1));
-        }
-
-        public String getLastName() {
-            return names.get(names.size() - 1);
-        }
-    }
-
-    public static final HashMap<String, ResolvedName> resolvedNames = new HashMap<>();
+    public static final HashMap<String, ClassPath> resolved = new HashMap<>();
     public static final HashMap<Class<?>, Function<JavaType, String>> specialTypeFormatters = new HashMap<>();
     public static final HashMap<Class<?>, Function<Object, String>> specialValueFormatters = new HashMap<>();
     public static final HashMap<Class<?>, Supplier<List<String>>> specialClassAssigner = new HashMap<>();
     public static final HashMap<Class<?>, Boolean> specialTypeGuards = new HashMap<>();
 
-    public static final Set<String> keywords = new HashSet<>();
+    public static final Set<String> langKeywords = new HashSet<>();
     public static final Set<String> resolvedPrimitives = new HashSet<>();
 
     /**
-     * @see NameResolver#putResolvedName(String, ResolvedName)
+     * @see PathResolver#resolveManually(String, ClassPath)
      */
-    public static ResolvedName putResolvedName(String className, String resolvedName) {
-        return putResolvedName(className, new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
+    public static ClassPath resolveManually(String className, String resolvedName) {
+        return resolveManually(className, new ClassPath(Arrays.asList(resolvedName.split("\\."))));
     }
 
     /**
@@ -72,26 +46,26 @@ public class NameResolver {
      * {@code resolvedName}), so returned value will always be not-null, as long as
      * provided {@code resolvedName} is not null
      */
-    public static ResolvedName putResolvedName(String className, ResolvedName resolvedName) {
-        ResolvedName curr = resolvedNames.putIfAbsent(className, resolvedName);
+    public static ClassPath resolveManually(String className, ClassPath resolvedName) {
+        ClassPath curr = resolved.putIfAbsent(className, resolvedName);
         if (curr != null) {
             return curr;
         }
-        return resolvedNames.get(className);
+        return resolved.get(className);
     }
 
     /**
-     * @see NameResolver#putResolvedName(String, ResolvedName)
+     * @see PathResolver#resolveManually(String, ClassPath)
      */
-    public static ResolvedName putResolvedName(Class<?> clazz, ResolvedName resolvedName) {
-        return putResolvedName(clazz.getName(), resolvedName);
+    public static ClassPath resolveManually(Class<?> clazz, ClassPath resolvedName) {
+        return resolveManually(clazz.getName(), resolvedName);
     }
 
     /**
-     * @see NameResolver#putResolvedName(String, ResolvedName)
+     * @see PathResolver#resolveManually(String, ClassPath)
      */
-    public static ResolvedName putResolvedName(Class<?> clazz, String resolvedName) {
-        return putResolvedName(clazz.getName(), new ResolvedName(Arrays.asList(resolvedName.split("\\."))));
+    public static ClassPath resolveManually(Class<?> clazz, String resolvedName) {
+        return resolveManually(clazz.getName(), new ClassPath(Arrays.asList(resolvedName.split("\\."))));
     }
 
     /**
@@ -99,8 +73,8 @@ public class NameResolver {
      * @param className Full class name, like "java.lang.String"
      * @return Resolved name, or {@code ResolvedName.UNRESOLVED} if unable to resolve
      */
-    public static ResolvedName getResolvedName(String className) {
-        return resolvedNames.getOrDefault(className, ResolvedName.UNRESOLVED);
+    public static ClassPath getResolvedName(String className) {
+        return resolved.getOrDefault(className, ClassPath.UNRESOLVED);
     }
 
     public static void putTypeFormatter(Class<?> className, Function<JavaType, String> formatter) {
@@ -140,15 +114,15 @@ public class NameResolver {
         return null;
     }
 
-    public static ResolvedName resolveName(Class<?> clazz) {
+    public static ClassPath resolveName(Class<?> clazz) {
         // String remappedName = MethodInfo.RUNTIME.getMappedClass(clazz);
         // ResolvedName resolved = new ResolvedName(Arrays.asList(remappedName.split("\\.")));
-        val resolved = new ResolvedName(Arrays.asList(clazz.getName().split("\\.")));
-        val internal = new ResolvedName(Arrays.asList("Internal", resolved.getLastName()));
-        if (resolvedNames.containsValue(internal)) {
-            return putResolvedName(clazz.getName(), resolved);
+        val resolved = new ClassPath(Arrays.asList(clazz.getName().split("\\.")));
+        val internal = new ClassPath(Arrays.asList("Internal", resolved.name()));
+        if (PathResolver.resolved.containsValue(internal)) {
+            return resolveManually(clazz.getName(), resolved);
         } else {
-            return putResolvedName(clazz.getName(), internal);
+            return resolveManually(clazz.getName(), internal);
         }
     }
 
@@ -159,15 +133,15 @@ public class NameResolver {
     }
 
     public static void addKeyword(String kw) {
-        keywords.add(kw);
+        langKeywords.add(kw);
     }
 
     public static String getNameSafe(String kw) {
-        return keywords.contains(kw) ? kw + "_" : kw;
+        return langKeywords.contains(kw) ? kw + "_" : kw;
     }
 
     public static void putResolvedPrimitive(Class<?> clazz, String resolvedName) {
-        putResolvedName(clazz.getName(), resolvedName);
+        resolveManually(clazz.getName(), resolvedName);
         resolvedPrimitives.add(clazz.getName());
     }
 
@@ -281,11 +255,67 @@ public class NameResolver {
         putTypeGuard(false, IngredientJS.class);
 
         // putTypeFormatter(Class.class, SpecialTypes::formatClassLike);
-
-        addKeyword("function" );
-        addKeyword("debugger" );
-        addKeyword("in"       );
-        addKeyword("with"     );
-        addKeyword("java"     );
+        //keywords
+        langKeywords.addAll(Arrays.asList(
+            "abstract",
+            "arguments",
+            "boolean",
+            "break",
+            "byte",
+            "case",
+            "catch",
+            "char",
+            "const",
+            "continue",
+            "constructor",
+            "debugger",
+            "default",
+            "delete",
+            "do",
+            "double",
+            "else",
+            "eval",
+            "false",
+            "final",
+            "finally",
+            "float",
+            "for",
+            "function",
+            "goto",
+            "if",
+            "implements",
+            "in",
+            "instanceof",
+            "int",
+            "interface",
+            "let",
+            "long",
+            "native",
+            "new",
+            "null",
+            "package",
+            "private",
+            "protected",
+            "public",
+            "return",
+            "short",
+            "static",
+            "switch",
+            "synchronized",
+            "this",
+            "throw",
+            "throws",
+            "transient",
+            "true",
+            "try",
+            "typeof",
+            "var",
+            "void",
+            "volatile",
+            "while",
+            "with",
+            "yield",
+            "export"
+        ));
     }
 }

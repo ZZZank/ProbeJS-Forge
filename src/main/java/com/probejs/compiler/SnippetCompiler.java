@@ -4,7 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.probejs.ProbeJS;
 import com.probejs.ProbePaths;
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
+import com.probejs.formatter.resolver.ClassPath;
 import com.probejs.info.RegistryInfo;
 import com.probejs.info.SpecialData;
 
@@ -94,15 +95,15 @@ public class SnippetCompiler {
 
     private static void compileClassNames() throws IOException {
         JsonObject resultJson = new JsonObject();
-        for (Map.Entry<String, NameResolver.ResolvedName> entry : NameResolver.resolvedNames.entrySet()) {
+        for (Map.Entry<String, ClassPath> entry : PathResolver.resolved.entrySet()) {
             val className = entry.getKey();
             val resolvedName = entry.getValue();
             val classJson = new JsonObject();
             val prefix = new JsonArray();
-            prefix.add(String.format("!%s", resolvedName.getFullName()));
+            prefix.add(String.format("!%s", resolvedName.fullPath()));
             classJson.add("prefix", prefix);
             classJson.addProperty("body", className);
-            resultJson.add(resolvedName.getFullName(), classJson);
+            resultJson.add(resolvedName.fullPath(), classJson);
         }
 
         val codeFile = ProbePaths.WORKSPACE.resolve("classNames.code-snippets");

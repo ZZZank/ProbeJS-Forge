@@ -1,8 +1,7 @@
 package com.probejs.document.type;
 
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.info.type.JavaTypeClass;
-import lombok.val;
 
 /**
  * "String", "Map"
@@ -23,6 +22,6 @@ public class TypeClazz implements DocType {
 
     @Override
     public String getTypeName() {
-        return NameResolver.getResolvedName(raw.getName()).getFullName();
+        return PathResolver.getResolvedName(raw.getName()).fullPath();
     }
 }

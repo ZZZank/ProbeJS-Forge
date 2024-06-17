@@ -4,7 +4,7 @@ import com.probejs.document.DocField;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.MultiFormatter;
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.info.clazz.FieldInfo;
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
@@ -48,13 +48,13 @@ public class FormatterField extends DocumentReceiver<DocField> implements MultiF
 
         if (document != null) {
             builder.append(document.getType().getTypeName());
-        } else if (info.isStatic() && NameResolver.formatValue(info.getStaticValue()) != null) {
-            builder.append(NameResolver.formatValue(info.getStaticValue()));
+        } else if (info.isStatic() && PathResolver.formatValue(info.getStaticValue()) != null) {
+            builder.append(PathResolver.formatValue(info.getStaticValue()));
         } else {
             builder.append(
                 FormatterType.of(
                     info.getType(),
-                    NameResolver.specialTypeGuards.getOrDefault(
+                    PathResolver.specialTypeGuards.getOrDefault(
                         TypeResolver.getContainedTypeOrSelf(info.getType()).getResolvedClass(),
                         true
                     )

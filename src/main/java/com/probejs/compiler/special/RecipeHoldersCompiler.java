@@ -2,7 +2,7 @@ package com.probejs.compiler.special;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.formatter.FormatterNamespace;
 import com.probejs.formatter.FormatterRaw;
 import com.probejs.formatter.api.IFormatter;
@@ -29,7 +29,7 @@ public abstract class RecipeHoldersCompiler {
         recipeHandlers.forEach((key, value) -> {
             val namespace = key.getNamespace();
             val invoke = key.getPath();
-            val recipeJSName = NameResolver.resolveName(value.factory.get().getClass()).getFullName();
+            val recipeJSName = PathResolver.resolveName(value.factory.get().getClass()).fullPath();
 
             namespace2Method.put(namespace, new Pair<>(invoke, recipeJSName));
         });

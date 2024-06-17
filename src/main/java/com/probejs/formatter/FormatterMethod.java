@@ -8,7 +8,7 @@ import com.probejs.document.comment.special.CommentReturns;
 import com.probejs.document.type.DocType;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.MultiFormatter;
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.formatter.resolver.SpecialTypes;
 import com.probejs.info.clazz.MethodInfo;
 import com.probejs.info.type.JavaType;
@@ -143,7 +143,7 @@ public class FormatterMethod extends DocumentReceiver<DocMethod> implements Mult
                 }
                 return t.getBase() instanceof JavaTypeClass c &&
                     DocManager.typesAssignable.containsKey(c.getResolvedClass().getName())
-                    && !NameResolver.resolvedPrimitives.contains(c.getResolvedClass().getName());
+                    && !PathResolver.resolvedPrimitives.contains(c.getResolvedClass().getName());
             })
             .format()
             .concat(SpecialTypes.attachedClassTypeVar(type));
@@ -175,7 +175,7 @@ public class FormatterMethod extends DocumentReceiver<DocMethod> implements Mult
                 return String.format(
                     "%s%s: %s",
                     pInfo.isVarArgs() ? "..." : "",
-                    NameResolver.getNameSafe(renames.getOrDefault(nameRaw, nameRaw)),
+                    PathResolver.getNameSafe(renames.getOrDefault(nameRaw, nameRaw)),
                     paramType
                 );
             })

@@ -9,6 +9,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class DocClass extends DocumentProperty implements IConcrete, MultiFormatter {
 
     @Setter

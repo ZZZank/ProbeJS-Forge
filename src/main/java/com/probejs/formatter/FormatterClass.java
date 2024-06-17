@@ -12,7 +12,7 @@ import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.type.DocType;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.MultiFormatter;
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.formatter.resolver.SpecialTypes;
 import com.probejs.info.clazz.ClassInfo;
 import com.probejs.info.clazz.FieldInfo;
@@ -72,7 +72,7 @@ public class FormatterClass extends DocumentReceiver<DocClass> implements MultiF
         } else {
             firstLine.add("class");
         }
-        firstLine.add(NameResolver.getResolvedName(classInfo.getName()).getLastName());
+        firstLine.add(PathResolver.getResolvedName(classInfo.getName()).name());
         if (!classInfo.getTypeParameters().isEmpty()) {
             firstLine.add(
                 String.format(
@@ -183,7 +183,7 @@ public class FormatterClass extends DocumentReceiver<DocClass> implements MultiF
         lines.add(PUtil.indent(indent) + "}");
 
         //type conversion
-        String origName = NameResolver.getResolvedName(classInfo.getName()).getLastName();
+        String origName = PathResolver.getResolvedName(classInfo.getName()).name();
         String underName = origName + "_";
         val params = classInfo.getTypeParameters();
         if (!params.isEmpty()) {
@@ -202,7 +202,7 @@ public class FormatterClass extends DocumentReceiver<DocClass> implements MultiF
             .stream()
             .map(t -> t.transform(DocType.defaultTransformer))
             .forEach(assignables::add);
-        if (NameResolver.specialTypeFormatters.containsKey(classInfo.getRaw())) {
+        if (PathResolver.specialTypeFormatters.containsKey(classInfo.getRaw())) {
             assignables.add(
                 FormatterType.of(
                     new JavaTypeParameterized(

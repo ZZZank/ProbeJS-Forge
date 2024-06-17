@@ -8,7 +8,7 @@ import com.probejs.ProbePaths;
 import com.probejs.capture.EventCacheIO;
 import com.probejs.document.DocManager;
 import com.probejs.formatter.resolver.ClazzFilter;
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.formatter.resolver.SpecialTypes;
 import com.probejs.formatter.FormatterClass;
 import com.probejs.formatter.FormatterNamespace;
@@ -28,7 +28,7 @@ import com.probejs.util.json.JPrimitive;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.server.ServerScriptManager;
-import java.io.BufferedWriter;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
@@ -78,19 +78,19 @@ public class TypingCompiler {
             val formatter = new FormatterClass(ClassInfo.ofCache(clazz));
             DocManager.classDocuments.get(clazz.getName()).forEach(formatter::addDocument);
 
-            val name = NameResolver.getResolvedName(clazz.getName());
-            if (name.getNamespace().isEmpty()) {
+            val name = PathResolver.getResolvedName(clazz.getName());
+            if (name.namespace().isEmpty()) {
                 for (String line : formatter.formatLines(0, 4)) {
                     writer.write(line);
                     writer.write("\n");
                 }
                 if (clazz.isInterface()) {
-                    String fullName = name.getFullName();
+                    String fullName = name.fullPath();
                     writer.write(String.format("declare const %s: %s;\n", fullName, fullName));
                 }
             } else {
                 formatter.setInternal(true);
-                namespaced.put(name.getNamespace(), formatter);
+                namespaced.put(name.namespace(), formatter);
             }
         }
 
@@ -126,7 +126,7 @@ public class TypingCompiler {
         for (val entry : (new TreeMap<>(bindingEvent.getConstantDumpMap())).entrySet()) {
             val name = entry.getKey();
             val value = entry.getValue();
-            String resolved = NameResolver.formatValue(value);
+            String resolved = PathResolver.formatValue(value);
             if (resolved == null) {
                 resolved = SpecialTypes.forceParameterizedFormat(new JavaTypeClass(value.getClass()));
             }
@@ -211,12 +211,12 @@ public class TypingCompiler {
 
         bindingEvent.getClassDumpReversed().forEach((c, names) -> {
             val base = names.get(0);
-            NameResolver.putResolvedName(c, base);
+            PathResolver.resolveManually(c, base);
             for (int i = 1; i < names.size(); i++) {
                 DocManager.rawTSDoc.add(String.format("declare const %s = %s", names.get(i), base));
             }
         });
-        NameResolver.resolveNames(globalClasses);
+        PathResolver.resolveNames(globalClasses);
 
         SpecialTypes.processSpecialAssignments();
 

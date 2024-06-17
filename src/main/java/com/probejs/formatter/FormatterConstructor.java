@@ -1,7 +1,7 @@
 package com.probejs.formatter;
 
 import com.probejs.formatter.api.MultiFormatter;
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.formatter.resolver.SpecialTypes;
 import com.probejs.info.clazz.ConstructorInfo;
 import com.probejs.util.PUtil;
@@ -23,7 +23,7 @@ public class FormatterConstructor implements MultiFormatter {
             .getParams()
             .stream()
             .map(param -> String.format("%s: %s",
-                NameResolver.getNameSafe(param.getName()),
+                PathResolver.getNameSafe(param.getName()),
                 SpecialTypes.forceParameterizedFormat(param.getType())
             ))
             .collect(Collectors.joining(", "));

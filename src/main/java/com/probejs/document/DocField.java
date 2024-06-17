@@ -8,17 +8,19 @@ import com.probejs.util.PUtil;
 import com.probejs.util.Pair;
 import com.probejs.util.StringUtil;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Setter
 @Getter
 public class DocField extends DocumentProperty implements IDocumentProvider<DocField>, MultiFormatter {
 
-    private final boolean isFinal;
-    private final boolean isStatic;
-    private final String name;
-    private final DocType type;
+    private boolean isFinal;
+    private boolean isStatic;
+    private String name;
+    private DocType type;
 
     public DocField(String line) {
         line = line.trim();

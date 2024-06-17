@@ -1,6 +1,6 @@
 package com.probejs.document.type;
 
-import com.probejs.formatter.resolver.NameResolver;
+import com.probejs.formatter.resolver.PathResolver;
 import java.util.function.BiFunction;
 
 public interface DocType {
@@ -22,8 +22,8 @@ public interface DocType {
         }
         String rawTypeName = ((TypeNamed) type).getRawTypeName();
         if (
-            NameResolver.resolvedNames.containsKey(rawTypeName) &&
-            !NameResolver.resolvedPrimitives.contains(rawTypeName)
+            PathResolver.resolved.containsKey(rawTypeName) &&
+            !PathResolver.resolvedPrimitives.contains(rawTypeName)
         ) {
             return raw + "_";
         }
