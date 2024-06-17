@@ -13,12 +13,12 @@ import lombok.val;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DocumentMethod
+public class DocMethod
     extends DocumentProperty
-    implements IDocumentProvider<DocumentMethod>, MultiFormatter {
+    implements IDocumentProvider<DocMethod>, MultiFormatter {
 
     @Override
-    public DocumentMethod provide() {
+    public DocMethod provide() {
         return this;
     }
 
@@ -67,7 +67,7 @@ public class DocumentMethod
     @Getter
     private final List<DocumentParam> params;
 
-    public DocumentMethod(String line) {
+    public DocMethod(String line) {
         line = line.trim();
         if (line.endsWith(";")) {
             line = line.substring(0, line.length() - 1);

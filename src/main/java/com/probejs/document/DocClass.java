@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DocumentClass extends DocumentProperty implements IConcrete, MultiFormatter {
+public class DocClass extends DocumentProperty implements IConcrete, MultiFormatter {
 
     @Setter
     @Getter
@@ -19,27 +19,27 @@ public class DocumentClass extends DocumentProperty implements IConcrete, MultiF
     @Setter
     private List<String> interfaces;
     @Getter
-    private final List<DocumentField> fieldDocs = new ArrayList<>();
+    private final List<DocField> fieldDocs = new ArrayList<>();
     @Getter
-    private final List<DocumentMethod> methodDocs = new ArrayList<>();
+    private final List<DocMethod> methodDocs = new ArrayList<>();
 
     public void acceptProperty(IDocument document) {
         if (document instanceof DocumentProperty) {
-            DocumentComment comment = ((DocumentProperty) document).getComment();
+            DocComment comment = ((DocumentProperty) document).getComment();
             if (!CommentUtil.isLoaded(comment)) {
                 return;
             }
         }
 
-        if (document instanceof DocumentField) {
-            fieldDocs.add((DocumentField) document);
+        if (document instanceof DocField) {
+            fieldDocs.add((DocField) document);
         }
-        if (document instanceof DocumentMethod) {
-            methodDocs.add((DocumentMethod) document);
+        if (document instanceof DocMethod) {
+            methodDocs.add((DocMethod) document);
         }
     }
 
-    public void merge(DocumentClass other) {
+    public void merge(DocClass other) {
         if (comment == null) {
             comment = other.getComment();
         }

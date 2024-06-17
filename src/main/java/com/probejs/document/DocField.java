@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class DocumentField extends DocumentProperty implements IDocumentProvider<DocumentField>, MultiFormatter {
+public class DocField extends DocumentProperty implements IDocumentProvider<DocField>, MultiFormatter {
 
     private final boolean isFinal;
     private final boolean isStatic;
     private final String name;
     private final DocType type;
 
-    public DocumentField(String line) {
+    public DocField(String line) {
         line = line.trim();
         if (line.endsWith(";")) {
             line = line.substring(0, line.length() - 1);
@@ -47,7 +47,7 @@ public class DocumentField extends DocumentProperty implements IDocumentProvider
     }
 
     @Override
-    public DocumentField provide() {
+    public DocField provide() {
         return this;
     }
 

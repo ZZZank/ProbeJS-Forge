@@ -18,27 +18,27 @@ import java.util.List;
  * {@code type <name> = <type>;}
  */
 @Getter
-public class DocumentType extends DocumentProperty implements IDocumentProvider<DocumentType>, MultiFormatter {
+public class DocTypeAssign extends DocumentProperty implements IDocumentProvider<DocTypeAssign>, MultiFormatter {
 
     private final String name;
     private final DocType type;
 
-    public DocumentType(String name, DocType type) {
+    public DocTypeAssign(String name, DocType type) {
         this.name = name;
         this.type = type;
     }
 
-    public static DocumentType of(String line) {
+    public static DocTypeAssign of(String line) {
         line = line.trim().substring("type ".length()).trim();
         if (line.endsWith(";")) {
             line = line.substring(0, line.length() - 1);
         }
         val nameType = StringUtil.splitFirst(line, "=");
-        return new DocumentType(nameType.first().trim(), DocTypeResolver.resolve(nameType.second().trim()));
+        return new DocTypeAssign(nameType.first().trim(), DocTypeResolver.resolve(nameType.second().trim()));
     }
 
     @Override
-    public DocumentType provide() {
+    public DocTypeAssign provide() {
         return this;
     }
 

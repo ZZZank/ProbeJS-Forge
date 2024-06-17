@@ -1,6 +1,6 @@
 package com.probejs.formatter;
 
-import com.probejs.document.DocumentField;
+import com.probejs.document.DocField;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.formatter.api.DocumentReceiver;
 import com.probejs.formatter.api.MultiFormatter;
@@ -14,7 +14,7 @@ import lombok.val;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FormatterField extends DocumentReceiver<DocumentField> implements MultiFormatter {
+public class FormatterField extends DocumentReceiver<DocField> implements MultiFormatter {
 
     @Getter
     private final FieldInfo info;

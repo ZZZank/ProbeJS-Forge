@@ -5,9 +5,9 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.probejs.ProbeJS;
 import com.probejs.document.DocManager;
-import com.probejs.document.DocumentClass;
-import com.probejs.document.DocumentField;
-import com.probejs.document.DocumentMethod;
+import com.probejs.document.DocClass;
+import com.probejs.document.DocField;
+import com.probejs.document.DocMethod;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.type.DocType;
 import com.probejs.formatter.api.DocumentReceiver;
@@ -25,13 +25,13 @@ import lombok.val;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FormatterClass extends DocumentReceiver<DocumentClass> implements MultiFormatter {
+public class FormatterClass extends DocumentReceiver<DocClass> implements MultiFormatter {
 
     private final ClassInfo classInfo;
     private final Map<String, FormatterField> fieldFormatters;
     private final Multimap<String, FormatterMethod> methodFormatters;
-    private final List<DocumentField> fieldAdditions;
-    private final List<DocumentMethod> methodAdditions;
+    private final List<DocField> fieldAdditions;
+    private final List<DocMethod> methodAdditions;
     @Setter
     private boolean internal = false;
 
@@ -224,7 +224,7 @@ public class FormatterClass extends DocumentReceiver<DocumentClass> implements M
     }
 
     @Override
-    public void addDocument(DocumentClass document) {
+    public void addDocument(DocClass document) {
         super.addDocument(document);
         for (val documentField : document.getFieldDocs()) {
             if (fieldFormatters.containsKey(documentField.getName())) {

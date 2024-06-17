@@ -14,12 +14,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DocumentComment implements IDecorative, MultiFormatter {
+public class DocComment implements IDecorative, MultiFormatter {
 
     private final List<String> normals;
     private final ListMultimap<Class<? extends SpecialComment>, SpecialComment> specials;
 
-    public DocumentComment(List<String> lines) {
+    public DocComment(List<String> lines) {
         int size = lines.size();
         if (size < 2 || !lines.get(0).startsWith("/*") || !lines.get(size - 1).endsWith("*/")) {
             throw new IllegalArgumentException("provided arg 'lines' is not valid block comment");

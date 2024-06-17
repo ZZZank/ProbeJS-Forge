@@ -1,8 +1,8 @@
 package com.probejs.formatter;
 
 import com.probejs.document.DocManager;
-import com.probejs.document.DocumentComment;
-import com.probejs.document.DocumentMethod;
+import com.probejs.document.DocComment;
+import com.probejs.document.DocMethod;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.special.CommentReturns;
 import com.probejs.document.type.DocType;
@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
-public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements MultiFormatter {
+public class FormatterMethod extends DocumentReceiver<DocMethod> implements MultiFormatter {
 
     @Getter
     private final MethodInfo info;
@@ -187,7 +187,7 @@ public class FormatterMethod extends DocumentReceiver<DocumentMethod> implements
         List<String> formatted = new ArrayList<>();
 
         if (document != null) {
-            DocumentComment comment = document.getComment();
+            DocComment comment = document.getComment();
             if (CommentUtil.isHidden(comment)) {
                 return formatted;
             }

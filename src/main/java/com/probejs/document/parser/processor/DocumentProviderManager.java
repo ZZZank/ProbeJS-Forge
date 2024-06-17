@@ -1,8 +1,8 @@
 package com.probejs.document.parser.processor;
 
-import com.probejs.document.DocumentField;
-import com.probejs.document.DocumentMethod;
-import com.probejs.document.DocumentType;
+import com.probejs.document.DocField;
+import com.probejs.document.DocMethod;
+import com.probejs.document.DocTypeAssign;
 import com.probejs.util.StringUtil;
 
 public class DocumentProviderManager {
@@ -39,7 +39,7 @@ public class DocumentProviderManager {
         DocumentHandler.addHandlerCandidate(
             c -> c.trim().startsWith("type "),
             (s, d) -> {
-                d.addElement(DocumentType.of(s));
+                d.addElement(DocTypeAssign.of(s));
                 return null;
             }
         );
@@ -73,7 +73,7 @@ public class DocumentProviderManager {
                 return line.indexOf("(") > StringUtil.indexLayer(line, ":");
             },
             (line, doc) -> {
-                doc.addElement(new DocumentField(line));
+                doc.addElement(new DocField(line));
             }
         );
         ProviderClass.addSingleHandler(
@@ -85,7 +85,7 @@ public class DocumentProviderManager {
                 return line.indexOf("(") < StringUtil.indexLayer(line, ":");
             },
             (line, doc) -> {
-                doc.addElement(new DocumentMethod(line));
+                doc.addElement(new DocMethod(line));
             }
         );
     }

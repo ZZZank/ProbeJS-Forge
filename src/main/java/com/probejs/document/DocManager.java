@@ -13,11 +13,11 @@ import java.util.*;
 
 public class DocManager {
 
-    public static final Multimap<String, DocumentClass> classDocuments = ArrayListMultimap.create();
+    public static final Multimap<String, DocClass> classDocuments = ArrayListMultimap.create();
     public static final Map<String, List<DocType>> typesAssignable = new HashMap<>();
-    public static final Map<String, List<DocumentClass>> classAdditions = new HashMap<>();
+    public static final Map<String, List<DocClass>> classAdditions = new HashMap<>();
     public static final List<String> rawTSDoc = new ArrayList<>();
-    public static final List<DocumentType> typeDocuments = new ArrayList<>();
+    public static final List<DocTypeAssign> typeDocuments = new ArrayList<>();
 
     public static void init() {
         Document document = new Document();
@@ -33,11 +33,11 @@ public class DocManager {
         rawTSDoc.addAll(document.getRawDocs());
 
         for (val doc : document.getDocument().getDocuments()) {
-            if (doc instanceof DocumentClass classDoc) {
+            if (doc instanceof DocClass classDoc) {
                 if (!CommentUtil.isLoaded(classDoc.getComment())) {
                     continue;
                 }
-                DocumentComment comment = classDoc.getComment();
+                DocComment comment = classDoc.getComment();
                 if (comment != null) {
                     val target = comment.getSpecialComment(CommentTarget.class);
                     if (target != null) {
@@ -51,7 +51,7 @@ public class DocManager {
                     }
                 }
                 addAdditions(classDoc.getName(), classDoc);
-            } else if (doc instanceof DocumentType typeDoc) {
+            } else if (doc instanceof DocTypeAssign typeDoc) {
                 if (CommentUtil.isLoaded(typeDoc.getComment())) {
                     typeDocuments.add(typeDoc);
                 }
@@ -65,7 +65,7 @@ public class DocManager {
         DocManager.typesAssignable.computeIfAbsent(className, k -> new ArrayList<>()).add(type);
     }
 
-    public static void addAdditions(String className, DocumentClass addition) {
+    public static void addAdditions(String className, DocClass addition) {
         DocManager.classAdditions.computeIfAbsent(className, k -> new ArrayList<>()).add(addition);
     }
 }

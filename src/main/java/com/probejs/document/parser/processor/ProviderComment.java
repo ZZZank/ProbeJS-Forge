@@ -1,11 +1,11 @@
 package com.probejs.document.parser.processor;
 
-import com.probejs.document.DocumentComment;
+import com.probejs.document.DocComment;
 import com.probejs.document.parser.handler.IStateHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProviderComment implements IStateHandler<String>, IDocumentProvider<DocumentComment> {
+public class ProviderComment implements IStateHandler<String>, IDocumentProvider<DocComment> {
 
     private final List<String> comments = new ArrayList<>();
 
@@ -18,7 +18,7 @@ public class ProviderComment implements IStateHandler<String>, IDocumentProvider
     }
 
     @Override
-    public DocumentComment provide() {
-        return new DocumentComment(comments);
+    public DocComment provide() {
+        return new DocComment(comments);
     }
 }

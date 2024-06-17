@@ -1,6 +1,6 @@
 package com.probejs.document.parser.processor;
 
-import com.probejs.document.DocumentClass;
+import com.probejs.document.DocClass;
 import com.probejs.document.IConcrete;
 import com.probejs.document.IDecorative;
 import com.probejs.document.IDocument;
@@ -17,7 +17,7 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class ProviderClass implements IStateHandler<String>, IDocumentProvider<DocumentClass> {
+public class ProviderClass implements IStateHandler<String>, IDocumentProvider<DocClass> {
 
     public static final List<Pair<Predicate<String>, BiFunction<String, ProviderClass, IStateHandler<String>>>> handlers = new ArrayList<>();
     private final List<IDocumentProvider<?>> elements = new ArrayList<>();
@@ -104,8 +104,8 @@ public class ProviderClass implements IStateHandler<String>, IDocumentProvider<D
     }
 
     @Override
-    public DocumentClass provide() {
-        DocumentClass document = new DocumentClass();
+    public DocClass provide() {
+        DocClass document = new DocClass();
         document.setName(name);
         if (this.superClass != null) {
             document.setSuperClass(this.superClass);

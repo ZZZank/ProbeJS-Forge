@@ -1,6 +1,6 @@
 package com.probejs.document.comment;
 
-import com.probejs.document.DocumentComment;
+import com.probejs.document.DocComment;
 import com.probejs.document.comment.special.CommentHidden;
 import com.probejs.document.comment.special.CommentMod;
 import com.probejs.document.comment.special.CommentModify;
@@ -15,7 +15,7 @@ import static com.probejs.formatter.FormatterComments.CommentStyle.J_DOC;
 
 public interface CommentUtil {
 
-    static boolean isLoaded(DocumentComment comment) {
+    static boolean isLoaded(DocComment comment) {
         if (comment == null) {
             return true;
         }
@@ -25,14 +25,14 @@ public interface CommentUtil {
             .allMatch(CommentMod::isLoaded);
     }
 
-    static boolean isHidden(DocumentComment comment) {
+    static boolean isHidden(DocComment comment) {
         if (comment == null) {
             return false;
         }
         return comment.getSpecialComment(CommentHidden.class) != null;
     }
 
-    static Map<String, DocType> getTypeModifiers(DocumentComment comment) {
+    static Map<String, DocType> getTypeModifiers(DocComment comment) {
         Map<String, DocType> modifiers = new HashMap<>();
         if (comment != null) {
             comment
@@ -42,7 +42,7 @@ public interface CommentUtil {
         return modifiers;
     }
 
-    static Map<String, String> getRenames(DocumentComment comment) {
+    static Map<String, String> getRenames(DocComment comment) {
         Map<String, String> renames = new HashMap<>();
         if (comment == null) {
             return renames;
