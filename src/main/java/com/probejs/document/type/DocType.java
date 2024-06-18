@@ -1,5 +1,6 @@
 package com.probejs.document.type;
 
+import com.probejs.document.type.simple.TypeNamed;
 import com.probejs.formatter.resolver.PathResolver;
 import java.util.function.BiFunction;
 

@@ -1,5 +1,7 @@
-package com.probejs.document.type;
+package com.probejs.document.type.complex;
 
+import com.probejs.document.type.DocType;
+import com.probejs.document.type.DocTypeResolver;
 import com.probejs.util.StringUtil;
 import lombok.AllArgsConstructor;
 

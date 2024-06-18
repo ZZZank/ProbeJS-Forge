@@ -1,5 +1,7 @@
-package com.probejs.document.type;
+package com.probejs.document.type.simple;
 
+import com.probejs.document.type.DocType;
+import com.probejs.document.type.DocTypeResolver;
 import com.probejs.info.type.JavaTypeWildcard;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

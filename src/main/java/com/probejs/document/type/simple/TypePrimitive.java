@@ -1,5 +1,6 @@
-package com.probejs.document.type;
+package com.probejs.document.type.simple;
 
+import com.probejs.document.type.DocType;
 import lombok.AllArgsConstructor;
 
 import java.util.function.BiFunction;

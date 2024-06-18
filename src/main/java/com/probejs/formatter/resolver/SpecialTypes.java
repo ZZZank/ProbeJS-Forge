@@ -1,7 +1,7 @@
 package com.probejs.formatter.resolver;
 
 import com.probejs.document.DocManager;
-import com.probejs.document.type.TypeLiteral;
+import com.probejs.document.type.simple.TypeLiteral;
 import com.probejs.formatter.FormatterType;
 import com.probejs.info.SpecialData;
 import com.probejs.info.type.JavaType;

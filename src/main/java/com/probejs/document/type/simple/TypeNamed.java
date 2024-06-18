@@ -1,5 +1,6 @@
-package com.probejs.document.type;
+package com.probejs.document.type.simple;
 
+import com.probejs.document.type.DocType;
 import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.formatter.resolver.ClassPath;
 import lombok.AllArgsConstructor;

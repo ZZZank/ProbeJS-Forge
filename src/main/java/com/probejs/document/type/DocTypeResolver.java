@@ -1,5 +1,7 @@
 package com.probejs.document.type;
 
+import com.probejs.document.type.complex.*;
+import com.probejs.document.type.simple.*;
 import com.probejs.info.type.*;
 import com.probejs.util.StringUtil;
 import lombok.val;
