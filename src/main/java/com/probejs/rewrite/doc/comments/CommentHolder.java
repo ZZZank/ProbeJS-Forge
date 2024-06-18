@@ -1,6 +1,6 @@
 package com.probejs.rewrite.doc.comments;
 
-import com.probejs.rewrite.doc.DocComment;
+import com.probejs.document.DocComment;
 
 public interface CommentHolder {
 

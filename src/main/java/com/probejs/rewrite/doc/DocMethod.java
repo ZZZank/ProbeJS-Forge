@@ -1,7 +1,9 @@
 package com.probejs.rewrite.doc;
 
+import com.probejs.document.DocComment;
 import com.probejs.document.type.DocType;
 import com.probejs.document.type.DocTypeResolver;
+import com.probejs.info.clazz.ConstructorInfo;
 import com.probejs.info.clazz.MethodInfo;
 import com.probejs.rewrite.doc.comments.CommentHolder;
 import lombok.Getter;

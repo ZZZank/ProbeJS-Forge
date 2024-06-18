@@ -2,6 +2,7 @@ package com.probejs.rewrite.doc;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.probejs.document.DocComment;
 import com.probejs.document.type.DocType;
 import com.probejs.info.clazz.ClassInfo;
 import com.probejs.rewrite.ClazzPath;
@@ -21,7 +22,7 @@ public class DocClazz implements CommentHolder {
     private static final Map<String, DocClazz> ALL = new HashMap<>();
 
     private final ListMultimap<String, DocMethod> methods;
-    private final ListMultimap<String, DocField> fields;
+    private final Map<String, DocField> fields;
     private final DocComment comment;
     private final ClazzPath path;
     private final List<DocType> assignables;
@@ -36,7 +37,7 @@ public class DocClazz implements CommentHolder {
         this.comment = new DocComment();
         //properties from ClassInfo
         info = cInfo;
-        fields = ArrayListMultimap.create();
+        fields = new HashMap<>();
         for (val field : cInfo.getFields()) {
             val doc = new DocField(field);
             fields.put(doc.getName(), doc);

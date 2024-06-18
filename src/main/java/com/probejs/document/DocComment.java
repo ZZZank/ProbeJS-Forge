@@ -7,6 +7,8 @@ import com.probejs.document.comment.CommentUtil;
 import com.probejs.document.comment.SpecialComment;
 import com.probejs.formatter.FormatterComments;
 import com.probejs.formatter.api.MultiFormatter;
+import dev.latvian.kubejs.util.UtilsJS;
+import lombok.Getter;
 import lombok.val;
 
 import java.util.*;
@@ -14,6 +16,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * only java doc comment, regular line comment / block comment are not supported by this
+ */
+@Getter
 public class DocComment implements IDecorative, MultiFormatter {
 
     private final List<String> normals;
@@ -45,13 +51,13 @@ public class DocComment implements IDecorative, MultiFormatter {
             });
     }
 
-    @SuppressWarnings("unchecked")
+    public DocComment() {
+        normals = new ArrayList<>(0);
+        specials = ArrayListMultimap.create(0, 1);
+    }
+
     public <T extends SpecialComment> List<T> getSpecialComments(Class<? extends T> clazz) {
-        return specials
-            .get(clazz)
-            .stream()
-            .map(i -> (T) i)
-            .collect(Collectors.toList());
+        return UtilsJS.cast(specials.get(clazz));
     }
 
     public <T extends SpecialComment> T getSpecialComment(Class<? extends T> clazz, int index) {

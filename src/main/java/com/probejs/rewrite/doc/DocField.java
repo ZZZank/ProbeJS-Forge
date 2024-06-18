@@ -1,5 +1,6 @@
 package com.probejs.rewrite.doc;
 
+import com.probejs.document.DocComment;
 import com.probejs.document.type.DocType;
 import com.probejs.document.type.DocTypeResolver;
 import com.probejs.info.clazz.FieldInfo;
