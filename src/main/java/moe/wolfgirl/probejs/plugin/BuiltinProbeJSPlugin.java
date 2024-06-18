@@ -36,8 +36,7 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
 
     @Override
     public void addClasses(ScriptType type, ClassFilter filter) {
-        // TODO: package name
-        filter.deny("com.probejs");
+        // lol
         filter.deny("org.jetbrains.java.decompiler");
         filter.deny("com.github.javaparser");
         filter.deny("org.java_websocket");
