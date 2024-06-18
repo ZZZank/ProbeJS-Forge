@@ -28,7 +28,7 @@ public class ClassWalker {
         } else if (tInfo instanceof JavaTypeWildcard wInfo){
             result.add(tInfo.getResolvedClass());
 //            result.addAll(walkTypes(wInfo.getLowerBounds()));
-            result.addAll(walkTypes((wInfo.getUpperBounds())));
+            result.addAll(walkTypes(wInfo.getUpperBounds()));
         } else {
             result.add(tInfo.getResolvedClass());
         }

@@ -16,77 +16,20 @@ public abstract class PathResolver {
     static {
         //keywords
         langKeywords.addAll(Arrays.asList(
-            "abstract",
-            "arguments",
-            "boolean",
-            "break",
-            "byte",
-            "case",
-            "catch",
-            "char",
-            "const",
-            "continue",
-            "constructor",
-            "debugger",
-            "default",
-            "delete",
-            "do",
-            "double",
-            "else",
-            "eval",
-            "false",
-            "final",
-            "finally",
-            "float",
-            "for",
-            "function",
-            "goto",
-            "if",
-            "implements",
-            "in",
-            "instanceof",
-            "int",
-            "interface",
-            "let",
-            "long",
-            "native",
-            "new",
-            "null",
-            "package",
-            "private",
-            "protected",
-            "public",
-            "return",
-            "short",
-            "static",
-            "switch",
-            "synchronized",
-            "this",
-            "throw",
-            "throws",
-            "transient",
-            "true",
-            "try",
-            "typeof",
-            "var",
-            "void",
-            "volatile",
-            "while",
-            "with",
-            "yield",
-            "export"
+            "abstract,arguments,boolean,break,byte,case,catch,char,const,continue,constructor,debugger,default,delete,do,double,else,eval,false,final,finally,float,for,function,goto,if,implements,in,instanceof,int,interface,let,long,native,new,null,package,private,protected,public,return,short,static,switch,synchronized,this,throw,throws,transient,true,try,typeof,var,void,volatile,while,with,yield,export"
+                .split(",")
         ));
         //pre-resolve primitive
-        val ANY = new ClazzPath(Collections.emptyList(), "any", false);
+        val ANY = new ClazzPath(Collections.emptyList(), "any");
         resolvePrimitive(Object.class, ANY);
-        val STRING = new ClazzPath(Collections.emptyList(), "string", false);
+        val STRING = new ClazzPath(Collections.emptyList(), "string");
         resolvePrimitive(String.class, STRING);
         resolvePrimitive(Character.class, STRING);
         resolvePrimitive(Character.TYPE, STRING);
-        val VOID = new ClazzPath(Collections.emptyList(), "void", false);
+        val VOID = new ClazzPath(Collections.emptyList(), "void");
         resolvePrimitive(Void.class, VOID);
         resolvePrimitive(Void.TYPE, VOID);
-        val NUMBER = new ClazzPath(Collections.emptyList(), "number", false);
+        val NUMBER = new ClazzPath(Collections.emptyList(), "number");
         resolvePrimitive(Long.class, NUMBER);
         resolvePrimitive(Long.TYPE, NUMBER);
         resolvePrimitive(Integer.class, NUMBER);
@@ -99,7 +42,7 @@ public abstract class PathResolver {
         resolvePrimitive(Double.TYPE, NUMBER);
         resolvePrimitive(Float.class, NUMBER);
         resolvePrimitive(Float.TYPE, NUMBER);
-        val BOOLEAN = new ClazzPath(Collections.emptyList(), "boolean", false);
+        val BOOLEAN = new ClazzPath(Collections.emptyList(), "boolean");
         resolvePrimitive(Boolean.class, BOOLEAN);
         resolvePrimitive(Boolean.TYPE, BOOLEAN);
     }
@@ -117,7 +60,7 @@ public abstract class PathResolver {
         ClazzPath path = resolved.get(clazzName);
         if (path == null) {
             path = new ClazzPath(clazzName);
-            path.setInternal(!lastNames.contains(path.getName()));
+            //path.setInternal(!lastNames.contains(path.getName()));
             resolveManually(clazzName, path);
         }
         return path;

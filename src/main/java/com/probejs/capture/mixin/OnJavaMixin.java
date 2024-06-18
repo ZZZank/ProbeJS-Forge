@@ -1,4 +1,4 @@
-package com.probejs.mixin;
+package com.probejs.capture.mixin;
 
 import com.probejs.capture.CapturedClasses;
 import dev.latvian.kubejs.script.ScriptManager;

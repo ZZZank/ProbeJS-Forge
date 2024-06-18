@@ -1,7 +1,7 @@
 {
   "required": true,
   "compatibilityLevel": "JAVA_8",
-  "package": "com.probejs.mixin",
+  "package": "com.probejs.capture.mixin",
   "mixins": [
     "OnJavaMixin",
     "OnEventMixin"

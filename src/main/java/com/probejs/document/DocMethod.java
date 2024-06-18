@@ -8,63 +8,19 @@ import com.probejs.info.clazz.MethodInfo;
 import com.probejs.util.PUtil;
 import com.probejs.util.StringUtil;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DocMethod
-    extends DocumentProperty
-    implements IDocumentProvider<DocMethod>, MultiFormatter {
-
-    @Override
-    public DocMethod provide() {
-        return this;
-    }
-
-    @Override
-    public List<String> formatLines(int indent, int stepIndent) {
-        List<String> formatted = new ArrayList<>();
-        if (comment != null) {
-            formatted.addAll(comment.formatLines(indent, stepIndent));
-        }
-        val paramStr = getParams()
-            .stream()
-            .map(documentParam ->
-                String.format(
-                    "%s: %s",
-                    documentParam.getName(),
-                    documentParam.getType().transform(DocType.defaultTransformer)
-                )
-            )
-            .collect(Collectors.joining(", "));
-        val sb = new StringBuilder(PUtil.indent(indent));
-        if (isStatic) {
-            sb.append("static ");
-        }
-        sb.append(String.format("%s(%s): %s;", name, paramStr, returnType.getTypeName()));
-        formatted.add(sb.toString());
-        return formatted;
-    }
-
-    @Getter
-    public static class DocumentParam {
-
-        private final String name;
-        private final DocType type;
-
-        private DocumentParam(String name, DocType type) {
-            this.name = name;
-            this.type = type;
-        }
-    }
+@Getter
+@Setter
+public class DocMethod extends DocumentProperty implements IDocumentProvider<DocMethod>, MultiFormatter {
 
     private final boolean isStatic;
-    @Getter
-    private final String name;
-    @Getter
-    private final DocType returnType;
-    @Getter
+    private String name;
+    private DocType returnType;
     private final List<DocumentParam> params;
 
     public DocMethod(String line) {
@@ -93,8 +49,33 @@ public class DocMethod
         returnType = DocTypeResolver.resolve(line.substring(methodIndex + 1));
     }
 
+    @Override
+    public DocMethod provide() {
+        return this;
+    }
+
+    @Override
+    public List<String> formatLines(int indent, int stepIndent) {
+        List<String> formatted = new ArrayList<>();
+        if (comment != null) {
+            formatted.addAll(comment.formatLines(indent, stepIndent));
+        }
+        val paramStr = getParams().stream()
+            .map(documentParam -> String.format("%s: %s",
+                documentParam.getName(),
+                documentParam.getType().transform(DocType.defaultTransformer)
+            ))
+            .collect(Collectors.joining(", "));
+        val sb = new StringBuilder(PUtil.indent(indent));
+        if (isStatic) {
+            sb.append("static ");
+        }
+        sb.append(String.format("%s(%s): %s;", name, paramStr, returnType.getTypeName()));
+        formatted.add(sb.toString());
+        return formatted;
+    }
+
     /**
-     *
      * @param paramsStr E.g. "(a: (string|number), b: {required: bool})"
      */
     private List<DocumentParam> buildParams(String paramsStr) {
@@ -127,18 +108,32 @@ public class DocMethod
         methodInfo.getParams().forEach(p -> params.put(p.getName(), p));
         this.params.forEach(p -> docParams.put(p.name, p));
 
-        if (
-            !params.keySet().equals(docParams.keySet()) ||
-            !DocTypeResolver.typeEquals(returnType, methodInfo.getType())
-        ) {
+        if (!params.keySet().equals(docParams.keySet()) || !DocTypeResolver.typeEquals(
+            returnType,
+            methodInfo.getType()
+        )) {
             return false;
         }
 
         for (Map.Entry<String, MethodInfo.ParamInfo> e : params.entrySet()) {
             DocumentParam doc = docParams.get(e.getKey());
-            if (!DocTypeResolver.typeEquals(doc.getType(), e.getValue().getType())) return false;
+            if (!DocTypeResolver.typeEquals(doc.type, e.getValue().getType())) {
+                return false;
+            }
         }
 
         return true;
+    }
+
+    @Getter
+    public static class DocumentParam {
+
+        public String name;
+        public DocType type;
+
+        private DocumentParam(String name, DocType type) {
+            this.name = name;
+            this.type = type;
+        }
     }
 }

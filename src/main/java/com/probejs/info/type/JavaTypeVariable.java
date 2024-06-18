@@ -52,7 +52,7 @@ public class JavaTypeVariable implements JavaType {
 
     public List<JavaType> getBounds() {
         Type[] bounds = this.raw.getBounds();
-        if (bounds.length == 1 && bounds[0] == Object.class) {
+        if (bounds.length < 2 && bounds[0] == Object.class) {
             return Collections.emptyList();
         }
         List<JavaType> boundTypes = new ArrayList<>(bounds.length);
