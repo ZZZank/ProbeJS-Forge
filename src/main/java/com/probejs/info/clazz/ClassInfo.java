@@ -4,10 +4,7 @@ import com.probejs.ProbeJS;
 import com.probejs.formatter.resolver.ClazzFilter;
 import com.probejs.formatter.resolver.PathResolver;
 import com.probejs.formatter.FormatterMethod;
-import com.probejs.info.type.JavaType;
-import com.probejs.info.type.JavaTypeParameterized;
-import com.probejs.info.type.JavaTypeVariable;
-import com.probejs.info.type.TypeResolver;
+import com.probejs.info.type.*;
 import lombok.Getter;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Getter
@@ -125,17 +121,17 @@ public class ClassInfo implements Comparable<ClassInfo> {
         }
         //type alias: Enum
         if (isEnum()) {
-            Supplier<List<String>> assign = () -> {
+            PathResolver.addSpecialAssignments(raw, () -> {
                 try {
                     val values = clazz.getMethod("values");
                     values.setAccessible(true);
                     val enumValues = (Object[]) values.invoke(null);
                     //Use the name() method here so won't be affected by overrides
-                    val name = Enum.class.getMethod("name");
+                    val name1 = Enum.class.getMethod("name");
                     return Arrays.stream(enumValues)
                         .map(obj -> {
                             try {
-                                return name.invoke(obj);
+                                return name1.invoke(obj);
                             } catch (IllegalAccessException | InvocationTargetException e) {
                                 return null;
                             }
@@ -147,11 +143,14 @@ public class ClassInfo implements Comparable<ClassInfo> {
                         .collect(Collectors.toList());
                 } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
                     e.printStackTrace();
+                    return Collections.emptyList();
                 }
-                return Collections.emptyList();
-            };
-            PathResolver.addSpecialAssignments(raw, assign);
+            });
         }
+    }
+
+    public JavaTypeClass asJavaType() {
+         return new JavaTypeClass(raw);
     }
 
     private static Map<String, JavaType> resolveTypeOverrides(JavaType typeInfo) {

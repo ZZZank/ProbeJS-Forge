@@ -8,6 +8,7 @@ import com.probejs.info.clazz.ClassInfo;
 import com.probejs.rewrite.ClazzPath;
 import com.probejs.rewrite.PathResolver;
 import com.probejs.rewrite.doc.comments.CommentHolder;
+import dev.latvian.mods.rhino.Kit;
 import lombok.Getter;
 import lombok.val;
 
@@ -20,6 +21,29 @@ import java.util.Map;
 public class DocClazz implements CommentHolder {
 
     private static final Map<String, DocClazz> ALL = new HashMap<>();
+    private final boolean artificial;
+
+    public DocClazz(ClazzPath path) {
+        artificial = true;
+        this.path = path;
+        comment = new DocComment();
+        info = null;
+        methods = ArrayListMultimap.create(1,1);
+        fields = new HashMap<>(1);
+        assignables = new ArrayList<>(3);
+    }
+
+    public static DocClazz getOrCreate(String rawClassName) {
+        var doc = ALL.get(rawClassName);
+        if (doc != null) {
+            return doc;
+        }
+        var clazz = Kit.classOrNull(rawClassName);
+        if (clazz != null) {
+            return new DocClazz(clazz);
+        }
+        return new DocClazz(PathResolver.resolve(rawClassName));
+    }
 
     private final ListMultimap<String, DocMethod> methods;
     private final Map<String, DocField> fields;
@@ -29,11 +53,12 @@ public class DocClazz implements CommentHolder {
     private final ClassInfo info;
 
     public DocClazz(Class<?> clazz, ClazzPath path) {
+        artificial = false;
         //doc properties
         val cInfo = ClassInfo.ofCache(clazz);
         this.path = path;
         ALL.put(clazz.getName(), this);
-        this.assignables = new ArrayList<>();
+        this.assignables = new ArrayList<>(3);
         this.comment = new DocComment();
         //properties from ClassInfo
         info = cInfo;
@@ -51,14 +76,6 @@ public class DocClazz implements CommentHolder {
 
     public DocClazz(Class<?> clazz) {
         this(clazz, PathResolver.resolve(clazz));
-    }
-
-    public static DocClazz of(Class<?> clazz) {
-        val doc = ALL.get(clazz.getName());
-        if (doc != null) {
-            return doc;
-        }
-        return new DocClazz(clazz);
     }
 
     @Override

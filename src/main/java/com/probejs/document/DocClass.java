@@ -3,6 +3,7 @@ package com.probejs.document;
 import com.probejs.document.comment.CommentUtil;
 import com.probejs.formatter.api.MultiFormatter;
 import com.probejs.util.PUtil;
+import dev.latvian.mods.rhino.Kit;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +18,7 @@ public class DocClass extends DocumentProperty implements IConcrete, MultiFormat
 
     @Getter
     private String name;
-    private String superClass;
+    private DocClass superClass;
     private List<String> interfaces;
     @Getter
     private final List<DocField> fieldDocs = new ArrayList<>();

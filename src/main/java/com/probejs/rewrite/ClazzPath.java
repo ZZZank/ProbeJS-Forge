@@ -1,6 +1,5 @@
 package com.probejs.rewrite;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.val;
 
@@ -16,8 +15,8 @@ public class ClazzPath {
     public static final String NAME_UNRESOLVED = "Unresolved";
     public static final ClazzPath UNRESOLVED = new ClazzPath(NAMESPACE_NONE, NAME_UNRESOLVED);
 
-    private final List<String> namespace;
-    private final String name;
+    private List<String> namespace;
+    private String name;
     private final String raw;
 
     ClazzPath(String clazzName) {

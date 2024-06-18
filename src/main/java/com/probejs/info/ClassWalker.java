@@ -20,8 +20,8 @@ public class ClassWalker {
         if (tInfo instanceof JavaTypeParameterized tInfoP) {
             result.add(tInfoP.getResolvedClass());
             result.addAll(walkTypes(tInfoP.getParamTypes()));
-        } else if (tInfo instanceof JavaTypeVariable) {
-            ((JavaTypeVariable) tInfo).getBounds()
+        } else if (tInfo instanceof JavaTypeVariable v) {
+            v.getBounds()
                 .stream()
                 .map(JavaType::getResolvedClass)
                 .forEach(result::add);
@@ -46,7 +46,7 @@ public class ClassWalker {
 
     private Set<Class<?>> touch(Set<Class<?>> classes) {
         Set<Class<?>> result = new HashSet<>();
-        for (Class<?> clazz : classes) {
+        for (val clazz : classes) {
             val info = ClassInfo.ofCache(clazz);
             //self
             result.addAll(walkTypes(info.getTypeParameters()));
