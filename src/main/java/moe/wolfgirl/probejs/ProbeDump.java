@@ -5,12 +5,13 @@ import moe.wolfgirl.probejs.lang.java.ClassRegistry;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.utils.GameUtils;
+import moe.wolfgirl.probejs.utils.PText;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,11 +40,11 @@ public class ProbeDump {
     private void onModChange() throws IOException {
         // Decompile stuffs
         if (ProbeConfig.INSTANCE.enableDecompiler.get()) {
-            report(Component.translatable("probejs.dump.decompiling").kjs$gold());
+            report(PText.translatable("probejs.dump.decompiling").withStyle(ChatFormatting.GOLD));
             decompiler.fromMods();
             decompiler.resultSaver.callback(() -> {
                 if (decompiler.resultSaver.classCount % 3000 == 0) {
-                    report(Component.translatable("probejs.dump.decompiled_x_class", decompiler.resultSaver.classCount));
+                    report(PText.translatable("probejs.dump.decompiled_x_class", decompiler.resultSaver.classCount));
                 }
             });
             decompiler.decompileContext();
@@ -51,10 +52,10 @@ public class ProbeDump {
             ClassRegistry.REGISTRY.fromClasses(decompiler.resultSaver.getClasses());
         }
 
-        report(Component.translatable("probejs.dump.cleaning"));
+        report(PText.translatable("probejs.dump.cleaning"));
         for (ScriptDump scriptDump : scriptDumps) {
             scriptDump.removeClasses();
-            report(Component.translatable("probejs.removed_script", scriptDump.manager.scriptType.toString()));
+            report(PText.translatable("probejs.removed_script", scriptDump.manager.type.toString()));
         }
     }
 
@@ -69,16 +70,16 @@ public class ProbeDump {
 
     public void trigger(Consumer<Component> p) throws IOException {
         progressReport = p;
-        report(Component.translatable("probejs.dump.start").kjs$green());
+        report(PText.translatable("probejs.dump.start").withStyle(ChatFormatting.GREEN));
 
         // Create the snippets
         snippetDump.fromDocs();
         snippetDump.writeTo(SNIPPET_PATH);
 
-        report(Component.translatable("probejs.dump.snippets_generated"));
+        report(PText.translatable("probejs.dump.snippets_generated"));
 
         if (GameUtils.modHash() != ProbeConfig.INSTANCE.modHash.get()) {
-            report(Component.translatable("probejs.dump.mod_changed").kjs$aqua());
+            report(PText.translatable("probejs.dump.mod_changed").withStyle(ChatFormatting.AQUA));
             onModChange();
             ProbeConfig.INSTANCE.modHash.set(GameUtils.modHash());
         }
@@ -96,7 +97,7 @@ public class ProbeDump {
 
         ClassRegistry.REGISTRY.discoverClasses();
         ClassRegistry.REGISTRY.writeTo(CLASS_CACHE);
-        report(Component.translatable("probejs.dump.class_discovered", ClassRegistry.REGISTRY.foundClasses.keySet().size()));
+        report(PText.translatable("probejs.dump.class_discovered", ClassRegistry.REGISTRY.foundClasses.keySet().size()));
 
         // Spawn a thread for each dump
         List<Thread> dumpThreads = new ArrayList<>();
@@ -105,9 +106,9 @@ public class ProbeDump {
                 scriptDump.acceptClasses(ClassRegistry.REGISTRY.getFoundClasses());
                 try {
                     scriptDump.dump();
-                    report(Component.translatable("probejs.dump.dump_finished", scriptDump.manager.scriptType.toString()).kjs$green());
+                    report(PText.translatable("probejs.dump.dump_finished", scriptDump.manager.type.toString()).withStyle(ChatFormatting.GREEN));
                 } catch (Throwable e) {
-                    report(Component.translatable("probejs.dump.dump_error", scriptDump.manager.scriptType.toString()).kjs$red());
+                    report(PText.translatable("probejs.dump.dump_error", scriptDump.manager.type.toString()).withStyle(ChatFormatting.RED));
                     throw new RuntimeException(e);
                 }
             });
@@ -121,7 +122,7 @@ public class ProbeDump {
                     Thread.sleep(3000);
                     if (dumpThreads.stream().noneMatch(Thread::isAlive)) return;
                     String dumpProgress = scriptDumps.stream().filter(sd -> sd.total != 0).map(sd -> "%s/%s".formatted(sd.dumped, sd.total)).collect(Collectors.joining(", "));
-                    report(Component.translatable("probejs.dump.report_progress").append(Component.literal(dumpProgress).kjs$blue()));
+                    report(PText.translatable("probejs.dump.report_progress").append(PText.literal(dumpProgress).withStyle(ChatFormatting.BLUE)));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -134,7 +135,7 @@ public class ProbeDump {
         Files.deleteIfExists(SNIPPET_PATH);
         for (ScriptDump scriptDump : scriptDumps) {
             scriptDump.removeClasses();
-            p.accept(Component.translatable("probejs.removed_script", scriptDump.manager.scriptType.toString()));
+            p.accept(PText.translatable("probejs.removed_script", scriptDump.manager.type.toString()));
         }
     }
 }
