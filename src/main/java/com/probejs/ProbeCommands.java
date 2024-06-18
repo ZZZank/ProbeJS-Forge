@@ -2,6 +2,7 @@ package com.probejs;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.probejs.capture.PlatformEventCollector;
 import com.probejs.compiler.EventCompiler;
 import com.probejs.compiler.SnippetCompiler;
 import com.probejs.compiler.TypingCompiler;
@@ -117,6 +118,7 @@ public class ProbeCommands {
         }
         try {
             sendSuccess("ProbeJS initializing...", context);
+            PlatformEventCollector.init();
             RemapperBridge.refreshRemapper();
             DocumentProviderManager.init();
             CommentHandler.init();

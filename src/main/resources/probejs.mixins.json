@@ -3,8 +3,9 @@
   "compatibilityLevel": "JAVA_8",
   "package": "com.probejs.capture.mixin",
   "mixins": [
-    "OnJavaMixin",
-    "OnEventMixin"
+    "EventListenerHelperMixin",
+    "OnEventMixin",
+    "OnJavaMixin"
   ],
   "injectors": {
     "defaultRequire": 1
