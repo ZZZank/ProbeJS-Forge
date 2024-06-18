@@ -1,6 +1,7 @@
 package moe.wolfgirl.probejs.utils;
 
 import com.google.gson.*;
+import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -57,7 +58,7 @@ public class JsonUtils {
         } else if (obj instanceof Boolean bool) {
             return new JsonPrimitive(bool);
         } else if (obj instanceof List<?> list) {
-            JsonArray jsonArray = new JsonArray(list.size());
+            JsonArray jsonArray = new JsonArray();
             for (Object o : list) {
                 jsonArray.add(parseObject(o));
             }
@@ -89,7 +90,8 @@ public class JsonUtils {
             return deserialized;
         } else if (jsonElement instanceof JsonObject object) {
             Map<String, Object> deserialized = new HashMap<>();
-            for (String s : object.keySet()) {
+            for (val entry : object.entrySet()) {
+                val s = entry.getKey();
                 deserialized.put(s, deserializeObject(object.get(s)));
             }
             return deserialized;
@@ -98,9 +100,27 @@ public class JsonUtils {
         return null;
     }
 
+    public static <T extends JsonElement> T deepCopy(T elem) {
+        if (elem instanceof JsonObject o) {
+            val result = new JsonObject();
+            for (val entry : o.entrySet()) {
+                result.add(entry.getKey(), deepCopy(entry.getValue()));
+            }
+            return (T) result;
+        } else if (elem instanceof JsonArray a) {
+            val result = new JsonArray();
+            for (val element : a) {
+                result.add(deepCopy(element));
+            }
+            return (T) result;
+        } else {
+            return elem;
+        }
+    }
+
     public static JsonElement mergeJsonRecursively(JsonElement first, JsonElement second) {
         if (first instanceof JsonObject firstObject && second instanceof JsonObject secondObject) {
-            var result = firstObject.deepCopy();
+            var result = deepCopy(firstObject);
             for (Map.Entry<String, JsonElement> entry : secondObject.entrySet()) {
                 String key = entry.getKey();
                 JsonElement value = entry.getValue();
@@ -115,10 +135,10 @@ public class JsonUtils {
 
         if (first instanceof JsonArray firstArray && second instanceof JsonArray secondArray) {
             List<JsonElement> elements = new ArrayList<>();
-            for (JsonElement element : firstArray) {
-                elements.add(element.deepCopy());
+            for (val element : firstArray) {
+                elements.add(deepCopy(element));
             }
-            for (JsonElement element : secondArray) {
+            for (val element : secondArray) {
                 int index;
                 if ((index = elements.indexOf(element)) != -1) {
                     elements.set(index, mergeJsonRecursively(elements.get(index), element));

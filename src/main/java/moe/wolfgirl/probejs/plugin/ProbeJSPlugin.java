@@ -1,8 +1,8 @@
 package moe.wolfgirl.probejs.plugin;
 
 import com.mojang.datafixers.util.Pair;
-import dev.latvian.mods.kubejs.KubeJSPlugin;
-import dev.latvian.mods.kubejs.util.KubeJSPlugins;
+import dev.latvian.kubejs.KubeJSPlugin;
+import dev.latvian.kubejs.util.KubeJSPlugins;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
@@ -25,8 +25,9 @@ public class ProbeJSPlugin extends KubeJSPlugin {
 
     public static void forEachPlugin(Consumer<ProbeJSPlugin> consumer) {
         KubeJSPlugins.forEachPlugin(plugin -> {
-            if (plugin instanceof ProbeJSPlugin probePlugin)
+            if (plugin instanceof ProbeJSPlugin probePlugin) {
                 consumer.accept(probePlugin);
+            }
         });
     }
 

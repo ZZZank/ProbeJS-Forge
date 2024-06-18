@@ -18,13 +18,15 @@ public class EnumTypes extends ProbeJSPlugin {
         LOCK.lock();
         try {
             for (Clazz recordedClass : scriptDump.recordedClasses) {
-                if (!recordedClass.original.isEnum()) continue;
+                if (!recordedClass.original.isEnum()) {
+                    continue;
+                }
                 EnumTypeWrapper<?> typeWrapper = EnumTypeWrapper.get(recordedClass.original);
                 BaseType[] types = typeWrapper.nameValues
-                        .keySet()
-                        .stream()
-                        .map(Types::literal)
-                        .toArray(BaseType[]::new);
+                    .keySet()
+                    .stream()
+                    .map(Types::literal)
+                    .toArray(BaseType[]::new);
                 scriptDump.assignType(recordedClass.classPath, Types.or(types));
             }
         } finally {

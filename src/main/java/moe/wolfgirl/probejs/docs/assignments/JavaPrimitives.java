@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dev.latvian.mods.unit.Unit;
+import dev.latvian.mods.rhino.util.unit.Unit;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.docs.Primitives;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
@@ -15,9 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 

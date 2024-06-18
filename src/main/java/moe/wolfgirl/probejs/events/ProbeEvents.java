@@ -1,7 +1,7 @@
 package moe.wolfgirl.probejs.events;
 
-import dev.latvian.mods.kubejs.event.EventGroup;
-import dev.latvian.mods.kubejs.event.EventHandler;
+import dev.latvian.kubejs.event.EventGroup;
+import dev.latvian.kubejs.event.EventHandler;
 
 public interface ProbeEvents {
     EventGroup GROUP = EventGroup.of("ProbeEvents");

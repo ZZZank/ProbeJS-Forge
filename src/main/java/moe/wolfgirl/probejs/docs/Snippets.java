@@ -4,7 +4,7 @@ import moe.wolfgirl.probejs.GlobalStates;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.snippet.parts.Variable;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class Snippets extends ProbeJSPlugin {
                 .literal("\"")
                 .tabStop(1, "1")
                 .literal("x ")
-                .registry(Registries.ITEM)
+                .registry(Registry.ITEM_REGISTRY)
                 .literal("\"");
     }
 

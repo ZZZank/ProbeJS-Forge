@@ -1,14 +1,14 @@
 package moe.wolfgirl.probejs.mixins;
 
-import dev.latvian.mods.kubejs.script.ScriptFileInfo;
-import dev.latvian.mods.kubejs.script.ScriptSource;
-import dev.latvian.mods.kubejs.util.UtilsJS;
+import dev.latvian.kubejs.script.ScriptFileInfo;
+import dev.latvian.kubejs.script.ScriptSource;
+import dev.latvian.kubejs.util.UtilsJS;
 import moe.wolfgirl.probejs.lang.transformer.KubeJSScript;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +23,7 @@ public class ScriptFilePreloadMixin {
     @Inject(method = "preload",
             at = @At(value = "RETURN"),
             remap = false)
-    private void probejs$$preloadFile(ScriptSource source, CallbackInfo ci) throws IOException {
+    private void probejs$$preloadFile(ScriptSource source, CallbackInfoReturnable<Throwable> cir) throws IOException {
 
         // I don't know why it won't work... But The fact is that I have to reload
         // stuffs again.

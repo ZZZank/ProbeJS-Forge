@@ -1,6 +1,6 @@
 package moe.wolfgirl.probejs.lang.transpiler;
 
-import dev.latvian.mods.kubejs.script.ScriptManager;
+import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.java.clazz.Clazz;

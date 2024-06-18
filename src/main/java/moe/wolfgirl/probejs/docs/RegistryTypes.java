@@ -1,6 +1,7 @@
 package moe.wolfgirl.probejs.docs;
 
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
+import lombok.val;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import moe.wolfgirl.probejs.lang.snippet.Snippet;
@@ -21,7 +22,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.*;
 
@@ -41,7 +42,9 @@ public class RegistryTypes extends ProbeJSPlugin {
             ResourceKey<? extends Registry<?>> key = entry.getKey();
             RegistryInfo<?> info = entry.getValue();
 
-            if (info.getVanillaRegistry() == null) continue;
+            if (info.getVanillaRegistry() == null) {
+                continue;
+            }
 
             String typeName = NameUtils.rlToTitle(key.location().getPath());
             scriptDump.assignType(info.objectBaseClass, Types.primitive("Special.%s".formatted(typeName)));
@@ -60,10 +63,12 @@ public class RegistryTypes extends ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {
-        Wrapped.Namespace special = new Wrapped.Namespace("Special");
-        MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
-        if (currentServer == null) return;
-        RegistryAccess registryAccess = currentServer.registryAccess();
+        val special = new Wrapped.Namespace("Special");
+        val currentServer = ServerLifecycleHooks.getCurrentServer();
+        if (currentServer == null) {
+            return;
+        }
+        val registryAccess = currentServer.registryAccess();
 
         for (ResourceKey<? extends Registry<?>> key : RegistryInfo.MAP.keySet()) {
             Registry<?> registry = registryAccess.registry(key).orElse(null);

@@ -1,7 +1,8 @@
 package moe.wolfgirl.probejs.mixins;
 
-import dev.latvian.mods.kubejs.script.ScriptManager;
+import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.NativeJavaClass;
+import dev.latvian.mods.rhino.Scriptable;
 import moe.wolfgirl.probejs.lang.java.ClassRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,9 +14,11 @@ import java.util.Collections;
 @Mixin(ScriptManager.class)
 public class OnJavaMixin {
     @Inject(method = "loadJavaClass", at = @At("RETURN"), remap = false)
-    public void loadJavaClass(String name0, boolean warn, CallbackInfoReturnable<NativeJavaClass> cir) {
+    public void loadJavaClass(Scriptable scope, Object[] args, CallbackInfoReturnable<NativeJavaClass> cir) {
         var result = cir.getReturnValue();
-        if (result == null) return;
+        if (result == null) {
+            return;
+        }
         ClassRegistry.REGISTRY.fromClasses(Collections.singleton(result.getClassObject()));
     }
 }

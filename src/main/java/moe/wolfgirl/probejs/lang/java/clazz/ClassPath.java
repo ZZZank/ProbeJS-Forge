@@ -1,6 +1,6 @@
 package moe.wolfgirl.probejs.lang.java.clazz;
 
-import dev.latvian.mods.kubejs.util.UtilsJS;
+import dev.latvian.kubejs.util.UtilsJS;
 import moe.wolfgirl.probejs.lang.java.ClassRegistry;
 import moe.wolfgirl.probejs.utils.RemapperUtils;
 

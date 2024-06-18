@@ -9,7 +9,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.Collection;

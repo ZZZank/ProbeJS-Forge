@@ -43,9 +43,9 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
         this.methods = RemapperUtils.getMethods(clazz)
                 .stream()
                 .filter(m -> !m.method.isSynthetic())
-                .filter(m -> !hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterfaceSinceTypeScriptDoesNotHaveInterfaceAtRuntimeInTypeDeclarationFilesJustBecauseItSucks(m.method, clazz))
+                .filter(m -> !hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterface(m.method, clazz))
                 .map(method -> {
-                    Map<TypeVariable<?>, Type> replacement = getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass(clazz, method.method);
+                    Map<TypeVariable<?>, Type> replacement = getGenericTypeReplacementForParentInterfaceMethods(clazz, method.method);
                     return new MethodInfo(method, replacement);
                 })
                 .collect(Collectors.toList());
@@ -143,7 +143,7 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
      * 传令麾下四王子，破城不须封刀匕。
      * 山头代天树此碑，逆天之人立死跪亦死！
      */
-    private static boolean hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterfaceSinceTypeScriptDoesNotHaveInterfaceAtRuntimeInTypeDeclarationFilesJustBecauseItSucks(Method method, Class<?> clazz) {
+    private static boolean hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterface(Method method, Class<?> clazz) {
         Class<?> parent = clazz.getSuperclass();
         if (parent == null)
             return false;
@@ -169,14 +169,14 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
      * 我不会干什么👁👁
      * 我只是喜欢看着你而已👁👁
      */
-    private static Map<TypeVariable<?>, Type> getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass(Class<?> thisClass, Method thatMethod) {
+    private static Map<TypeVariable<?>, Type> getGenericTypeReplacementForParentInterfaceMethods(Class<?> thisClass, Method thatMethod) {
         Class<?> targetClass = thatMethod.getDeclaringClass();
 
         Map<TypeVariable<?>, Type> replacement = new HashMap<>();
         if (Arrays.stream(thisClass.getInterfaces()).noneMatch(c -> c.equals(targetClass))) {
             Class<?> superInterface = Arrays.stream(thisClass.getInterfaces()).filter(targetClass::isAssignableFrom).findFirst().orElse(null);
             if (superInterface == null) return Map.of();
-            Map<TypeVariable<?>, Type> parentType = getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass(superInterface, thatMethod);
+            Map<TypeVariable<?>, Type> parentType = getGenericTypeReplacementForParentInterfaceMethods(superInterface, thatMethod);
             Map<TypeVariable<?>, Type> parentReplacement = getInterfaceRemap(thisClass, superInterface);
 
             for (Map.Entry<TypeVariable<?>, Type> entry : parentType.entrySet()) {

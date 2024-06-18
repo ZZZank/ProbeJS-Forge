@@ -1,10 +1,11 @@
 package moe.wolfgirl.probejs.docs;
 
-import dev.latvian.mods.kubejs.event.EventGroupWrapper;
+import dev.latvian.kubejs.event.EventGroupWrapper;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.NativeJavaClass;
 import dev.latvian.mods.rhino.Scriptable;
+import lombok.val;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import moe.wolfgirl.probejs.lang.transpiler.TypeConverter;
@@ -22,9 +23,9 @@ import java.util.*;
 public class Bindings extends ProbeJSPlugin {
     @Override
     public void addGlobals(ScriptDump scriptDump) {
-        Context context = scriptDump.manager.context;
-        Scriptable scope = scriptDump.manager.topLevelScope;
-        TypeConverter converter = scriptDump.transpiler.typeConverter;
+        val context = scriptDump.manager.context;
+        val scope = scriptDump.manager.topLevelScope;
+        val converter = scriptDump.transpiler.typeConverter;
         Map<String, BaseType> exported = new HashMap<>();
         Map<String, BaseType> reexported = new HashMap<>(); // Namespaces
 

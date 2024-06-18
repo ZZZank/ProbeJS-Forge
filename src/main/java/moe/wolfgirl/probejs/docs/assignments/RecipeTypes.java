@@ -1,12 +1,12 @@
 package moe.wolfgirl.probejs.docs.assignments;
 
-import dev.latvian.mods.kubejs.fluid.FluidStackJS;
-import dev.latvian.mods.kubejs.item.InputItem;
-import dev.latvian.mods.kubejs.item.OutputItem;
-import dev.latvian.mods.kubejs.recipe.InputReplacement;
-import dev.latvian.mods.kubejs.recipe.OutputReplacement;
-import dev.latvian.mods.kubejs.recipe.filter.RecipeFilter;
-import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientActionFilter;
+import dev.latvian.kubejs.fluid.FluidStackJS;
+import dev.latvian.kubejs.item.InputItem;
+import dev.latvian.kubejs.item.OutputItem;
+import dev.latvian.kubejs.recipe.InputReplacement;
+import dev.latvian.kubejs.recipe.OutputReplacement;
+import dev.latvian.kubejs.recipe.filter.RecipeFilter;
+import dev.latvian.kubejs.recipe.ingredientaction.IngredientActionFilter;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.docs.Primitives;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;

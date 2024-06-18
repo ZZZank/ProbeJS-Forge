@@ -1,5 +1,6 @@
 package moe.wolfgirl.probejs.lang.transformer;
 
+import lombok.val;
 import moe.wolfgirl.probejs.ProbeConfig;
 import moe.wolfgirl.probejs.utils.NameUtils;
 
@@ -65,7 +66,7 @@ public class KubeJSScript {
                 tLine = tLine.substring(6).trim();
                 String[] parts = tLine.split(" ", 2);
 
-                var identifier = switch (parts[0]) {
+                val identifier = switch (parts[0]) {
                     case "function" -> parts[1].split("\\(")[0];
                     case "var", "let", "const" -> parts[1].split(" ")[0];
                     default -> null;
@@ -80,10 +81,10 @@ public class KubeJSScript {
 
     // Wraps the code in let {...} = (()=>{...;return {...};})()
     public void wrapScope() {
-        String exported = exportedSymbols.stream()
+        val exported = exportedSymbols.stream()
                 .map(s -> "%s: %s".formatted(s, s))
                 .collect(Collectors.joining(", "));
-        String destructed = String.join(", ", exportedSymbols);
+        val destructed = String.join(", ", exportedSymbols);
         lines.add(0, "const {%s} = (()=>{".formatted(destructed));
         lines.add("return {%s};})()".formatted(exported));
     }
@@ -92,9 +93,9 @@ public class KubeJSScript {
         processRequire();
         processExport();
         // If there's no symbol to be exported, it will be global mode
-        if (ProbeConfig.INSTANCE.isolatedScopes.get() && !exportedSymbols.isEmpty())
+        if (ProbeConfig.INSTANCE.isolatedScopes.get() && !exportedSymbols.isEmpty()) {
             wrapScope();
-
+        }
         return lines.toArray(String[]::new);
     }
 }

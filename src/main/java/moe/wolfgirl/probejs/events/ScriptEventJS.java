@@ -1,7 +1,7 @@
 package moe.wolfgirl.probejs.events;
 
-import dev.latvian.mods.kubejs.event.EventJS;
-import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.kubejs.event.EventJS;
+import dev.latvian.kubejs.script.ScriptType;
 import moe.wolfgirl.probejs.lang.transpiler.TypeConverter;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 

@@ -1,7 +1,7 @@
 package moe.wolfgirl.probejs.lang.transpiler.transformation;
 
-import dev.latvian.mods.kubejs.typings.Info;
-import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.kubejs.typings.Info;
+import dev.latvian.kubejs.typings.Param;
 import moe.wolfgirl.probejs.lang.java.base.AnnotationHolder;
 import moe.wolfgirl.probejs.lang.java.clazz.Clazz;
 import moe.wolfgirl.probejs.lang.java.clazz.members.ConstructorInfo;

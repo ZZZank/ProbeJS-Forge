@@ -1,6 +1,7 @@
 package moe.wolfgirl.probejs.lang.linter;
 
-import dev.latvian.mods.kubejs.KubeJSPaths;
+import dev.latvian.kubejs.KubeJSPaths;
+import dev.latvian.kubejs.text.Text;
 import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.lang.linter.rules.NoNamespacePollution;
 import moe.wolfgirl.probejs.lang.linter.rules.RespectPriority;
@@ -102,8 +103,7 @@ public class Linter {
                 report.accept(warning);
             }
             if (warnings.isEmpty())
-                report.accept(Component.translatable("probejs.lint_passed")
-                        .kjs$green());
+                report.accept(Text.of("probejs.lint_passed").green().component());
         } catch (Throwable e) {
             ProbeJS.LOGGER.error(e.getMessage());
         }

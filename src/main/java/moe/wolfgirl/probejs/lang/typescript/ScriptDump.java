@@ -5,12 +5,12 @@ import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.mojang.datafixers.util.Pair;
-import dev.latvian.mods.kubejs.KubeJS;
-import dev.latvian.mods.kubejs.KubeJSPaths;
-import dev.latvian.mods.kubejs.script.ScriptManager;
-import dev.latvian.mods.kubejs.script.ScriptType;
-import dev.latvian.mods.kubejs.server.ServerScriptManager;
-import dev.latvian.mods.kubejs.util.UtilsJS;
+import dev.latvian.kubejs.KubeJS;
+import dev.latvian.kubejs.KubeJSPaths;
+import dev.latvian.kubejs.script.ScriptManager;
+import dev.latvian.kubejs.script.ScriptType;
+import dev.latvian.kubejs.server.ServerScriptManager;
+import dev.latvian.kubejs.util.UtilsJS;
 import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.ProbePaths;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  */
 public class ScriptDump {
     public static final Supplier<ScriptDump> SERVER_DUMP = () -> new ScriptDump(
-            ServerScriptManager.getScriptManager(),
+            ServerScriptManager.instance.scriptManager,
             ProbePaths.PROBE.resolve("server"),
             KubeJSPaths.SERVER_SCRIPTS,
             (clazz -> {
@@ -53,7 +53,7 @@ public class ScriptDump {
             })
     );
     public static final Supplier<ScriptDump> CLIENT_DUMP = () -> new ScriptDump(
-            KubeJS.getClientScriptManager(),
+            KubeJS.clientScriptManager,
             ProbePaths.PROBE.resolve("client"),
             KubeJSPaths.CLIENT_SCRIPTS,
             (clazz -> {
@@ -64,7 +64,7 @@ public class ScriptDump {
             })
     );
     public static final Supplier<ScriptDump> STARTUP_DUMP = () -> new ScriptDump(
-            KubeJS.getStartupScriptManager(),
+            KubeJS.startupScriptManager,
             ProbePaths.PROBE.resolve("startup"),
             KubeJSPaths.STARTUP_SCRIPTS,
             (clazz -> true)
@@ -83,7 +83,7 @@ public class ScriptDump {
     public int total = 0;
 
     public ScriptDump(ScriptManager manager, Path basePath, Path scriptPath, Predicate<Clazz> scriptPredicate) {
-        this.scriptType = manager.scriptType;
+        this.scriptType = manager.type;
         this.manager = manager;
         this.basePath = basePath;
         this.scriptPath = scriptPath;

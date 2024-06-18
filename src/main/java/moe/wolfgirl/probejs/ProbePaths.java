@@ -1,8 +1,8 @@
 package moe.wolfgirl.probejs;
 
-import dev.architectury.platform.Platform;
-import dev.latvian.mods.kubejs.KubeJSPaths;
-import dev.latvian.mods.kubejs.util.UtilsJS;
+import dev.latvian.kubejs.KubeJSPaths;
+import dev.latvian.kubejs.util.UtilsJS;
+import me.shedaniel.architectury.platform.Platform;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

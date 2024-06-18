@@ -1,12 +1,14 @@
 package moe.wolfgirl.probejs.utils;
 
 
-import dev.latvian.mods.kubejs.bindings.JavaWrapper;
-import dev.latvian.mods.kubejs.script.ScriptManager;
+import dev.latvian.kubejs.bindings.JavaWrapper;
+import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.*;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 
 import java.util.Arrays;
+
+//TODO: there's another problem, no JavaWrapper for original KubeJS 1.16
 
 public class Require extends BaseFunction {
     private final JavaWrapper innerWrapper;
@@ -40,9 +42,11 @@ public class Require extends BaseFunction {
         }
 
         @Override
-        public Object get(Context cx, String name, Scriptable start) {
-            if (name.equals(path.getName())) return clazz;
-            return super.get(cx, name, start);
+        public Object get(String name, Scriptable start) {
+            if (name.equals(path.getName())) {
+                return clazz;
+            }
+            return super.get(name, start);
         }
     }
 }

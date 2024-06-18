@@ -1,8 +1,8 @@
 package moe.wolfgirl.probejs.plugin;
 
-import dev.latvian.mods.kubejs.script.BindingsEvent;
-import dev.latvian.mods.kubejs.script.ScriptType;
-import dev.latvian.mods.kubejs.util.ClassFilter;
+import dev.latvian.kubejs.script.BindingsEvent;
+import dev.latvian.kubejs.script.ScriptType;
+import dev.latvian.kubejs.util.ClassFilter;
 import moe.wolfgirl.probejs.events.ProbeEvents;
 import moe.wolfgirl.probejs.docs.ProbeBuiltinDocs;
 import moe.wolfgirl.probejs.events.SnippetGenerationEventJS;
@@ -21,20 +21,22 @@ import java.util.Map;
 import java.util.Set;
 
 public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
-    @Override
-    public void registerEvents() {
-        ProbeEvents.GROUP.register();
-    }
+//    @Override
+//    public void registerEvents() {
+//        ProbeEvents.GROUP.register();
+//    }
 
     @Override
-    public void registerBindings(BindingsEvent event) {
-        if (event.manager.scriptType == ScriptType.CLIENT) event.add("Types", Types.class);
+    public void addBindings(BindingsEvent event) {
+        if (event.manager.type == ScriptType.CLIENT) {
+            event.add("Types", Types.class);
+        }
         event.add("require", new Require(event.manager));
     }
 
     @Override
-    public void registerClasses(ScriptType type, ClassFilter filter) {
-        // lol
+    public void addClasses(ScriptType type, ClassFilter filter) {
+        // TODO: package name
         filter.deny("com.probejs");
         filter.deny("org.jetbrains.java.decompiler");
         filter.deny("com.github.javaparser");
