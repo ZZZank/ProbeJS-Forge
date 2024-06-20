@@ -1,7 +1,7 @@
 plugins {
     id "dev.architectury.loom" version "1.3-SNAPSHOT"
     id "maven-publish"
-    id "io.github.juuxel.loom-vineflower" version "1.11.0" apply false
+    id "io.github.juuxel.loom-vineflower" version rootProject.vineflower_version apply false
 }
 
 base {

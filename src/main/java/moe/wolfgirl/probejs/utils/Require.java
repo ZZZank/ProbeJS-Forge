@@ -19,7 +19,7 @@ public class Require extends BaseFunction {
 
     @Override
     public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-        String result = (String) Context.jsToJava(cx, args[0], String.class);
+        String result = (String) Context.jsToJava(args[0], String.class);
         String[] parts = result.split("/", 2);
         ClassPath path = new ClassPath(Arrays.stream(parts[1].split("/")).toList());
 

@@ -159,16 +159,6 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
         return false;
     }
 
-    /**
-     * 我一直看着你👁👁
-     * 当你在寂静的深夜独自行走👁👁
-     * 感觉到背后幽幽的目光直流冷汗👁👁
-     * 转头却空空荡荡时👁👁
-     * 那是我在看着你👁👁
-     * 我会一直看着你👁👁
-     * 我不会干什么👁👁
-     * 我只是喜欢看着你而已👁👁
-     */
     private static Map<TypeVariable<?>, Type> getGenericTypeReplacementForParentInterfaceMethods(Class<?> thisClass, Method thatMethod) {
         Class<?> targetClass = thatMethod.getDeclaringClass();
 
@@ -238,7 +228,6 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
         public final boolean isAbstract;
         public final boolean isInterface;
         public final Class<?> raw;
-
 
         public ClassAttribute(Class<?> clazz) {
             if (clazz.isInterface()) {
