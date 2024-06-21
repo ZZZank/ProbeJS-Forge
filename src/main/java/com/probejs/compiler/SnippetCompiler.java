@@ -35,9 +35,9 @@ public class SnippetCompiler {
     private static void generateRegistrySnippet(JObject resultJson) {
         val duped = new HashSet<String>();
         for (RegistryInfo info : SpecialData.instance().registries()) {
-            String type = info.id.getPath();
+            String type = info.id().getPath();
             if (duped.contains(type)) {
-                type = String.format("%s_%s", type, info.id.getNamespace());
+                type = String.format("%s_%s", type, info.id().getNamespace());
             } else {
                 duped.add(type);
             }
@@ -49,7 +49,7 @@ public class SnippetCompiler {
                         "body",
                         String.format(
                             "\"${1|%s|}\"",
-                            info.names.stream().map(ResourceLocation::toString).collect(Collectors.joining(","))
+                            info.names().stream().map(ResourceLocation::toString).collect(Collectors.joining(","))
                         )
                     )
             );

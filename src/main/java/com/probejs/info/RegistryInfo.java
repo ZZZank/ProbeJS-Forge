@@ -13,23 +13,24 @@ import org.jetbrains.annotations.Nullable;
 
 public class RegistryInfo {
 
-    public final Registry<?> raw;
-    public final ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRaw;
-    public final ResourceKey<? extends Registry<?>> resKey;
-    public final ResourceLocation parentId;
-    public final ResourceLocation id;
-    public final Set<ResourceLocation> names;
+    private final Registry<?> raw;
+    private final ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRaw;
+    private final ResourceKey<? extends Registry<?>> resKey;
+    private final ResourceLocation parentId;
+    private final ResourceLocation id;
+    private final Set<ResourceLocation> names;
     @Nullable
     private final StaticTagHelper<?> tagHelper;
 
     public RegistryInfo(ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRegistry) {
-        this.raw = null;
         this.forgeRaw = forgeRegistry;
         this.resKey = forgeRaw.getRegistryKey();
         this.parentId = resKey.getRegistryName();
         this.id = resKey.location();
         this.names = forgeRaw.getKeys();
         this.tagHelper = StaticTags.get(this.id);
+
+        this.raw = Registry.REGISTRY.get(id);
     }
 
     public RegistryInfo(Registry<?> registry) {

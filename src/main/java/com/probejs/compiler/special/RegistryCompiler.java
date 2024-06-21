@@ -20,14 +20,14 @@ public class RegistryCompiler {
     public static void compile(BufferedWriter writer) throws IOException {
         Multimap<String, RegistryInfo> infoByMods = ArrayListMultimap.create();
         for (RegistryInfo info : SpecialData.instance().registries()) {
-            infoByMods.put(info.id.getNamespace(), info);
+            infoByMods.put(info.id().getNamespace(), info);
         }
         List<IFormatter> formatters = new ArrayList<>();
         infoByMods.asMap().forEach((namespace, rInfo) -> {
             val lines = rInfo
                 .stream()
                 .map(info -> {
-                    val names = info.names
+                    val names = info.names()
                         .stream()
                         .map(rl -> ProbeJS.GSON.toJson(rl.toString()))
                         .collect(Collectors.toList());
@@ -36,7 +36,7 @@ public class RegistryCompiler {
                     }
                     return String.format(
                         "type %s = %s;",
-                        info.id.getPath().replace('/', '$'),
+                        info.id().getPath().replace('/', '$'),
                         String.join("|", names)
                     );
                 })

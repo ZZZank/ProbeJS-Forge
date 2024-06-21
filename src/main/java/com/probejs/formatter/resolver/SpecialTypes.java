@@ -153,13 +153,13 @@ public class SpecialTypes {
         SpecialData.instance()
             .registries()
             .stream()
-            .filter(info -> !info.names.isEmpty())
+            .filter(info -> !info.names().isEmpty())
             .forEach(info -> {
-                val registrySuperType = info.forgeRaw.getRegistrySuperType();
+                val registrySuperType = info.forgeRaw().getRegistrySuperType();
                 val name = String.format(
                     "Registry.%s.%s",
-                    info.id.getNamespace(),
-                    info.id.getPath().replace('/', '$')
+                    info.id().getNamespace(),
+                    info.id().getPath().replace('/', '$')
                 );
                 DocManager.addAssignable(registrySuperType.getName(), new TypeLiteral(name));
             });

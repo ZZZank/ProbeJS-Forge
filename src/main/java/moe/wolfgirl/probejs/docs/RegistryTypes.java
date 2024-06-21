@@ -1,6 +1,6 @@
 package moe.wolfgirl.probejs.docs;
 
-import dev.latvian.mods.kubejs.registry.RegistryInfo;
+import com.probejs.info.SpecialData;
 import lombok.val;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
@@ -15,13 +15,12 @@ import moe.wolfgirl.probejs.lang.typescript.code.ts.Wrapped;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import moe.wolfgirl.probejs.utils.NameUtils;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tags.TagKey;
+import net.minecraft.tags.Tag;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.*;
@@ -36,29 +35,31 @@ public class RegistryTypes extends ProbeJSPlugin {
 
     @Override
     public void assignType(ScriptDump scriptDump) {
+        val server = ServerLifecycleHooks.getCurrentServer();
+        if (server == null) {
+            return;
+        }
         List<BaseType> registryNames = new ArrayList<>();
 
-        for (Map.Entry<ResourceKey<? extends Registry<?>>, RegistryInfo<?>> entry : RegistryInfo.MAP.entrySet()) {
-            ResourceKey<? extends Registry<?>> key = entry.getKey();
-            RegistryInfo<?> info = entry.getValue();
+        for (val info : SpecialData.instance().registries()) {
+            val key = info.resKey();
 
-            if (info.getVanillaRegistry() == null) {
+            if (Registry.REGISTRY.get(info.id()) == null) {
                 continue;
             }
 
-            String typeName = NameUtils.rlToTitle(key.location().getPath());
-            scriptDump.assignType(info.objectBaseClass, Types.primitive("Special.%s".formatted(typeName)));
+            val typeName = NameUtils.rlToTitle(key.location().getPath());
+            scriptDump.assignType(info.forgeRaw().getRegistrySuperType(), Types.primitive("Special.%s".formatted(typeName)));
             registryNames.add(Types.literal(key.location().toString()));
         }
 
         // ResourceKey<T> to Special.LiteralOf<T>
         scriptDump.assignType(ResourceKey.class, Types.parameterized(Types.primitive("Special.LiteralOf"), Types.generic("T")));
-        // Also holder
-        scriptDump.assignType(Holder.class, Types.parameterized(Types.primitive("Special.LiteralOf"), Types.generic("T")));
         // Registries (why?)
         scriptDump.assignType(Registry.class, Types.or(registryNames.toArray(BaseType[]::new)));
         // TagKey<T> to Special.TagOf<T>
-        scriptDump.assignType(TagKey.class, Types.parameterized(Types.primitive("Special.TagOf"), Types.generic("T")));
+        //TODO: TagKey?
+        scriptDump.assignType(Tag.class, Types.parameterized(Types.primitive("Special.TagOf"), Types.generic("T")));
     }
 
     @Override
@@ -70,25 +71,31 @@ public class RegistryTypes extends ProbeJSPlugin {
         }
         val registryAccess = currentServer.registryAccess();
 
-        for (ResourceKey<? extends Registry<?>> key : RegistryInfo.MAP.keySet()) {
-            Registry<?> registry = registryAccess.registry(key).orElse(null);
-            if (registry == null) continue;
+        for (val info : SpecialData.instance().registries()) {
+            if (info.raw() == null) {
+                continue;
+            }
 
-            List<String> entryNames = new ArrayList<>();
-            for (ResourceLocation entryName : registry.keySet()) {
+            List<String> entryNames = new ArrayList<>(info.names().size());
+            for (ResourceLocation entryName : info.names()) {
                 if (entryName.getNamespace().equals("minecraft"))
                     entryNames.add(entryName.getPath());
                 entryNames.add(entryName.toString());
             }
 
             BaseType types = Types.or(entryNames.stream().map(Types::literal).toArray(BaseType[]::new));
-            String typeName = NameUtils.rlToTitle(key.location().getPath());
+            String typeName = NameUtils.rlToTitle(info.resKey().location().getPath());
 
             TypeDecl typeDecl = new TypeDecl(typeName, types);
             special.addCode(typeDecl);
 
-            BaseType[] tagNames = registry.getTagNames()
-                    .map(TagKey::location)
+
+            val tagNames = info.tagHelper() == null
+                ? new BaseType[0]
+                : info.tagHelper()
+                    .getAllTags()
+                    .getAvailableTags()
+                    .stream()
                     .map(ResourceLocation::toString)
                     .map(Types::literal)
                     .toArray(BaseType[]::new);
@@ -112,23 +119,25 @@ public class RegistryTypes extends ProbeJSPlugin {
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
         // We inject literal and tag into registry types
-        for (Map.Entry<ResourceKey<? extends Registry<?>>, RegistryInfo<?>> entry : RegistryInfo.MAP.entrySet()) {
-            ResourceKey<? extends Registry<?>> key = entry.getKey();
-            RegistryInfo<?> info = entry.getValue();
+        for (val info : SpecialData.instance().registries()) {
+            val key = info.resKey();
 
-            TypeScriptFile typeScriptFile = globalClasses.get(new ClassPath(info.objectBaseClass));
-            if (typeScriptFile == null) continue;
+            TypeScriptFile typeScriptFile = globalClasses.get(new ClassPath(info.forgeRaw().getRegistrySuperType()));
+            if (typeScriptFile == null) {
+                continue;
+            }
             ClassDecl classDecl = typeScriptFile.findCode(ClassDecl.class).orElse(null);
-            if (classDecl == null) continue;
+            if (classDecl == null) {
+                continue;
+            }
 
-            String typeName = NameUtils.rlToTitle(key.location().getPath());
-            String tagName = typeName + "Tag";
+            val typeName = NameUtils.rlToTitle(key.location().getPath());
+            val tagName = typeName + "Tag";
 
-
-            var literalField = new FieldDecl(LITERAL_FIELD, Types.primitive("Special.%s".formatted(typeName)));
+            val literalField = new FieldDecl(LITERAL_FIELD, Types.primitive("Special.%s".formatted(typeName)));
             literalField.addComment("This field is a type stub generated by ProbeJS and shall not be used in any sense.");
             classDecl.fields.add(literalField);
-            var tagField = new FieldDecl(TAG_FIELD, Types.primitive("Special.%s".formatted(tagName)));
+            val tagField = new FieldDecl(TAG_FIELD, Types.primitive("Special.%s".formatted(tagName)));
             tagField.addComment("This field is a type stub generated by ProbeJS and shall not be used in any sense.");
             classDecl.fields.add(tagField);
         }
@@ -137,13 +146,15 @@ public class RegistryTypes extends ProbeJSPlugin {
     @Override
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
         Set<Class<?>> registryObjectClasses = new HashSet<>();
-        for (RegistryInfo<?> value : RegistryInfo.MAP.values()) {
-            Registry<?> registry = value.getVanillaRegistry();
-            if (registry == null) continue;
-            for (Object o : registry) {
+        for (val info : SpecialData.instance().registries()) {
+            val registry = info.raw();
+            if (registry == null) {
+                continue;
+            }
+            for (val o : registry) {
                 registryObjectClasses.add(o.getClass());
             }
-            registryObjectClasses.add(value.objectBaseClass);
+            registryObjectClasses.add(info.forgeRaw().getRegistrySuperType());
         }
         return registryObjectClasses;
     }
@@ -154,9 +165,12 @@ public class RegistryTypes extends ProbeJSPlugin {
         if (currentServer == null) return;
         RegistryAccess registryAccess = currentServer.registryAccess();
 
-        for (ResourceKey<? extends Registry<?>> key : RegistryInfo.MAP.keySet()) {
-            Registry<?> registry = registryAccess.registry(key).orElse(null);
-            if (registry == null) continue;
+        for (val info : SpecialData.instance().registries()) {
+            val registry = info.raw();
+            val key = info.resKey();
+            if (registry == null) {
+                continue;
+            }
 
             List<String> entries = registry.keySet()
                     .stream()
@@ -175,8 +189,12 @@ public class RegistryTypes extends ProbeJSPlugin {
                     .choices(entries)
                     .literal("\"");
 
-            List<String> tags = registry.getTagNames()
-                    .map(TagKey::location)
+            List<String> tags = info.tagHelper()==null?
+                Collections.emptyList():
+                info.tagHelper()
+                    .getAllTags()
+                    .getAvailableTags()
+                    .stream()
                     .map(ResourceLocation::toString)
                     .toList();
             if (tags.isEmpty()) continue;
