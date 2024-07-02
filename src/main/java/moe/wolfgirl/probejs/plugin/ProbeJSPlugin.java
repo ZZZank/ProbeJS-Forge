@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.util.KubeJSPlugins;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import moe.wolfgirl.probejs.lang.schema.SchemaDump;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
@@ -27,9 +28,8 @@ public class ProbeJSPlugin extends KubeJSPlugin {
     @HideFromJS
     public static void forEachPlugin(Consumer<ProbeJSPlugin> consumer) {
         KubeJSPlugins.forEachPlugin(plugin -> {
-            if (plugin instanceof ProbeJSPlugin probePlugin) {
+            if (plugin instanceof ProbeJSPlugin probePlugin)
                 consumer.accept(probePlugin);
-            }
         });
     }
 
@@ -94,6 +94,10 @@ public class ProbeJSPlugin extends KubeJSPlugin {
     }
 
     public void addVSCodeSnippets(SnippetDump dump) {
+
+    }
+
+    public void addJsonSchema(SchemaDump dump) {
 
     }
 }

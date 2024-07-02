@@ -9,13 +9,13 @@ import moe.wolfgirl.probejs.events.SnippetGenerationEventJS;
 import moe.wolfgirl.probejs.events.TypeAssignmentEventJS;
 import moe.wolfgirl.probejs.events.TypingModificationEventJS;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
+import moe.wolfgirl.probejs.lang.schema.SchemaDump;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.transpiler.Transpiler;
 import moe.wolfgirl.probejs.lang.transpiler.TypeConverter;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.lang.typescript.TypeScriptFile;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
-import moe.wolfgirl.probejs.utils.Require;
 
 import java.util.Map;
 import java.util.Set;
@@ -104,5 +104,10 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
     public void addVSCodeSnippets(SnippetDump dump) {
         ProbeBuiltinDocs.INSTANCE.addVSCodeSnippets(dump);
         ProbeEvents.SNIPPETS.post(new SnippetGenerationEventJS(dump));
+    }
+
+    @Override
+    public void addJsonSchema(SchemaDump dump) {
+        ProbeBuiltinDocs.INSTANCE.addJsonSchema(dump);
     }
 }

@@ -1,30 +1,35 @@
-package moe.wolfgirl.probejs.utils;
+package moe.wolfgirl.probejs.plugin;
 
-
-import dev.latvian.kubejs.bindings.JavaWrapper;
 import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.*;
+import lombok.val;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 
 import java.util.Arrays;
 
-//TODO: there's another problem, no JavaWrapper for original KubeJS 1.16
-
+//TODO: replace with js file for full backward compat
 public class Require extends BaseFunction {
-    private final JavaWrapper innerWrapper;
+    private final ScriptManager manager;
 
     public Require(ScriptManager manager) {
-        this.innerWrapper = new JavaWrapper(manager);
+        this.manager = manager;
     }
 
     @Override
     public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-        String result = (String) Context.jsToJava(args[0], String.class);
-        String[] parts = result.split("/", 2);
-        ClassPath path = new ClassPath(Arrays.stream(parts[1].split("/")).toList());
+        val result = (String) Context.jsToJava(args[0], String.class);
+        if (!result.startsWith("packages")) {
+            return new RequireWrapper(null, Undefined.instance);
+        }
+        val parts = result.split("/", 2);
+        val path = new ClassPath(Arrays.stream(parts[1].split("/")).toList());
 
-        var loaded = innerWrapper.tryLoadClass(path.getClassPathJava());
-        return new RequireWrapper(path, loaded == null ? Undefined.instance : loaded);
+        val loaded = manager.loadJavaClass(scope, new String[]{path.getClassPathJava()});
+        if (loaded == null) {
+            manager.type.console.warn("Class '%s' not loaded".formatted(path.getClassPathJava()));
+            return new RequireWrapper(path, Undefined.instance);
+        }
+        return new RequireWrapper(path, loaded);
     }
 
     public static class RequireWrapper extends ScriptableObject {
@@ -43,7 +48,7 @@ public class Require extends BaseFunction {
 
         @Override
         public Object get(String name, Scriptable start) {
-            if (name.equals(path.getName())) {
+            if (path == null || name.equals(path.getName())) {
                 return clazz;
             }
             return super.get(name, start);
