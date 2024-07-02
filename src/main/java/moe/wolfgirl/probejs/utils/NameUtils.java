@@ -2,6 +2,7 @@ package moe.wolfgirl.probejs.utils;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -22,7 +23,7 @@ public class NameUtils {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < words.length; i++) {
             String word = words[i];
-            if (word.length() > 0) {
+            if (!word.isEmpty()) {
                 if (i == 0) {
                     result.append(Character.toLowerCase(word.charAt(0)));
                 } else {
@@ -63,5 +64,34 @@ public class NameUtils {
 
     public static String snakeToTitle(String s) {
         return Arrays.stream(s.split("_")).map(NameUtils::getCapitalized).collect(Collectors.joining());
+    }
+
+    public static String replaceRegion(String str, int start, int end, String oldText, String newText) {
+        if (start < 0 || start >= end || end > str.length()) {
+            throw new IllegalArgumentException("Invalid start or end index");
+        }
+
+        String prefix = str.substring(0, start);
+        String region = str.substring(start, end);
+        String suffix = str.substring(end);
+
+        String replacedRegion = region.replace(oldText, newText);
+
+        return prefix + replacedRegion + suffix;
+    }
+
+    public static String cutOffStartEnds(String str, List<Integer[]> pairs) {
+        StringBuilder result = new StringBuilder(str);
+
+        // Iterate over the pairs in reverse order
+        for (int i = pairs.size() - 1; i >= 0; i--) {
+            int start = pairs.get(i)[0];
+            int end = pairs.get(i)[1] + 1;
+
+            // Cut off the substring from start to end (exclusive)
+            result.delete(start, end);
+        }
+
+        return result.toString();
     }
 }

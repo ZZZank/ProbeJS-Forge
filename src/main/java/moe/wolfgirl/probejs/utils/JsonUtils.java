@@ -1,9 +1,14 @@
 package moe.wolfgirl.probejs.utils;
 
 import com.google.gson.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Type;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -154,5 +159,36 @@ public class JsonUtils {
         }
 
         return second;
+    }
+
+    public static class PathConverter implements JsonDeserializer<Path>, JsonSerializer<Path> {
+
+        @Override
+        public Path deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return Paths.get(json.getAsString());
+        }
+
+        @Override
+        public JsonElement serialize(Path src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.toString());
+        }
+    }
+
+    public static JsonElement errorAsPayload(Throwable throwable) {
+        JsonObject object = new JsonObject();
+
+        object.addProperty("message", throwable.getMessage());
+        JsonArray jsonArray = new JsonArray();
+        for (StackTraceElement stackTraceElement : throwable.getStackTrace()) {
+            jsonArray.add(stackTraceElement.toString());
+        }
+        object.add("stackTrace", jsonArray);
+
+        return object;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> JsonElement forceEncodeAsJson(Codec<T> codec, Object value) {
+        return codec.encodeStart(JsonOps.INSTANCE, (T) value).result().orElse(JsonNull.INSTANCE);
     }
 }

@@ -1,11 +1,19 @@
 package moe.wolfgirl.probejs.utils;
 
+import com.probejs.info.RegistryInfo;
+import com.probejs.info.SpecialData;
+import dev.latvian.kubejs.server.ServerScriptManager;
+import lombok.val;
 import me.shedaniel.architectury.platform.Mod;
 import me.shedaniel.architectury.platform.Platform;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Set;
 
 public class GameUtils {
     public static long modHash() {
@@ -22,23 +30,30 @@ public class GameUtils {
     }
 
     public static long registryHash() {
-        //TODO: so the problem is, there's no RegistryInfo in KubeJS for 1.16
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-//            RegistryInfo.MAP.values()
-//                    .stream()
-//                    .flatMap(info -> info.objects.keySet()
-//                            .stream()
-//                            .map(ResourceLocation::toString)
-//                            .map(s -> info.key.location() + "/" + s)
-//                    )
-//                    .sorted()
-//                    .forEach(key -> digest.update(key.getBytes()));
+            val digest = MessageDigest.getInstance("SHA-256");
+            val server = ServerLifecycleHooks.getCurrentServer();
+            if (server == null) {
+                return -1;
+            }
+
+            SpecialData.instance().registries()
+                .stream()
+                .map(RegistryInfo::names)
+                .flatMap(Set::stream)
+                .map(ResourceLocation::toString)
+                .sorted()
+                .forEach(s -> digest.update(s.getBytes()));
+
             ByteBuffer buffer = ByteBuffer.wrap(digest.digest());
             return buffer.getLong();
         } catch (NoSuchAlgorithmException e) {
             return -1;
         }
+    }
 
+    @Nullable
+    public static ServerScriptManager getServerScriptManager() {
+        return ServerScriptManager.instance;
     }
 }
