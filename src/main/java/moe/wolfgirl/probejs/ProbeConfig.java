@@ -24,7 +24,8 @@ public class ProbeConfig {
     public ConfigEntry<Integer> interactivePort = new ConfigEntry<>("interactivePort", 7796);
     public ConfigEntry<Long> modHash = new ConfigEntry<>("modHash", -1L);
     public ConfigEntry<Long> registryHash = new ConfigEntry<>("registryHash", -1L);
-    public ConfigEntry<Boolean> isolatedScopes = new ConfigEntry<>("isolatedScope", true);
+    public ConfigEntry<Boolean> isolatedScopes = new ConfigEntry<>("isolatedScope", false);
+    public ConfigEntry<Boolean> complete = new ConfigEntry<>("complete", true);
 
     public static class ConfigEntry<T> {
         public final String name;

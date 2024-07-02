@@ -3,12 +3,14 @@ package moe.wolfgirl.probejs;
 import lombok.val;
 import me.shedaniel.architectury.platform.Mod;
 import me.shedaniel.architectury.platform.Platform;
-import moe.wolfgirl.probejs.mixins.access.LanguageManagerMixin;
+import moe.wolfgirl.probejs.features.bridge.ProbeServer;
 import moe.wolfgirl.probejs.mixins.access.TextureAtlasMixin;
 import moe.wolfgirl.probejs.mixins.access.TextureManagerMixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.ClientLanguage;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.InventoryMenu;
 
 import java.util.Collections;
@@ -18,23 +20,29 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class GlobalStates {
+    public static ProbeServer SERVER;
+
     public static final Set<Class<?>> KNOWN_EVENTS = new HashSet<>();
     public static final Set<String> MIXIN_LANG_KEYS = new HashSet<>();
     public static final Set<String> RECIPE_IDS = new HashSet<>();
     public static final Set<String> LOOT_TABLES = new HashSet<>();
+    public static long ERROR_TIMESTAMP = 0;
 
     public static final Supplier<Set<String>> LANG_KEYS = () -> {
-        val keys = new HashSet<>(MIXIN_LANG_KEYS);
+        Set<String> keys;
+        synchronized (MIXIN_LANG_KEYS) {
+            keys = new HashSet<>(MIXIN_LANG_KEYS);
+        }
         val mc = Minecraft.getInstance();
         val manager = mc.getLanguageManager();
-        val english = manager.getLanguage(LanguageManagerMixin.getDefault().getCode());
+        val english = manager.getLanguage("en_us");
         if (english == null) {
             return keys;
         }
 
         val clientLanguage = ClientLanguage.loadFrom(
             mc.getResourceManager(),
-            Collections.singletonList(LanguageManagerMixin.getDefault())
+            Collections.singletonList(english)
         );
         keys.addAll(clientLanguage.getLanguageData().keySet());
         return keys;
@@ -60,4 +68,8 @@ public class GlobalStates {
             .stream()
             .map(Mod::getModId)
             .collect(Collectors.toSet());
+
+    // For probing stuffs
+    public static BlockPos LAST_RIGHTCLICKED = null;
+    public static Entity LAST_ENTITY = null;
 }
