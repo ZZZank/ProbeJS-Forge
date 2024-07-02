@@ -1,9 +1,6 @@
 package moe.wolfgirl.probejs.lang.java.type;
 
-import moe.wolfgirl.probejs.lang.java.type.impl.ArrayType;
-import moe.wolfgirl.probejs.lang.java.type.impl.ClassType;
-import moe.wolfgirl.probejs.lang.java.type.impl.ParamType;
-import moe.wolfgirl.probejs.lang.java.type.impl.VariableType;
+import moe.wolfgirl.probejs.lang.java.type.impl.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -15,28 +12,27 @@ public class TypeAdapter {
     }
 
     public static TypeDescriptor getTypeDescription(AnnotatedType type, boolean recursive) {
-        if (type == null) return null;
-
-        if (type instanceof AnnotatedArrayType arrayType) {
+        if (type == null) {
+            return null;
+        } else if (type instanceof AnnotatedArrayType arrayType) {
             return new ArrayType(arrayType);
-        }
-        if (type instanceof AnnotatedParameterizedType paramType) {
+        } else if (type instanceof AnnotatedParameterizedType paramType) {
             return new ParamType(paramType);
-        }
-        if (type instanceof AnnotatedTypeVariable typeVariable) {
+        } else if (type instanceof AnnotatedTypeVariable typeVariable) {
             return new VariableType(typeVariable, recursive);
+        } else if (type instanceof AnnotatedWildcardType wildcardType) {
+            return new WildType(wildcardType);
         }
-        if (type instanceof AnnotatedWildcardType wildcardType) {
-            return new moe.wolfgirl.probejs.lang.java.type.impl.WildcardType(wildcardType, recursive);
-        }
+
         if (type.getType() instanceof Class<?> clazz) {
             TypeVariable<?>[] interfaces = clazz.getTypeParameters();
-            if (recursive && interfaces.length != 0)
+            if (recursive && interfaces.length != 0) {
                 return new ParamType(
-                        type.getAnnotations(),
-                        new ClassType(clazz),
-                        Collections.nCopies(interfaces.length, new ClassType(Object.class))
+                    type.getAnnotations(),
+                    new ClassType(clazz),
+                    Collections.nCopies(interfaces.length, new ClassType(Object.class))
                 );
+            }
             return new ClassType(type);
         }
         throw new RuntimeException("Unknown type to be resolved");
@@ -47,28 +43,25 @@ public class TypeAdapter {
     }
 
     public static TypeDescriptor getTypeDescription(Type type, boolean recursive) {
-        if (type == null) return null;
-
-        if (type instanceof GenericArrayType arrayType) {
+        if (type == null) {
+            return null;
+        } else if (type instanceof GenericArrayType arrayType) {
             return new ArrayType(arrayType);
-        }
-        if (type instanceof ParameterizedType parameterizedType) {
+        } else if (type instanceof ParameterizedType parameterizedType) {
             return new ParamType(parameterizedType);
-        }
-        if (type instanceof TypeVariable<?> typeVariable) {
+        } else if (type instanceof TypeVariable<?> typeVariable) {
             return new VariableType(typeVariable, recursive);
-        }
-        if (type instanceof WildcardType wildcardType) {
-            return new moe.wolfgirl.probejs.lang.java.type.impl.WildcardType(wildcardType, recursive);
-        }
-        if (type instanceof Class<?> clazz) {
+        } else if (type instanceof WildcardType wildcardType) {
+            return new WildType(wildcardType);
+        } else if (type instanceof Class<?> clazz) {
             TypeVariable<?>[] interfaces = clazz.getTypeParameters();
-            if (recursive && interfaces.length != 0)
+            if (recursive && interfaces.length != 0) {
                 return new ParamType(
-                        new Annotation[]{},
-                        new ClassType(clazz),
-                        Collections.nCopies(interfaces.length, new ClassType(Object.class))
+                    new Annotation[]{},
+                    new ClassType(clazz),
+                    Collections.nCopies(interfaces.length, new ClassType(Object.class))
                 );
+            }
             return new ClassType(clazz);
         }
         throw new RuntimeException("Unknown type to be resolved");
@@ -77,16 +70,16 @@ public class TypeAdapter {
     public static TypeDescriptor consolidateType(TypeDescriptor in, String symbol, TypeDescriptor replacement) {
         if (in instanceof VariableType variableType) {
             if (variableType.symbol.equals(symbol)) return replacement;
-        }
-        if (in instanceof ArrayType arrayType) {
+        } else if (in instanceof ArrayType arrayType) {
             return new ArrayType(consolidateType(arrayType.component, symbol, replacement));
-        }
-        if (in instanceof ParamType paramType) {
+        } else if (in instanceof ParamType paramType) {
             return new ParamType(
                     new Annotation[]{},
                     consolidateType(paramType.base, symbol, replacement),
                     paramType.params.stream().map(t -> consolidateType(t, symbol, replacement)).toList()
             );
+        } else if (in instanceof WildType wildType) {
+            return new WildType(wildType.bound.map(t -> consolidateType(t, symbol, replacement)));
         }
         return in;
     }

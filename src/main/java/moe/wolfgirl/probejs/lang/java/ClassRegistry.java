@@ -39,14 +39,23 @@ public class ClassRegistry {
 
     public void fromClasses(Collection<Class<?>> classes) {
         for (Class<?> c : classes) {
-            if (c.isSynthetic()) continue;
-            if (c.isAnonymousClass()) continue;
-            if (!foundClasses.containsKey(new ClassPath(c))) {
-                try {
+            try {
+                // We test if the class actually exists from forName
+                // I think some runtime class can have non-existing Class<?> object due to .getSuperClass
+                // or .getInterfaces
+                Class.forName(c.getName());
+            } catch (Throwable ignore) {
+                continue;
+            }
+
+            try {
+                if (c.isSynthetic()) continue;
+                if (c.isAnonymousClass()) continue;
+                if (!foundClasses.containsKey(new ClassPath(c))) {
                     Clazz clazz = new Clazz(c);
                     foundClasses.put(clazz.classPath, clazz);
-                } catch (Throwable ignored) {
                 }
+            } catch (Throwable ignored) {
             }
         }
     }
@@ -100,9 +109,13 @@ public class ClassRegistry {
             fetchedClass.removeIf(clazz -> foundClasses.containsKey(new ClassPath(clazz)));
             currentClasses.clear();
             for (Class<?> c : fetchedClass) {
-                Clazz clazz = new Clazz(c);
-                foundClasses.put(clazz.classPath, clazz);
-                currentClasses.add(clazz);
+                try {
+                    Class.forName(c.getName());
+                    Clazz clazz = new Clazz(c);
+                    foundClasses.put(clazz.classPath, clazz);
+                    currentClasses.add(clazz);
+                } catch (Throwable ignore) {
+                }
             }
         }
     }
