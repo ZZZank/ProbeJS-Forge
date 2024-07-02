@@ -1,7 +1,7 @@
 package moe.wolfgirl.probejs.lang.linter;
 
 import dev.latvian.kubejs.KubeJSPaths;
-import dev.latvian.kubejs.text.Text;
+import dev.latvian.kubejs.bindings.TextWrapper;
 import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.lang.linter.rules.NoNamespacePollution;
 import moe.wolfgirl.probejs.lang.linter.rules.RespectPriority;
@@ -20,14 +20,11 @@ import java.util.stream.Stream;
 public class Linter {
 
     public static final Supplier<Linter> SERVER_SCRIPT = () ->
-            new Linter(KubeJSPaths.SERVER_SCRIPTS)
-                    .defaultRules();
+        new Linter(KubeJSPaths.SERVER_SCRIPTS).defaultRules();
     public static final Supplier<Linter> CLIENT_SCRIPT = () ->
-            new Linter(KubeJSPaths.CLIENT_SCRIPTS)
-                    .defaultRules();
+        new Linter(KubeJSPaths.CLIENT_SCRIPTS).defaultRules();
     public static final Supplier<Linter> STARTUP_SCRIPT = () ->
-            new Linter(KubeJSPaths.STARTUP_SCRIPTS)
-                    .defaultRules();
+        new Linter(KubeJSPaths.STARTUP_SCRIPTS).defaultRules();
 
     @FunctionalInterface
     public interface RuleFactory {
@@ -103,7 +100,7 @@ public class Linter {
                 report.accept(warning);
             }
             if (warnings.isEmpty())
-                report.accept(Text.of("probejs.lint_passed").green().component());
+                report.accept(TextWrapper.translate("probejs.lint_passed").green().component());
         } catch (Throwable e) {
             ProbeJS.LOGGER.error(e.getMessage());
         }

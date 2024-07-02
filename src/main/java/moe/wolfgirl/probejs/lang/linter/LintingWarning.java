@@ -1,8 +1,10 @@
 package moe.wolfgirl.probejs.lang.linter;
 
+import com.google.gson.JsonElement;
+import dev.latvian.kubejs.bindings.TextWrapper;
 import dev.latvian.mods.rhino.mod.util.color.Color;
 import dev.latvian.mods.rhino.mod.wrapper.ColorWrapper;
-import moe.wolfgirl.probejs.utils.PText;
+import moe.wolfgirl.probejs.ProbeJS;
 import net.minecraft.network.chat.Component;
 
 import java.nio.file.Path;
@@ -23,11 +25,15 @@ public record LintingWarning(Path file, Level level, int line, int column, Strin
     public Component defaultFormatting(Path relativeBase) {
         Path stripped = relativeBase.getParent().relativize(file);
 
-        return PText.literal("[")
-//            .append(PText.literal(level().name()).kjs$color(level().color))
-                .append(PText.literal(level().name()))
-                .append(PText.literal("] "))
-                .append(PText.literal(stripped.toString()))
-                .append(PText.literal(":%d:%d: %s".formatted(line, column, message)));
+        return TextWrapper.string("[")
+            .append(TextWrapper.string(level().name()).color(level().color))
+            .append(TextWrapper.string("] "))
+            .append(TextWrapper.string(stripped.toString()))
+            .append(TextWrapper.string(":%d:%d: %s".formatted(line, column, message)))
+            .component();
+    }
+
+    public JsonElement asPayload() {
+        return ProbeJS.GSON.toJsonTree(this);
     }
 }
