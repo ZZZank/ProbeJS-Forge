@@ -45,13 +45,13 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
     @Override
     public void assignType(ScriptDump scriptDump) {
         ProbeBuiltinDocs.INSTANCE.assignType(scriptDump);
-        ProbeEvents.ASSIGN_TYPE.post(new TypeAssignmentEventJS(scriptDump));
+        new TypeAssignmentEventJS(scriptDump).post(ScriptType.CLIENT, ProbeEvents.ASSIGN_TYPE);
     }
 
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
         ProbeBuiltinDocs.INSTANCE.modifyClasses(scriptDump, globalClasses);
-        ProbeEvents.MODIFY_DOC.post(new TypingModificationEventJS(scriptDump, globalClasses));
+        new TypingModificationEventJS(scriptDump, globalClasses).post(ScriptType.CLIENT, ProbeEvents.MODIFY_DOC);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
     @Override
     public void addVSCodeSnippets(SnippetDump dump) {
         ProbeBuiltinDocs.INSTANCE.addVSCodeSnippets(dump);
-        ProbeEvents.SNIPPETS.post(new SnippetGenerationEventJS(dump));
+        new SnippetGenerationEventJS(dump).post(ScriptType.CLIENT, ProbeEvents.SNIPPETS);
     }
 
     @Override
