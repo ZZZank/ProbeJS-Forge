@@ -1,31 +1,23 @@
 package moe.wolfgirl.probejs.lang.java.clazz.members;
 
 import moe.wolfgirl.probejs.lang.java.base.AnnotationHolder;
-import moe.wolfgirl.probejs.lang.java.base.ClassPathProvider;
-import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.java.type.TypeAdapter;
 import moe.wolfgirl.probejs.lang.java.type.TypeDescriptor;
-import dev.latvian.mods.rhino.JavaMembers;
+import moe.wolfgirl.probejs.utils.RemapperBridge;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
 
-public class FieldInfo extends AnnotationHolder implements ClassPathProvider {
+public class FieldInfo extends AnnotationHolder {
     public final String name;
     public final TypeDescriptor type;
     public final FieldAttributes attributes;
 
-    public FieldInfo(JavaMembers.FieldInfo field) {
-        super(field.field.getAnnotations());
-        this.name = field.name;
-        this.type = TypeAdapter.getTypeDescription(field.field.getAnnotatedType());
-        this.attributes = new FieldAttributes(field.field);
-    }
-
-    @Override
-    public Collection<ClassPath> getClassPaths() {
-        return type.getClassPaths();
+    public FieldInfo(Class<?> from, Field field) {
+        super(field.getAnnotations());
+        this.name = RemapperBridge.remapFieldOrDefault(from, field);
+        this.type = TypeAdapter.getTypeDescription(field.getAnnotatedType());
+        this.attributes = new FieldAttributes(field);
     }
 
     public static class FieldAttributes {

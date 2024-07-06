@@ -3,7 +3,6 @@ package moe.wolfgirl.probejs.lang.java.clazz;
 import dev.latvian.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import moe.wolfgirl.probejs.lang.java.ClassRegistry;
-import moe.wolfgirl.probejs.utils.RemapperUtils;
 
 import java.lang.reflect.TypeVariable;
 import java.nio.file.Files;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public record ClassPath(List<String> parts) {
     private static List<String> transformJavaClass(Class<?> clazz) {
-        String name = RemapperUtils.getRemappedClassName(clazz);
+        String name = clazz.getName();
         String[] parts = name.split("\\.");
         String className = "$" + parts[parts.length - 1];
         parts[parts.length - 1] = className;

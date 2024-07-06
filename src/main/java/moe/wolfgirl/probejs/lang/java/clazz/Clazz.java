@@ -1,23 +1,27 @@
 package moe.wolfgirl.probejs.lang.java.clazz;
 
+import dev.latvian.kubejs.KubeJS;
+import dev.latvian.kubejs.script.ScriptManager;
+import dev.latvian.mods.rhino.JavaMembers;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import moe.wolfgirl.probejs.lang.java.base.ClassPathProvider;
+import lombok.val;
+import moe.wolfgirl.probejs.GlobalStates;
 import moe.wolfgirl.probejs.lang.java.base.TypeVariableHolder;
 import moe.wolfgirl.probejs.lang.java.clazz.members.ConstructorInfo;
 import moe.wolfgirl.probejs.lang.java.clazz.members.FieldInfo;
 import moe.wolfgirl.probejs.lang.java.clazz.members.MethodInfo;
-import moe.wolfgirl.probejs.lang.java.clazz.members.ParamInfo;
 import moe.wolfgirl.probejs.lang.java.type.TypeAdapter;
 import moe.wolfgirl.probejs.lang.java.type.TypeDescriptor;
-import moe.wolfgirl.probejs.lang.java.type.impl.VariableType;
-import moe.wolfgirl.probejs.utils.RemapperUtils;
+import moe.wolfgirl.probejs.mixins.access.RhinoContextMixin;
+import moe.wolfgirl.probejs.utils.JavaMemberAccessor;
+import moe.wolfgirl.probejs.utils.RemapperBridge;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Clazz extends TypeVariableHolder implements ClassPathProvider {
+public class Clazz extends TypeVariableHolder {
 
     @HideFromJS
     public final Class<?> original;
@@ -34,24 +38,35 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
         super(clazz.getTypeParameters(), clazz.getAnnotations());
 
         this.original = clazz;
-        this.classPath = new ClassPath(clazz);
-        this.constructors = RemapperUtils.getConstructors(clazz)
-                .stream()
-                .map(ConstructorInfo::new)
-                .collect(Collectors.toList());
-        this.fields = RemapperUtils.getFields(clazz)
-                .stream()
-                .map(FieldInfo::new)
-                .collect(Collectors.toList());
-        this.methods = RemapperUtils.getMethods(clazz)
-                .stream()
-                .filter(m -> !m.method.isSynthetic())
-                .filter(m -> !hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterface(m.method, clazz))
-                .map(method -> {
-                    Map<TypeVariable<?>, Type> replacement = getGenericTypeReplacementForParentInterfaceMethods(clazz, method.method);
-                    return new MethodInfo(method, replacement);
-                })
-                .collect(Collectors.toList());
+        this.classPath = new ClassPath(RemapperBridge.remapClassOrDefault(original));
+        this.constructors = Arrays.stream(JavaMemberAccessor.constructorsSafe(original))
+            .filter(ctor -> !ctor.isAnnotationPresent(HideFromJS.class))
+            .map(ConstructorInfo::new)
+            .collect(Collectors.toList());
+        Set<String> names = new HashSet<>();
+        this.methods = Arrays.stream(JavaMemberAccessor.methodsSafe(original))
+            .peek(m -> {
+                val name = RemapperBridge.remapMethodOrDefault(original, m);
+                names.add(name.isEmpty() ? m.getName() : name);
+            })
+            .filter(m -> !m.isSynthetic())
+            .filter(m -> !hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterfaceSinceTypeScriptDoesNotHaveInterfaceAtRuntimeInTypeDeclarationFilesJustBecauseItSucks(
+                m,
+                clazz
+            ))
+            .map(method -> {
+                Map<TypeVariable<?>, Type> replacement =
+                    getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass(
+                        clazz,
+                        method
+                    );
+                return new MethodInfo(original ,method, replacement);
+            })
+            .collect(Collectors.toList());
+        this.fields = Arrays.stream(JavaMemberAccessor.fieldsSafe(original))
+            .filter(f -> !names.contains(RemapperBridge.remapFieldOrDefault(original, f)))
+            .map(f -> new FieldInfo(original, f))
+            .collect(Collectors.toList());
 
         if (clazz.getSuperclass() != Object.class) {
             this.superClass = TypeAdapter.getTypeDescription(clazz.getAnnotatedSuperclass());
@@ -59,31 +74,9 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
             this.superClass = null;
         }
         this.interfaces = Arrays.stream(clazz.getAnnotatedInterfaces())
-                .map(TypeAdapter::getTypeDescription)
-                .collect(Collectors.toList());
+            .map(TypeAdapter::getTypeDescription)
+            .collect(Collectors.toList());
         this.attribute = new ClassAttribute(clazz);
-    }
-
-    @Override
-    public Collection<ClassPath> getClassPaths() {
-        Set<ClassPath> paths = new HashSet<>();
-        for (ConstructorInfo constructor : constructors) {
-            paths.addAll(constructor.getClassPaths());
-        }
-        for (FieldInfo field : fields) {
-            paths.addAll(field.getClassPaths());
-        }
-        for (MethodInfo method : methods) {
-            paths.addAll(method.getClassPaths());
-        }
-        if (superClass != null) paths.addAll(superClass.getClassPaths());
-        for (TypeDescriptor i : interfaces) {
-            paths.addAll(i.getClassPaths());
-        }
-        for (VariableType variableType : variableTypes) {
-            paths.addAll(variableType.getClassPaths());
-        }
-        return paths;
     }
 
     @Override
@@ -97,38 +90,6 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
         if (o == null || getClass() != o.getClass()) return false;
         Clazz clazz = (Clazz) o;
         return Objects.equals(classPath, clazz.classPath);
-    }
-
-    public Set<ClassPath> getUsedClasses() {
-        Set<ClassPath> used = new HashSet<>();
-
-        for (MethodInfo method : methods) {
-            used.addAll(method.returnType.getClassPaths());
-            for (ParamInfo param : method.params) {
-                used.addAll(param.type.getClassPaths());
-            }
-        }
-
-        for (FieldInfo field : fields) {
-            used.addAll(field.type.getClassPaths());
-        }
-
-        for (ConstructorInfo constructor : constructors) {
-            for (ParamInfo param : constructor.params) {
-                used.addAll(param.type.getClassPaths());
-            }
-        }
-
-        if (superClass != null) used.addAll(superClass.getClassPaths());
-        for (TypeDescriptor i : interfaces) {
-            used.addAll(i.getClassPaths());
-        }
-
-        for (VariableType variableType : variableTypes) {
-            used.addAll(variableType.getClassPaths());
-        }
-
-        return used;
     }
 
     /**
@@ -146,7 +107,7 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
      * 传令麾下四王子，破城不须封刀匕。
      * 山头代天树此碑，逆天之人立死跪亦死！
      */
-    private static boolean hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterface(Method method, Class<?> clazz) {
+    private static boolean hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterfaceSinceTypeScriptDoesNotHaveInterfaceAtRuntimeInTypeDeclarationFilesJustBecauseItSucks(Method method, Class<?> clazz) {
         Class<?> parent = clazz.getSuperclass();
         if (parent == null)
             return false;
@@ -162,14 +123,24 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
         return false;
     }
 
-    private static Map<TypeVariable<?>, Type> getGenericTypeReplacementForParentInterfaceMethods(Class<?> thisClass, Method thatMethod) {
+    /**
+     * 我一直看着你👁👁
+     * 当你在寂静的深夜独自行走👁👁
+     * 感觉到背后幽幽的目光直流冷汗👁👁
+     * 转头却空空荡荡时👁👁
+     * 那是我在看着你👁👁
+     * 我会一直看着你👁👁
+     * 我不会干什么👁👁
+     * 我只是喜欢看着你而已👁👁
+     */
+    private static Map<TypeVariable<?>, Type> getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass(Class<?> thisClass, Method thatMethod) {
         Class<?> targetClass = thatMethod.getDeclaringClass();
 
         Map<TypeVariable<?>, Type> replacement = new HashMap<>();
         if (Arrays.stream(thisClass.getInterfaces()).noneMatch(c -> c.equals(targetClass))) {
             Class<?> superInterface = Arrays.stream(thisClass.getInterfaces()).filter(targetClass::isAssignableFrom).findFirst().orElse(null);
             if (superInterface == null) return Map.of();
-            Map<TypeVariable<?>, Type> parentType = getGenericTypeReplacementForParentInterfaceMethods(superInterface, thatMethod);
+            Map<TypeVariable<?>, Type> parentType = getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass(superInterface, thatMethod);
             Map<TypeVariable<?>, Type> parentReplacement = getInterfaceRemap(thisClass, superInterface);
 
             for (Map.Entry<TypeVariable<?>, Type> entry : parentType.entrySet()) {
@@ -231,6 +202,7 @@ public class Clazz extends TypeVariableHolder implements ClassPathProvider {
         public final boolean isAbstract;
         public final boolean isInterface;
         public final Class<?> raw;
+
 
         public ClassAttribute(Class<?> clazz) {
             if (clazz.isInterface()) {

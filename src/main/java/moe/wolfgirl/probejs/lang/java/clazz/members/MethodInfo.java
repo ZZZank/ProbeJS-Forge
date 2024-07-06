@@ -1,34 +1,34 @@
 package moe.wolfgirl.probejs.lang.java.clazz.members;
 
-import moe.wolfgirl.probejs.lang.java.base.ClassPathProvider;
+import dev.latvian.mods.rhino.Context;
 import moe.wolfgirl.probejs.lang.java.base.TypeVariableHolder;
-import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.java.type.TypeAdapter;
 import moe.wolfgirl.probejs.lang.java.type.TypeDescriptor;
-import moe.wolfgirl.probejs.lang.java.type.impl.VariableType;
 import dev.latvian.mods.rhino.JavaMembers;
+import moe.wolfgirl.probejs.utils.RemapperBridge;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
+import java.lang.reflect.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class MethodInfo extends TypeVariableHolder implements ClassPathProvider {
+public class MethodInfo extends TypeVariableHolder {
     public final String name;
     public final List<ParamInfo> params;
     public TypeDescriptor returnType;
     public final MethodAttributes attributes;
 
-    public MethodInfo(JavaMembers.MethodInfo methodInfo, Map<TypeVariable<?>, Type> remapper) {
-        super(methodInfo.method.getTypeParameters(), methodInfo.method.getAnnotations());
-        Method method = methodInfo.method;
+    public MethodInfo(Class<?> from, Method method, Map<TypeVariable<?>, Type> remapper) {
+        super(method.getTypeParameters(), method.getAnnotations());
         this.attributes = new MethodAttributes(method);
-        this.name = methodInfo.name;
-        this.params = Arrays.stream(method.getParameters())
-                .map(ParamInfo::new)
-                .collect(Collectors.toList());
+        this.name = RemapperBridge.remapMethodOrDefault(from, method);
+
+        Parameter[] parameters = method.getParameters();
+        this.params = new ArrayList<>(parameters.length);
+        for (int i = 0; i < parameters.length; i++) {
+            Parameter parameter = parameters[i];
+            if (i == 0 && Context.class.isAssignableFrom(parameter.getType())) continue;
+            this.params.add(new ParamInfo(parameter));
+        }
+
         this.returnType = TypeAdapter.getTypeDescription(method.getAnnotatedReturnType());
 
         for (Map.Entry<TypeVariable<?>, Type> entry : remapper.entrySet()) {
@@ -40,19 +40,6 @@ public class MethodInfo extends TypeVariableHolder implements ClassPathProvider 
             }
             this.returnType = TypeAdapter.consolidateType(this.returnType, symbol.getName(), replacement);
         }
-    }
-
-    @Override
-    public Collection<ClassPath> getClassPaths() {
-        Set<ClassPath> paths = new HashSet<>();
-        for (ParamInfo param : params) {
-            paths.addAll(param.getClassPaths());
-        }
-        paths.addAll(returnType.getClassPaths());
-        for (VariableType variableType : variableTypes) {
-            paths.addAll(variableType.getClassPaths());
-        }
-        return paths;
     }
 
     public static class MethodAttributes {
