@@ -28,12 +28,14 @@ public class Transpiler {
         rejectedClasses.add(new ClassPath(clazz));
     }
 
-    public Map<ClassPath, TypeScriptFile> dump(Collection<Clazz> clazzes) {
+    public void init() {
         ProbeJSPlugin.forEachPlugin(plugin -> {
             plugin.addPredefinedTypes(typeConverter);
             plugin.denyTypes(this);
         });
+    }
 
+    public Map<ClassPath, TypeScriptFile> dump(Collection<Clazz> clazzes) {
         ClassTranspiler transpiler = new ClassTranspiler(typeConverter);
         Map<ClassPath, TypeScriptFile> result = new HashMap<>();
 
@@ -46,9 +48,9 @@ public class Transpiler {
 
             if (!scriptManager.isClassAllowed(clazz.original.getName())) {
                 classDecl.addComment(
-                        "This class is not allowed By KubeJS!",
-                        "You should not load the class, or KubeJS will throw an error.",
-                        "Loading the class using require() will not throw an error, but the class will be undefined."
+                    "This class is not allowed By KubeJS!",
+                    "You should not load the class, or KubeJS will throw an error.",
+                    "Loading the class using require() will not throw an error, but the class will be undefined."
                 );
             }
 

@@ -38,23 +38,25 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
             variableTypes.add((TSVariableType) converter.convertType(variableType));
         }
         BaseType superClass = input.superClass == null ? null : converter.convertType(input.superClass);
-        ClassDecl decl =
-                input.attribute.isInterface ?
-                        new InterfaceDecl(input.classPath.getName(),
-                                superClass == Types.ANY ? null : superClass,
-                                input.interfaces.stream()
-                                        .map(converter::convertType)
-                                        .filter(t -> t != Types.ANY)
-                                        .toList(),
-                                variableTypes) :
-                        new ClassDecl(input.classPath.getName(),
-                                superClass == Types.ANY ? null : superClass,
-                                input.interfaces.stream()
-                                        .map(converter::convertType)
-                                        .filter(t -> t != Types.ANY)
-                                        .toList(),
-                                variableTypes
-                        );
+        ClassDecl decl = input.attribute.isInterface ?
+            new InterfaceDecl(
+                input.classPath.getName(),
+                superClass == Types.ANY ? null : superClass,
+                input.interfaces.stream()
+                    .map(converter::convertType)
+                    .filter(t -> t != Types.ANY)
+                    .toList(),
+                variableTypes
+            ) :
+            new ClassDecl(
+                input.classPath.getName(),
+                superClass == Types.ANY ? null : superClass,
+                input.interfaces.stream()
+                    .map(converter::convertType)
+                    .filter(t -> t != Types.ANY)
+                    .toList(),
+                variableTypes
+            );
 
         for (FieldInfo fieldInfo : input.fields) {
             var fieldDecl = field.transpile(fieldInfo);
@@ -64,7 +66,7 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
 
         for (MethodInfo methodInfo : input.methods) {
             var methodDecl = method.transpile(methodInfo);
-            ClassTransformer.transformMethods(methodInfo, methodDecl);
+            ClassTransformer.transformMethods(input, methodInfo, methodDecl);
             decl.methods.add(methodDecl);
         }
 
