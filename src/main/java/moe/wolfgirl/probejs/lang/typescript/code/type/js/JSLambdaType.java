@@ -30,15 +30,15 @@ public class JSLambdaType extends BaseType {
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
         // (arg0: type, arg1: type...) => returnType
-        return List.of("%s => %s".formatted(ParamDecl.formatParams(params, declaration), returnType.line(declaration, FormatType.RETURN)));
+        return Collections.singletonList(String.format("%s => %s", ParamDecl.formatParams(params, declaration), returnType.line(declaration, FormatType.RETURN)));
     }
 
     public String formatWithName(String name, Declaration declaration, FormatType input) {
-        return "%s%s: %s".formatted(name, ParamDecl.formatParams(params, declaration), returnType.line(declaration, FormatType.RETURN));
+        return String.format("%s%s: %s", name, ParamDecl.formatParams(params, declaration), returnType.line(declaration, FormatType.RETURN));
     }
 
     public MethodDecl asMethod(String methodName) {
-        return new MethodDecl(methodName, List.of(), params, returnType);
+        return new MethodDecl(methodName, Collections.emptyList(), params, returnType);
     }
 
     public static class Builder {

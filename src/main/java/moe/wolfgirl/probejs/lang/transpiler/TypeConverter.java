@@ -9,6 +9,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.type.*;
 import moe.wolfgirl.probejs.lang.typescript.code.type.js.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Adapts a TypeDescriptor into a BaseType
@@ -40,13 +41,13 @@ public class TypeConverter {
                 BaseType baseType = new TSClassType(new ClassPath(generics.base()));
                 List<BaseType> params = Arrays.stream(generics.value())
                     .map(c -> (BaseType) new TSClassType(new ClassPath(c)))
-                    .toList();
+                    .collect(Collectors.toList());
                 return new TSParamType(baseType, params);
             }
 
             BaseType base = convertType(paramType.base);
             if (base == Types.ANY) return Types.ANY;
-            List<BaseType> params = paramType.params.stream().map(this::convertType).toList();
+            List<BaseType> params = paramType.params.stream().map(this::convertType).collect(Collectors.toList());
             return new TSParamType(base, params);
         } else if (descriptor instanceof VariableType variableType) {
             List<TypeDescriptor> desc = variableType.descriptors;
@@ -58,7 +59,7 @@ public class TypeConverter {
                     return new TSVariableType(variableType.symbol, convertType(desc.get(0)));
                 }
                 default -> {
-                    List<BaseType> converted = desc.stream().map(this::convertType).toList();
+                    List<BaseType> converted = desc.stream().map(this::convertType).collect(Collectors.toList());
                     return new TSVariableType(variableType.symbol, new JSJoinedType.Intersection(converted));
                 }
             }

@@ -94,7 +94,7 @@ public class ProbeConfig {
                 current = ProbeJS.GSON.fromJson(JsonUtils.stripSussyJson5Stuffs(content), JsonObject.class);
             }
         }
-        current.add("%s.%s".formatted(configEntry.namespace, name), JsonUtils.parseObject(value));
+        current.add(String.format("%s.%s", configEntry.namespace, name), JsonUtils.parseObject(value));
 
         try (var writer = Files.newBufferedWriter(ProbePaths.SETTINGS_JSON)) {
             JsonWriter jsonWriter = ProbeJS.GSON_WRITER.newJsonWriter(writer);
@@ -112,7 +112,7 @@ public class ProbeConfig {
             }
         }
         if (JsonUtils.deserializeObject(current) instanceof Map<?, ?> map) {
-            return map.get("%s.%s".formatted(configEntry.namespace, configEntry.name));
+            return map.get(String.format("%s.%s", configEntry.namespace, configEntry.name));
         }
         return null;
     }

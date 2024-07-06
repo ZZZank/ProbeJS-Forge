@@ -13,7 +13,7 @@ public abstract class Code {
     public abstract List<String> format(Declaration declaration);
 
     public String line(Declaration declaration) {
-        return format(declaration).getFirst();
+        return format(declaration).get(0);
     }
 
     public Collection<Class<?>> getClasses() {

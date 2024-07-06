@@ -35,7 +35,7 @@ public class ProbeDecompiler {
         try {
             scanner.acceptFile(source);
         } catch (IOException e) {
-            ProbeJS.LOGGER.error("Unable to load file: %s".formatted(source));
+            ProbeJS.LOGGER.error(String.format("Unable to load file: %s",source));
         }
     }
 

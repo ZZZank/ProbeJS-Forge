@@ -3,6 +3,7 @@ package moe.wolfgirl.probejs.lang.java.base;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AnnotationHolder {
     private final Annotation[] annotations;
@@ -24,11 +25,11 @@ public class AnnotationHolder {
         return Arrays.stream(annotations)
             .filter(type::isInstance)
             .map(a -> (T) a)
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public <T extends Annotation> T getAnnotation(Class<T> type) {
         var annotations = getAnnotations(type);
-        return annotations.isEmpty() ? null : annotations.getFirst();
+        return annotations.isEmpty() ? null : annotations.get(0);
     }
 }

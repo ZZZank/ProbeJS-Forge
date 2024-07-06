@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public interface Types {
     JSPrimitiveType ANY = new JSPrimitiveType("any");
@@ -49,16 +50,16 @@ public interface Types {
     }
 
     static JSJoinedType.Intersection and(BaseType... types) {
-        return new JSJoinedType.Intersection(Arrays.stream(types).toList());
+        return new JSJoinedType.Intersection(Arrays.stream(types).collect(Collectors.toList()));
     }
 
     static BaseType or(BaseType... types) {
         if (types.length == 0) return NEVER;
-        return new JSJoinedType.Union(Arrays.stream(types).toList());
+        return new JSJoinedType.Union(Arrays.stream(types).collect(Collectors.toList()));
     }
 
     static TSParamType parameterized(BaseType base, BaseType... params) {
-        return new TSParamType(base, Arrays.stream(params).toList());
+        return new TSParamType(base, Arrays.stream(params).collect(Collectors.toList()));
     }
 
     static TSVariableType generic(String symbol) {
@@ -72,7 +73,7 @@ public interface Types {
     static BaseType typeMaybeGeneric(Class<?> clazz) {
         if (clazz.getTypeParameters().length == 0) return type(clazz);
 
-        var params = Collections.nCopies(clazz.getTypeParameters().length, ANY).toArray(BaseType[]::new);
+        var params = Collections.nCopies(clazz.getTypeParameters().length, ANY).toArray(new BaseType[0]);
         return parameterized(type(clazz), params);
     }
 
@@ -122,20 +123,21 @@ public interface Types {
     }
 
     static BaseType filter(BaseType type, Predicate<BaseType> typePredicate) {
-        return switch (type) {
-            case JSJoinedType.Union union -> new JSJoinedType.Union(
+        if (type instanceof JSJoinedType.Union union) {
+            return new JSJoinedType.Union(
                 union.types.stream()
                     .filter(t -> !typePredicate.test(t))
                     .map(t -> filter(t, typePredicate))
-                    .toList()
+                    .collect(Collectors.toList())
             );
-            case JSJoinedType.Intersection intersection -> new JSJoinedType.Intersection(
+        } else if (type instanceof JSJoinedType.Intersection intersection) {
+            return new JSJoinedType.Intersection(
                 intersection.types.stream()
                     .filter(t -> !typePredicate.test(t))
                     .map(t -> filter(t, typePredicate))
-                    .toList()
+                    .collect(Collectors.toList())
             );
-            case null, default -> type;
-        };
+        }
+        return type;
     }
 }

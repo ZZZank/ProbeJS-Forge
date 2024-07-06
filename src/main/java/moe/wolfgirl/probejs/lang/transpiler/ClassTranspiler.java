@@ -17,6 +17,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
 
@@ -45,7 +46,7 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
                 input.interfaces.stream()
                     .map(converter::convertType)
                     .filter(t -> t != Types.ANY)
-                    .toList(),
+                    .collect(Collectors.toList()),
                 variableTypes
             ) :
             new ClassDecl(
@@ -54,7 +55,7 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
                 input.interfaces.stream()
                     .map(converter::convertType)
                     .filter(t -> t != Types.ANY)
-                    .toList(),
+                    .collect(Collectors.toList()),
                 variableTypes
             );
 

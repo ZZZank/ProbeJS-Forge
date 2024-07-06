@@ -30,7 +30,7 @@ public class ProbeFileSaver implements IResultSaver {
     public void saveClassFile(String path, String qualifiedName, String entryName, String content, int[] mapping) {
         String[] parts = qualifiedName.split("/");
         parts[parts.length - 1] = "$" + parts[parts.length - 1];
-        ClassPath classPath = new ClassPath(List.of(parts));
+        ClassPath classPath = new ClassPath(Arrays.asList(parts));
         result.put(classPath, new ParsedDocument(content));
         classCount++;
         if (callback != null) callback.run();
@@ -74,8 +74,8 @@ public class ProbeFileSaver implements IResultSaver {
             try (var out = Files.newBufferedWriter(full.resolve(classPath.getName() + ".java"))) {
                 String[] lines = s.getCode().split("\\n");
                 out.write(Arrays.stream(lines)
-                        .filter(l -> !l.strip().startsWith("// $VF: renamed"))
-                        .collect(Collectors.joining("\n"))
+                    .filter(l -> !l.trim().startsWith("// $VF: renamed"))
+                    .collect(Collectors.joining("\n"))
                 );
             }
         }

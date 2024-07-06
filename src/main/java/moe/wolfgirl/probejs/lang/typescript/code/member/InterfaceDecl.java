@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,16 +33,16 @@ public class InterfaceDecl extends ClassDecl {
             method.isInterface = true;
         }
         // Format head - export interface name<T> extends ... {
-        String head = "export interface %s".formatted(name);
+        String head = String.format("export interface %s", name);
         if (!variableTypes.isEmpty()) {
             String variables = variableTypes.stream().map(type -> type.line(declaration, BaseType.FormatType.VARIABLE)).collect(Collectors.joining(", "));
-            head = "%s<%s>".formatted(head, variables);
+            head = String.format("%s<%s>", head, variables);
         }
         if (!interfaces.isEmpty()) {
             String formatted = interfaces.stream().map(type -> type.line(declaration)).collect(Collectors.joining(", "));
-            head = "%s extends %s".formatted(head, formatted);
+            head = String.format("%s extends %s", head, formatted);
         }
-        head = "%s {".formatted(head);
+        head = String.format("%s {", head);
 
         // Format body - fields, constructors, methods
         List<String> body = new ArrayList<>();
@@ -70,12 +71,12 @@ public class InterfaceDecl extends ClassDecl {
             namespace.addCode(new Code() {
                 @Override
                 public Collection<ClassPath> getUsedClassPaths() {
-                    return List.of();
+                    return Collections.emptyList();
                 }
 
                 @Override
                 public List<String> format(Declaration declaration) {
-                    return List.of("const probejs$$marker: never");
+                    return Collections.singletonList("const probejs$$marker: never");
                 }
             });
         }
@@ -97,7 +98,7 @@ public class InterfaceDecl extends ClassDecl {
             }
             String hybridBody = ParamDecl.formatParams(hybrid.params, declaration);
             String returnType = hybrid.returnType.line(declaration, BaseType.FormatType.INPUT);
-            body.add("%s: %s".formatted(hybridBody, returnType));
+            body.add(String.format("%s: %s", hybridBody, returnType));
         }
 
         // tail - }

@@ -1,5 +1,6 @@
 package moe.wolfgirl.probejs.lang.linter;
 
+import com.github.bsideup.jabel.Desugar;
 import com.google.gson.JsonElement;
 import dev.latvian.kubejs.bindings.TextWrapper;
 import dev.latvian.mods.rhino.mod.util.color.Color;
@@ -9,6 +10,7 @@ import net.minecraft.network.chat.Component;
 
 import java.nio.file.Path;
 
+@Desugar
 public record LintingWarning(Path file, Level level, int line, int column, String message) {
     public enum Level {
         INFO(ColorWrapper.BLUE),
@@ -29,7 +31,7 @@ public record LintingWarning(Path file, Level level, int line, int column, Strin
             .append(TextWrapper.string(level().name()).color(level().color))
             .append(TextWrapper.string("] "))
             .append(TextWrapper.string(stripped.toString()))
-            .append(TextWrapper.string(":%d:%d: %s".formatted(line, column, message)))
+            .append(TextWrapper.string(String.format(":%d:%d: %s", line, column, message)))
             .component();
     }
 

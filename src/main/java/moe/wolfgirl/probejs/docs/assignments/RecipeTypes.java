@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
+import java.util.Collections;
 import java.util.Set;
 
 public class RecipeTypes extends ProbeJSPlugin {
@@ -58,6 +59,6 @@ public class RecipeTypes extends ProbeJSPlugin {
 
     @Override
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
-        return Set.of(RecipeFilter.class);
+        return Collections.singleton(RecipeFilter.class);
     }
 }

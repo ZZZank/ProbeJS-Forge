@@ -39,21 +39,21 @@ public class MethodDeclaration extends CommentableCode {
     @Override
     public List<String> formatRaw(Declaration declaration) {
         // Format head - function name<T, U extends A>
-        String head = "function %s".formatted(name);
+        String head = String.format("function %s", name);
         if (!variableTypes.isEmpty()) {
             String variables = variableTypes.stream()
                     .map(type -> type.line(declaration))
                     .collect(Collectors.joining(", "));
-            head = "%s<%s>".formatted(head, variables);
+            head = String.format("%s<%s>", head, variables);
         }
 
         // Format body - (a: type, ...)
         String body = ParamDecl.formatParams(params, declaration);
 
         // Format tail - : returnType
-        String tail = ": %s".formatted(returnType.line(declaration, BaseType.FormatType.RETURN));
+        String tail = String.format(": %s", returnType.line(declaration, BaseType.FormatType.RETURN));
 
-        return List.of("%s%s%s".formatted(head, body, tail));
+        return Collections.singletonList(String.format("%s%s%s", head, body, tail));
     }
 
     public static class Builder {

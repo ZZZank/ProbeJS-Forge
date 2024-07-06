@@ -77,22 +77,22 @@ public class ClassDecl extends CommentableCode {
         if (isAbstract) modifiers.add("abstract");
         modifiers.add("class");
 
-        String head = "%s %s".formatted(String.join(" ", modifiers), name);
-        if (variableTypes.size() != 0) {
+        String head = String.format("%s %s",String.join(" ", modifiers), name);
+        if (!variableTypes.isEmpty()) {
             String variables = variableTypes.stream()
                     .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
                     .collect(Collectors.joining(", "));
-            head = "%s<%s>".formatted(head, variables);
+            head = String.format("%s<%s>",head, variables);
         }
 
-        if (superClass != null) head = "%s extends %s".formatted(head, superClass.line(declaration));
+        if (superClass != null) head = String.format("%s extends %s",head, superClass.line(declaration));
         if (interfaces.size() != 0) {
             String formatted = interfaces.stream()
                     .map(type -> type.line(declaration))
                     .collect(Collectors.joining(", "));
-            head = "%s implements %s".formatted(head, formatted);
+            head = String.format("%s implements %s", head, formatted);
         }
-        head = "%s {".formatted(head);
+        head = String.format("%s {", head);
 
         // Format body - fields, constructors, methods
         List<String> body = new ArrayList<>();

@@ -38,7 +38,7 @@ public class ConstructorDecl extends CommentableCode {
             String variables = variableTypes.stream()
                     .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
                     .collect(Collectors.joining(", "));
-            head = "%s<%s>".formatted(head, variables);
+            head = String.format("%s<%s>", head, variables);
         }
 
         // Format body - (a: type, ...)
@@ -47,8 +47,8 @@ public class ConstructorDecl extends CommentableCode {
         // Format tail - {/** content */}
         String tail = "";
         if (content != null) {
-            tail = "%s {/** %s */}".formatted(tail, content);
+            tail = String.format("%s {/** %s */}", tail, content);
         }
-        return List.of("%s%s%s".formatted(head, body, tail));
+        return Collections.singletonList(String.format("%s%s%s", head, body, tail));
     }
 }

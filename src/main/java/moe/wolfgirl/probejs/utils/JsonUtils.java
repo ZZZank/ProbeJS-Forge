@@ -19,9 +19,9 @@ public class JsonUtils {
         StringBuilder sb = new StringBuilder();
 
         // remove comments
-        for (String line : (Iterable<String>) jsonc.lines()::iterator) {
+        for (String line : jsonc.split("\n")) {
             // Split by // first
-            String[] parts = line.strip().split("//");
+            String[] parts = line.trim().split("//");
 
             // first string is always included
             boolean enclosed = false;
@@ -44,7 +44,7 @@ public class JsonUtils {
         }
 
         // remove trailing comma
-        return MATCH_TRAILING.matcher(sb.toString()).replaceAll("").strip();
+        return MATCH_TRAILING.matcher(sb.toString()).replaceAll("").trim();
     }
 
     public static JsonArray asStringArray(Collection<String> array) {

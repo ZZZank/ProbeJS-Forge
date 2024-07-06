@@ -6,6 +6,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.member.CommentableCode;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class VariableDeclaration extends CommentableCode {
@@ -25,6 +26,6 @@ public class VariableDeclaration extends CommentableCode {
 
     @Override
     public List<String> formatRaw(Declaration declaration) {
-        return List.of("const %s: %s".formatted(symbol, type.line(declaration)));
+        return Collections.singletonList(String.format("const %s: %s", symbol, type.line(declaration)));
     }
 }

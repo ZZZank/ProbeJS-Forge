@@ -23,7 +23,7 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
     public static final ProbeBuiltinDocs INSTANCE = new ProbeBuiltinDocs();
 
     // So docs can be added stateless
-    public final static List<Supplier<ProbeJSPlugin>> BUILTIN_DOCS = new ArrayList<>(List.of(
+    public final static List<Supplier<ProbeJSPlugin>> BUILTIN_DOCS = new ArrayList<>(Arrays.asList(
             //type
         RegistryTypes::new,
             SpecialTypes::new,
@@ -51,7 +51,7 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
             try {
                 consumer.accept(builtinDoc.get());
             } catch (Throwable t) {
-                ProbeJS.LOGGER.error("Error when applying builtin doc: %s".formatted(builtinDoc.get().getClass()));
+                ProbeJS.LOGGER.error(String.format("Error when applying builtin doc: %s", builtinDoc.get().getClass()));
                 ProbeJS.LOGGER.error(t.getMessage());
                 for (StackTraceElement stackTraceElement : t.getStackTrace()) {
                     ProbeJS.LOGGER.error(stackTraceElement.toString());

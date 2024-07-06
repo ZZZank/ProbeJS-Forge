@@ -5,6 +5,7 @@ import moe.wolfgirl.probejs.lang.typescript.Declaration;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,12 +20,12 @@ public class JSPrimitiveType extends BaseType {
 
     @Override
     public Collection<ClassPath> getUsedClassPaths() {
-        return List.of();
+        return Collections.emptyList();
     }
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return List.of(content);
+        return Collections.singletonList(content);
     }
 
     @Override

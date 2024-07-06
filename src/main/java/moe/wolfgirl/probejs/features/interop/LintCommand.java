@@ -19,12 +19,16 @@ public class LintCommand extends Command {
     @Override
     public JsonElement handle(JsonObject payload) {
         String scriptType = payload.get("script_type").getAsString();
-        Linter linter = switch (scriptType) {
-            case "client" -> Linter.CLIENT_SCRIPT.get();
-            case "server" -> Linter.SERVER_SCRIPT.get();
-            case "startup" -> Linter.STARTUP_SCRIPT.get();
-            case null, default -> throw new RuntimeException("Unknown script type %s".formatted(scriptType));
-        };
+        Linter linter;
+        if (scriptType.equals("client")) {
+            linter = Linter.CLIENT_SCRIPT.get();
+        } else if (scriptType.equals("server")) {
+            linter = Linter.SERVER_SCRIPT.get();
+        } else if (scriptType.equals("startup")) {
+            linter = Linter.STARTUP_SCRIPT.get();
+        } else {
+            throw new RuntimeException(String.format("Unknown script type %s",scriptType));
+        }
 
         try {
             var warnings = linter.lint();

@@ -4,10 +4,7 @@ import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.typescript.Declaration;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class JSJoinedType extends BaseType {
@@ -15,7 +12,7 @@ public abstract class JSJoinedType extends BaseType {
     public final List<BaseType> types;
 
     protected JSJoinedType(String delimiter, List<BaseType> types) {
-        this.delimiter = " %s ".formatted(delimiter);
+        this.delimiter = String.format(" %s ", delimiter);
         this.types = types;
     }
 
@@ -31,10 +28,10 @@ public abstract class JSJoinedType extends BaseType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return List.of(
-                types.stream()
-                        .map(type -> "(%s)".formatted(type.line(declaration, input)))
-                        .collect(Collectors.joining(delimiter))
+        return Arrays.asList(
+            types.stream()
+                .map(type -> String.format("(%s)", type.line(declaration, input)))
+                .collect(Collectors.joining(delimiter))
         );
     }
 

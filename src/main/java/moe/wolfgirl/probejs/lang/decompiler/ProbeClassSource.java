@@ -6,6 +6,7 @@ import org.jetbrains.java.decompiler.main.extern.IResultSaver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProbeClassSource implements IContextSource {
 
@@ -25,8 +26,8 @@ public class ProbeClassSource implements IContextSource {
 
     @Override
     public Entries getEntries() {
-        List<Entry> entries = classes.keySet().stream().map(Entry::atBase).toList();
-        return new Entries(entries, List.of(), List.of(), List.of());
+        List<Entry> entries = classes.keySet().stream().map(Entry::atBase).collect(Collectors.toList());
+        return new Entries(entries, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
     @Override

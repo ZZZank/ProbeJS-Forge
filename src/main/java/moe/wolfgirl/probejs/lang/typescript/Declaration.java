@@ -34,11 +34,11 @@ public class Declaration {
     }
 
     private void putSymbolName(ClassPath path, String name) {
-        symbols.put(path, new Pair<>(name, INPUT_TEMPLATE.formatted(name)));
+        symbols.put(path, new Pair<>(name, String.format(INPUT_TEMPLATE,name)));
     }
 
     private boolean containsSymbol(String name) {
-        return excludedName.contains(name) || symbols.containsValue(new Pair<>(name, INPUT_TEMPLATE.formatted(name)));
+        return excludedName.contains(name) || symbols.containsValue(new Pair<>(name, String.format(INPUT_TEMPLATE,name)));
     }
 
 
@@ -48,10 +48,10 @@ public class Declaration {
             if (!containsSymbol(name)) putSymbolName(path, name);
             else {
                 int counter = 0;
-                while (containsSymbol(SYMBOL_TEMPLATE.formatted(name, counter))) {
+                while (containsSymbol(String.format(SYMBOL_TEMPLATE,name, counter))) {
                     counter++;
                 }
-                putSymbolName(path, SYMBOL_TEMPLATE.formatted(name, counter));
+                putSymbolName(path, String.format(SYMBOL_TEMPLATE,name, counter));
             }
         }
 

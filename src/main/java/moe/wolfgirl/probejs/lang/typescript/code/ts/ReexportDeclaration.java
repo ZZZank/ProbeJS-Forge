@@ -3,6 +3,7 @@ package moe.wolfgirl.probejs.lang.typescript.code.ts;
 import moe.wolfgirl.probejs.lang.typescript.Declaration;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ReexportDeclaration extends VariableDeclaration {
@@ -13,6 +14,6 @@ public class ReexportDeclaration extends VariableDeclaration {
 
     @Override
     public List<String> formatRaw(Declaration declaration) {
-        return List.of("export import %s = %s".formatted(symbol, type.line(declaration, BaseType.FormatType.RETURN)));
+        return Collections.singletonList(String.format("export import %s = %s", symbol, type.line(declaration, BaseType.FormatType.RETURN)));
     }
 }

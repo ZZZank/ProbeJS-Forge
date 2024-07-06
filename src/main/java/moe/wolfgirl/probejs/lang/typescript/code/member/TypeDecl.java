@@ -5,6 +5,7 @@ import moe.wolfgirl.probejs.lang.typescript.Declaration;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,8 +28,8 @@ public class TypeDecl extends CommentableCode {
 
     @Override
     public List<String> formatRaw(Declaration declaration) {
-        return List.of(
-                "export type %s = %s;".formatted(symbol, type.line(declaration, BaseType.FormatType.INPUT))
+        return Collections.singletonList(
+            String.format("export type %s = %s;",symbol, type.line(declaration, BaseType.FormatType.INPUT))
         );
     }
 }

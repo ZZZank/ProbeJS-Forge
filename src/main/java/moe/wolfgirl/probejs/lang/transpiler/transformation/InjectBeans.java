@@ -11,10 +11,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import moe.wolfgirl.probejs.utils.NameUtils;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class InjectBeans implements ClassTransformer {
     @Override
@@ -68,7 +65,7 @@ public class InjectBeans implements ClassTransformer {
 
         @Override
         public List<String> format(Declaration declaration) {
-            return List.of(formattingString.formatted(ProbeJS.GSON.toJson(name), baseType.line(declaration)));
+            return Arrays.asList(String.format(formattingString, ProbeJS.GSON.toJson(name), baseType.line(declaration)));
         }
     }
 }

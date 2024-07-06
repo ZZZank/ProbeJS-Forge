@@ -12,6 +12,7 @@ import moe.wolfgirl.probejs.lang.transpiler.Transpiler;
 import moe.wolfgirl.probejs.lang.transpiler.TypeConverter;
 import moe.wolfgirl.probejs.lang.typescript.TypeScriptFile;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -83,14 +84,14 @@ public class ProbeJSPlugin extends KubeJSPlugin {
      */
     @HideFromJS
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
-        return Set.of();
+        return Collections.emptySet();
     }
 
     /**
      * Provides events that should be disabled for custom support.
      */
     public Set<Pair<String, String>> disableEventDumps(ScriptDump dump) {
-        return Set.of();
+        return Collections.emptySet();
     }
 
     public void addVSCodeSnippets(SnippetDump dump) {

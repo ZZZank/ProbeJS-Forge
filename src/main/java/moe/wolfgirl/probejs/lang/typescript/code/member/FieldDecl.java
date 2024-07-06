@@ -6,6 +6,7 @@ import moe.wolfgirl.probejs.lang.typescript.Declaration;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,8 +34,8 @@ public class FieldDecl extends CommentableCode {
         if (isFinal) modifiers.add("readonly");
 
 
-        return List.of("%s %s: %s".formatted(
-                String.join(" ", modifiers), ProbeJS.GSON.toJson(name), type.line(declaration, BaseType.FormatType.RETURN)
+        return Arrays.asList(String.format("%s %s: %s",
+            String.join(" ", modifiers), ProbeJS.GSON.toJson(name), type.line(declaration, BaseType.FormatType.RETURN)
         ));
     }
 }

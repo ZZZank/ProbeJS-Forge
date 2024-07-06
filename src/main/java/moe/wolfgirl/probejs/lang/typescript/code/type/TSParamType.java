@@ -26,13 +26,14 @@ public class TSParamType extends BaseType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return List.of(
-                "%s<%s>".formatted(
-                        baseType.line(declaration, input),
-                        params.stream()
-                                .map(type -> "(%s)".formatted(type.line(declaration, input)))
-                                .collect(Collectors.joining(", "))
-                )
+        return Collections.singletonList(
+            String.format(
+                "%s<%s>",
+                baseType.line(declaration, input),
+                params.stream()
+                    .map(type -> String.format("(%s)", type.line(declaration, input)))
+                    .collect(Collectors.joining(", "))
+            )
         );
     }
 }

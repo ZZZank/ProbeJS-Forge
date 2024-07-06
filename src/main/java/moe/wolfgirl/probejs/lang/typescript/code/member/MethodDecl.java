@@ -48,23 +48,23 @@ public class MethodDecl extends CommentableCode {
         if (isStatic) modifiers.add("static");
 
         String head = String.join(" ", modifiers);
-        head = "%s %s".formatted(head, ProbeJS.GSON.toJson(name));
+        head = String.format("%s %s", head, ProbeJS.GSON.toJson(name));
         if (!variableTypes.isEmpty()) {
             String variables = variableTypes.stream()
-                    .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
-                    .collect(Collectors.joining(", "));
-            head = "%s<%s>".formatted(head, variables);
+                .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
+                .collect(Collectors.joining(", "));
+            head = String.format("%s<%s>", head, variables);
         }
 
         // Format body - (a: type, ...)
         String body = ParamDecl.formatParams(params, declaration);
 
         // Format tail - : returnType {/** content */}
-        String tail = ": %s".formatted(returnType.line(declaration, BaseType.FormatType.RETURN));
+        String tail = String.format(": %s", returnType.line(declaration, BaseType.FormatType.RETURN));
         if (content != null) {
-            tail = "%s {/** %s */}".formatted(tail, content);
+            tail = String.format("%s {/** %s */}", tail, content);
         }
 
-        return List.of("%s%s%s".formatted(head, body, tail));
+        return Collections.singletonList(String.format("%s%s%s", head, body, tail));
     }
 }

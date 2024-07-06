@@ -18,7 +18,7 @@ public class JSObjectType extends JSMemberType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return List.of("{%s}".formatted(String.join(", ", formatMembers(declaration, input))));
+        return Collections.singletonList(String.format("{%s}", String.join(", ", formatMembers(declaration, input))));
     }
 
     public static class Builder extends JSMemberType.Builder<Builder, JSObjectType> {

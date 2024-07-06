@@ -12,7 +12,7 @@ public class TabStop extends Enumerable {
 
     @Override
     public String format() {
-        if (content == null) return "$%d".formatted(enumeration);
-        return "${%d:%s}".formatted(enumeration, content.replace("$", "\\$"));
+        if (content == null) return String.format("$%d", enumeration);
+        return String.format("${%d:%s}", enumeration, content.replace("$", "\\$"));
     }
 }

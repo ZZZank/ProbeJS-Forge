@@ -7,7 +7,7 @@ import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.snippet.parts.Variable;
 import net.minecraft.core.Registry;
 
-import java.util.List;
+import java.util.Arrays;
 
 public class Snippets extends ProbeJSPlugin {
     @Override
@@ -39,7 +39,7 @@ public class Snippets extends ProbeJSPlugin {
                 .prefix("#ignored")
                 .description("Creates the file header for `ignored`.")
                 .literal("// ignored: ")
-                .choices(List.of("true", "false"));
+                .choices(Arrays.asList("true", "false"));
 
         dump.snippet("requires")
                 .prefix("#requires")
@@ -59,9 +59,9 @@ public class Snippets extends ProbeJSPlugin {
 
     private static void defineHeader(SnippetDump dump, String symbol, String defaultValue) {
         dump.snippet(symbol)
-                .prefix("#" + symbol)
-                .description("Creates the file header for `%s`.".formatted(symbol))
-                .literal("// %s: ".formatted(symbol))
-                .tabStop(0, defaultValue);
+            .prefix("#" + symbol)
+            .description(String.format("Creates the file header for `%s`.", symbol))
+            .literal(String.format("// %s: ", symbol))
+            .tabStop(0, defaultValue);
     }
 }

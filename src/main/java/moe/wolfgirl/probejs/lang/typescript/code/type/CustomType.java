@@ -3,6 +3,7 @@ package moe.wolfgirl.probejs.lang.typescript.code.type;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.typescript.Declaration;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +20,7 @@ public class CustomType extends BaseType {
 
     @Override
     public Collection<ClassPath> getUsedClassPaths() {
-        return List.of(imports);
+        return Arrays.asList(imports);
     }
 
     @Override

@@ -3,10 +3,7 @@ package moe.wolfgirl.probejs.lang.schema;
 import com.google.gson.JsonObject;
 import moe.wolfgirl.probejs.utils.JsonUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class ObjectElement extends SchemaElement<ObjectElement> {
@@ -57,7 +54,7 @@ public class ObjectElement extends SchemaElement<ObjectElement> {
     }
 
     public ObjectElement requires(String... requires) {
-        this.requires.addAll(List.of(requires));
+        this.requires.addAll(Arrays.asList(requires));
         return this;
     }
 

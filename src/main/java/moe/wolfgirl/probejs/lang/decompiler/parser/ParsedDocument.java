@@ -21,7 +21,7 @@ public class ParsedDocument {
     private final Map<String, String> paramRenames = new HashMap<>();
 
     public ParsedDocument(String content) {
-        this.parsed = PARSER.parse(content).getResult().orElseThrow();
+        this.parsed = PARSER.parse(content).getResult().get();
     }
 
     public void getParamTransformations() {
@@ -32,7 +32,7 @@ public class ParsedDocument {
                     for (Parameter parameter : callable.getParameters()) {
                         if (!parameter.getNameAsString().matches(PARAM_SRG)) continue;
                         String[] types = NameUtils.extractAlphabets(parameter.getTypeAsString());
-                        paramRenames.put(parameter.getNameAsString(), "%s%s".formatted(NameUtils.asCamelCase(types), order));
+                        paramRenames.put(parameter.getNameAsString(), String.format("%s%s", NameUtils.asCamelCase(types), order));
                         order++;
                     }
                 }

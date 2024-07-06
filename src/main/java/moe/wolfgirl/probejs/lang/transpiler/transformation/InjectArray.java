@@ -8,6 +8,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.member.ClassDecl;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.TSParamType;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class InjectArray implements ClassTransformer {
 
         @Override
         public List<String> format(Declaration declaration) {
-            return List.of(line.formatted(type.line(declaration, BaseType.FormatType.RETURN)));
+            return Arrays.asList(String.format(line, type.line(declaration, BaseType.FormatType.RETURN)));
         }
     }
 

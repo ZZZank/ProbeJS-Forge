@@ -67,11 +67,12 @@ public class NoNamespacePollution extends Rule {
             if (paths.size() > 1) {
                 for (Pair<Integer, Path> path : paths) {
                     warnings.add(new LintingWarning(
-                            path.getSecond(),
-                            LintingWarning.Level.ERROR,
-                            path.getFirst(),
-                            0,
-                            "Duplicate declaration of %s".formatted(identifier)));
+                        path.getSecond(),
+                        LintingWarning.Level.ERROR,
+                        path.getFirst(),
+                        0,
+                        String.format("Duplicate declaration of %s", identifier)
+                    ));
                 }
             }
         }

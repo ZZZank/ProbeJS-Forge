@@ -4,6 +4,7 @@ import moe.wolfgirl.probejs.lang.typescript.Declaration;
 import moe.wolfgirl.probejs.lang.typescript.code.Code;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public abstract class CommentableCode extends Code {
         List<String> formatted = new ArrayList<>();
         formatted.add("/**");
         for (String comment : comments) {
-            formatted.add(" * %s".formatted(comment));
+            formatted.add(String.format(" * %s",comment));
         }
         formatted.add(" */");
         return formatted;
@@ -31,14 +32,14 @@ public abstract class CommentableCode extends Code {
 
     public void addComment(String... comments) {
         for (String comment : comments) {
-            this.comments.addAll(List.of(comment.split("\\n")));
+            this.comments.addAll(Arrays.asList(comment.split("\\n")));
         }
     }
 
     public void addCommentAtStart(String... comments) {
         List<String> lines = new ArrayList<>();
         for (String comment : comments) {
-            lines.addAll(List.of(comment.split("\\n")));
+            lines.addAll(Arrays.asList(comment.split("\\n")));
         }
         this.comments.addAll(0, lines);
     }

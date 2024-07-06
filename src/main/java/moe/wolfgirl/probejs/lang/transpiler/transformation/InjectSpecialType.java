@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.TypeVariable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InjectSpecialType implements ClassTransformer {
     public static final Set<ClassPath> NO_WRAPPING;
@@ -37,7 +38,7 @@ public class InjectSpecialType implements ClassTransformer {
                 paramType.baseType,
                 paramType.params.stream()
                     .map(c -> Types.ignoreContext(c, BaseType.FormatType.RETURN))
-                    .toList()
+                    .collect(Collectors.toList())
             );
         }
     }

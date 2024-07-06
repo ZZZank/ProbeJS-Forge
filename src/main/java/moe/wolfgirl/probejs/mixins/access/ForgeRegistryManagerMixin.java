@@ -14,6 +14,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(RegistryManager.class)
 public interface ForgeRegistryManagerMixin {
 
-    @Accessor("registries")
+    @Accessor(value = "registries", remap = false)
     BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> getRegistries();
 }

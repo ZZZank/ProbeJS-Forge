@@ -40,6 +40,10 @@ public class WildType extends TypeDescriptor {
 
     @Override
     public Stream<TypeDescriptor> stream() {
-        return bound.stream();
+        if (bound.isPresent()) {
+            return Stream.of(bound.get());
+        } else {
+            return Stream.empty();
+        }
     }
 }

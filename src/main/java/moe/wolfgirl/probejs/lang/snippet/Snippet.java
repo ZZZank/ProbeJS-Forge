@@ -135,7 +135,7 @@ public class Snippet {
 
         JsonObject object = new JsonObject();
         if (prefixes.isEmpty()) {
-            throw new RuntimeException("Must have at least one prefix for the snippet %s!".formatted(name));
+            throw new RuntimeException(String.format("Must have at least one prefix for the snippet %s!",name));
         }
 
         object.add("prefix", JsonUtils.asStringArray(prefixes));

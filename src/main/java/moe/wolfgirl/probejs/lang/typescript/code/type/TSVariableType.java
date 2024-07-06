@@ -4,7 +4,9 @@ import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.typescript.Declaration;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class TSVariableType extends BaseType {
@@ -18,15 +20,15 @@ public class TSVariableType extends BaseType {
 
     @Override
     public Collection<ClassPath> getUsedClassPaths() {
-        return extendsType == null ? List.of() : extendsType.getUsedClassPaths();
+        return extendsType == null ? Collections.emptyList() : extendsType.getUsedClassPaths();
     }
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return List.of(switch (input) {
+        return Arrays.asList(switch (input) {
             case INPUT, RETURN -> symbol;
             case VARIABLE -> extendsType == null ? symbol :
-                    "%s extends %s".formatted(symbol, extendsType.line(declaration, FormatType.RETURN));
+                String.format("%s extends %s", symbol, extendsType.line(declaration, FormatType.RETURN));
         });
     }
 }

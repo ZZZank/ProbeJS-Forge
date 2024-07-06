@@ -149,7 +149,7 @@ public class ProbeDump {
                 try {
                     Thread.sleep(3000);
                     if (dumpThreads.stream().noneMatch(Thread::isAlive)) return;
-                    String dumpProgress = scriptDumps.stream().filter(sd -> sd.total != 0).map(sd -> "%s/%s".formatted(sd.dumped, sd.total)).collect(Collectors.joining(", "));
+                    String dumpProgress = scriptDumps.stream().filter(sd -> sd.total != 0).map(sd -> String.format("%s/%s", sd.dumped, sd.total)).collect(Collectors.joining(", "));
                     report(translate("probejs.dump.report_progress").append(string(dumpProgress).blue()));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);

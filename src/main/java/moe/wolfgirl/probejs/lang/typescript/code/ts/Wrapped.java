@@ -62,7 +62,7 @@ public abstract class Wrapped extends CommentableCode {
         @Override
         public List<String> formatRaw(Declaration declaration) {
             List<String> lines = new ArrayList<>();
-            lines.add("export namespace %s {".formatted(nameSpace));
+            lines.add(String.format("export namespace %s {",nameSpace));
             lines.addAll(super.formatRaw(declaration));
             lines.add("}");
             return lines;

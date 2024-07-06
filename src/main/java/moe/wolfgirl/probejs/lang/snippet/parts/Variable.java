@@ -47,6 +47,6 @@ public enum Variable implements SnippetPart {
 
     @Override
     public String format() {
-        return "$%s".formatted(name());
+        return String.format("$%s",name());
     }
 }

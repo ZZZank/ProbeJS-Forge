@@ -5,6 +5,7 @@ import moe.wolfgirl.probejs.lang.java.type.impl.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class TypeAdapter {
     public static TypeDescriptor getTypeDescription(AnnotatedType type) {
@@ -76,7 +77,7 @@ public class TypeAdapter {
             return new ParamType(
                     new Annotation[]{},
                     consolidateType(paramType.base, symbol, replacement),
-                    paramType.params.stream().map(t -> consolidateType(t, symbol, replacement)).toList()
+                    paramType.params.stream().map(t -> consolidateType(t, symbol, replacement)).collect(Collectors.toList())
             );
         } else if (in instanceof WildType wildType) {
             return new WildType(wildType.bound.map(t -> consolidateType(t, symbol, replacement)));

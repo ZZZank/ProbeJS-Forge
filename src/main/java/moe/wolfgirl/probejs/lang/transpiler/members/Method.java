@@ -8,6 +8,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.type.TSVariableType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Method extends Converter<MethodInfo, MethodDecl> {
     private final Param param;
@@ -26,7 +27,7 @@ public class Method extends Converter<MethodInfo, MethodDecl> {
         MethodDecl decl = new MethodDecl(
                 input.name,
                 variableTypes,
-                input.params.stream().map(this.param::transpile).toList(),
+                input.params.stream().map(this.param::transpile).collect(Collectors.toList()),
                 converter.convertType(input.returnType)
         );
         decl.isAbstract = input.attributes.isAbstract;

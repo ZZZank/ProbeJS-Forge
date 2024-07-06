@@ -1,5 +1,6 @@
 package moe.wolfgirl.probejs.lang.linter.rules;
 
+import com.github.bsideup.jabel.Desugar;
 import com.mojang.datafixers.util.Pair;
 import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.lang.linter.LintingWarning;
@@ -72,7 +73,7 @@ public class RespectPriority extends Rule {
                     warnings.add(new LintingWarning(
                             path, LintingWarning.Level.WARNING,
                             line, 0,
-                            "Unknown dependency: %s".formatted(basePath.relativize(dependency)))
+                        String.format("Unknown dependency: %s", basePath.relativize(dependency)))
                     );
                     continue;
                 }
@@ -81,13 +82,14 @@ public class RespectPriority extends Rule {
                     warnings.add(new LintingWarning(
                             path, LintingWarning.Level.ERROR,
                             line, 0,
-                            "Required %s before it loads!".formatted(basePath.relativize(dependency))));
+                        String.format("Required %s before it loads!", basePath.relativize(dependency))));
                 }
             }
         }
         return warnings;
     }
 
+    @Desugar
     record ScriptFile(Path path, int priority, List<String> content,
                       List<Pair<Integer, Path>> dependencies) {
 

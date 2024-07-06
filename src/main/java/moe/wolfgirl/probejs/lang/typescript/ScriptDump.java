@@ -9,6 +9,7 @@ import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.server.ServerScriptManager;
 import dev.latvian.kubejs.util.UtilsJS;
+import lombok.val;
 import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.ProbePaths;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
@@ -32,6 +33,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Controls a dump. A dump is made of a script type, and is responsible for
@@ -128,7 +130,7 @@ public class ScriptDump {
     }
 
     public void addGlobal(String identifier, Code... content) {
-        addGlobal(identifier, List.of(), content);
+        addGlobal(identifier, Collections.emptyList(), content);
     }
 
     public void addGlobal(String identifier, Collection<String> excludedNames, Code... content) {
@@ -203,13 +205,13 @@ public class ScriptDump {
                 //     type Type_ = ExportedType
                 // }
                 String symbol = classPath.getName() + "_";
-                String exportedSymbol = Declaration.INPUT_TEMPLATE.formatted(classPath.getName());
+                String exportedSymbol = String.format(Declaration.INPUT_TEMPLATE, classPath.getName());
                 BaseType exportedType = Types.type(classPath);
                 BaseType thisType = Types.type(classPath);
-                List<String> generics = classDecl.variableTypes.stream().map(v -> v.symbol).toList();
+                List<String> generics = classDecl.variableTypes.stream().map(v -> v.symbol).collect(Collectors.toList());
 
                 if (!generics.isEmpty()) {
-                    String suffix = "<%s>".formatted(String.join(", ", generics));
+                    String suffix = "<" + String.join(", ", generics) + ">";
                     symbol = symbol + suffix;
                     exportedSymbol = exportedSymbol + suffix;
                     thisType = Types.parameterized(thisType, generics.stream().map(Types::generic).toArray(BaseType[]::new));
@@ -256,12 +258,12 @@ public class ScriptDump {
                 output.addCode(convertibleType);
                 output.addCode(typeExport);
 
-                var fileKey = "%s.%s".formatted(classPath.parts().get(0), classPath.parts().get(1));
+                val fileKey = classPath.parts().get(0) + "." +classPath.parts().get(1);
                 BufferedWriter writer = files.computeIfAbsent(fileKey, key -> {
                     try {
                         return Files.newBufferedWriter(getPackageFolder().resolve(key + ".d.ts"));
                     } catch (IOException e) {
-                        ProbeJS.LOGGER.error("Failed to write %s.d.ts".formatted(key));
+                        ProbeJS.LOGGER.error(String.format("Failed to write %s.d.ts",key));
                         return null;
                     }
                 });
@@ -279,7 +281,7 @@ public class ScriptDump {
             for (Map.Entry<String, BufferedWriter> entry : files.entrySet()) {
                 String key = entry.getKey();
                 BufferedWriter value = entry.getValue();
-                writer.write("/// <reference path=%s />\n".formatted(ProbeJS.GSON.toJson(key + ".d.ts")));
+                writer.write(String.format("/// <reference path=%s />\n", ProbeJS.GSON.toJson(key + ".d.ts")));
                 value.close();
             }
         }
@@ -301,14 +303,14 @@ public class ScriptDump {
                 }
                 globalFile.addCode(global);
                 globalFile.write(getGlobalFolder().resolve(identifier + ".d.ts"));
-                writer.write("export * from %s\n".formatted(ProbeJS.GSON.toJson("./" + identifier)));
+                writer.write(String.format("export * from %s\n", ProbeJS.GSON.toJson("./" + identifier)));
             }
         }
 
     }
 
     public void dumpJSConfig() throws IOException {
-        moe.wolfgirl.probejs.utils.FileUtils.writeMergedConfig(scriptPath.resolve("jsconfig.json"), """
+        moe.wolfgirl.probejs.utils.FileUtils.writeMergedConfig(scriptPath.resolve("jsconfig.json"), String.format("""
                 {
                     "compilerOptions": {
                         "module": "commonjs",
@@ -329,7 +331,7 @@ public class ScriptDump {
                         "./**/*.ts",
                     ]
                 }
-                """.formatted(basePath.getFileName(), basePath.getFileName())
+                """,basePath.getFileName(), basePath.getFileName())
         );
     }
 

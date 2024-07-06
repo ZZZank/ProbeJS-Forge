@@ -4,6 +4,7 @@ import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.typescript.Declaration;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class TSClassType extends BaseType {
@@ -15,11 +16,11 @@ public class TSClassType extends BaseType {
 
     @Override
     public Collection<ClassPath> getUsedClassPaths() {
-        return List.of(classPath);
+        return Collections.singletonList(classPath);
     }
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return List.of(declaration.getSymbol(classPath, input == FormatType.INPUT));
+        return Collections.singletonList(declaration.getSymbol(classPath, input == FormatType.INPUT));
     }
 }

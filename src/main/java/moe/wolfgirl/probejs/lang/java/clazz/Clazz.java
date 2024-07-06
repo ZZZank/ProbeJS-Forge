@@ -134,7 +134,9 @@ public class Clazz extends TypeVariableHolder {
         Map<TypeVariable<?>, Type> replacement = new HashMap<>();
         if (Arrays.stream(thisClass.getInterfaces()).noneMatch(c -> c.equals(targetClass))) {
             Class<?> superInterface = Arrays.stream(thisClass.getInterfaces()).filter(targetClass::isAssignableFrom).findFirst().orElse(null);
-            if (superInterface == null) return Map.of();
+            if (superInterface == null) {
+                return Collections.emptyMap();
+            }
             Map<TypeVariable<?>, Type> parentType = getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass(superInterface, thatMethod);
             Map<TypeVariable<?>, Type> parentReplacement = getInterfaceRemap(thisClass, superInterface);
 
@@ -178,7 +180,7 @@ public class Clazz extends TypeVariableHolder {
 
         if (indexOfInterface == -1) {
             // throw new IllegalArgumentException("The class does not implement the target interface");
-            return Map.of();
+            return Collections.emptyMap();
         }
 
         return replacement;
@@ -204,8 +206,8 @@ public class Clazz extends TypeVariableHolder {
                 this.type = ClassType.INTERFACE;
             } else if (clazz.isEnum()) {
                 this.type = ClassType.ENUM;
-            } else if (clazz.isRecord()) {
-                this.type = ClassType.RECORD;
+//            } else if (clazz.isRecord()) {
+//                this.type = ClassType.RECORD;
             } else {
                 this.type = ClassType.CLASS;
             }

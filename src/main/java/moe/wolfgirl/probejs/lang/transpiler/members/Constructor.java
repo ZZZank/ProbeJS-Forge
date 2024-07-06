@@ -8,6 +8,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.type.TSVariableType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Constructor extends Converter<ConstructorInfo, ConstructorDecl> {
     private final Param param;
@@ -25,7 +26,7 @@ public class Constructor extends Converter<ConstructorInfo, ConstructorDecl> {
         }
         return new ConstructorDecl(
                 variableTypes,
-                input.params.stream().map(param::transpile).toList()
+                input.params.stream().map(param::transpile).collect(Collectors.toList())
         );
     }
 }

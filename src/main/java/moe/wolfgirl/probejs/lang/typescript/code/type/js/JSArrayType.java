@@ -4,6 +4,7 @@ import moe.wolfgirl.probejs.lang.typescript.Declaration;
 import moe.wolfgirl.probejs.utils.NameUtils;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class JSArrayType extends JSMemberType {
@@ -15,7 +16,7 @@ public class JSArrayType extends JSMemberType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return List.of("[%s]".formatted(formatMembers(declaration, input)));
+        return Collections.singletonList(String.format("[%s]",formatMembers(declaration, input)));
     }
 
     @Override

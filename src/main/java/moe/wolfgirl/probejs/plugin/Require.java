@@ -6,6 +6,7 @@ import lombok.val;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 //TODO: replace with js file for full backward compat
 public class Require extends BaseFunction {
@@ -22,7 +23,7 @@ public class Require extends BaseFunction {
             return new RequireWrapper(null, Undefined.instance);
         }
         val parts = result.split("/", 2);
-        val path = new ClassPath(Arrays.stream(parts[1].split("/")).toList());
+        val path = new ClassPath(Arrays.stream(parts[1].split("/")).collect(Collectors.toList()));
 
         NativeJavaClass loaded = null;
         try {
@@ -30,7 +31,7 @@ public class Require extends BaseFunction {
         } catch (Exception ignored) {
         }
         if (loaded == null) {
-            manager.type.console.warn("Class '%s' not loaded".formatted(path.getClassPathJava()));
+            manager.type.console.warn(String.format("Class '%s' not loaded", path.getClassPathJava()));
             return new RequireWrapper(path, Undefined.instance);
         }
         return new RequireWrapper(path, loaded);

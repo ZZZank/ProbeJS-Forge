@@ -1,5 +1,6 @@
 package moe.wolfgirl.probejs.lang.java.clazz;
 
+import com.github.bsideup.jabel.Desugar;
 import dev.latvian.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import moe.wolfgirl.probejs.lang.java.ClassRegistry;
@@ -10,18 +11,20 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Desugar
 public record ClassPath(List<String> parts) {
     private static List<String> transformJavaClass(Class<?> clazz) {
         String name = clazz.getName();
         String[] parts = name.split("\\.");
         String className = "$" + parts[parts.length - 1];
         parts[parts.length - 1] = className;
-        return Arrays.stream(parts).toList();
+        return Arrays.stream(parts).collect(Collectors.toList());
     }
 
     public ClassPath(String className) {
-        this(Arrays.stream(className.split("\\.")).toList());
+        this(Arrays.stream(className.split("\\.")).collect(Collectors.toList()));
     }
 
     public ClassPath(Class<?> clazz) {
@@ -43,7 +46,9 @@ public record ClassPath(List<String> parts) {
     public String getClassPathJava() {
         List<String> copy = new ArrayList<>(parts);
         String last = copy.get(copy.size() - 1);
-        if (last.startsWith("$")) last = last.substring(1);
+        if (last.startsWith("$")) {
+            last = last.substring(1);
+        }
         copy.set(copy.size() - 1, last);
         return String.join(".", copy);
     }
@@ -59,7 +64,7 @@ public record ClassPath(List<String> parts) {
 
     public List<String> getGenerics() throws ClassNotFoundException {
         TypeVariable<?>[] variables = forName().getTypeParameters();
-        return Arrays.stream(variables).map(TypeVariable::getName).toList();
+        return Arrays.stream(variables).map(TypeVariable::getName).collect(Collectors.toList());
     }
 
     @HideFromJS

@@ -7,6 +7,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.TSClassType;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class JSTypeOfType extends BaseType {
@@ -27,9 +28,9 @@ public class JSTypeOfType extends BaseType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return List.of(isInterface ?
-                inner.line(declaration, FormatType.RETURN) :
-                "typeof %s".formatted(inner.line(declaration, FormatType.RETURN))
+        return Collections.singletonList(isInterface ?
+            inner.line(declaration, FormatType.RETURN) :
+            String.format("typeof %s", inner.line(declaration, FormatType.RETURN))
         );
     }
 }

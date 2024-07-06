@@ -10,6 +10,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class Primitives extends ProbeJSPlugin {
@@ -34,12 +35,12 @@ public class Primitives extends ProbeJSPlugin {
 
         @Override
         public Collection<ClassPath> getUsedClassPaths() {
-            return List.of();
+            return Collections.emptyList();
         }
 
         @Override
         public List<String> format(Declaration declaration) {
-            return List.of("interface %s extends %s {}".formatted(javaPrimitive, jsInterface));
+            return Collections.singletonList(String.format("interface %s extends %s {}",javaPrimitive, jsInterface));
         }
 
         static JavaPrimitive of(String javaPrimitive, String jsInterface) {

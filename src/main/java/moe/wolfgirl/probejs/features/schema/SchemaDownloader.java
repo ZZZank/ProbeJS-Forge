@@ -42,7 +42,7 @@ public class SchemaDownloader {
     }
 
     public ZipInputStream openSchemaStream() throws URISyntaxException, IOException {
-        String downloadUrl = BASE_URL.formatted(GAME_VERSION);
+        String downloadUrl = String.format(BASE_URL,GAME_VERSION);
         URL url = (new URI(downloadUrl)).toURL();
         URLConnection connection = url.openConnection();
         return new ZipInputStream(connection.getInputStream());
@@ -61,18 +61,18 @@ public class SchemaDownloader {
             if (parts.length < 2) continue;
             String namespace = parts[parts.length - 2];
             String recipe = parts[parts.length - 1];
-            if (!unsupportedRecipes.contains("%s:%s".formatted(namespace, recipe))) continue;
+            if (!unsupportedRecipes.contains(String.format("%s:%s", namespace, recipe))) continue;
 
             Path schemaJson = validateSchemaPath(namespace, recipe);
-            try (var writer = new BufferedOutputStream(Files.newOutputStream(schemaJson))) {
-                writer.write(inputStream.readAllBytes());
-            }
+//            try (var writer = new BufferedOutputStream(Files.newOutputStream(schemaJson))) {
+//                writer.write(inputStream.readAllBytes());
+//            }
         }
     }
 
     public Path validateSchemaPath(String namespace, String recipe) throws IOException {
-        Path dirPath = KubeJSPaths.DATA.resolve("%s/kubejs/recipe_schemas".formatted(namespace));
+        Path dirPath = KubeJSPaths.DATA.resolve(String.format("%s/kubejs/recipe_schemas", namespace));
         if (!Files.exists(dirPath)) Files.createDirectories(dirPath);
-        return dirPath.resolve("%s.json".formatted(recipe));
+        return dirPath.resolve(String.format("%s.json",recipe));
     }
 }

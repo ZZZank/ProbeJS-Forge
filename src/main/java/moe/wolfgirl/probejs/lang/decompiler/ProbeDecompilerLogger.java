@@ -16,6 +16,6 @@ public class ProbeDecompilerLogger extends IFernflowerLogger {
 
     @Override
     public void startProcessingClass(String className) {
-        ProbeJS.LOGGER.info("Started processing: %s".formatted(className));
+        ProbeJS.LOGGER.info(String.format("Started processing: %s", className));
     }
 }

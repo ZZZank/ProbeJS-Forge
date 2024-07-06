@@ -23,12 +23,13 @@ public final class ParamDecl {
     }
 
     public String format(int index, Declaration declaration) {
-        String result = NameUtils.isNameSafe(name) ? name : "arg%d".formatted(index);
-        if (varArg) result = "...%s".formatted(result);
-        return "%s%s: %s".formatted(
-                result,
-                optional ? "?" : "",
-                type.line(declaration, BaseType.FormatType.INPUT)
+        String result = NameUtils.isNameSafe(name) ? name : String.format("arg%d", index);
+        if (varArg) result = String.format("...%s", result);
+        return String.format(
+            "%s%s: %s",
+            result,
+            optional ? "?" : "",
+            type.line(declaration, BaseType.FormatType.INPUT)
         );
     }
 
@@ -40,7 +41,7 @@ public final class ParamDecl {
             ParamDecl param = it.next();
             formattedParams.add(param.format(index, declaration));
         }
-        return "(%s)".formatted(String.join(", ", formattedParams));
+        return String.format("(%s)", String.join(", ", formattedParams));
     }
 
     @Override

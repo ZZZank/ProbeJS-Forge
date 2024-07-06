@@ -7,6 +7,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -33,12 +34,12 @@ public class ClassType extends TypeDescriptor {
 
     @Override
     public Collection<ClassPath> getClassPaths() {
-        return List.of(classPath);
+        return Collections.singletonList(classPath);
     }
 
     @Override
     public Collection<Class<?>> getClasses() {
-        return List.of(clazz);
+        return Collections.singletonList(clazz);
     }
 
     @Override
