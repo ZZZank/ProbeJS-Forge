@@ -49,7 +49,6 @@ repositories {
             includeGroup("me.shedaniel")
         }
     }
-
     maven {
         url "https://maven.saps.dev/minecraft"
         content {
@@ -57,13 +56,18 @@ repositories {
             includeGroup "dev.ftb.mods"
         }
     }
-
     maven {
 		url = "https://maven.parchmentmc.net/"
 		content {
 			includeGroup "org.parchmentmc.data"
 		}
 	}
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -99,7 +103,8 @@ dependencies {
     // modCompileOnly "mezz.jei:jei-1.16.5:${jei_version}:api"
     // at runtime, use the full JEI jar
     // modRuntimeOnly "mezz.jei:jei-1.16.5:${jei_version}"
-    modApi "dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}"
+    modApi("dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}")
+    modImplementation("curse.maven:rhizo-1003287:5506575")
     //lombok
     compileOnly "org.projectlombok:lombok:${rootProject.lombok_version}"
     annotationProcessor "org.projectlombok:lombok:${rootProject.lombok_version}"
