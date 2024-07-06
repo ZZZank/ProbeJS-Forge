@@ -1,7 +1,6 @@
 package moe.wolfgirl.probejs;
 
 import dev.latvian.kubejs.text.Text;
-import moe.wolfgirl.probejs.features.schema.SchemaDownloader;
 import moe.wolfgirl.probejs.lang.decompiler.ProbeDecompiler;
 import moe.wolfgirl.probejs.lang.java.ClassRegistry;
 import moe.wolfgirl.probejs.lang.schema.SchemaDump;
@@ -67,12 +66,12 @@ public class ProbeDump {
             report(translate("probejs.removed_script", scriptDump.manager.type.toString()));
         }
 
-        SchemaDownloader downloader = new SchemaDownloader();
-        try (var zipStream = downloader.openSchemaStream()) {
-            downloader.processFile(zipStream);
-        } catch (Throwable err) {
-            ProbeJS.LOGGER.error(err.getMessage());
-        }
+//        SchemaDownloader downloader = new SchemaDownloader();
+//        try (var zipStream = downloader.openSchemaStream()) {
+//            downloader.processFile(zipStream);
+//        } catch (Throwable err) {
+//            ProbeJS.LOGGER.error(err.getMessage());
+//        }
     }
 
     private void onRegistryChange() throws IOException {
