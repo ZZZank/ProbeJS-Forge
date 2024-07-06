@@ -26,17 +26,9 @@ public class ProbeJS {
         .setPrettyPrinting()
         .disableHtmlEscaping()
         .create();
-    private static Boolean RHIZO_LOADED;
 
 
     public ProbeJS() {
         EventBuses.registerModEventBus(ProbeJS.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
-    }
-
-    public static Boolean isRhizoLoaded() {
-        if (RHIZO_LOADED == null) {
-            RHIZO_LOADED = Platform.isModLoaded("rhizo");
-        }
-        return RHIZO_LOADED;
     }
 }

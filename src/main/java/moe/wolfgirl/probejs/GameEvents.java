@@ -54,7 +54,6 @@ public class GameEvents {
                     dump.defaultScripts();
                     try {
                         dump.trigger(sendMsg);
-                        Linter.defaultLint(sendMsg);
                     } catch (Throwable e) {
                         ProbeJS.LOGGER.error(e.getMessage());
                         for (StackTraceElement stackTraceElement : e.getStackTrace()) {
@@ -75,8 +74,6 @@ public class GameEvents {
                         TextWrapper.translate("probejs.performance", ModList.get().size()).component()
                     );
                 }
-
-                Linter.defaultLint(sendMsg);
             }
             sendMsg.accept(
                 TextWrapper.translate("probejs.wiki")
