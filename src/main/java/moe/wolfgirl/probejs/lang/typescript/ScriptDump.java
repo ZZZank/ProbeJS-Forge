@@ -22,7 +22,6 @@ import moe.wolfgirl.probejs.lang.typescript.code.ts.Wrapped;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSJoinedType;
-import moe.wolfgirl.probejs.utils.GameUtils;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.FileUtils;
 
@@ -40,7 +39,7 @@ import java.util.function.Supplier;
  */
 public class ScriptDump {
     public static final Supplier<ScriptDump> SERVER_DUMP = () -> {
-        ServerScriptManager scriptManager = GameUtils.getServerScriptManager();
+        ServerScriptManager scriptManager = ServerScriptManager.instance;
         if (scriptManager == null) {
             return null;
         }

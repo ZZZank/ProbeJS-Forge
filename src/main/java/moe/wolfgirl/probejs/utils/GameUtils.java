@@ -2,14 +2,12 @@ package moe.wolfgirl.probejs.utils;
 
 import com.probejs.info.RegistryInfo;
 import com.probejs.info.SpecialData;
-import dev.latvian.kubejs.server.ServerScriptManager;
 import lombok.val;
 import me.shedaniel.architectury.platform.Mod;
 import me.shedaniel.architectury.platform.Platform;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -50,10 +48,5 @@ public class GameUtils {
         } catch (NoSuchAlgorithmException e) {
             return -1;
         }
-    }
-
-    @Nullable
-    public static ServerScriptManager getServerScriptManager() {
-        return ServerScriptManager.instance;
     }
 }

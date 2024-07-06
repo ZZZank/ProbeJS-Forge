@@ -24,7 +24,6 @@ public class ProbeJS {
         .create();
     public static final ProbeConfig CONFIG = ProbeConfig.instance();
     public static final boolean ENABLED = CONFIG.enabled;
-    public static Boolean RHIZO_LOADED = null;
 
     public ProbeJS() {
         CommandRegistrationEvent.EVENT.register(ProbeCommands::register);
@@ -41,12 +40,5 @@ public class ProbeJS {
                 }
             );
         }
-    }
-
-    public static Boolean isRhizoLoaded() {
-        if (RHIZO_LOADED == null) {
-            RHIZO_LOADED = Platform.isModLoaded("rhizo");
-        }
-        return RHIZO_LOADED;
     }
 }

@@ -48,10 +48,8 @@ public class ProbeDecompiler {
     public void decompileContext() {
         HashMap<String, Object> prop = new HashMap<>();
 
-        if (ProbeJS.isRhizoLoaded()) {
-            prop.put(IFernflowerPreferences.RENAME_ENTITIES, "1");
-            prop.put(IFernflowerPreferences.USER_RENAMER_CLASS, ProbeRemapper.class.getName());
-        }
+        prop.put(IFernflowerPreferences.RENAME_ENTITIES, "1");
+        prop.put(IFernflowerPreferences.USER_RENAMER_CLASS, ProbeRemapper.class.getName());
 
         Fernflower engine = new Fernflower(resultSaver, prop, new ProbeDecompilerLogger());
         ProbeClassSource source = new ProbeClassSource(scanner.getScannedClasses());
