@@ -1,11 +1,10 @@
 package moe.wolfgirl.probejs.lang.java.clazz.members;
 
 import dev.latvian.mods.rhino.Context;
+import dev.latvian.mods.rhino.util.remapper.RemapperManager;
 import moe.wolfgirl.probejs.lang.java.base.TypeVariableHolder;
 import moe.wolfgirl.probejs.lang.java.type.TypeAdapter;
 import moe.wolfgirl.probejs.lang.java.type.TypeDescriptor;
-import dev.latvian.mods.rhino.JavaMembers;
-import moe.wolfgirl.probejs.utils.RemapperBridge;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -19,7 +18,7 @@ public class MethodInfo extends TypeVariableHolder {
     public MethodInfo(Class<?> from, Method method, Map<TypeVariable<?>, Type> remapper) {
         super(method.getTypeParameters(), method.getAnnotations());
         this.attributes = new MethodAttributes(method);
-        this.name = RemapperBridge.remapMethodOrDefault(from, method);
+        this.name = RemapperManager.getDefault().remapMethod(from, method);
 
         Parameter[] parameters = method.getParameters();
         this.params = new ArrayList<>(parameters.length);

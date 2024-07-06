@@ -1,20 +1,15 @@
 package moe.wolfgirl.probejs.lang.java.clazz;
 
-import dev.latvian.kubejs.KubeJS;
-import dev.latvian.kubejs.script.ScriptManager;
-import dev.latvian.mods.rhino.JavaMembers;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.remapper.RemapperManager;
 import lombok.val;
-import moe.wolfgirl.probejs.GlobalStates;
 import moe.wolfgirl.probejs.lang.java.base.TypeVariableHolder;
 import moe.wolfgirl.probejs.lang.java.clazz.members.ConstructorInfo;
 import moe.wolfgirl.probejs.lang.java.clazz.members.FieldInfo;
 import moe.wolfgirl.probejs.lang.java.clazz.members.MethodInfo;
 import moe.wolfgirl.probejs.lang.java.type.TypeAdapter;
 import moe.wolfgirl.probejs.lang.java.type.TypeDescriptor;
-import moe.wolfgirl.probejs.mixins.access.RhinoContextMixin;
 import moe.wolfgirl.probejs.utils.JavaMemberAccessor;
-import moe.wolfgirl.probejs.utils.RemapperBridge;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.*;
@@ -38,7 +33,7 @@ public class Clazz extends TypeVariableHolder {
         super(clazz.getTypeParameters(), clazz.getAnnotations());
 
         this.original = clazz;
-        this.classPath = new ClassPath(RemapperBridge.remapClassOrDefault(original));
+        this.classPath = new ClassPath(RemapperManager.getDefault().remapClass(original));
         this.constructors = Arrays.stream(JavaMemberAccessor.constructorsSafe(original))
             .filter(ctor -> !ctor.isAnnotationPresent(HideFromJS.class))
             .map(ConstructorInfo::new)
@@ -46,7 +41,7 @@ public class Clazz extends TypeVariableHolder {
         Set<String> names = new HashSet<>();
         this.methods = Arrays.stream(JavaMemberAccessor.methodsSafe(original))
             .peek(m -> {
-                val name = RemapperBridge.remapMethodOrDefault(original, m);
+                val name = RemapperManager.getDefault().remapMethod(original, m);
                 names.add(name.isEmpty() ? m.getName() : name);
             })
             .filter(m -> !m.isSynthetic())
@@ -64,7 +59,7 @@ public class Clazz extends TypeVariableHolder {
             })
             .collect(Collectors.toList());
         this.fields = Arrays.stream(JavaMemberAccessor.fieldsSafe(original))
-            .filter(f -> !names.contains(RemapperBridge.remapFieldOrDefault(original, f)))
+            .filter(f -> !names.contains(RemapperManager.getDefault().remapField(original, f)))
             .map(f -> new FieldInfo(original, f))
             .collect(Collectors.toList());
 
