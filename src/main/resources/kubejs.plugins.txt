@@ -1,1 +1,1 @@
-com.probejs.ProbeJSPlugin
+moe.wolfgirl.probejs.plugin.BuiltinProbeJSPlugin

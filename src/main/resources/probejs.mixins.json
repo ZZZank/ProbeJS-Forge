@@ -1,14 +1,23 @@
 {
   "required": true,
   "compatibilityLevel": "JAVA_8",
-  "package": "com.probejs.capture.mixin",
+  "package": "moe.wolfgirl.probejs.mixins",
   "mixins": [
-    "EventListenerHelperMixin",
-    "OnEventMixin",
-    "OnJavaMixin"
+    "ConsoleMixin",
+    "EventBusMixin",
+    "LootTableMixin",
+    "OnJavaMixin",
+    "RecipeManagerMixin",
+    "ScriptManagerMixin",
+    "access.ForgeRegistryManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-  "minVersion": "0.8"
+  "minVersion": "0.8",
+  "client": [
+    "access.LanguageManagerMixin",
+    "access.TextureAtlasMixin",
+    "access.TextureManagerMixin"
+  ]
 }
