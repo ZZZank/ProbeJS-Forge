@@ -8,6 +8,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.type.js.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 public interface Types {
     JSPrimitiveType ANY = new JSPrimitiveType("any");
@@ -20,6 +21,7 @@ public interface Types {
     JSPrimitiveType THIS = new JSPrimitiveType("this");
     JSPrimitiveType OBJECT = new JSPrimitiveType("object");
     JSPrimitiveType NULL = new JSPrimitiveType("null");
+    JSArrayType EMPTY_ARRAY = Types.arrayOf().build();
 
     /**
      * Returns a literal type of the input if it's something OK in TS,
@@ -41,8 +43,9 @@ public interface Types {
         return new JSPrimitiveType(type);
     }
 
-    static JSArrayType arrayOf(BaseType... types) {
-        return new JSArrayType(Arrays.stream(types).toList());
+
+    static JSArrayType.Builder arrayOf() {
+        return new JSArrayType.Builder();
     }
 
     static JSJoinedType.Intersection and(BaseType... types) {
@@ -112,5 +115,27 @@ public interface Types {
 
     static JSObjectType.Builder object() {
         return new JSObjectType.Builder();
+    }
+
+    static TSOptionalType optional(BaseType type) {
+        return new TSOptionalType(type);
+    }
+
+    static BaseType filter(BaseType type, Predicate<BaseType> typePredicate) {
+        return switch (type) {
+            case JSJoinedType.Union union -> new JSJoinedType.Union(
+                union.types.stream()
+                    .filter(t -> !typePredicate.test(t))
+                    .map(t -> filter(t, typePredicate))
+                    .toList()
+            );
+            case JSJoinedType.Intersection intersection -> new JSJoinedType.Intersection(
+                intersection.types.stream()
+                    .filter(t -> !typePredicate.test(t))
+                    .map(t -> filter(t, typePredicate))
+                    .toList()
+            );
+            case null, default -> type;
+        };
     }
 }

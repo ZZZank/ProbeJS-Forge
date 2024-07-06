@@ -8,6 +8,8 @@ import moe.wolfgirl.probejs.lang.typescript.code.ts.VariableDeclaration;
 import moe.wolfgirl.probejs.lang.typescript.code.ts.Wrapped;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.TSVariableType;
+import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -31,11 +33,11 @@ public class InterfaceDecl extends ClassDecl {
         }
         // Format head - export interface name<T> extends ... {
         String head = "export interface %s".formatted(name);
-        if (variableTypes.size() != 0) {
+        if (!variableTypes.isEmpty()) {
             String variables = variableTypes.stream().map(type -> type.line(declaration, BaseType.FormatType.VARIABLE)).collect(Collectors.joining(", "));
             head = "%s<%s>".formatted(head, variables);
         }
-        if (interfaces.size() != 0) {
+        if (!interfaces.isEmpty()) {
             String formatted = interfaces.stream().map(type -> type.line(declaration)).collect(Collectors.joining(", "));
             head = "%s extends %s".formatted(head, formatted);
         }
@@ -80,23 +82,36 @@ public class InterfaceDecl extends ClassDecl {
 
         // Use hybrid to represent functional interfaces
         // (a: SomeClass<number>, b: SomeClass<string>): void;
-        if (methods.stream().filter(method -> method.isAbstract).count() == 1) {
-            body.add("");
-            MethodDecl method = methods.get(0);
-            String hybridBody = ParamDecl.formatParams(method.params, declaration);
-            String returnType = method.returnType.line(declaration);
+        MutableInt count = new MutableInt(0);
+        MethodDecl hybrid = methods.stream()
+                .filter(method -> !method.isStatic)
+                .filter(method -> method.isAbstract)
+                .peek(c -> count.add(1))
+                .reduce((a, b) -> b)
+                .orElse(null);
 
+        if (count.getValue() == 1 && hybrid != null) {
+            body.add("");
+            for (ParamDecl param : hybrid.params) {
+                param.type = Types.ignoreContext(param.type, BaseType.FormatType.RETURN);
+            }
+            String hybridBody = ParamDecl.formatParams(hybrid.params, declaration);
+            String returnType = hybrid.returnType.line(declaration, BaseType.FormatType.INPUT);
             body.add("%s: %s".formatted(hybridBody, returnType));
         }
 
         // tail - }
-
+        List<String> tail = new ArrayList<>();
+        for (Code code : bodyCode) {
+            tail.addAll(code.format(declaration));
+        }
+        tail.add("}\n");
 
         // Concatenate them as a whole
         List<String> formatted = new ArrayList<>();
         formatted.add(head);
         formatted.addAll(body);
-        formatted.add("}\n");
+        formatted.addAll(tail);
 
         // Static methods and fields, adds it even if it's empty, so auto import can still discover it
         formatted.addAll(namespace.format(declaration));

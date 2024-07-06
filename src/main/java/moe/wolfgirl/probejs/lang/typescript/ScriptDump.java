@@ -2,8 +2,6 @@ package moe.wolfgirl.probejs.lang.typescript;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonWriter;
 import com.mojang.datafixers.util.Pair;
 import dev.latvian.kubejs.KubeJS;
 import dev.latvian.kubejs.KubeJSPaths;
@@ -24,7 +22,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.ts.Wrapped;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSJoinedType;
-import moe.wolfgirl.probejs.utils.JsonUtils;
+import moe.wolfgirl.probejs.utils.GameUtils;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.FileUtils;
 
@@ -41,17 +39,27 @@ import java.util.function.Supplier;
  * maintaining the file structures
  */
 public class ScriptDump {
-    public static final Supplier<ScriptDump> SERVER_DUMP = () -> new ScriptDump(
-            ServerScriptManager.instance.scriptManager,
+    public static final Supplier<ScriptDump> SERVER_DUMP = () -> {
+        ServerScriptManager scriptManager = GameUtils.getServerScriptManager();
+        if (scriptManager == null) {
+            return null;
+        }
+
+        return new ScriptDump(
+            scriptManager.scriptManager,
             ProbePaths.PROBE.resolve("server"),
             KubeJSPaths.SERVER_SCRIPTS,
             (clazz -> {
                 for (OnlyIn annotation : clazz.getAnnotations(OnlyIn.class)) {
-                    if (annotation.value().isClient()) return false;
+                    if (annotation.value().isClient()) {
+                        return false;
+                    }
                 }
                 return true;
             })
-    );
+        );
+    };
+
     public static final Supplier<ScriptDump> CLIENT_DUMP = () -> new ScriptDump(
             KubeJS.clientScriptManager,
             ProbePaths.PROBE.resolve("client"),
@@ -64,10 +72,10 @@ public class ScriptDump {
             })
     );
     public static final Supplier<ScriptDump> STARTUP_DUMP = () -> new ScriptDump(
-            KubeJS.startupScriptManager,
-            ProbePaths.PROBE.resolve("startup"),
-            KubeJSPaths.STARTUP_SCRIPTS,
-            (clazz -> true)
+        KubeJS.startupScriptManager,
+        ProbePaths.PROBE.resolve("startup"),
+        KubeJSPaths.STARTUP_SCRIPTS,
+        (clazz -> true)
     );
 
     public final ScriptType scriptType;
@@ -78,7 +86,7 @@ public class ScriptDump {
     public final Transpiler transpiler;
     public final Set<Clazz> recordedClasses = new HashSet<>();
     private final Predicate<Clazz> accept;
-    private final Multimap<ClassPath, BaseType> convertibles = ArrayListMultimap.create();
+    private final Multimap<ClassPath, TypeDecl> convertibles = ArrayListMultimap.create();
     public int dumped = 0;
     public int total = 0;
 
@@ -109,7 +117,15 @@ public class ScriptDump {
     }
 
     public void assignType(ClassPath classPath, BaseType type) {
-        convertibles.put(classPath, type);
+        convertibles.put(classPath, new TypeDecl(null, type));
+    }
+
+    public void assignType(Class<?> classPath, String name, BaseType type) {
+        assignType(new ClassPath(classPath), name, type);
+    }
+
+    public void assignType(ClassPath classPath, String name, BaseType type) {
+        convertibles.put(classPath, new TypeDecl(name, type));
     }
 
     public void addGlobal(String identifier, Code... content) {
@@ -153,11 +169,24 @@ public class ScriptDump {
         return ensurePath("src", true);
     }
 
+    public Path getTest() {
+        return ensurePath("test", true);
+    }
+
     public void dumpClasses() throws IOException {
         dumped = 0;
         total = 0;
-        ProbeJSPlugin.forEachPlugin(plugin -> plugin.assignType(this));
-
+        transpiler.init();
+        ProbeJSPlugin.forEachPlugin(plugin -> {
+            try {
+                plugin.assignType(this);
+            } catch (Throwable t) {
+                ProbeJS.LOGGER.error(t.getMessage());
+                for (StackTraceElement stackTraceElement : t.getStackTrace()) {
+                    ProbeJS.LOGGER.error(stackTraceElement.toString());
+                }
+            }
+        });
         Map<String, BufferedWriter> files = new HashMap<>();
         Map<ClassPath, TypeScriptFile> globalClasses = transpiler.dump(recordedClasses);
         ProbeJSPlugin.forEachPlugin(plugin -> plugin.modifyClasses(this, globalClasses));
@@ -180,7 +209,7 @@ public class ScriptDump {
                 BaseType thisType = Types.type(classPath);
                 List<String> generics = classDecl.variableTypes.stream().map(v -> v.symbol).toList();
 
-                if (generics.size() != 0) {
+                if (!generics.isEmpty()) {
                     String suffix = "<%s>".formatted(String.join(", ", generics));
                     symbol = symbol + suffix;
                     exportedSymbol = exportedSymbol + suffix;
@@ -190,8 +219,20 @@ public class ScriptDump {
                 exportedType = Types.ignoreContext(exportedType, BaseType.FormatType.INPUT);
                 thisType = Types.ignoreContext(thisType, BaseType.FormatType.RETURN);
 
-                List<BaseType> allTypes = new ArrayList<>(convertibles.get(classPath));
-                allTypes.add(thisType);
+                List<BaseType> allTypes = new ArrayList<>();
+                List<TypeDecl> delegatedTypes = new ArrayList<>();
+                for (TypeDecl typeDecl : convertibles.get(classPath)) {
+                    if (typeDecl.symbol == null) allTypes.add(typeDecl.type);
+                    else {
+                        delegatedTypes.add(typeDecl);
+                        allTypes.add(Types.primitive(typeDecl.symbol));
+                    }
+                }
+
+                if (allTypes.isEmpty()) {
+                    allTypes.add(thisType); // Don't add if there are wrapping, for better compatibility with duck typing
+                }
+
                 TypeDecl convertibleType = new TypeDecl(
                         exportedSymbol,
                         new JSJoinedType.Union(allTypes)
@@ -210,6 +251,9 @@ public class ScriptDump {
                         Global type exported for convenience, use class-specific
                         types if there's a naming conflict.
                         """);
+                for (TypeDecl delegatedType : delegatedTypes) {
+                    output.addCode(delegatedType);
+                }
                 output.addCode(convertibleType);
                 output.addCode(typeExport);
 
@@ -225,7 +269,10 @@ public class ScriptDump {
                 if (writer != null) output.writeAsModule(writer);
                 dumped++;
             } catch (Throwable t) {
-                t.printStackTrace();
+                ProbeJS.LOGGER.error(t.getMessage());
+                for (StackTraceElement stackTraceElement : t.getStackTrace()) {
+                    ProbeJS.LOGGER.error(stackTraceElement.toString());
+                }
             }
         }
 
@@ -262,7 +309,7 @@ public class ScriptDump {
     }
 
     public void dumpJSConfig() throws IOException {
-        writeMergedConfig(scriptPath.resolve("jsconfig.json"), """
+        moe.wolfgirl.probejs.utils.FileUtils.writeMergedConfig(scriptPath.resolve("jsconfig.json"), """
                 {
                     "compilerOptions": {
                         "module": "commonjs",
@@ -280,7 +327,7 @@ public class ScriptDump {
                     },
                     "include": [
                         "./**/*.js",
-                        "./**/*.ts"
+                        "./**/*.ts",
                     ]
                 }
                 """.formatted(basePath.getFileName(), basePath.getFileName())
@@ -293,44 +340,11 @@ public class ScriptDump {
 
     public void dump() throws IOException, ClassNotFoundException {
         getSource();
-
-        /*
-         * TODO:
-         * .probe
-         *   │
-         *   ├── client
-         *   │   ├── probe-typings
-         *   │   └── globals
-         *   │
-         *   ├── server
-         *   │   ├── probe-typings
-         *   │   └── globals
-         *   │
-         *   └── startup
-         *       ├── probe-typings
-         *       └── globals
-         */
+        getTest();
 
         dumpClasses();
         dumpGlobal();
         dumpJSConfig();
-
-        // Since probe can have export now, it's not really needed for global to be here
-        /*
-        if (Files.notExists(srcFolder.resolve("globals.d.ts"))) {
-            write(srcFolder.resolve("globals.d.ts"), """
-                    export {} // Do not remove this line.
-
-                    // Add your own declarations of methods, variables and types here.
-                    // Using require will let VSCode think every script file is an isolated module,
-                    // so they will not be visible unless you declare them in the global scope.
-
-                    // You can also create additional declarations as you like.
-                    declare global {
-
-                    }""".strip());
-        }
-        */
     }
 
     private static void write(Path writeTo, String content) throws IOException {
@@ -338,16 +352,4 @@ public class ScriptDump {
             writer.write(content);
         }
     }
-
-    private static void writeMergedConfig(Path path, String config) throws IOException {
-        JsonObject updates = ProbeJS.GSON.fromJson(config, JsonObject.class);
-        JsonObject read = Files.exists(path) ? ProbeJS.GSON.fromJson(Files.newBufferedReader(path), JsonObject.class) : new JsonObject();
-        if (read == null) read = new JsonObject();
-        JsonObject original = (JsonObject) JsonUtils.mergeJsonRecursively(read, updates);
-        JsonWriter jsonWriter = ProbeJS.GSON_WRITER.newJsonWriter(Files.newBufferedWriter(path));
-        jsonWriter.setIndent("    ");
-        ProbeJS.GSON_WRITER.toJson(original, JsonObject.class, jsonWriter);
-        jsonWriter.close();
-    }
-
 }
