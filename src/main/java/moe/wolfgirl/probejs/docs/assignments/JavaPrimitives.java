@@ -7,6 +7,8 @@ import com.google.gson.JsonPrimitive;
 import dev.latvian.mods.rhino.util.unit.Unit;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.docs.Primitives;
+import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
+import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSArrayType;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import net.minecraft.core.BlockPos;
@@ -26,6 +28,22 @@ import java.time.temporal.TemporalAmount;
 import java.util.*;
 
 public class JavaPrimitives extends ProbeJSPlugin {
+
+    private static JSArrayType xyzOf(BaseType baseType) {
+        return Types.arrayOf()
+            .member("x", baseType)
+            .member("y", baseType)
+            .member("z", baseType)
+            .build();
+    }
+
+    private static JSArrayType minMaxOf(BaseType baseType) {
+        return Types.arrayOf()
+            .member("min", baseType)
+            .member("max", baseType)
+            .build();
+    }
+
     @Override
     public void assignType(ScriptDump scriptDump) {
         scriptDump.assignType(List.class, Types.generic("E").asArray());
@@ -59,47 +77,18 @@ public class JavaPrimitives extends ProbeJSPlugin {
         scriptDump.assignType(Tag.class, Types.BOOLEAN);
         scriptDump.assignType(Tag.class, Types.OBJECT);
         scriptDump.assignType(Tag.class, Types.ANY.asArray());
-        scriptDump.assignType(BlockPos.class, Types.arrayOf(Primitives.INTEGER, Primitives.INTEGER, Primitives.INTEGER));
-        scriptDump.assignType(Vec3.class, Types.arrayOf(Primitives.DOUBLE, Primitives.DOUBLE, Primitives.DOUBLE));
+        scriptDump.assignType(BlockPos.class, xyzOf(Primitives.INTEGER));
+        scriptDump.assignType(Vec3.class, xyzOf(Primitives.DOUBLE));
         scriptDump.assignType(MobCategory.class, Types.STRING);
-        scriptDump.assignType(AABB.class, Types.arrayOf());
-        scriptDump.assignType(AABB.class, Types.arrayOf(Primitives.DOUBLE, Primitives.DOUBLE, Primitives.DOUBLE));
-        scriptDump.assignType(AABB.class, Types.arrayOf(Primitives.DOUBLE, Primitives.DOUBLE, Primitives.DOUBLE,
-                Primitives.DOUBLE, Primitives.DOUBLE, Primitives.DOUBLE));
-        scriptDump.assignType(IntProvider.class, Primitives.INTEGER);
-        scriptDump.assignType(IntProvider.class, Types.arrayOf(Primitives.INTEGER, Primitives.INTEGER));
-        scriptDump.assignType(IntProvider.class, Types.object()
-                .member("bounds", Types.arrayOf(Primitives.INTEGER, Primitives.INTEGER))
-                .build());
-        scriptDump.assignType(IntProvider.class, Types.object()
-                .member("min", Primitives.INTEGER)
-                .member("max", Primitives.INTEGER)
-                .build());
-        scriptDump.assignType(IntProvider.class, Types.object()
-                .member("min_inclusive", Primitives.INTEGER)
-                .member("max_inclusive", Primitives.INTEGER)
-                .build());
-        scriptDump.assignType(IntProvider.class, Types.object()
-                .member("value", Primitives.INTEGER)
-                .build());
-        scriptDump.assignType(IntProvider.class, Types.object()
-                .member("clamped", Types.type(IntProvider.class))
-                .build());
-        scriptDump.assignType(IntProvider.class, Types.object()
-                .member("clamped_normal", Types.type(IntProvider.class))
-                .build());
-        scriptDump.assignType(NumberProvider.class, Primitives.DOUBLE);
-        scriptDump.assignType(NumberProvider.class, Types.arrayOf(Primitives.DOUBLE, Primitives.DOUBLE));
-        scriptDump.assignType(NumberProvider.class, Types.object()
-                .member("min", Primitives.DOUBLE)
-                .member("max", Primitives.DOUBLE)
-                .build());
-        scriptDump.assignType(NumberProvider.class, Types.object()
-                .member("n", Primitives.DOUBLE)
-                .member("p", Primitives.DOUBLE)
-                .build());
-        scriptDump.assignType(NumberProvider.class, Types.object()
-                .member("value", Primitives.DOUBLE)
-                .build());
+        scriptDump.assignType(AABB.class, Types.EMPTY_ARRAY);
+        scriptDump.assignType(AABB.class, xyzOf(Primitives.DOUBLE));
+        scriptDump.assignType(AABB.class, Types.arrayOf()
+            .member("x1", Primitives.DOUBLE)
+            .member("y1", Primitives.DOUBLE)
+            .member("z1", Primitives.DOUBLE)
+            .member("x2", Primitives.DOUBLE)
+            .member("y2", Primitives.DOUBLE)
+            .member("z2", Primitives.DOUBLE)
+            .build());
     }
 }

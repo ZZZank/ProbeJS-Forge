@@ -1,8 +1,8 @@
 package moe.wolfgirl.probejs.docs.assignments;
 
-import dev.latvian.mods.rhino.util.EnumTypeWrapper;
+import dev.latvian.mods.rhino.util.wrap.EnumTypeWrapper;
+import lombok.val;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
-import moe.wolfgirl.probejs.lang.java.clazz.Clazz;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
@@ -16,21 +16,21 @@ public class EnumTypes extends ProbeJSPlugin {
     @Override
     public void assignType(ScriptDump scriptDump) {
         LOCK.lock();
-        try {
-            for (Clazz recordedClass : scriptDump.recordedClasses) {
-                if (!recordedClass.original.isEnum()) {
-                    continue;
-                }
-                EnumTypeWrapper<?> typeWrapper = EnumTypeWrapper.get(recordedClass.original);
-                BaseType[] types = typeWrapper.nameValues
+        for (val recordedClass : scriptDump.recordedClasses) {
+            if (!recordedClass.original.isEnum()) {
+                continue;
+            }
+            try {
+                val typeWrapper = EnumTypeWrapper.get(recordedClass.original);
+                val types = typeWrapper.nameValues
                     .keySet()
                     .stream()
                     .map(Types::literal)
                     .toArray(BaseType[]::new);
                 scriptDump.assignType(recordedClass.classPath, Types.or(types));
+            } catch (Throwable ignore) {
             }
-        } finally {
-            LOCK.unlock();
         }
+        LOCK.unlock();
     }
 }

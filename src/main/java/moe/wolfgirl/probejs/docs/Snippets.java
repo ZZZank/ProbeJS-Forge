@@ -1,5 +1,6 @@
 package moe.wolfgirl.probejs.docs;
 
+import dev.latvian.kubejs.util.UtilsJS;
 import moe.wolfgirl.probejs.GlobalStates;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
@@ -52,7 +53,7 @@ public class Snippets extends ProbeJSPlugin {
                 .literal("\"")
                 .tabStop(1, "1")
                 .literal("x ")
-                .registry(Registry.ITEM_REGISTRY)
+                .registry(UtilsJS.cast(Registry.ITEM.key()))
                 .literal("\"");
     }
 

@@ -1,14 +1,10 @@
 package moe.wolfgirl.probejs.docs;
 
+import moe.wolfgirl.probejs.ProbeJS;
+import moe.wolfgirl.probejs.docs.assignments.*;
+import moe.wolfgirl.probejs.lang.schema.SchemaDump;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
-import moe.wolfgirl.probejs.docs.assignments.EnumTypes;
-import moe.wolfgirl.probejs.docs.assignments.JavaPrimitives;
-import moe.wolfgirl.probejs.docs.assignments.WorldTypes;
-import moe.wolfgirl.probejs.docs.assignments.RecipeTypes;
-import moe.wolfgirl.probejs.docs.events.RecipeEvents;
-import moe.wolfgirl.probejs.docs.events.RegistryEvents;
-import moe.wolfgirl.probejs.docs.events.TagEvents;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import moe.wolfgirl.probejs.lang.transpiler.Transpiler;
@@ -26,28 +22,42 @@ import java.util.function.Supplier;
 public class ProbeBuiltinDocs extends ProbeJSPlugin {
     public static final ProbeBuiltinDocs INSTANCE = new ProbeBuiltinDocs();
 
-    // So docs can be added because we don't have access to forge stuffs here
+    // So docs can be added stateless
     public final static List<Supplier<ProbeJSPlugin>> BUILTIN_DOCS = new ArrayList<>(List.of(
-            RegistryTypes::new,
+            //type
+        RegistryTypes::new,
             SpecialTypes::new,
             Primitives::new,
             JavaPrimitives::new,
             RecipeTypes::new,
             WorldTypes::new,
             EnumTypes::new,
-            Bindings::new,
-            Events::new,
-            TagEvents::new,
-            RecipeEvents::new,
-            RegistryEvents::new,
+            KubeWrappers::new,
+            //binding
+//            Bindings::new,
+            //event
+//            Events::new,
+//            TagEvents::new,
+//            RecipeEvents::new,
+//            RegistryEvents::new,
+            ForgeEventDoc::new,
+            //misc
             ParamFix::new,
-            Snippets::new,
-            ForgeEventDoc::new
+            Snippets::new
     ));
 
     private static void forEach(Consumer<ProbeJSPlugin> consumer) {
         for (Supplier<ProbeJSPlugin> builtinDoc : BUILTIN_DOCS) {
-            consumer.accept(builtinDoc.get());
+            try {
+                consumer.accept(builtinDoc.get());
+            } catch (Throwable t) {
+                ProbeJS.LOGGER.error("Error when applying builtin doc: %s".formatted(builtinDoc.get().getClass()));
+                ProbeJS.LOGGER.error(t.getMessage());
+                for (StackTraceElement stackTraceElement : t.getStackTrace()) {
+                    ProbeJS.LOGGER.error(stackTraceElement.toString());
+                }
+                ProbeJS.LOGGER.error("If you found any problem in generated docs, please report to ProbeJS's github!");
+            }
         }
     }
 
@@ -59,19 +69,16 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
         forEach(builtinDoc -> builtinDoc.modifyClasses(scriptDump, globalClasses));
-
     }
 
     @Override
     public void assignType(ScriptDump scriptDump) {
         forEach(builtinDoc -> builtinDoc.assignType(scriptDump));
-
     }
 
     @Override
     public void addPredefinedTypes(TypeConverter converter) {
         forEach(builtinDoc -> builtinDoc.addPredefinedTypes(converter));
-
     }
 
     @Override
@@ -89,5 +96,10 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
     @Override
     public void addVSCodeSnippets(SnippetDump dump) {
         forEach(builtinDoc -> builtinDoc.addVSCodeSnippets(dump));
+    }
+
+    @Override
+    public void addJsonSchema(SchemaDump dump) {
+        forEach(builtinDoc -> builtinDoc.addJsonSchema(dump));
     }
 }
