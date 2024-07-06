@@ -24,7 +24,11 @@ public class Require extends BaseFunction {
         val parts = result.split("/", 2);
         val path = new ClassPath(Arrays.stream(parts[1].split("/")).toList());
 
-        val loaded = manager.loadJavaClass(scope, new String[]{path.getClassPathJava()});
+        NativeJavaClass loaded = null;
+        try {
+            loaded = manager.loadJavaClass(scope, new String[]{path.getClassPathJava()});
+        } catch (Exception ignored) {
+        }
         if (loaded == null) {
             manager.type.console.warn("Class '%s' not loaded".formatted(path.getClassPathJava()));
             return new RequireWrapper(path, Undefined.instance);
