@@ -9,6 +9,7 @@ import lombok.val;
 import moe.wolfgirl.probejs.features.bridge.ProbeServer;
 import moe.wolfgirl.probejs.lang.linter.Linter;
 import moe.wolfgirl.probejs.utils.GameUtils;
+import moe.wolfgirl.probejs.utils.registry.SpecialData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -33,7 +34,7 @@ import static net.minecraft.Util.NIL_UUID;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class GameEvents {
-    private static final int MOD_LIMIT = 350;
+    private static final int MOD_LIMIT = 300;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void playerJoined(ClientPlayerNetworkEvent.LoggedInEvent event) {
@@ -110,6 +111,7 @@ public class GameEvents {
                     .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
                         KubeJS.PROXY.reloadClientInternal();
+                        SpecialData.refresh();
                         ProbeDump dump = new ProbeDump();
                         dump.defaultScripts();
                         new Thread(() -> {

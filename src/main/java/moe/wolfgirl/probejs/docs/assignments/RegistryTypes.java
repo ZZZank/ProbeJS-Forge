@@ -43,12 +43,6 @@ public class RegistryTypes extends ProbeJSPlugin {
 
         for (val info : SpecialData.instance().registries()) {
             val key = info.resKey();
-
-            //TODO: check if necessary
-//            if (Registry.REGISTRY.get(info.id()) == null) {
-//                continue;
-//            }
-
             val typeName = NameUtils.rlToTitle(key.location().getPath());
             scriptDump.assignType(
                 info.forgeRaw().getRegistrySuperType(),

@@ -55,8 +55,8 @@ public record SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> ta
     private static Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> fetchRawRegistries() {
         Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> registries = new HashMap<>();
         try {
-            registries.putAll(((ForgeRegistryManagerMixin)RegistryManager.ACTIVE).getRegistries());
-            registries.putAll(((ForgeRegistryManagerMixin)RegistryManager.FROZEN).getRegistries());
+            registries.putAll(((ForgeRegistryManagerMixin) RegistryManager.ACTIVE).getRegistries());
+            registries.putAll(((ForgeRegistryManagerMixin) RegistryManager.FROZEN).getRegistries());
         } catch (Exception e) {
             e.printStackTrace();
         }
