@@ -16,8 +16,5 @@ import java.util.Map;
 public interface TextureManagerMixin {
 
     @Accessor("byPath")
-    @Contract(" -> _")
-    default Map<ResourceLocation, AbstractTexture> byPath() {
-        throw new AssertionError();
-    }
+    Map<ResourceLocation, AbstractTexture> byPath();
 }

@@ -16,8 +16,5 @@ import java.util.Map;
 public interface TextureAtlasMixin {
 
     @Accessor("texturesByName")
-    @Contract(" -> _")
-    default Map<ResourceLocation, TextureAtlasSprite> texturesByName() {
-        throw new AssertionError();
-    }
+    Map<ResourceLocation, TextureAtlasSprite> texturesByName();
 }

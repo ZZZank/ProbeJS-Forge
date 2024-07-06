@@ -46,6 +46,7 @@ public class GameEvents {
         final Consumer<Component> sendMsg = msg -> player.sendMessage(msg, NIL_UUID);
 
         if (config.enabled.get()) {
+            SpecialData.refresh();
             if (config.modHash.get() == -1) {
                 sendMsg.accept(TextWrapper.translate("probejs.hello").gold().component());
             }
@@ -111,7 +112,6 @@ public class GameEvents {
                     .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
                         KubeJS.PROXY.reloadClientInternal();
-                        SpecialData.refresh();
                         ProbeDump dump = new ProbeDump();
                         dump.defaultScripts();
                         new Thread(() -> {
