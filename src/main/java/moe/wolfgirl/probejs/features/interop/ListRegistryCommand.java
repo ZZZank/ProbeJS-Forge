@@ -4,7 +4,7 @@ import com.google.gson.*;
 import dev.latvian.kubejs.util.UtilsJS;
 import lombok.val;
 import moe.wolfgirl.probejs.features.bridge.Command;
-import moe.wolfgirl.probejs.utils.RegistryUtils;
+import moe.wolfgirl.probejs.utils.registry.RegistryUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;

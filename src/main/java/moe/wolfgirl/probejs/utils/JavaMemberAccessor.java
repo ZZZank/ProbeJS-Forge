@@ -1,7 +1,5 @@
 package moe.wolfgirl.probejs.utils;
 
-import dev.latvian.mods.rhino.ScriptRuntime;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

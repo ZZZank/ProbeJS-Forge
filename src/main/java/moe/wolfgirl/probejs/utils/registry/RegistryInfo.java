@@ -1,4 +1,4 @@
-package com.probejs.info;
+package moe.wolfgirl.probejs.utils.registry;
 
 import java.util.Set;
 

@@ -1,7 +1,7 @@
 package moe.wolfgirl.probejs.docs.assignments;
 
-import com.probejs.info.RegistryInfo;
-import com.probejs.info.SpecialData;
+import moe.wolfgirl.probejs.utils.registry.RegistryInfo;
+import moe.wolfgirl.probejs.utils.registry.SpecialData;
 import lombok.val;
 import moe.wolfgirl.probejs.ProbeConfig;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;

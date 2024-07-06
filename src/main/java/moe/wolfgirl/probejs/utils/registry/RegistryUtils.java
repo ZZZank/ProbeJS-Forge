@@ -1,7 +1,5 @@
-package moe.wolfgirl.probejs.utils;
+package moe.wolfgirl.probejs.utils.registry;
 
-import com.probejs.info.RegistryInfo;
-import com.probejs.info.SpecialData;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
