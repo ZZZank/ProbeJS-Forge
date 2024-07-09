@@ -51,19 +51,7 @@ public class GameEvents {
                 sendMsg.accept(TextWrapper.translate("probejs.hello").gold().component());
             }
             if (config.registryHash.get() != GameUtils.registryHash()) {
-                new Thread(() -> {  // Don't stall the client
-                    val dump = new ProbeDump();
-                    dump.defaultScripts();
-                    try {
-                        dump.trigger(sendMsg);
-                    } catch (Throwable e) {
-                        ProbeJS.LOGGER.error(e.getMessage());
-                        for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-                            ProbeJS.LOGGER.error(stackTraceElement.toString());
-                        }
-                        throw new RuntimeException(e);
-                    }
-                }).start();
+                new ProbeDumpingThread(sendMsg).start();
             } else {
                 sendMsg.accept(
                     TextWrapper
@@ -112,19 +100,7 @@ public class GameEvents {
                     .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
                         KubeJS.PROXY.reloadClientInternal();
-                        ProbeDump dump = new ProbeDump();
-                        dump.defaultScripts();
-                        new Thread(() -> {
-                            try {
-                                dump.trigger(msg -> sendMsg.accept(context, TextWrapper.of(msg)));
-                            } catch (Throwable e) {
-                                ProbeJS.LOGGER.error(e.getMessage());
-                                for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-                                    ProbeJS.LOGGER.error(stackTraceElement.toString());
-                                }
-                                throw new RuntimeException(e);
-                            }
-                        }).start();
+                        new ProbeDumpingThread(msg -> sendMsg.accept(context, TextWrapper.of(msg))).start();
                         return Command.SINGLE_SUCCESS;
                     })
                 )
