@@ -7,7 +7,6 @@ import org.jetbrains.java.decompiler.main.extern.IFernflowerPreferences;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,8 +17,7 @@ public class ProbeDecompiler {
             .get()
             .getModFiles()
             .stream()
-            .map(fileInfo -> fileInfo.getFile().getFilePath())
-            .map(Path::toFile)
+            .map(fileInfo -> fileInfo.getFile().getFilePath().toFile())
             .collect(Collectors.toList());
     }
 

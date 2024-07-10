@@ -1,6 +1,7 @@
 package moe.wolfgirl.probejs.lang.decompiler;
 
 import lombok.Getter;
+import lombok.val;
 import org.jetbrains.java.decompiler.main.extern.IContextSource;
 
 import java.io.File;
@@ -15,14 +16,12 @@ public class ProbeClassScanner {
     private final Set<Class<?>> scannedClasses = new HashSet<>();
 
     public void acceptFile(File file) throws IOException {
-        try (var jarFile = new ZipFile(file)) {
+        try (val jarFile = new ZipFile(file)) {
             jarFile.stream()
-                .filter(ZipEntry::isDirectory)
+                .filter(e -> !e.isDirectory())
                 .map(ZipEntry::getName)
                 .filter(name -> name.endsWith(IContextSource.CLASS_SUFFIX))
                 .map(name -> name.substring(0, name.length() - IContextSource.CLASS_SUFFIX.length()).replace("/", "."))
-                //why, mojang
-                .filter(name -> !name.contains("com.mojang.blaze3d.systems.TimerQuery"))
                 .forEach(name -> {
                     try {
                         scannedClasses.add(Class.forName(name));

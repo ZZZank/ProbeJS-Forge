@@ -2,7 +2,6 @@ package moe.wolfgirl.probejs;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.shedaniel.architectury.platform.Platform;
 import me.shedaniel.architectury.platform.forge.EventBuses;
 import moe.wolfgirl.probejs.utils.JsonUtils;
 import net.minecraftforge.fml.common.Mod;
@@ -26,7 +25,6 @@ public class ProbeJS {
         .setPrettyPrinting()
         .disableHtmlEscaping()
         .create();
-
 
     public ProbeJS() {
         EventBuses.registerModEventBus(ProbeJS.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());

@@ -7,8 +7,11 @@ import moe.wolfgirl.probejs.ProbeJS;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class FileUtils {
@@ -52,5 +55,24 @@ public class FileUtils {
             return null;
         }
         return base.resolve(parts[1]);
+    }
+
+    public static long transferTo(InputStream in, OutputStream out) throws IOException {
+        Objects.requireNonNull(in, "in");
+        Objects.requireNonNull(out, "out");
+        long transferred = 0;
+        byte[] buffer = new byte[16384];
+        int read;
+        while ((read = in.read(buffer, 0, 16384)) >= 0) {
+            out.write(buffer, 0, read);
+            if (transferred < Long.MAX_VALUE) {
+                try {
+                    transferred = Math.addExact(transferred, read);
+                } catch (ArithmeticException ignore) {
+                    transferred = Long.MAX_VALUE;
+                }
+            }
+        }
+        return transferred;
     }
 }

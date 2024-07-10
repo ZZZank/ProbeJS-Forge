@@ -51,7 +51,11 @@ public class GameEvents {
                 sendMsg.accept(TextWrapper.translate("probejs.hello").gold().component());
             }
             if (config.registryHash.get() != GameUtils.registryHash()) {
-                new ProbeDumpingThread(sendMsg).start();
+                try (val thread = new ProbeDumpingThread(sendMsg)) {
+                    thread.start();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             } else {
                 sendMsg.accept(
                     TextWrapper
