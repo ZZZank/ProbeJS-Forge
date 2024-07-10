@@ -1,18 +1,14 @@
 package moe.wolfgirl.probejs;
 
 import lombok.val;
-import moe.wolfgirl.probejs.utils.InMemoryLib;
 import net.minecraft.network.chat.Component;
 
-import java.net.URLClassLoader;
 import java.util.function.Consumer;
 
 /**
  * @author ZZZank
  */
-public class ProbeDumpingThread extends Thread implements AutoCloseable {
-
-    private InMemoryLib lib;
+public class ProbeDumpingThread extends Thread {
 
     ProbeDumpingThread(final Consumer<Component> messageSender) {
         this(messageSender, "probe dumping thread");
@@ -35,20 +31,5 @@ public class ProbeDumpingThread extends Thread implements AutoCloseable {
             },
             name
         );
-        try {
-            lib = new InMemoryLib();
-            val urls = lib.getURLs();
-            this.setContextClassLoader(new URLClassLoader(
-                urls,
-                this.getContextClassLoader()
-            ));
-        } catch (Exception e) {
-            ProbeJS.LOGGER.error("Error when loading Non Mod Library", e);
-        }
-    }
-
-    @Override
-    public void close() throws Exception {
-        lib.close();
     }
 }
