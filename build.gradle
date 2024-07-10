@@ -1,5 +1,6 @@
 plugins {
-    id "dev.architectury.loom" version "1.3-SNAPSHOT"
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id "dev.architectury.loom" version "1.6-SNAPSHOT"
     id "maven-publish"
 }
 
@@ -70,6 +71,11 @@ repositories {
     }
 }
 
+configurations {
+    shade
+    implementation.extendsFrom shade
+}
+
 dependencies {
     // to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -103,8 +109,8 @@ dependencies {
     // modCompileOnly "mezz.jei:jei-1.16.5:${jei_version}:api"
     // at runtime, use the full JEI jar
     // modRuntimeOnly "mezz.jei:jei-1.16.5:${jei_version}"
-    modApi("dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}")
     modImplementation("curse.maven:rhizo-1003287:5506575")
+    modApi("dev.latvian.mods:kubejs-forge:${rootProject.kubejs_version}")
     //lombok
     compileOnly "org.projectlombok:lombok:${rootProject.lombok_version}"
     annotationProcessor "org.projectlombok:lombok:${rootProject.lombok_version}"
@@ -114,15 +120,16 @@ dependencies {
     annotationProcessor 'com.pkware.jabel:jabel-javac-plugin:1.0.1-1'
     compileOnly 'com.pkware.jabel:jabel-javac-plugin:1.0.1-1'
     //
-    compileOnly 'org.java-websocket:Java-WebSocket:1.5.6'
-    include 'org.java-websocket:Java-WebSocket:1.5.6'
-    //
-    compileOnly 'com.github.javaparser:javaparser-symbol-solver-core:3.25.8'
-    compileOnly 'com.github.javaparser:javaparser-core:3.25.8'
-    compileOnly "org.vineflower:vineflower:${project.vineflower_version}"
-    include 'com.github.javaparser:javaparser-symbol-solver-core:3.25.8'
-    include 'com.github.javaparser:javaparser-core:3.25.8'
-    include "org.vineflower:vineflower:${project.vineflower_version}"
+    implementation('org.java-websocket:Java-WebSocket:1.5.6')
+    implementation('com.github.javaparser:javaparser-symbol-solver-core:3.25.8')
+    implementation('com.github.javaparser:javaparser-core:3.25.8')
+    implementation("org.vineflower:vineflower:${project.vineflower_version}")
+    include('org.java-websocket:Java-WebSocket:1.5.6')
+    include('com.github.javaparser:javaparser-symbol-solver-core:3.25.8')
+    include('com.github.javaparser:javaparser-core:3.25.8')
+    include("org.vineflower:vineflower:${project.vineflower_version}")
+    //https://central.sonatype.com/artifact/com.google.jimfs/jimfs/
+    shade('com.google.jimfs:jimfs:1.3.0') { transitive = false }
 }
 
 processResources {
@@ -172,6 +179,21 @@ jar {
     }
 }
 
+shadowJar {
+    archiveClassifier.set("shadow")
+
+    relocate("com.google.common.jimfs", "com.probejs.shaded.jimfs")
+
+    configurations = [project.configurations.shade]
+}
+
+remapJar {
+    setInput(shadowJar.archiveFile)
+    dependsOn shadowJar
+}
+
+assemble.dependsOn shadowJar
+
 // configure the maven publication
 publishing {
     publications {
@@ -188,3 +210,5 @@ publishing {
         // retrieving dependencies.
     }
 }
+
+//assemble.dependsOn shadowJar
