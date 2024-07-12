@@ -9,7 +9,7 @@ import moe.wolfgirl.probejs.lang.java.clazz.members.FieldInfo;
 import moe.wolfgirl.probejs.lang.java.clazz.members.MethodInfo;
 import moe.wolfgirl.probejs.lang.java.type.TypeAdapter;
 import moe.wolfgirl.probejs.lang.java.type.TypeDescriptor;
-import moe.wolfgirl.probejs.utils.JavaMemberAccessor;
+import moe.wolfgirl.probejs.utils.ReflectUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.*;
@@ -34,12 +34,12 @@ public class Clazz extends TypeVariableHolder {
 
         this.original = clazz;
         this.classPath = new ClassPath(RemapperManager.getDefault().remapClass(original));
-        this.constructors = Arrays.stream(JavaMemberAccessor.constructorsSafe(original))
+        this.constructors = Arrays.stream(ReflectUtils.constructorsSafe(original))
             .filter(ctor -> !ctor.isAnnotationPresent(HideFromJS.class))
             .map(ConstructorInfo::new)
             .collect(Collectors.toList());
         Set<String> names = new HashSet<>();
-        this.methods = Arrays.stream(JavaMemberAccessor.methodsSafe(original))
+        this.methods = Arrays.stream(ReflectUtils.methodsSafe(original))
             .peek(m -> {
                 val name = RemapperManager.getDefault().remapMethod(original, m);
                 names.add(name.isEmpty() ? m.getName() : name);
@@ -58,7 +58,7 @@ public class Clazz extends TypeVariableHolder {
                 return new MethodInfo(original ,method, replacement);
             })
             .collect(Collectors.toList());
-        this.fields = Arrays.stream(JavaMemberAccessor.fieldsSafe(original))
+        this.fields = Arrays.stream(ReflectUtils.fieldsSafe(original))
             .filter(f -> !names.contains(RemapperManager.getDefault().remapField(original, f)))
             .map(f -> new FieldInfo(original, f))
             .collect(Collectors.toList());

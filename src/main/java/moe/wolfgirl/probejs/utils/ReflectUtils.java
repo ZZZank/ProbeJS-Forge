@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 /**
  * @author ZZZank
  */
-public interface JavaMemberAccessor {
+public interface ReflectUtils {
     static Constructor<?>[] constructorsSafe(Class<?> c) {
         try {
             return c.getConstructors();
@@ -30,5 +30,24 @@ public interface JavaMemberAccessor {
         } catch (Throwable e) {
             return new Method[0];
         }
+    }
+
+    static Class<?> classOrNull(String name) {
+        return classOrNull(name, false);
+    }
+
+    static Class<?> classOrNull(String name, boolean printError) {
+        try {
+            return Class.forName(name);
+        } catch (Throwable e) {
+            if (printError) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    static boolean classExist(String name) {
+        return classOrNull(name) != null;
     }
 }
