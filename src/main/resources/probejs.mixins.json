@@ -9,7 +9,8 @@
     "OnJavaMixin",
     "RecipeManagerMixin",
     "ScriptManagerMixin",
-    "access.ForgeRegistryManagerMixin"
+    "access.ForgeRegistryManagerMixin",
+    "integration.KubeJSForgeEventRedirection"
   ],
   "injectors": {
     "defaultRequire": 1

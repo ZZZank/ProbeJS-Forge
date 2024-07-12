@@ -2,6 +2,7 @@ package moe.wolfgirl.probejs.plugin;
 
 import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.*;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 
@@ -42,6 +43,7 @@ public class Require extends BaseFunction {
         private final Object clazz;
 
         public RequireWrapper(ClassPath path, Object clazz) {
+            assert clazz == Undefined.instance || clazz instanceof NativeJavaClass;
             this.path = path;
             this.clazz = clazz;
         }
@@ -57,6 +59,11 @@ public class Require extends BaseFunction {
                 return clazz;
             }
             return super.get(name, start);
+        }
+
+        @HideFromJS
+        public ClassPath getPath() {
+            return path;
         }
     }
 }
