@@ -7,9 +7,7 @@ import org.jetbrains.java.decompiler.main.extern.IContextSource;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -26,7 +24,22 @@ public class ProbeClassScanner {
                 .map(name -> name.substring(0, name.length() - IContextSource.CLASS_SUFFIX.length()).replace("/", "."))
                 .map(ReflectUtils::classOrNull)
                 .filter(Objects::nonNull)
-                .forEach(scannedClasses::add);
+                .forEach(getScannedClasses()::add);
+        }
+    }
+
+    /**
+     * get all loaded classes by reading {@link ClassLoader#classes} from {@code Thread.currentThread().getContextClassLoader()}
+     * and its parents
+     * @throws IllegalAccessException
+     * @throws NoSuchFieldException should not happen
+     */
+    public void fromClassLoader() throws IllegalAccessException, NoSuchFieldException {
+        val f$classes = ClassLoader.class.getDeclaredField("classes");
+        f$classes.setAccessible(true);
+        for (var curr = Thread.currentThread().getContextClassLoader(); curr != null; curr = curr.getParent()) {
+            val o = (ArrayList<Class<?>>) f$classes.get(curr);
+            scannedClasses.addAll(o);
         }
     }
 }

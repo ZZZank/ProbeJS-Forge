@@ -1,5 +1,6 @@
 package moe.wolfgirl.probejs.lang.decompiler;
 
+import lombok.val;
 import moe.wolfgirl.probejs.ProbeJS;
 import net.minecraftforge.fml.ModList;
 import org.jetbrains.java.decompiler.main.Fernflower;
@@ -33,13 +34,18 @@ public class ProbeDecompiler {
         try {
             scanner.acceptFile(source);
         } catch (IOException e) {
-            ProbeJS.LOGGER.error(String.format("Unable to load file: %s",source));
+            ProbeJS.LOGGER.error(String.format("Unable to load file: %s", source));
         }
     }
 
     public void fromMods() {
-        for (File modFile : findModFiles()) {
-            addRuntimeSource(modFile);
+//        for (File modFile : findModFiles()) {
+//            addRuntimeSource(modFile);
+//        }
+        try {
+            scanner.fromClassLoader();
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            ProbeJS.LOGGER.error("Unable to load classes from class loader", e);
         }
     }
 
@@ -49,8 +55,8 @@ public class ProbeDecompiler {
         prop.put(IFernflowerPreferences.RENAME_ENTITIES, "1");
         prop.put(IFernflowerPreferences.USER_RENAMER_CLASS, ProbeRemapper.class.getName());
 
-        Fernflower engine = new Fernflower(resultSaver, prop, new ProbeDecompilerLogger());
-        ProbeClassSource source = new ProbeClassSource(scanner.getScannedClasses());
+        val engine = new Fernflower(resultSaver, prop, new ProbeDecompilerLogger());
+        val source = new ProbeClassSource(scanner.getScannedClasses());
         engine.addSource(source);
 
         resultSaver.classCount = 0;
