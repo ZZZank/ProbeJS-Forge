@@ -103,7 +103,9 @@ public class ScriptDump {
 
     public void acceptClasses(Collection<Clazz> classes) {
         for (Clazz clazz : classes) {
-            if (accept.test(clazz)) recordedClasses.add(clazz);
+            if (accept.test(clazz)) {
+                recordedClasses.add(clazz);
+            }
         }
     }
 

@@ -39,12 +39,12 @@ public class ProbeDecompiler {
     }
 
     public void fromMods() {
-//        for (File modFile : findModFiles()) {
-//            addRuntimeSource(modFile);
-//        }
         try {
-            scanner.fromClassLoader();
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+            for (File modFile : findModFiles()) {
+                addRuntimeSource(modFile);
+            }
+//            scanner.fromClassLoader();
+        } catch (Exception e) {
             ProbeJS.LOGGER.error("Unable to load classes from class loader", e);
         }
     }
