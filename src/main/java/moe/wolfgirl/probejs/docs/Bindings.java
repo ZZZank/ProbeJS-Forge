@@ -1,5 +1,8 @@
 package moe.wolfgirl.probejs.docs;
 
+import dev.latvian.kubejs.script.BindingsEvent;
+import dev.latvian.kubejs.script.ScriptManager;
+import dev.latvian.kubejs.util.KubeJSPlugins;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.NativeJavaClass;
@@ -20,34 +23,46 @@ import java.util.*;
  * Adds bindings to some stuffs...
  */
 public class Bindings extends ProbeJSPlugin {
+
+    private static class DummyBindingEvent extends BindingsEvent {
+
+        private final Map<String, Object> constants = new HashMap<>();
+        private final Map<String, Class<?>> classes = new HashMap<>();
+        private final Map<String, BaseFunction> functions = new HashMap<>();
+
+        public DummyBindingEvent(ScriptManager m, Context cx, Scriptable s) {
+            super(m, cx, s);
+        }
+
+        @Override
+        public void add(String name, Object value) {
+            if (value instanceof Class<?> c) {
+                classes.put(name, c);
+            } else if (value instanceof BaseFunction fn) {
+                functions.put(name, fn);
+            } else {
+                constants.put(name, value);
+            }
+        }
+    }
+
     @Override
     public void addGlobals(ScriptDump scriptDump) {
-        // scans for globally exported objects
-        Scriptable scope = scriptDump.attachedScope;
+
+        val event = new DummyBindingEvent(scriptDump.manager, scriptDump.attachedContext, scriptDump.attachedScope);
+        KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(event));
 
         TypeConverter converter = scriptDump.transpiler.typeConverter;
         Map<String, BaseType> exported = new HashMap<>();
         Map<String, BaseType> reexported = new HashMap<>(); // Namespaces
 
-        for (Object o : scope.getIds()) {
-            if (!(o instanceof String id)) {
-                continue;
-            }
-            Object value = scope.get(id, scope);
-            if (value instanceof NativeJavaClass javaClass) {
-                value = javaClass.getClassObject();
+        for (val entry : event.classes.entrySet()) {
+            val id = entry.getKey();
+            val c = entry.getValue();
+            if (c.isInterface()) {
+                reexported.put(id, converter.convertType(c));
             } else {
-                value = Context.jsToJava(value, Object.class);
-            }
-
-            if (value instanceof Class<?> c) {
-                if (c.isInterface()) {
-                    reexported.put(id, converter.convertType(c));
-                } else {
-                    exported.put(id, Types.typeOf(converter.convertType(c)));
-                }
-            } else if (!(value instanceof BaseFunction)) {
-                exported.put(id, converter.convertType(value.getClass()));
+                exported.put(id, Types.typeOf(converter.convertType(c)));
             }
         }
 
@@ -62,35 +77,27 @@ public class Bindings extends ProbeJSPlugin {
             val type = entry.getValue();
             codes.add(new ReexportDeclaration(symbol, type));
         }
-        scriptDump.addGlobal("bindings", exported.keySet(), codes.toArray(Code[]::new));
+        scriptDump.addGlobal("bindings", exported.keySet(), codes.toArray(new Code[0]));
     }
 
     @Override
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
         Set<Class<?>> classes = new HashSet<>();
-        Scriptable scope = scriptDump.attachedScope;
 
-        for (Object o : scope.getIds()) {
-            if (!(o instanceof String id)) {
-                continue;
-            }
-            Object value = scope.get(id, scope);
-            if (value instanceof NativeJavaClass javaClass) {
-                value = javaClass.getClassObject();
-            } else {
-                value = Context.jsToJava(value,Object.class);
-            }
+        val event = new DummyBindingEvent(scriptDump.manager, scriptDump.attachedContext, scriptDump.attachedScope);
+        KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(event));
 
-            if (value instanceof Class<?> c) {
+        classes.addAll(event.classes.values());
+        for (Object o : event.constants.values()) {
+            if (o instanceof NativeJavaClass njc) {
+                classes.add(njc.getClassObject());
+            } else if (o instanceof Class<?> c) {
                 classes.add(c);
-            } else if (!(value instanceof BaseFunction
-//                    || value instanceof EventGroupWrapper
-            )) {
-                // No base function as don't know how to get type info
-                // No events because they will be dumped separately
-                classes.add(value.getClass());
+            } else {
+                classes.add(o.getClass());
             }
         }
+
         return classes;
     }
 }
