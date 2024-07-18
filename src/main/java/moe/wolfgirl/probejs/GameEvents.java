@@ -9,7 +9,7 @@ import lombok.val;
 import moe.wolfgirl.probejs.features.bridge.ProbeServer;
 import moe.wolfgirl.probejs.lang.linter.Linter;
 import moe.wolfgirl.probejs.utils.GameUtils;
-import moe.wolfgirl.probejs.utils.registry.SpecialData;
+import moe.wolfgirl.probejs.features.kubejs.SpecialData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;

@@ -1,5 +1,6 @@
 package moe.wolfgirl.probejs.utils.registry;
 
+import moe.wolfgirl.probejs.features.kubejs.SpecialData;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;

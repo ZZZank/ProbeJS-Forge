@@ -1,4 +1,4 @@
-package moe.wolfgirl.probejs.utils.registry;
+package moe.wolfgirl.probejs.features.kubejs;
 
 import com.github.bsideup.jabel.Desugar;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import moe.wolfgirl.probejs.mixins.access.ForgeRegistryManagerMixin;
+import moe.wolfgirl.probejs.utils.registry.RegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;

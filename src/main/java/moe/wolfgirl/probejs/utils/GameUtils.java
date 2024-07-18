@@ -1,7 +1,7 @@
 package moe.wolfgirl.probejs.utils;
 
 import moe.wolfgirl.probejs.utils.registry.RegistryInfo;
-import moe.wolfgirl.probejs.utils.registry.SpecialData;
+import moe.wolfgirl.probejs.features.kubejs.SpecialData;
 import lombok.val;
 import me.shedaniel.architectury.platform.Mod;
 import me.shedaniel.architectury.platform.Platform;

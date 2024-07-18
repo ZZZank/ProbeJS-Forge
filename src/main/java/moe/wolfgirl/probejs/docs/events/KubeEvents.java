@@ -1,6 +1,6 @@
 package moe.wolfgirl.probejs.docs.events;
 
-import dev.latvian.kubejs.event.EventJS;
+import moe.wolfgirl.probejs.features.kubejs.EventJSInfo;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 
