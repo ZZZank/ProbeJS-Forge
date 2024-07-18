@@ -328,28 +328,27 @@ public class ScriptDump {
 
     public void dumpJSConfig() throws IOException {
         moe.wolfgirl.probejs.utils.FileUtils.writeMergedConfig(scriptPath.resolve("jsconfig.json"), String.format("""
-                {
-                    "compilerOptions": {
-                        "module": "commonjs",
-                        "target": "ES2015",
-                        "lib": [
-                            "ES5",
-                            "ES2015"
-                        ],
-                        "rootDir": ".",
-                        "typeRoots": [
-                            "../../.probe/%s/probe-types"
-                        ],
-                        "baseUrl": "../../.probe/%s/probe-types",
-                        "skipLibCheck": true
-                    },
-                    "include": [
-                        "./**/*.js",
-                        "./**/*.ts",
-                    ]
-                }
-                """,basePath.getFileName(), basePath.getFileName())
-        );
+            {
+                "compilerOptions": {
+                    "module": "commonjs",
+                    "target": "ES2015",
+                    "lib": [
+                        "ES5",
+                        "ES2015"
+                    ],
+                    "rootDir": ".",
+                    "typeRoots": [
+                        "../../.probe/%s/probe-types"
+                    ],
+                    "baseUrl": "../../.probe/%s/probe-types",
+                    "skipLibCheck": true
+                },
+                "include": [
+                    "./**/*.js",
+                    "./**/*.ts",
+                ]
+            }
+            """, basePath.getFileName(), basePath.getFileName()));
     }
 
     public void removeClasses() throws IOException {

@@ -1,6 +1,7 @@
 package moe.wolfgirl.probejs.docs;
 
 import dev.latvian.kubejs.bindings.TextWrapper;
+import lombok.val;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.lang.typescript.TypeScriptFile;
@@ -14,8 +15,10 @@ import java.util.Map;
 public class ParamFix extends ProbeJSPlugin {
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
-
-        var textWrapper = globalClasses.get(new ClassPath(TextWrapper.class));
+        val textWrapper = globalClasses.get(new ClassPath(TextWrapper.class));
+        if (textWrapper == null) {
+            return;
+        }
         DocUtils.replaceParamType(
             textWrapper,
             m -> m.params.size() == 1 && m.name.equals("of"),

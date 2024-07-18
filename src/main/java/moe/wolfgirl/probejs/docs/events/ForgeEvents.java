@@ -1,4 +1,4 @@
-package moe.wolfgirl.probejs.docs;
+package moe.wolfgirl.probejs.docs.events;
 
 
 import moe.wolfgirl.probejs.GlobalStates;
@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.Event;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ForgeEventDoc extends ProbeJSPlugin {
+public class ForgeEvents extends ProbeJSPlugin {
 
 //    @Override
 //    public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {

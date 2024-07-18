@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 public class GlobalStates {
     public static ProbeServer SERVER;
 
+    /**
+     * known native events
+     */
     public static final Set<Class<?>> KNOWN_EVENTS = new HashSet<>();
     public static final Set<String> MIXIN_LANG_KEYS = new HashSet<>();
     public static final Set<String> RECIPE_IDS = new HashSet<>();

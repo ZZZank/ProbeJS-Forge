@@ -1,8 +1,17 @@
-package moe.wolfgirl.probejs.docs;
+package moe.wolfgirl.probejs.docs.events;
 
+import dev.latvian.kubejs.event.EventJS;
+import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 
-public class Events extends ProbeJSPlugin {
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class KubeEvents extends ProbeJSPlugin {
+
+    public static final Map<String, Class<? extends EventJS>> KNOWN = new HashMap<>();
 
 //    @Override
 //    public void addGlobals(ScriptDump scriptDump) {
@@ -39,21 +48,12 @@ public class Events extends ProbeJSPlugin {
 //
 //        scriptDump.addGlobal("events", codes.toArray(Code[]::new));
 //    }
-//
-//    @Override
-//    public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
-//        HashSet<Class<?>> classes = new HashSet<>();
-//
-//        for (EventGroup group : EventGroups.ALL.get().map().values()) {
-//            for (EventHandler handler : group.getHandlers().values()) {
-//                if (!handler.scriptTypePredicate.test(scriptDump.scriptType)) continue;
-//                classes.add(handler.eventType.get());
-//            }
-//        }
-//
-//        return classes;
-//    }
-//
+
+    @Override
+    public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
+        return new HashSet<>(KNOWN.values());
+    }
+
 //    private static MethodDeclaration formatEvent(TypeConverter converter, EventHandler handler, boolean useExtra) {
 //        var builder = Statements.method(handler.name);
 //        if (useExtra) {

@@ -29,7 +29,7 @@ public class ProbeClassScanner {
      * get all loaded classes by reading {@link ClassLoader#classes} from {@code Thread.currentThread().getContextClassLoader()}
      * and its parents
      */
-    public void fromClassLoader() throws IOException {
+    private void fromClassLoader() throws IOException {
         val loader = Thread.currentThread().getContextClassLoader();
         val resources = loader.getResources("");
         while (resources.hasMoreElements()) {

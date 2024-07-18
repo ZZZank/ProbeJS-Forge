@@ -4,6 +4,7 @@ import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.util.ClassFilter;
 import lombok.val;
+import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.events.ProbeEvents;
 import moe.wolfgirl.probejs.docs.ProbeBuiltinDocs;
 import moe.wolfgirl.probejs.events.SnippetGenerationEventJS;
@@ -37,6 +38,7 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
     }
 
     private static void readFromBindings(BindingsEvent event) {
+        ProbeJS.LOGGER.debug("read binding infos for script type {}", event.type.name);
         val dump = ScriptDump.forType(event.type).get();
         //a bad idea, because KubeJS 1.16 will call BindingsEvent for EVERY script pack
         dump.attachedContext = event.context;

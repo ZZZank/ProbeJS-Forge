@@ -90,8 +90,9 @@ public class ClassRegistry {
             classes.addAll(variableType.getClasses());
         }
 
-        if (clazz.superClass != null)
+        if (clazz.superClass != null) {
             classes.addAll(clazz.superClass.getClasses());
+        }
         for (TypeDescriptor i : clazz.interfaces) {
             classes.addAll(i.getClasses());
         }
