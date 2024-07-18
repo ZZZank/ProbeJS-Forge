@@ -94,15 +94,15 @@ public class ProbeDump {
 
         report(translate("probejs.dump.snippets_generated"));
 
-        if (GameUtils.modHash() != ProbeConfig.INSTANCE.modHash.get()) {
+        if (GameUtils.modHash() != ProbeJS.CONFIG.modHash.get()) {
             report(translate("probejs.dump.mod_changed").aqua());
             onModChange();
-            ProbeConfig.INSTANCE.modHash.set(GameUtils.modHash());
+            ProbeJS.CONFIG.modHash.set(GameUtils.modHash());
         }
 
-        if (GameUtils.registryHash() != ProbeConfig.INSTANCE.registryHash.get()) {
+        if (GameUtils.registryHash() != ProbeJS.CONFIG.registryHash.get()) {
             onRegistryChange();
-            ProbeConfig.INSTANCE.registryHash.set(GameUtils.registryHash());
+            ProbeJS.CONFIG.registryHash.set(GameUtils.registryHash());
         }
 
         // Fetch classes that will be used in the dump

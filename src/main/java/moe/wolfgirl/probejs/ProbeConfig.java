@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
  * Read / write to .vscode/settings.json
  */
 public class ProbeConfig {
-    public static ProbeConfig INSTANCE = new ProbeConfig();
 
     public ConfigEntry<Boolean> enabled = new ConfigEntry<>("enabled", true);
 //    public ConfigEntry<Boolean> enableDecompiler = new ConfigEntry<>("enableDecompiler", false);

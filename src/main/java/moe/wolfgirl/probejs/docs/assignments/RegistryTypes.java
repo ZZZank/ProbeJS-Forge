@@ -1,9 +1,9 @@
 package moe.wolfgirl.probejs.docs.assignments;
 
+import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.utils.registry.RegistryInfo;
 import moe.wolfgirl.probejs.features.kubejs.SpecialData;
 import lombok.val;
-import moe.wolfgirl.probejs.ProbeConfig;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.snippet.Snippet;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
@@ -82,7 +82,7 @@ public class RegistryTypes extends ProbeJSPlugin {
         if (ServerLifecycleHooks.getCurrentServer() == null) {
             return;
         }
-        val enabled = ProbeConfig.INSTANCE.complete.get();
+        val enabled = ProbeJS.CONFIG.complete.get();
 
         for (val info : SpecialData.instance().registries()) {
 //            if (info.raw() == null) {

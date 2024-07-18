@@ -3,7 +3,7 @@ package moe.wolfgirl.probejs.lang.linter.rules;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
-import moe.wolfgirl.probejs.ProbeConfig;
+import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.lang.linter.LintingWarning;
 
 import java.nio.file.Path;
@@ -18,7 +18,7 @@ public class NoNamespacePollution extends Rule {
 
     @Override
     public void acceptFile(Path path, List<String> content) {
-        if (ProbeConfig.INSTANCE.isolatedScopes.get()) {
+        if (ProbeJS.CONFIG.isolatedScopes.get()) {
             // scans for export ...
             for (int i = 0; i < content.size(); i++) {
                 String s = content.get(i).trim();

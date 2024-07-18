@@ -42,7 +42,7 @@ public class GameEvents {
         if (player == null) {
             return;
         }
-        ProbeConfig config = ProbeConfig.INSTANCE;
+        ProbeConfig config = ProbeJS.CONFIG;
         final Consumer<Component> sendMsg = msg -> player.sendMessage(msg, NIL_UUID);
 
         if (config.enabled.get()) {
@@ -61,7 +61,7 @@ public class GameEvents {
                         .append(TextWrapper.string("/probejs disable").click("command:/probejs disable").aqua())
                         .component()
                 );
-                if (ModList.get().size() >= MOD_LIMIT && ProbeConfig.INSTANCE.complete.get()) {
+                if (ModList.get().size() >= MOD_LIMIT && ProbeJS.CONFIG.complete.get()) {
                     sendMsg.accept(
                         TextWrapper.translate("probejs.performance", ModList.get().size()).component()
                     );
@@ -99,7 +99,7 @@ public class GameEvents {
         dispatcher.register(
             Commands.literal("probejs")
                 .then(Commands.literal("dump")
-                    .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
+                    .requires(source -> ProbeJS.CONFIG.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
                         if (ProbeDumpingThread.exists()) {
                             sendMsg.accept(context, TextWrapper.translate("probejs.already_running").red().component());
@@ -112,9 +112,9 @@ public class GameEvents {
                     })
                 )
                 .then(Commands.literal("disable")
-                    .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
+                    .requires(source -> ProbeJS.CONFIG.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
-                        ProbeConfig.INSTANCE.enabled.set(false);
+                        ProbeJS.CONFIG.enabled.set(false);
                         sendMsg.accept(context, TextWrapper.translate("probejs.bye_bye").gold().component());
                         return Command.SINGLE_SUCCESS;
                     })
@@ -122,16 +122,16 @@ public class GameEvents {
                 .then(Commands.literal("enable")
                     .requires(source -> source.hasPermission(2))
                     .executes(context -> {
-                        ProbeConfig.INSTANCE.enabled.set(true);
+                        ProbeJS.CONFIG.enabled.set(true);
                         sendMsg.accept(context, TextWrapper.translate("probejs.hello_again").aqua().component());
                         return Command.SINGLE_SUCCESS;
                     })
                 )
                 .then(Commands.literal("scope_isolation")
-                    .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
+                    .requires(source -> ProbeJS.CONFIG.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
-                        boolean flag = !ProbeConfig.INSTANCE.isolatedScopes.get();
-                        ProbeConfig.INSTANCE.isolatedScopes.set(flag);
+                        boolean flag = !ProbeJS.CONFIG.isolatedScopes.get();
+                        ProbeJS.CONFIG.isolatedScopes.set(flag);
                         sendMsg.accept(
                             context,
                             TextWrapper.translate(flag ? "probejs.isolation" : "probejs.no_isolation").aqua().component()
@@ -140,17 +140,17 @@ public class GameEvents {
                     })
                 )
                 .then(Commands.literal("lint")
-                    .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
+                    .requires(source -> ProbeJS.CONFIG.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
                         Linter.defaultLint(msg -> sendMsg.accept(context, Text.of(msg).component()));
                         return Command.SINGLE_SUCCESS;
                     })
                 )
                 .then(Commands.literal("complete_dump")
-                    .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
+                    .requires(source -> ProbeJS.CONFIG.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
-                        boolean flag = !ProbeConfig.INSTANCE.complete.get();
-                        ProbeConfig.INSTANCE.complete.set(flag);
+                        boolean flag = !ProbeJS.CONFIG.complete.get();
+                        ProbeJS.CONFIG.complete.set(flag);
                         sendMsg.accept(
                             context,
                             TextWrapper.translate(flag ? "probejs.complete" : "probejs.no_complete").component()

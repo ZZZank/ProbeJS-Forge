@@ -15,6 +15,7 @@ import java.nio.file.Path;
 public class ProbeJS {
     public static final String MOD_ID = "probejs";
     public static final Logger LOGGER = LogManager.getLogger("probejs");
+    public static final ProbeConfig CONFIG = new ProbeConfig();
     public static final Gson GSON = new GsonBuilder()
         .serializeSpecialFloatingPointValues()
         .setLenient()
