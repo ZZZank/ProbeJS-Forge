@@ -1,8 +1,8 @@
 package moe.wolfgirl.probejs.lang.java.clazz;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
-import dev.latvian.mods.rhino.util.remapper.RemapperManager;
 import lombok.val;
+import moe.wolfgirl.probejs.features.rhizo.RemapperBridge;
 import moe.wolfgirl.probejs.lang.java.base.TypeVariableHolder;
 import moe.wolfgirl.probejs.lang.java.clazz.members.ConstructorInfo;
 import moe.wolfgirl.probejs.lang.java.clazz.members.FieldInfo;
@@ -33,7 +33,7 @@ public class Clazz extends TypeVariableHolder {
         super(clazz.getTypeParameters(), clazz.getAnnotations());
 
         this.original = clazz;
-        this.classPath = new ClassPath(RemapperManager.getDefault().remapClass(original));
+        this.classPath = new ClassPath(RemapperBridge.remapClass(original));
         this.constructors = Arrays.stream(ReflectUtils.constructorsSafe(original))
             .filter(ctor -> !ctor.isAnnotationPresent(HideFromJS.class))
             .map(ConstructorInfo::new)
@@ -41,7 +41,7 @@ public class Clazz extends TypeVariableHolder {
         Set<String> names = new HashSet<>();
         this.methods = Arrays.stream(ReflectUtils.methodsSafe(original))
             .peek(m -> {
-                val name = RemapperManager.getDefault().remapMethod(original, m);
+                val name = RemapperBridge.remapMethod(original, m);
                 names.add(name.isEmpty() ? m.getName() : name);
             })
             .filter(m -> !m.isSynthetic())
@@ -59,7 +59,7 @@ public class Clazz extends TypeVariableHolder {
             })
             .collect(Collectors.toList());
         this.fields = Arrays.stream(ReflectUtils.fieldsSafe(original))
-            .filter(f -> !names.contains(RemapperManager.getDefault().remapField(original, f)))
+            .filter(f -> !names.contains(RemapperBridge.remapField(original, f)))
             .map(f -> new FieldInfo(original, f))
             .collect(Collectors.toList());
 
