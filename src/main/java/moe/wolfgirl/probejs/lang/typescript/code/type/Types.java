@@ -19,7 +19,7 @@ public interface Types {
     JSPrimitiveType NEVER = new JSPrimitiveType("never");
     JSPrimitiveType UNKNOWN = new JSPrimitiveType("unknown");
     JSPrimitiveType VOID = new JSPrimitiveType("void");
-    JSPrimitiveType THIS = new JSPrimitiveType("this");
+//    JSPrimitiveType THIS = new JSPrimitiveType("this");
     JSPrimitiveType OBJECT = new JSPrimitiveType("object");
     JSPrimitiveType NULL = new JSPrimitiveType("null");
     JSArrayType EMPTY_ARRAY = Types.arrayOf().build();

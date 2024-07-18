@@ -3,6 +3,7 @@ package moe.wolfgirl.probejs.plugin;
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.util.ClassFilter;
+import lombok.val;
 import moe.wolfgirl.probejs.events.ProbeEvents;
 import moe.wolfgirl.probejs.docs.ProbeBuiltinDocs;
 import moe.wolfgirl.probejs.events.SnippetGenerationEventJS;
@@ -28,10 +29,18 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
 
     @Override
     public void addBindings(BindingsEvent event) {
+        readFromBindings(event);
         if (event.manager.type == ScriptType.CLIENT) {
             event.add("Types", Types.class);
         }
         event.add("require", new Require(event.manager));
+    }
+
+    private static void readFromBindings(BindingsEvent event) {
+        val dump = ScriptDump.forType(event.type).get();
+        //a bad idea, because KubeJS 1.16 will call BindingsEvent for EVERY script pack
+        dump.attachedContext = event.context;
+        dump.attachedScope = event.scope;
     }
 
     @Override

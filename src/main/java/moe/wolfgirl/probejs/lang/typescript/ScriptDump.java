@@ -9,6 +9,9 @@ import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.server.ServerScriptManager;
 import dev.latvian.kubejs.util.UtilsJS;
+import dev.latvian.mods.rhino.Context;
+import dev.latvian.mods.rhino.Scriptable;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
 import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.ProbePaths;
@@ -79,6 +82,18 @@ public class ScriptDump {
         (clazz -> true)
     );
 
+    public static Supplier<ScriptDump> forType(ScriptType type) {
+        return switch (type) {
+            case CLIENT -> CLIENT_DUMP;
+            case SERVER -> SERVER_DUMP;
+            case STARTUP -> STARTUP_DUMP;
+        };
+    }
+
+    @HideFromJS
+    public Context attachedContext;
+    @HideFromJS
+    public Scriptable attachedScope;
     public final ScriptType scriptType;
     public final ScriptManager manager;
     public final Path basePath;

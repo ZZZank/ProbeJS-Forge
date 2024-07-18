@@ -24,26 +24,26 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
 
     // So docs can be added stateless
     public final static List<Supplier<ProbeJSPlugin>> BUILTIN_DOCS = new ArrayList<>(Arrays.asList(
-            //type
+        //type
         RegistryTypes::new,
-            SpecialTypes::new,
-            Primitives::new,
-            JavaPrimitives::new,
-            RecipeTypes::new,
-            WorldTypes::new,
-            EnumTypes::new,
-            KubeWrappers::new,
-            //binding
-//            Bindings::new,
-            //event
+        SpecialTypes::new,
+        Primitives::new,
+        JavaPrimitives::new,
+        RecipeTypes::new,
+        WorldTypes::new,
+        EnumTypes::new,
+        KubeWrappers::new,
+        //binding
+        Bindings::new,
+        //event
 //            Events::new,
 //            TagEvents::new,
 //            RecipeEvents::new,
 //            RegistryEvents::new,
-            ForgeEventDoc::new,
-            //misc
-            ParamFix::new,
-            Snippets::new
+        ForgeEventDoc::new,
+        //misc
+        ParamFix::new,
+        Snippets::new
     ));
 
     private static void forEach(Consumer<ProbeJSPlugin> consumer) {
