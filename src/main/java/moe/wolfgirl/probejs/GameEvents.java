@@ -51,7 +51,9 @@ public class GameEvents {
                 sendMsg.accept(TextWrapper.translate("probejs.hello").gold().component());
             }
             if (config.registryHash.get() != GameUtils.registryHash()) {
-                new ProbeDumpingThread(sendMsg).start();
+                if (!ProbeDumpingThread.exists()) {
+                    ProbeDumpingThread.create(sendMsg).start();
+                }
             } else {
                 sendMsg.accept(
                     TextWrapper
@@ -91,16 +93,21 @@ public class GameEvents {
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
         val dispatcher = event.getDispatcher();
-        BiConsumer<CommandContext<CommandSourceStack>, Text> sendMsg = (context, text) -> {
-            context.getSource().sendSuccess(text.component(), true);
+        BiConsumer<CommandContext<CommandSourceStack>, Component> sendMsg = (context, text) -> {
+            context.getSource().sendSuccess(text, true);
         };
         dispatcher.register(
             Commands.literal("probejs")
                 .then(Commands.literal("dump")
                     .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
+                        if (ProbeDumpingThread.exists()) {
+                            sendMsg.accept(context, TextWrapper.translate("probejs.already_running").red().component());
+                            return Command.SINGLE_SUCCESS;
+                        }
                         KubeJS.PROXY.reloadClientInternal();
-                        new ProbeDumpingThread(msg -> sendMsg.accept(context, TextWrapper.of(msg))).start();
+                        ProbeDumpingThread.create(msg -> sendMsg.accept(context, TextWrapper.of(msg).component()))
+                            .start();
                         return Command.SINGLE_SUCCESS;
                     })
                 )
@@ -108,7 +115,7 @@ public class GameEvents {
                     .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
                         ProbeConfig.INSTANCE.enabled.set(false);
-                        sendMsg.accept(context, TextWrapper.translate("probejs.bye_bye").gold());
+                        sendMsg.accept(context, TextWrapper.translate("probejs.bye_bye").gold().component());
                         return Command.SINGLE_SUCCESS;
                     })
                 )
@@ -116,7 +123,7 @@ public class GameEvents {
                     .requires(source -> source.hasPermission(2))
                     .executes(context -> {
                         ProbeConfig.INSTANCE.enabled.set(true);
-                        sendMsg.accept(context, TextWrapper.translate("probejs.hello_again").aqua());
+                        sendMsg.accept(context, TextWrapper.translate("probejs.hello_again").aqua().component());
                         return Command.SINGLE_SUCCESS;
                     })
                 )
@@ -127,7 +134,7 @@ public class GameEvents {
                         ProbeConfig.INSTANCE.isolatedScopes.set(flag);
                         sendMsg.accept(
                             context,
-                            TextWrapper.translate(flag ? "probejs.isolation" : "probejs.no_isolation").aqua()
+                            TextWrapper.translate(flag ? "probejs.isolation" : "probejs.no_isolation").aqua().component()
                         );
                         return Command.SINGLE_SUCCESS;
                     })
@@ -135,7 +142,7 @@ public class GameEvents {
                 .then(Commands.literal("lint")
                     .requires(source -> ProbeConfig.INSTANCE.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
-                        Linter.defaultLint(msg -> sendMsg.accept(context, Text.of(msg)));
+                        Linter.defaultLint(msg -> sendMsg.accept(context, Text.of(msg).component()));
                         return Command.SINGLE_SUCCESS;
                     })
                 )
@@ -146,7 +153,7 @@ public class GameEvents {
                         ProbeConfig.INSTANCE.complete.set(flag);
                         sendMsg.accept(
                             context,
-                            TextWrapper.translate(flag ? "probejs.complete" : "probejs.no_complete")
+                            TextWrapper.translate(flag ? "probejs.complete" : "probejs.no_complete").component()
                         );
                         return Command.SINGLE_SUCCESS;
                     })

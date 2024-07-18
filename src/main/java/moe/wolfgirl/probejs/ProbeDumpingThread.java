@@ -10,11 +10,22 @@ import java.util.function.Consumer;
  */
 public class ProbeDumpingThread extends Thread {
 
-    ProbeDumpingThread(final Consumer<Component> messageSender) {
-        this(messageSender, "probe dumping thread");
+    public static ProbeDumpingThread INSTANCE;
+
+    public static boolean exists() {
+        return INSTANCE != null && INSTANCE.isAlive();
     }
 
-    ProbeDumpingThread(final Consumer<Component> messageSender, String name) {
+    static ProbeDumpingThread create(final Consumer<Component> messageSender) {
+        if (exists()) {
+            throw new IllegalStateException("There's already a thread running");
+        }
+        ProbeDumpingThread thread = new ProbeDumpingThread(messageSender);
+        INSTANCE = thread;
+        return thread;
+    }
+
+    private ProbeDumpingThread(final Consumer<Component> messageSender) {
         super(
             () -> {  // Don't stall the client
                 val dump = new ProbeDump();
@@ -25,7 +36,7 @@ public class ProbeDumpingThread extends Thread {
                     e.printStackTrace();
                 }
             },
-            name
+            "ProbeDumpingThread"
         );
     }
 }

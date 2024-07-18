@@ -86,7 +86,6 @@ public class ProbeDump {
         snippetDump.fromDocs();
         snippetDump.writeTo(SNIPPET_PATH);
 
-
         // And schemas
         schemaDump.fromDocs();
         schemaDump.writeTo(ProbePaths.WORKSPACE_SETTINGS);
@@ -119,32 +118,43 @@ public class ProbeDump {
         // Spawn a thread for each dump
         List<Thread> dumpThreads = new ArrayList<>();
         for (ScriptDump scriptDump : scriptDumps) {
-            Thread t = new Thread(() -> {
-                scriptDump.acceptClasses(ClassRegistry.REGISTRY.getFoundClasses());
-                try {
-                    scriptDump.dump();
-                    report(translate("probejs.dump.dump_finished", scriptDump.manager.type.toString()).green());
-                } catch (Throwable e) {
-                    report(translate("probejs.dump.dump_error", scriptDump.manager.type.toString()).red());
-                    throw new RuntimeException(e);
-                }
-            });
-            t.start();
+            Thread t = new Thread(
+                () -> {
+                    scriptDump.acceptClasses(ClassRegistry.REGISTRY.getFoundClasses());
+                    try {
+                        scriptDump.dump();
+                        report(translate("probejs.dump.dump_finished", scriptDump.manager.type.toString()).green());
+                    } catch (Throwable e) {
+                        report(translate("probejs.dump.dump_error", scriptDump.manager.type.toString()).red());
+                        throw new RuntimeException(e);
+                    }
+                },
+                String.format("ProbeDumpingThread-%s", scriptDump.manager.type.name)
+            );
             dumpThreads.add(t);
+            t.start();
         }
 
-        Thread reportingThread = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(3000);
-                    if (dumpThreads.stream().noneMatch(Thread::isAlive)) return;
-                    String dumpProgress = scriptDumps.stream().filter(sd -> sd.total != 0).map(sd -> String.format("%s/%s", sd.dumped, sd.total)).collect(Collectors.joining(", "));
-                    report(translate("probejs.dump.report_progress").append(string(dumpProgress).blue()));
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+        Thread reportingThread = new Thread(
+            () -> {
+                while (true) {
+                    try {
+                        Thread.sleep(3000);
+                        String dumpProgress = scriptDumps.stream()
+                            .filter(sd -> sd.total != 0)
+                            .map(sd -> String.format("%s/%s", sd.dumped, sd.total))
+                            .collect(Collectors.joining(", "));
+                        report(translate("probejs.dump.report_progress").append(string(dumpProgress).blue()));
+                        if (dumpThreads.stream().noneMatch(Thread::isAlive)) {
+                            return;
+                        }
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        });
+            },
+            "ProbeDumpingThread-report"
+        );
         reportingThread.start();
     }
 
