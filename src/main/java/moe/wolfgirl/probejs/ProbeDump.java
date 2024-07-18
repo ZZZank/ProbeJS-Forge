@@ -107,6 +107,9 @@ public class ProbeDump {
 
         // Fetch classes that will be used in the dump
         ClassRegistry.REGISTRY.loadFrom(CLASS_CACHE);
+
+        decompiler.fromMods();
+        ClassRegistry.REGISTRY.fromClasses(decompiler.scanner.getScannedClasses());
         for (ScriptDump scriptDump : scriptDumps) {
             ClassRegistry.REGISTRY.fromClasses(scriptDump.retrieveClasses());
         }
