@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.val;
 import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.utils.ReflectUtils;
-import org.jetbrains.java.decompiler.main.extern.IContextSource;
 
 import java.io.*;
 import java.util.*;
@@ -15,6 +14,8 @@ import java.util.zip.ZipFile;
 
 @Getter
 public class ProbeClassScanner {
+
+    private final static String CLASS_SUFFIX = ".class";
     private final Set<Class<?>> scannedClasses = new HashSet<>();
 
     public void acceptFile(File file) throws IOException {
@@ -46,7 +47,7 @@ public class ProbeClassScanner {
             root = f.getPath();
         }
 
-        if (!f.isFile() || !f.getName().endsWith(IContextSource.CLASS_SUFFIX)) {
+        if (!f.isFile() || !f.getName().endsWith(CLASS_SUFFIX)) {
             File[] fs = f.listFiles();
             if (fs == null) {
                 return Collections.emptyList();
@@ -61,7 +62,7 @@ public class ProbeClassScanner {
         try {
             val classPath = f.getPath();
             val className = classPath
-                .substring(root.length() + 1, classPath.length() - IContextSource.CLASS_SUFFIX.length())
+                .substring(root.length() + 1, classPath.length() - CLASS_SUFFIX.length())
                 .replace('/', '.')
                 .replace('\\', '.');
             return Collections.singletonList(load.loadClass(className));
@@ -108,13 +109,12 @@ public class ProbeClassScanner {
                 .filter(e -> !e.isDirectory())
                 .peek(this::fetchMixinPackages)
                 .map(ZipEntry::getName)
-                .filter(name -> name.endsWith(IContextSource.CLASS_SUFFIX))
-                .map(name -> name.substring(0, name.length() - IContextSource.CLASS_SUFFIX.length()).replace("/", "."))
+                .filter(name -> name.endsWith(CLASS_SUFFIX))
+                .map(name -> name.substring(0, name.length() - CLASS_SUFFIX.length()).replace("/", "."))
                 .filter(this::notFromMixinPackages)
                 .map(ReflectUtils::classOrNull)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         }
-        cpw.mods.modlauncher.TransformingClassLoader s;
     }
 }

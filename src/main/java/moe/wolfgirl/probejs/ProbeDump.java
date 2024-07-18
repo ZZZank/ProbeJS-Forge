@@ -47,17 +47,6 @@ public class ProbeDump {
         // Decompile stuffs - here we scan mod classes even if we don't decompile
         // So we have all classes without needing to decompile
         decompiler.fromMods();
-        if (ProbeConfig.INSTANCE.enableDecompiler.get()) {
-            report(string("probejs.dump.decompiling").gold());
-
-            decompiler.resultSaver.callback(() -> {
-                if (decompiler.resultSaver.classCount % 3000 == 0) {
-                    report(translate("probejs.dump.decompiled_x_class", decompiler.resultSaver.classCount));
-                }
-            });
-            decompiler.decompileContext();
-            decompiler.resultSaver.writeTo(ProbePaths.DECOMPILED);
-        }
         ClassRegistry.REGISTRY.fromClasses(decompiler.scanner.getScannedClasses());
 
         report(translate("probejs.dump.cleaning"));

@@ -18,8 +18,8 @@ public class ProbeConfig {
     public static ProbeConfig INSTANCE = new ProbeConfig();
 
     public ConfigEntry<Boolean> enabled = new ConfigEntry<>("enabled", true);
-    public ConfigEntry<Boolean> enableDecompiler = new ConfigEntry<>("enableDecompiler", false);
-    public ConfigEntry<Boolean> aggressive = new ConfigEntry<>("aggressive", false);
+//    public ConfigEntry<Boolean> enableDecompiler = new ConfigEntry<>("enableDecompiler", false);
+//    public ConfigEntry<Boolean> aggressive = new ConfigEntry<>("aggressive", false);
     public ConfigEntry<Boolean> interactive = new ConfigEntry<>("interactive", false);
     public ConfigEntry<Integer> interactivePort = new ConfigEntry<>("interactivePort", 7796);
     public ConfigEntry<Long> modHash = new ConfigEntry<>("modHash", -1L);
