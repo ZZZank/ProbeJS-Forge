@@ -5,11 +5,12 @@ import dev.latvian.kubejs.util.UtilsJS;
 import lombok.val;
 import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.ProbePaths;
-import net.minecraftforge.fml.ModList;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,9 +35,8 @@ public abstract class ProbeExternalLibraries {
         }
 
         val names = new ArrayList<String>();
-        val pjs = ModList.get().getModFileById(ProbeJS.MOD_ID).getFile().getFilePath().toFile();
 
-        try (val zip = new ZipFile(pjs)) {
+        try (val zip = new ZipFile(locateModFile())) {
 
             val entry = zip.getEntry("META-INF/jarjar/metadata.json");
             val in = zip.getInputStream(entry);
@@ -65,7 +65,7 @@ public abstract class ProbeExternalLibraries {
     }
 
     public static URL[] get() {
-        ProbeJS.LOGGER.debug(urls);
+//        ProbeJS.LOGGER.debug(urls);
         return urls;
     }
 
@@ -75,5 +75,26 @@ public abstract class ProbeExternalLibraries {
         }
         PATH.toFile().delete();
         urls = null;
+    }
+
+    private static File locateModFile() throws MalformedURLException {
+        val mods = ProbePaths.GAMEDIR.resolve("mods");
+        if (!Files.exists(mods)) {
+            return null;
+        }
+        for (File mod : mods.toFile().listFiles()) {
+            if (mod.getName().startsWith("probejs")) {
+                return mod;
+            }
+        }
+        return null;
+    }
+
+    public static URL resolveURL(String name) {
+        try {
+            return PATH.resolve(name).toUri().toURL();
+        } catch (MalformedURLException e) {
+            return null;
+        }
     }
 }
