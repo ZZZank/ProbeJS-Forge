@@ -121,8 +121,8 @@ dependencies {
     compileOnly 'com.pkware.jabel:jabel-javac-plugin:1.0.1-1'
     //
     shade('org.java-websocket:Java-WebSocket:1.5.6')
-    shade('com.github.javaparser:javaparser-symbol-solver-core:3.25.8')
-    shade('com.github.javaparser:javaparser-core:3.25.8')
+//    shade('com.github.javaparser:javaparser-symbol-solver-core:3.25.8')
+//    shade('com.github.javaparser:javaparser-core:3.25.8')
 //    implementation("org.vineflower:vineflower:${project.vineflower_version}")
 }
 
