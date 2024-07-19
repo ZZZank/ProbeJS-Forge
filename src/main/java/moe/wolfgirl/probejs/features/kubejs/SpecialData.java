@@ -63,12 +63,4 @@ public record SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> ta
         }
         return registries;
     }
-
-    public static Map<ResourceLocation, RecipeTypeJS> computeRecipeTypes() {
-        val typeMap = new HashMap<ResourceLocation, RecipeTypeJS>();
-        val recipeEvent = new RegisterRecipeHandlersEvent(typeMap);
-
-        KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
-        return typeMap;
-    }
 }
