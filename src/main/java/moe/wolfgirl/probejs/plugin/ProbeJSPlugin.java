@@ -10,7 +10,7 @@ import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.transpiler.Transpiler;
 import moe.wolfgirl.probejs.lang.transpiler.TypeConverter;
 import moe.wolfgirl.probejs.lang.typescript.TypeScriptFile;
-import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSObjectType;
+import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSLambdaType;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collections;
@@ -104,6 +104,6 @@ public class ProbeJSPlugin extends KubeJSPlugin {
      *                   of {@code {"some_id": ((someArg1: SomeType1, someArg2: SomeType2, someArg3: SomeType3)=>SomeRecipeTypeJS)}},
      *                   aka {@code {string: lambda}}
      */
-    public void addPredefinedRecipeDoc(Map<ResourceLocation, JSObjectType> predefined) {
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
     }
 }

@@ -33,7 +33,7 @@ public abstract class JSMemberType extends BaseType {
     protected abstract String getMemberName(String name);
 
     public static abstract class Builder<T extends Builder<T, O>, O extends BaseType> {
-        public final Collection<JSParam> members = new ArrayList<>();
+        public final Collection<JSParam> members = new ArrayList<>(3);
 
         public T member(String name, BaseType type) {
             return member(name, false, type);

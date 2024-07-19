@@ -1,7 +1,9 @@
 package moe.wolfgirl.probejs.docs;
 
 import moe.wolfgirl.probejs.docs.recipes.Minecraft;
-import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSObjectType;
+import moe.wolfgirl.probejs.docs.recipes.Thermal;
+import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
+import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSLambdaType;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,13 +19,14 @@ import java.util.function.Supplier;
 public class BuiltinRecipeDocs extends ProbeJSPlugin {
 
     public final List<Supplier<ProbeJSPlugin>> ALL = new ArrayList<>(Arrays.asList(
-        Minecraft::new
+        Minecraft::new,
+        Thermal::new
     ));
 
     @Override
-    public void addPredefinedRecipeDoc(Map<ResourceLocation, JSObjectType> predefined) {
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
         for (Supplier<ProbeJSPlugin> supplier : ALL) {
-            supplier.get().addPredefinedRecipeDoc(predefined);
+            supplier.get().addPredefinedRecipeDoc(scriptDump, predefined);
         }
     }
 }

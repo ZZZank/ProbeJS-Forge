@@ -50,6 +50,10 @@ public interface Types {
         return new JSTupleType.Builder();
     }
 
+    static TSArrayType array(BaseType base) {
+        return new TSArrayType(base);
+    }
+
     static JSJoinedType.Intersection and(BaseType... types) {
         return new JSJoinedType.Intersection(Arrays.stream(types).collect(Collectors.toList()));
     }

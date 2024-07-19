@@ -4,7 +4,6 @@ import dev.latvian.kubejs.recipe.RecipeEventJS;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
 import dev.latvian.kubejs.script.ScriptType;
-import dev.latvian.kubejs.server.ServerScriptManager;
 import dev.latvian.kubejs.util.KubeJSPlugins;
 import lombok.val;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
@@ -14,6 +13,7 @@ import moe.wolfgirl.probejs.lang.typescript.TypeScriptFile;
 import moe.wolfgirl.probejs.lang.typescript.code.member.ClassDecl;
 import moe.wolfgirl.probejs.lang.typescript.code.ts.Statements;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
+import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSLambdaType;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import net.minecraft.resources.ResourceLocation;
 
@@ -24,7 +24,7 @@ public class RecipeEvents extends ProbeJSPlugin {
 
     public static final Map<String, ResourceLocation> SHORTCUTS = new HashMap<>();
     public static final String PATH_BASE = "moe.wolfgirl.probejs.generated.recipes";
-    public static final ClassPath DOCUMENTED = new ClassPath(PATH_BASE + "DocumentedRecipes");
+    public static final ClassPath DOCUMENTED = new ClassPath(PATH_BASE + ".DocumentedRecipes");
 
     static {
         SHORTCUTS.put("shaped", new ResourceLocation("kubejs", "shaped"));
@@ -57,6 +57,11 @@ public class RecipeEvents extends ProbeJSPlugin {
         return grouped;
     }
 
+    private Map<ResourceLocation, JSLambdaType> getPredefinedRecipeDocs(ScriptDump scriptDump) {
+        val pred = new HashMap<ResourceLocation, JSLambdaType>();
+        ProbeJSPlugin.forEachPlugin(p -> p.addPredefinedRecipeDoc(scriptDump, pred));
+        return pred;
+    }
 
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
@@ -64,13 +69,14 @@ public class RecipeEvents extends ProbeJSPlugin {
             return;
         }
         val converter = scriptDump.transpiler.typeConverter;
-        val manager = ServerScriptManager.instance.scriptManager;
 
         // Generate recipe schema classes
         // Also generate the documented recipe class containing all stuffs from everywhere
         val documentedRecipes = Statements.clazz(DOCUMENTED.getName());
 
         val grouped = getGroupedRecipeTypes();
+        val predefinedTypes = getPredefinedRecipeDocs(scriptDump);
+
         for (val entry : grouped.entrySet()) {
             val namespace = entry.getKey();
             val group = entry.getValue();
@@ -78,16 +84,18 @@ public class RecipeEvents extends ProbeJSPlugin {
             val namespaced = Types.object();
             for (Map.Entry<String, RecipeTypeJS> e : group.entrySet()) {
                 val path = e.getKey();
-                val type = e.getValue();
-                namespaced.member(
-                    path,
-                    Types.lambda()
+
+                var fn = predefinedTypes.get(new ResourceLocation(namespace, path));
+                if (fn == null) {
+                    val type = e.getValue();
+                    fn = Types.lambda()
                         .param("args", Types.ANY, false, true)
                         .returnType(converter.convertType(type.getClass()))
-                        .build()
-                );
-            }
+                        .build();
+                }
 
+                namespaced.member(path, fn);
+            }
             documentedRecipes.field(namespace, namespaced.build());
         }
 
@@ -119,11 +127,15 @@ public class RecipeEvents extends ProbeJSPlugin {
                 continue;
             }
             val parts = SHORTCUTS.get(field.name);
-            val type = grouped.get(parts.getNamespace()).get(parts.getPath());
-            field.type = Types.lambda()
-                .param("args", Types.ANY, false, true)
-                .returnType(converter.convertType(type.getClass()))
-                .build();
+            if (predefinedTypes.containsKey(parts)) {
+                field.type = predefinedTypes.get(parts);
+            } else {
+                val type = grouped.get(parts.getNamespace()).get(parts.getPath());
+                field.type = Types.lambda()
+                    .param("args", Types.ANY, false, true)
+                    .returnType(converter.convertType(type.getClass()))
+                    .build();
+            }
 
             for (ClassPath usedClassPath : field.type.getUsedClassPaths()) {
                 recipeEventFile.declaration.addClass(usedClassPath);
