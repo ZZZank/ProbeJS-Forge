@@ -26,6 +26,7 @@ import moe.wolfgirl.probejs.lang.typescript.code.ts.Wrapped;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSJoinedType;
+import moe.wolfgirl.probejs.utils.Lazy;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.FileUtils;
 
@@ -43,7 +44,7 @@ import java.util.stream.Collectors;
  * maintaining the file structures
  */
 public class ScriptDump {
-    public static final Supplier<ScriptDump> SERVER_DUMP = () -> {
+    public static final Supplier<ScriptDump> SERVER_DUMP = Lazy.of(() -> {
         ServerScriptManager scriptManager = ServerScriptManager.instance;
         if (scriptManager == null) {
             return null;
@@ -62,25 +63,28 @@ public class ScriptDump {
                 return true;
             })
         );
-    };
+    });
 
-    public static final Supplier<ScriptDump> CLIENT_DUMP = () -> new ScriptDump(
-            KubeJS.clientScriptManager,
-            ProbePaths.PROBE.resolve("client"),
-            KubeJSPaths.CLIENT_SCRIPTS,
-            (clazz -> {
-                for (OnlyIn annotation : clazz.getAnnotations(OnlyIn.class)) {
-                    if (annotation.value().isDedicatedServer()) return false;
+    public static final Supplier<ScriptDump> CLIENT_DUMP = Lazy.of(() -> new ScriptDump(
+        KubeJS.clientScriptManager,
+        ProbePaths.PROBE.resolve("client"),
+        KubeJSPaths.CLIENT_SCRIPTS,
+        (clazz -> {
+            for (OnlyIn annotation : clazz.getAnnotations(OnlyIn.class)) {
+                if (annotation.value().isDedicatedServer()) {
+                    return false;
                 }
-                return true;
-            })
-    );
-    public static final Supplier<ScriptDump> STARTUP_DUMP = () -> new ScriptDump(
+            }
+            return true;
+        })
+    ));
+
+    public static final Supplier<ScriptDump> STARTUP_DUMP = Lazy.of(() -> new ScriptDump(
         KubeJS.startupScriptManager,
         ProbePaths.PROBE.resolve("startup"),
         KubeJSPaths.STARTUP_SCRIPTS,
         (clazz -> true)
-    );
+    ));
 
     public static Supplier<ScriptDump> forType(ScriptType type) {
         return switch (type) {
