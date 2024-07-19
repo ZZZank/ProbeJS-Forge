@@ -19,9 +19,10 @@ public interface Types {
     JSPrimitiveType NEVER = new JSPrimitiveType("never");
     JSPrimitiveType UNKNOWN = new JSPrimitiveType("unknown");
     JSPrimitiveType VOID = new JSPrimitiveType("void");
-//    JSPrimitiveType THIS = new JSPrimitiveType("this");
+    JSPrimitiveType THIS = new JSPrimitiveType("this");
     JSPrimitiveType OBJECT = new JSPrimitiveType("object");
     JSPrimitiveType NULL = new JSPrimitiveType("null");
+    JSPrimitiveType INSTANCE_TYPE = new JSPrimitiveType("InstanceType");
     JSArrayType EMPTY_ARRAY = Types.arrayOf().build();
 
     /**
@@ -100,6 +101,10 @@ public interface Types {
 
     static JSTypeOfType typeOf(BaseType classType) {
         return new JSTypeOfType(classType);
+    }
+
+    static TSParamType instanceType(BaseType type) {
+        return new TSParamType(INSTANCE_TYPE, Collections.singletonList(type));
     }
 
     static BaseType ignoreContext(BaseType type, BaseType.FormatType formatType) {

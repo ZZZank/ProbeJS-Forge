@@ -25,10 +25,11 @@ public class TSVariableType extends BaseType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return Arrays.asList(switch (input) {
+        return Collections.singletonList(switch (input) {
             case INPUT, RETURN -> symbol;
-            case VARIABLE -> extendsType == null ? symbol :
-                String.format("%s extends %s", symbol, extendsType.line(declaration, FormatType.RETURN));
+            case VARIABLE -> extendsType == null
+                ? symbol
+                : String.format("%s extends %s", symbol, extendsType.line(declaration, FormatType.RETURN));
         });
     }
 }
