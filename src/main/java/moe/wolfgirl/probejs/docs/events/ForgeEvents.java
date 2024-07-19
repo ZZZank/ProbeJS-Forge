@@ -1,53 +1,48 @@
 package moe.wolfgirl.probejs.docs.events;
 
 
+import dev.latvian.kubejs.script.ScriptType;
+import lombok.val;
 import moe.wolfgirl.probejs.GlobalStates;
+import moe.wolfgirl.probejs.lang.typescript.code.member.ParamDecl;
+import moe.wolfgirl.probejs.lang.typescript.code.ts.FunctionDeclaration;
+import moe.wolfgirl.probejs.lang.typescript.code.type.TSVariableType;
+import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import net.minecraftforge.eventbus.api.Event;
 
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ForgeEvents extends ProbeJSPlugin {
+    @Override
+    public void addGlobals(ScriptDump scriptDump) {
+        if (scriptDump.scriptType != ScriptType.STARTUP) {
+            return;
+        }
 
-//    @Override
-//    public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
-//        TypeScriptFile typeScriptFile = globalClasses.get(new ClassPath(NativeEventWrapper.class));
-//        typeScriptFile.declaration.addClass(new ClassPath(Event.class));
-//        ClassDecl classDecl = typeScriptFile.findCode(ClassDecl.class).orElse(null);
-//        if (classDecl == null) {
-//            return;
-//        }
-//
-//        for (MethodDecl method : classDecl.methods) {
-//            if (method.name.equals("onEvent")) {
-//                method.variableTypes.add(
-//                    Types.generic(
-//                        "T",
-//                        Types.typeOf(
-//                            Types.parameterized(
-//                                Types.type(Event.class),
-//                                Types.UNKNOWN
-//                            )
-//                        )
-//                    )
-//                );
-//                if (method.params.getFirst().name.equals("priority")) {
-//                    method.params.get(1).type = Types.generic("T");
-//                    method.params.get(2).type = Types.lambda()
-//                        .param("event", Types.parameterized(Types.primitive("InstanceType"), Types.primitive("T")))
-//                        .build();
-//                } else {
-//                    method.params.get(0).type = Types.generic("T");
-//                    method.params.get(1).type = Types.lambda()
-//                        .param("event", Types.parameterized(Types.primitive("InstanceType"), Types.primitive("T")))
-//                        .build();
-//                }
-//            }
-//        }
-//    }
+        val T = "T";
+
+        scriptDump.addGlobal("forge_events", new FunctionDeclaration(
+            "onForgeEvent",
+            Collections.singletonList(new TSVariableType(T, Types.typeOf(Event.class))),
+            Arrays.asList(
+                new ParamDecl("target", Types.generic(T)),
+                new ParamDecl(
+                    "handler",
+                    Types.lambda()
+                        .param("event", Types.parameterized(Types.primitive("InstanceType"), Types.primitive(T)))
+                        .returnType(Types.VOID)
+                        .build()
+                )
+            ),
+            Types.VOID
+        ));
+    }
 
     @Override
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
