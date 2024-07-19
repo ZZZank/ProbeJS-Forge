@@ -2,12 +2,14 @@ package moe.wolfgirl.probejs.docs.events;
 
 import lombok.val;
 import moe.wolfgirl.probejs.features.kubejs.EventJSInfo;
+import moe.wolfgirl.probejs.lang.transpiler.TypeConverter;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.lang.typescript.code.Code;
 import moe.wolfgirl.probejs.lang.typescript.code.member.ParamDecl;
-import moe.wolfgirl.probejs.lang.typescript.code.ts.MethodDeclaration;
+import moe.wolfgirl.probejs.lang.typescript.code.ts.FunctionDeclaration;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,27 +28,47 @@ public class KubeEvents extends ProbeJSPlugin {
         for (val entry : KNOWN.entrySet()) {
             val id = entry.getKey();
             val info = entry.getValue();
-            if (disabled.contains(id)) {
+            if (disabled.contains(id) || !info.scriptTypes().contains(scriptDump.scriptType)) {
                 continue;
             }
-            codes.add(new MethodDeclaration(
-                "onEvent",
-                Collections.emptyList(),
-                Arrays.asList(
-                    new ParamDecl("id", Types.literal(id)),
-                    new ParamDecl(
-                        "handler",
-                        Types.lambda()
-                            .param("event", converter.convertType(info.clazzRaw()))
-                            .returnType(Types.VOID)
-                            .build()
-                    )
+            val decl = declareEventMethod(id, converter, info);
+            decl.addComment(
+                String.format(
+                    "@at %s",
+                    info.scriptTypes().stream().map(type -> type.name).collect(Collectors.joining(", "))
                 ),
-                Types.VOID
-            ));
+                String.format("@cancellable %s", info.cancellable() ? "Yes" : "No")
+            );
+            if (info.hasSub()) {
+                decl.addComment(String.format(
+                    "This event provides sub-event variant, e.g. `%s.%s`",
+                    id,
+                    info.sub().getValue()
+                ));
+                codes.add(declareEventMethod(id + ".${string}", converter, info));
+            }
+            codes.add(decl);
         }
 
         scriptDump.addGlobal("events", codes.toArray(new Code[0]));
+    }
+
+    private static @NotNull FunctionDeclaration declareEventMethod(String id, TypeConverter converter, EventJSInfo info) {
+        return new FunctionDeclaration(
+            "onEvent",
+            Collections.emptyList(),
+            Arrays.asList(
+                new ParamDecl("id", Types.literal(id)),
+                new ParamDecl(
+                    "handler",
+                    Types.lambda()
+                        .param("event", converter.convertType(info.clazzRaw()))
+                        .returnType(Types.VOID)
+                        .build()
+                )
+            ),
+            Types.VOID
+        );
     }
 
     @Override

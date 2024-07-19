@@ -3,6 +3,7 @@ package moe.wolfgirl.probejs.docs;
 import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.docs.assignments.*;
 import moe.wolfgirl.probejs.docs.events.ForgeEvents;
+import moe.wolfgirl.probejs.docs.events.KubeEvents;
 import moe.wolfgirl.probejs.lang.schema.SchemaDump;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
@@ -37,7 +38,7 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
         //binding
         Bindings::new,
         //event
-//            Events::new,
+        KubeEvents::new,
 //            TagEvents::new,
 //            RecipeEvents::new,
 //            RegistryEvents::new,

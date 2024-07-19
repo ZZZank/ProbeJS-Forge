@@ -58,7 +58,7 @@ public record EventJSInfo(
     }
 
     public boolean hasSub() {
-        return sub != null;
+        return sub.getValue() != null;
     }
 
     public boolean isFromCache() {
