@@ -3,7 +3,7 @@ package moe.wolfgirl.probejs.lang.typescript.code.member;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.typescript.Declaration;
 import moe.wolfgirl.probejs.lang.typescript.code.Code;
-import moe.wolfgirl.probejs.lang.typescript.code.ts.MethodDeclaration;
+import moe.wolfgirl.probejs.lang.typescript.code.ts.FunctionDeclaration;
 import moe.wolfgirl.probejs.lang.typescript.code.ts.VariableDeclaration;
 import moe.wolfgirl.probejs.lang.typescript.code.ts.Wrapped;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
@@ -57,7 +57,7 @@ public class InterfaceDecl extends ClassDecl {
         }
         body.add("");
         for (MethodDecl method : methods) {
-            if (method.isStatic) namespace.addCode(new MethodDeclaration(
+            if (method.isStatic) namespace.addCode(new FunctionDeclaration(
                     method.name,
                     method.variableTypes,
                     method.params,

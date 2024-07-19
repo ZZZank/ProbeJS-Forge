@@ -11,13 +11,13 @@ import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MethodDeclaration extends CommentableCode {
+public class FunctionDeclaration extends CommentableCode {
     public String name;
     public final List<TSVariableType> variableTypes;
     public final List<ParamDecl> params;
     public BaseType returnType;
 
-    public MethodDeclaration(String name, List<TSVariableType> variableTypes, List<ParamDecl> params, BaseType returnType) {
+    public FunctionDeclaration(String name, List<TSVariableType> variableTypes, List<ParamDecl> params, BaseType returnType) {
         this.name = name;
         this.variableTypes = variableTypes;
         this.params = params;
@@ -97,8 +97,8 @@ public class MethodDeclaration extends CommentableCode {
         }
 
 
-        public MethodDeclaration build() {
-            return new MethodDeclaration(
+        public FunctionDeclaration build() {
+            return new FunctionDeclaration(
                     name,
                     variableTypes,
                     params,
