@@ -2,19 +2,17 @@ package moe.wolfgirl.probejs.lang.transpiler.transformation;
 
 import dev.latvian.mods.rhino.annotations.typing.JSInfo;
 import lombok.val;
+import moe.wolfgirl.probejs.features.rhizo.RhizoState;
 import moe.wolfgirl.probejs.lang.java.base.AnnotationHolder;
 import moe.wolfgirl.probejs.lang.java.clazz.Clazz;
 import moe.wolfgirl.probejs.lang.java.clazz.members.ConstructorInfo;
 import moe.wolfgirl.probejs.lang.java.clazz.members.FieldInfo;
 import moe.wolfgirl.probejs.lang.java.clazz.members.MethodInfo;
 import moe.wolfgirl.probejs.lang.typescript.code.member.*;
-import moe.wolfgirl.probejs.utils.ReflectUtils;
 
 import java.util.stream.Collectors;
 
 public class InjectAnnotation implements ClassTransformer {
-
-    public static final boolean RHIZO_AVAILABLE = ReflectUtils.classExist("dev.latvian.mods.rhino.annotations.typing.JSInfo");
 
     @Override
     public void transform(Clazz clazz, ClassDecl classDecl) {
@@ -31,7 +29,7 @@ public class InjectAnnotation implements ClassTransformer {
             decl.newline("@deprecated");
         }
 
-        if (RHIZO_AVAILABLE) {
+        if (RhizoState.INFO_ANNOTATION) {
             val paramLines = methodInfo.params.stream()
                 .filter(p -> p.hasAnnotation(JSInfo.class))
                 .map(p -> String.format("@param %s - %s", p.name, p.getAnnotation(JSInfo.class).value()))
@@ -62,7 +60,7 @@ public class InjectAnnotation implements ClassTransformer {
     }
 
     public void applyInfo(AnnotationHolder info, CommentableCode decl) {
-        if (!RHIZO_AVAILABLE) {
+        if (!RhizoState.INFO_ANNOTATION) {
             return;
         }
         for (JSInfo annotation : info.getAnnotations(JSInfo.class)) {

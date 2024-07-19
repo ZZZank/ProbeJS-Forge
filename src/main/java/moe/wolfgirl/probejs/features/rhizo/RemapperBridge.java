@@ -2,7 +2,6 @@ package moe.wolfgirl.probejs.features.rhizo;
 
 import dev.latvian.mods.rhino.util.remapper.RemapperManager;
 import lombok.val;
-import moe.wolfgirl.probejs.utils.ReflectUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -14,15 +13,13 @@ import java.util.function.Function;
  */
 public final class RemapperBridge {
 
-    public static final boolean AVAILABLE;
     private static final Function<Class<?>, String> remapClassFn;
     private static final Function<String, String> unmapClassFn;
     private static final BiFunction<Class<?>, Field, String> remapFieldFn;
     private static final BiFunction<Class<?>, Method, String> remapMethodFn;
 
     static {
-        AVAILABLE = ReflectUtils.classExist("dev.latvian.mods.rhino.util.remapper.RemapperManager");
-        if (AVAILABLE) {
+        if (RhizoState.REMAPPER) {
             val remapper = RemapperManager.getDefault();
             remapClassFn = remapper::remapClass;
             unmapClassFn = remapper::unmapClass;

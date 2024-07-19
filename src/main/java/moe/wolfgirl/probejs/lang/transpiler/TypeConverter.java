@@ -2,6 +2,8 @@ package moe.wolfgirl.probejs.lang.transpiler;
 
 import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.annotations.typing.Generics;
+import lombok.val;
+import moe.wolfgirl.probejs.features.rhizo.RhizoState;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.java.type.TypeAdapter;
 import moe.wolfgirl.probejs.lang.java.type.TypeDescriptor;
@@ -35,13 +37,15 @@ public class TypeConverter {
         } else if (descriptor instanceof ArrayType arrayType) {
             return new TSArrayType(convertType(arrayType.component));
         } else if (descriptor instanceof ParamType paramType) {
-            Generics generics = paramType.getAnnotation(Generics.class);
-            if (generics != null) {
-                BaseType baseType = new TSClassType(new ClassPath(generics.base()));
-                List<BaseType> params = Arrays.stream(generics.value())
-                    .map(c -> (BaseType) new TSClassType(new ClassPath(c)))
-                    .collect(Collectors.toList());
-                return new TSParamType(baseType, params);
+            if (RhizoState.GENERIC_ANNOTATION) {
+                val generics = paramType.getAnnotation(Generics.class);
+                if (generics != null) {
+                    val baseType = new TSClassType(new ClassPath(generics.base()));
+                    val params = Arrays.stream(generics.value())
+                        .map(c -> (BaseType) new TSClassType(new ClassPath(c)))
+                        .collect(Collectors.toList());
+                    return new TSParamType(baseType, params);
+                }
             }
 
             BaseType base = convertType(paramType.base);
