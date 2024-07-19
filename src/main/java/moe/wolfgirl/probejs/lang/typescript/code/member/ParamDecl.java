@@ -22,6 +22,10 @@ public final class ParamDecl {
         this.optional = optional;
     }
 
+    public ParamDecl(String name, BaseType type) {
+        this(name, type, false, false);
+    }
+
     public String format(int index, Declaration declaration) {
         String result = NameUtils.isNameSafe(name) ? name : String.format("arg%d", index);
         if (varArg) result = String.format("...%s", result);

@@ -88,9 +88,9 @@ public class ProbeJSPlugin extends KubeJSPlugin {
     }
 
     /**
-     * Provides events that should be disabled for custom support.
+     * Provides event ids (without sub id) that should be skipped by auto-dump for custom support.
      */
-    public Set<Pair<String, String>> disableEventDumps(ScriptDump dump) {
+    public Set<String> disableEventDumps(ScriptDump dump) {
         return Collections.emptySet();
     }
 
