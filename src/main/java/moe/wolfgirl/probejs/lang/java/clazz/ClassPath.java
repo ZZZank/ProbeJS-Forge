@@ -3,6 +3,8 @@ package moe.wolfgirl.probejs.lang.java.clazz;
 import com.github.bsideup.jabel.Desugar;
 import dev.latvian.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.val;
+import moe.wolfgirl.probejs.features.rhizo.RemapperBridge;
 import moe.wolfgirl.probejs.lang.java.ClassRegistry;
 
 import java.lang.reflect.TypeVariable;
@@ -11,20 +13,24 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Desugar
 public record ClassPath(List<String> parts) {
+
+    private static final Pattern SPLIT = Pattern.compile("\\.");
+
     private static List<String> transformJavaClass(Class<?> clazz) {
-        String name = clazz.getName();
-        String[] parts = name.split("\\.");
-        String className = "$" + parts[parts.length - 1];
+        val name = RemapperBridge.remapClass(clazz);
+        val parts = SPLIT.split(name);
+        val className = "$" + parts[parts.length - 1];
         parts[parts.length - 1] = className;
-        return Arrays.stream(parts).collect(Collectors.toList());
+        return Arrays.asList(parts);
     }
 
     public ClassPath(String className) {
-        this(Arrays.stream(className.split("\\.")).collect(Collectors.toList()));
+        this(Arrays.asList(SPLIT.split(className)));
     }
 
     public ClassPath(Class<?> clazz) {

@@ -1,7 +1,6 @@
 package moe.wolfgirl.probejs.lang.java.clazz;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
-import lombok.val;
 import moe.wolfgirl.probejs.features.rhizo.RemapperBridge;
 import moe.wolfgirl.probejs.lang.java.base.TypeVariableHolder;
 import moe.wolfgirl.probejs.lang.java.clazz.members.ConstructorInfo;
@@ -33,17 +32,14 @@ public class Clazz extends TypeVariableHolder {
         super(clazz.getTypeParameters(), clazz.getAnnotations());
 
         this.original = clazz;
-        this.classPath = new ClassPath(RemapperBridge.remapClass(original));
+        this.classPath = new ClassPath(original);
         this.constructors = Arrays.stream(ReflectUtils.constructorsSafe(original))
             .filter(ctor -> !ctor.isAnnotationPresent(HideFromJS.class))
             .map(ConstructorInfo::new)
             .collect(Collectors.toList());
         Set<String> names = new HashSet<>();
         this.methods = Arrays.stream(ReflectUtils.methodsSafe(original))
-            .peek(m -> {
-                val name = RemapperBridge.remapMethod(original, m);
-                names.add(name.isEmpty() ? m.getName() : name);
-            })
+            .peek(m -> names.add(RemapperBridge.remapMethod(original, m)))
             .filter(m -> !m.isSynthetic())
             .filter(m -> !hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterfaceSinceTypeScriptDoesNotHaveInterfaceAtRuntimeInTypeDeclarationFilesJustBecauseItSucks(
                 m,
