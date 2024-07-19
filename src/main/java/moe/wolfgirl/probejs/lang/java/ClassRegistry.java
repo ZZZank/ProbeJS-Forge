@@ -1,6 +1,7 @@
 package moe.wolfgirl.probejs.lang.java;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
+import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.java.clazz.Clazz;
 import moe.wolfgirl.probejs.lang.java.clazz.members.ConstructorInfo;
@@ -19,7 +20,7 @@ import java.util.*;
 public class ClassRegistry {
     public static final ClassRegistry REGISTRY = new ClassRegistry();
 
-    public Map<ClassPath, Clazz> foundClasses = new HashMap<>();
+    public Map<ClassPath, Clazz> foundClasses = new HashMap<>(256);
 
     public void fromPackage(Collection<ClassPath> classPaths) {
         for (ClassPath pack : classPaths) {
@@ -102,20 +103,28 @@ public class ClassRegistry {
 
     public void discoverClasses() {
         Set<Clazz> currentClasses = new HashSet<>(foundClasses.values());
-        while (!currentClasses.isEmpty()) {
-            Set<Class<?>> fetchedClass = new HashSet<>();
+
+        int lastClassCount = 0;
+        while (foundClasses.size() != lastClassCount) {
+            lastClassCount = foundClasses.size();
+
+            Set<Class<?>> fetchedClass = new HashSet<>(256);
+            ProbeJS.LOGGER.debug("walking {} newly discovered classes", currentClasses.size());
             for (Clazz currentClass : currentClasses) {
                 fetchedClass.addAll(retrieveClass(currentClass));
             }
-            fetchedClass.removeIf(clazz -> foundClasses.containsKey(new ClassPath(clazz)));
             currentClasses.clear();
+
             for (Class<?> c : fetchedClass) {
+                if (foundClasses.containsKey(new ClassPath(c))) {
+                    continue;
+                }
                 try {
-                    Class.forName(c.getName());
+//                    Class.forName(c.getName());
                     Clazz clazz = new Clazz(c);
                     foundClasses.put(clazz.classPath, clazz);
                     currentClasses.add(clazz);
-                } catch (Throwable ignore) {
+                } catch (Throwable ignored) {
                 }
             }
         }
