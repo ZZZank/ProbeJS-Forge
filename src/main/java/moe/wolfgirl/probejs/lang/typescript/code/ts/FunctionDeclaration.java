@@ -42,8 +42,8 @@ public class FunctionDeclaration extends CommentableCode {
         String head = String.format("function %s", name);
         if (!variableTypes.isEmpty()) {
             String variables = variableTypes.stream()
-                    .map(type -> type.line(declaration))
-                    .collect(Collectors.joining(", "));
+                .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
+                .collect(Collectors.joining(", "));
             head = String.format("%s<%s>", head, variables);
         }
 
