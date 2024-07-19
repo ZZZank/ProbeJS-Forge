@@ -8,7 +8,7 @@ import dev.latvian.mods.rhino.util.unit.Unit;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.docs.Primitives;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
-import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSArrayType;
+import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSTupleType;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import net.minecraft.core.BlockPos;
@@ -29,16 +29,16 @@ import java.util.*;
 
 public class JavaPrimitives extends ProbeJSPlugin {
 
-    private static JSArrayType xyzOf(BaseType baseType) {
-        return Types.arrayOf()
+    private static JSTupleType xyzOf(BaseType baseType) {
+        return Types.tuple()
             .member("x", baseType)
             .member("y", baseType)
             .member("z", baseType)
             .build();
     }
 
-    private static JSArrayType minMaxOf(BaseType baseType) {
-        return Types.arrayOf()
+    private static JSTupleType minMaxOf(BaseType baseType) {
+        return Types.tuple()
             .member("min", baseType)
             .member("max", baseType)
             .build();
@@ -82,7 +82,7 @@ public class JavaPrimitives extends ProbeJSPlugin {
         scriptDump.assignType(MobCategory.class, Types.STRING);
         scriptDump.assignType(AABB.class, Types.EMPTY_ARRAY);
         scriptDump.assignType(AABB.class, xyzOf(Primitives.DOUBLE));
-        scriptDump.assignType(AABB.class, Types.arrayOf()
+        scriptDump.assignType(AABB.class, Types.tuple()
             .member("x1", Primitives.DOUBLE)
             .member("y1", Primitives.DOUBLE)
             .member("z1", Primitives.DOUBLE)

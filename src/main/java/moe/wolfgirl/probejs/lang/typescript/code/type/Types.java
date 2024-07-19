@@ -23,7 +23,7 @@ public interface Types {
     JSPrimitiveType OBJECT = new JSPrimitiveType("object");
     JSPrimitiveType NULL = new JSPrimitiveType("null");
     JSPrimitiveType INSTANCE_TYPE = new JSPrimitiveType("InstanceType");
-    JSArrayType EMPTY_ARRAY = Types.arrayOf().build();
+    JSTupleType EMPTY_ARRAY = Types.tuple().build();
 
     /**
      * Returns a literal type of the input if it's something OK in TS,
@@ -46,8 +46,8 @@ public interface Types {
     }
 
 
-    static JSArrayType.Builder arrayOf() {
-        return new JSArrayType.Builder();
+    static JSTupleType.Builder tuple() {
+        return new JSTupleType.Builder();
     }
 
     static JSJoinedType.Intersection and(BaseType... types) {

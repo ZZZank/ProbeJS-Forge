@@ -7,10 +7,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class JSArrayType extends JSMemberType {
+public class JSTupleType extends JSMemberType {
 
 
-    public JSArrayType(Collection<JSParam> members) {
+    public JSTupleType(Collection<JSParam> members) {
         super(members);
     }
 
@@ -24,11 +24,11 @@ public class JSArrayType extends JSMemberType {
         return NameUtils.isNameSafe(name) ? name : "arg";
     }
 
-    public static class Builder extends JSMemberType.Builder<Builder, JSArrayType> {
+    public static class Builder extends JSMemberType.Builder<Builder, JSTupleType> {
 
         @Override
-        public JSArrayType build() {
-            return new JSArrayType(members);
+        public JSTupleType build() {
+            return new JSTupleType(members);
         }
     }
 }
