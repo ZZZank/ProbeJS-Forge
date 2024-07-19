@@ -16,7 +16,7 @@ public class JSArrayType extends JSMemberType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(String.format("[%s]",formatMembers(declaration, input)));
+        return Collections.singletonList(String.format("[%s]", formatMembers(declaration, input)));
     }
 
     @Override

@@ -40,7 +40,7 @@ public class Primitives extends ProbeJSPlugin {
 
         @Override
         public List<String> format(Declaration declaration) {
-            return Collections.singletonList(String.format("interface %s extends %s {}",javaPrimitive, jsInterface));
+            return Collections.singletonList(String.format("interface %s extends %s {}", javaPrimitive, jsInterface));
         }
 
         static JavaPrimitive of(String javaPrimitive, String jsInterface) {

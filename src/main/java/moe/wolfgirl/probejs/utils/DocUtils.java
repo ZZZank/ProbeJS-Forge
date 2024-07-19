@@ -12,7 +12,9 @@ import java.util.function.Predicate;
 
 public class DocUtils {
     public static void applyParam(TypeScriptFile file, Predicate<MethodDecl> test, int index, Consumer<ParamDecl> effect) {
-        if (file == null) return;
+        if (file == null) {
+            return;
+        }
         file.findCode(ClassDecl.class).ifPresent(classDecl -> {
             for (MethodDecl method : classDecl.methods) {
                 if (test.test(method)) {

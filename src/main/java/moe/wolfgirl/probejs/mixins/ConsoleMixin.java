@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.file.Path;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 @Mixin(value = ConsoleJS.class, remap = false)
@@ -28,7 +27,8 @@ public class ConsoleMixin {
     @Inject(
         method = "error(Ljava/lang/String;Ljava/lang/Throwable;Ljava/util/regex/Pattern;)V",
         remap = false,
-        at = @At("HEAD"))
+        at = @At("HEAD")
+    )
     public void reportError(String message, Throwable error, Pattern exitPattern, CallbackInfo ci) {
         if (GlobalStates.SERVER != null) {
             if (error instanceof RhinoException rhinoException) {

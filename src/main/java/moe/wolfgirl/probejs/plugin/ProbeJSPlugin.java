@@ -1,6 +1,5 @@
 package moe.wolfgirl.probejs.plugin;
 
-import com.mojang.datafixers.util.Pair;
 import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.util.KubeJSPlugins;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -11,6 +10,8 @@ import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.transpiler.Transpiler;
 import moe.wolfgirl.probejs.lang.transpiler.TypeConverter;
 import moe.wolfgirl.probejs.lang.typescript.TypeScriptFile;
+import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSObjectType;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collections;
 import java.util.Map;
@@ -67,7 +68,6 @@ public class ProbeJSPlugin extends KubeJSPlugin {
      * 2. a binding (though it's not very needed for most people)
      */
     public void addGlobals(ScriptDump scriptDump) {
-
     }
 
     /**
@@ -76,7 +76,6 @@ public class ProbeJSPlugin extends KubeJSPlugin {
      * e.g. Item can be assigned with any item name string.
      */
     public void assignType(ScriptDump scriptDump) {
-
     }
 
     /**
@@ -95,10 +94,16 @@ public class ProbeJSPlugin extends KubeJSPlugin {
     }
 
     public void addVSCodeSnippets(SnippetDump dump) {
-
     }
 
     public void addJsonSchema(SchemaDump dump) {
+    }
 
+    /**
+     * @param predefined Note that the value of such map (in {@code JSObjectType}) is recommended to be in the format
+     *                   of {@code {"some_id": ((someArg1: SomeType1, someArg2: SomeType2, someArg3: SomeType3)=>SomeRecipeTypeJS)}},
+     *                   aka {@code {string: lambda}}
+     */
+    public void addPredefinedRecipeDoc(Map<ResourceLocation, JSObjectType> predefined) {
     }
 }

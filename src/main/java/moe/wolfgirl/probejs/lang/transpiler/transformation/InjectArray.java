@@ -46,35 +46,42 @@ public class InjectArray implements ClassTransformer {
     public void transform(Clazz clazz, ClassDecl classDecl) {
         if (isDirectlyImplementing(clazz.original, Iterable.class)) {
             BaseType iterType = classDecl.methods.stream()
-                    .filter(m -> m.name.equals("iterator"))
-                    .filter(m -> m.returnType instanceof TSParamType)
-                    .map(m -> ((TSParamType) m.returnType).params.get(0))
-                    .findFirst().orElse(null);
-            if (iterType == null) return;
+                .filter(m -> m.name.equals("iterator"))
+                .filter(m -> m.returnType instanceof TSParamType)
+                .map(m -> ((TSParamType) m.returnType).params.get(0))
+                .findFirst()
+                .orElse(null);
+            if (iterType == null) {
+                return;
+            }
 
             classDecl.bodyCode.add(new FormattedLine("[Symbol.iterator](): IterableIterator<%s>;", iterType));
-
-
         }
 
         // AbstractCollection is not a List, and AbstractList is not directly implementing Iterable
         if (isDirectlyImplementing(clazz.original, List.class)) {
             BaseType iterType = classDecl.methods.stream()
-                    .filter(m -> m.name.equals("iterator") && m.params.isEmpty())
-                    .filter(m -> m.returnType instanceof TSParamType)
-                    .map(m -> ((TSParamType) m.returnType).params.get(0))
-                    .findFirst().orElse(null);
-            if (iterType == null) return;
+                .filter(m -> m.name.equals("iterator") && m.params.isEmpty())
+                .filter(m -> m.returnType instanceof TSParamType)
+                .map(m -> ((TSParamType) m.returnType).params.get(0))
+                .findFirst()
+                .orElse(null);
+            if (iterType == null) {
+                return;
+            }
             classDecl.bodyCode.add(new FormattedLine("[index: number]: %s", iterType));
         }
 
 
         if (isDirectlyImplementing(clazz.original, Map.class)) {
             BaseType valueType = classDecl.methods.stream()
-                    .filter(m -> m.name.equals("get") && m.params.size() == 1)
-                    .map(m -> m.returnType)
-                    .findFirst().orElse(null);
-            if (valueType == null) return;
+                .filter(m -> m.name.equals("get") && m.params.size() == 1)
+                .map(m -> m.returnType)
+                .findFirst()
+                .orElse(null);
+            if (valueType == null) {
+                return;
+            }
             classDecl.bodyCode.add(new FormattedLine("[index: string | number]: %s", valueType));
         }
     }

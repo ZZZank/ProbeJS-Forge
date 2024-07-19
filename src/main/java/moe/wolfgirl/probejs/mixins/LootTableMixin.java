@@ -17,10 +17,12 @@ import java.util.Map;
 @Mixin(LootTables.class)
 public class LootTableMixin {
     @Inject(method = "apply*", at = @At("RETURN"))
-    public void apply(Map<ResourceLocation, JsonElement> object,
+    public void apply(
+        Map<ResourceLocation, JsonElement> object,
         ResourceManager resourceManager,
         ProfilerFiller profiler,
-        CallbackInfo ci) {
+        CallbackInfo ci
+    ) {
         for (val resourceLocation : object.keySet()) {
             GlobalStates.LOOT_TABLES.add(resourceLocation.toString());
         }

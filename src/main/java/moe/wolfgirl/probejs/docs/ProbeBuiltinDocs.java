@@ -42,6 +42,7 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
         KubeEvents::new,
 //            TagEvents::new,
         RecipeEvents::new,
+        BuiltinRecipeDocs::new,
 //            RegistryEvents::new,
         ForgeEvents::new,
         //misc
