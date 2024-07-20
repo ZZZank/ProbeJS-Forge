@@ -1,7 +1,5 @@
-package moe.wolfgirl.probejs.docs;
+package moe.wolfgirl.probejs.docs.recipes;
 
-import moe.wolfgirl.probejs.docs.recipes.Minecraft;
-import moe.wolfgirl.probejs.docs.recipes.Thermal;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSLambdaType;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;

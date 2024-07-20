@@ -1,22 +1,21 @@
 package moe.wolfgirl.probejs.docs.recipes;
 
-import dev.latvian.kubejs.item.ItemStackJS;
 import dev.latvian.kubejs.recipe.minecraft.*;
 import lombok.val;
 import moe.wolfgirl.probejs.docs.Primitives;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.lang.typescript.code.type.BaseType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.TSArrayType;
-import moe.wolfgirl.probejs.lang.typescript.code.type.TSClassType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.Types;
 import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSLambdaType;
 import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSObjectType;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.Map;
 
+import static moe.wolfgirl.probejs.docs.recipes.KubeJS.INGR;
+import static moe.wolfgirl.probejs.docs.recipes.KubeJS.STACK;
 import static moe.wolfgirl.probejs.lang.typescript.code.type.Types.lambda;
 
 /**
@@ -24,8 +23,6 @@ import static moe.wolfgirl.probejs.lang.typescript.code.type.Types.lambda;
  */
 public class Minecraft extends ProbeJSPlugin {
 
-    public static final TSClassType STACK = Types.type(ItemStackJS.class);
-    public static final TSClassType INGR = Types.type(Ingredient.class);
     public static final TSArrayType INGR_N = Types.array(INGR);
     public static final TSArrayType STR_N = Types.array(Primitives.CHAR_SEQUENCE);
     public static final JSObjectType STR2INGR = Types.object().member("[x in string]", INGR).build();

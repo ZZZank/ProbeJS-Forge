@@ -5,6 +5,7 @@ import moe.wolfgirl.probejs.docs.assignments.*;
 import moe.wolfgirl.probejs.docs.events.ForgeEvents;
 import moe.wolfgirl.probejs.docs.events.KubeEvents;
 import moe.wolfgirl.probejs.docs.events.RecipeEvents;
+import moe.wolfgirl.probejs.docs.recipes.BuiltinRecipeDocs;
 import moe.wolfgirl.probejs.lang.schema.SchemaDump;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
