@@ -20,9 +20,18 @@ public class ProbeClassScanner {
 
     public void acceptFile(File file) throws IOException {
         try (val jarFile = new ZipFile(file)) {
-            scannedClasses.addAll(new ModClassesScanner(jarFile).scanClasses());
+            val modClassesScanner = new ModClassesScanner(jarFile);
+            scannedClasses.addAll(modClassesScanner.scanClasses());
+            if (!modClassesScanner.mixinPackages.isEmpty()) {
+                ProbeJS.LOGGER.debug(
+                    "mod '{}' provides {} mixin packages, {} classes are filtered out",
+                    file.getName(),
+                    modClassesScanner.mixinPackages.size(),
+                    modClassesScanner.mixinFiltered
+                );
+            }
         }
-        ProbeJS.LOGGER.debug("scanned file {}, current class count: {}", file.getName(), scannedClasses.size());
+        ProbeJS.LOGGER.debug("scanned file '{}', current class count: {}", file.getName(), scannedClasses.size());
     }
 
     /**
@@ -76,10 +85,12 @@ public class ProbeClassScanner {
 
         private final ZipFile file;
         private final HashSet<String> mixinPackages;
+        private int mixinFiltered;
 
         ModClassesScanner(ZipFile modJar) {
             this.file = modJar;
             this.mixinPackages = new HashSet<>();
+            mixinFiltered = 0;
         }
 
         void fetchMixinPackages(ZipEntry entry) {
@@ -98,6 +109,7 @@ public class ProbeClassScanner {
         boolean notFromMixinPackages(String className) {
             for (String mixinPackage : mixinPackages) {
                 if (className.startsWith(mixinPackage)) {
+                    mixinFiltered += 1;
                     return false;
                 }
             }

@@ -3,6 +3,7 @@ package moe.wolfgirl.probejs.plugin;
 import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.util.KubeJSPlugins;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.lang.schema.SchemaDump;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
@@ -30,8 +31,13 @@ public class ProbeJSPlugin extends KubeJSPlugin {
     @HideFromJS
     public static void forEachPlugin(Consumer<ProbeJSPlugin> consumer) {
         KubeJSPlugins.forEachPlugin(plugin -> {
-            if (plugin instanceof ProbeJSPlugin probePlugin)
-                consumer.accept(probePlugin);
+            try {
+                if (plugin instanceof ProbeJSPlugin probePlugin) {
+                    consumer.accept(probePlugin);
+                }
+            } catch (Exception e) {
+                ProbeJS.LOGGER.error("Error happened when applying ProbeJS plugin", e);
+            }
         });
     }
 

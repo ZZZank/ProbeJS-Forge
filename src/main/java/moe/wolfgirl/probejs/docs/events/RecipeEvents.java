@@ -107,6 +107,7 @@ public class RecipeEvents extends ProbeJSPlugin {
         val recipeEventFile = globalClasses.get(new ClassPath(RecipeEventJS.class));
         val recipeEvent = recipeEventFile.findCode(ClassDecl.class).orElse(null);
         if (recipeEvent == null) {
+            ProbeJS.LOGGER.error("RecipeEventJS class declaration not found");
             return; // What???
         }
         recipeEvent.methods.stream()

@@ -10,6 +10,7 @@ import moe.wolfgirl.probejs.lang.java.clazz.members.MethodInfo;
 import moe.wolfgirl.probejs.lang.java.clazz.members.ParamInfo;
 import moe.wolfgirl.probejs.lang.java.type.TypeDescriptor;
 import moe.wolfgirl.probejs.lang.java.type.impl.VariableType;
+import moe.wolfgirl.probejs.utils.ReflectUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,18 +41,13 @@ public class ClassRegistry {
 
     public void fromClasses(Collection<Class<?>> classes) {
         for (Class<?> c : classes) {
-            try {
+            if (c.isSynthetic() || c.isAnonymousClass() || !ReflectUtils.classExist(c.getName())) {
                 // We test if the class actually exists from forName
                 // I think some runtime class can have non-existing Class<?> object due to .getSuperClass
                 // or .getInterfaces
-                Class.forName(c.getName());
-            } catch (Throwable ignore) {
                 continue;
             }
-
             try {
-                if (c.isSynthetic()) continue;
-                if (c.isAnonymousClass()) continue;
                 if (!foundClasses.containsKey(new ClassPath(c))) {
                     Clazz clazz = new Clazz(c);
                     foundClasses.put(clazz.classPath, clazz);
