@@ -56,6 +56,12 @@ public class Bindings extends ProbeJSPlugin {
         Map<String, BaseType> exported = new HashMap<>();
         Map<String, BaseType> reexported = new HashMap<>(); // Namespaces
 
+        for (Map.Entry<String, Object> entry : event.constants.entrySet()) {
+            val name = entry.getKey();
+            val obj = entry.getValue();
+            exported.put(name, converter.convertType(obj.getClass()));
+        }
+
         for (val entry : event.classes.entrySet()) {
             val id = entry.getKey();
             val c = entry.getValue();
