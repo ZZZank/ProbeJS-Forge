@@ -24,8 +24,7 @@ public record ClassPath(List<String> parts) {
     private static List<String> transformJavaClass(Class<?> clazz) {
         val name = RemapperBridge.remapClass(clazz);
         val parts = SPLIT.split(name);
-        val className = "$" + parts[parts.length - 1];
-        parts[parts.length - 1] = className;
+        parts[parts.length - 1] = "$" + parts[parts.length - 1];
         return Arrays.asList(parts);
     }
 
