@@ -18,7 +18,8 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
 
     public final List<Supplier<ProbeJSPlugin>> ALL = new ArrayList<>(Arrays.asList(
         Minecraft::new,
-        Thermal::new
+        Thermal::new,
+        KubeJS::new
     ));
 
     @Override

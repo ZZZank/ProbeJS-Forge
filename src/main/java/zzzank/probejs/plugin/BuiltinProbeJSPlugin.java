@@ -4,6 +4,7 @@ import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.util.ClassFilter;
 import lombok.val;
+import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.docs.ProbeBuiltinDocs;
 import zzzank.probejs.events.ProbeEvents;
@@ -18,6 +19,7 @@ import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 
 import java.util.Map;
 import java.util.Set;
@@ -120,5 +122,10 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
     @Override
     public void addJsonSchema(SchemaDump dump) {
         ProbeBuiltinDocs.INSTANCE.addJsonSchema(dump);
+    }
+
+    @Override
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
+        ProbeBuiltinDocs.INSTANCE.addPredefinedRecipeDoc(scriptDump, predefined);
     }
 }
