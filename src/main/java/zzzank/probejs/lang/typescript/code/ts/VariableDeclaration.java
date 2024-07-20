@@ -1,0 +1,31 @@
+package zzzank.probejs.lang.typescript.code.ts;
+
+import zzzank.probejs.lang.java.clazz.ClassPath;
+import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.code.member.CommentableCode;
+import zzzank.probejs.lang.typescript.code.type.BaseType;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+public class VariableDeclaration extends CommentableCode {
+
+    public String symbol;
+    public BaseType type;
+
+    public VariableDeclaration(String symbol, BaseType type) {
+        this.symbol = symbol;
+        this.type = type;
+    }
+
+    @Override
+    public Collection<ClassPath> getUsedClassPaths() {
+        return type.getUsedClassPaths();
+    }
+
+    @Override
+    public List<String> formatRaw(Declaration declaration) {
+        return Collections.singletonList(String.format("const %s: %s", symbol, type.line(declaration)));
+    }
+}

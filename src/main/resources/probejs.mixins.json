@@ -1,7 +1,7 @@
 {
   "required": true,
   "compatibilityLevel": "JAVA_8",
-  "package": "moe.wolfgirl.probejs.mixins",
+  "package": "zzzank.probejs.mixins",
   "mixins": [
     "ConsoleMixin",
     "EventBusMixin",
