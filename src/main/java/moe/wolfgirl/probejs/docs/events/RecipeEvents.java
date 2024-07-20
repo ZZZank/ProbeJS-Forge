@@ -149,6 +149,13 @@ public class RecipeEvents extends ProbeJSPlugin {
         if (scriptDump.scriptType != ScriptType.SERVER) {
             return Collections.emptySet();
         }
-        return ALL.values().stream().map(RecipeTypeJS::getClass).collect(Collectors.toSet());
+
+        val jClassses = new HashSet<Class<?>>();
+        for (RecipeTypeJS recipeTypeJS : ALL.values()) {
+            jClassses.add(recipeTypeJS.getClass());
+        }
+        //make sure RecipeEventJS has TSFile generated, to prevent modifyClasses from failing
+        jClassses.add(RecipeEventJS.class);
+        return jClassses;
     }
 }
