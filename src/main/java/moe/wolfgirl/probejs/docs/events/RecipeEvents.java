@@ -6,6 +6,7 @@ import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.util.KubeJSPlugins;
 import lombok.val;
+import moe.wolfgirl.probejs.ProbeJS;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
 import moe.wolfgirl.probejs.lang.transpiler.transformation.InjectBeans;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
@@ -18,7 +19,6 @@ import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RecipeEvents extends ProbeJSPlugin {
 
@@ -34,32 +34,44 @@ public class RecipeEvents extends ProbeJSPlugin {
         SHORTCUTS.put("smoking", new ResourceLocation("minecraft", "smoking"));
         SHORTCUTS.put("campfireCooking", new ResourceLocation("minecraft", "campfire_cooking"));
         SHORTCUTS.put("stonecutting", new ResourceLocation("minecraft", "stonecutting"));
-        SHORTCUTS.put("smithing", new ResourceLocation("minecraft", "smithing_transform"));
+        SHORTCUTS.put("smithing", new ResourceLocation("minecraft", "smithing"));
     }
 
     public final Map<ResourceLocation, RecipeTypeJS> ALL = new HashMap<>();
 
-    public RecipeEvents() {
+    private Map<String, Map<String, JSLambdaType>> getGroupedRecipeTypes(ScriptDump scriptDump) {
+        val converter = scriptDump.transpiler.typeConverter;
+
         val recipeEvent = new RegisterRecipeHandlersEvent(ALL);
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
-    }
 
-    private Map<String, Map<String, RecipeTypeJS>> getGroupedRecipeTypes() {
-        val grouped = new HashMap<String, Map<String, RecipeTypeJS>>();
-        for (Map.Entry<ResourceLocation, RecipeTypeJS> entry : ALL.entrySet()) {
-            val namespace = entry.getKey().getNamespace();
-            val name = entry.getKey().getPath();
-            val type = entry.getValue();
+        val predefinedTypes = getPredefinedRecipeDocs(scriptDump);
+
+        val grouped = new HashMap<String, Map<String, JSLambdaType>>();
+        for (val entry : ALL.entrySet()) {
+            val resLocation = entry.getKey();
+            var recipeFn = predefinedTypes.get(resLocation);
+            if (recipeFn == null) {
+                val recipeTypeJS = entry.getValue();
+                recipeFn = Types
+                    .lambda()
+                    .param("args", Types.ANY, false, true)
+                    .returnType(converter.convertType(recipeTypeJS.factory.get().getClass()))
+                    .build();
+            }
+
             grouped
-                .computeIfAbsent(namespace, k -> new HashMap<>())
-                .put(name, type);
+                .computeIfAbsent(resLocation.getNamespace(), k -> new HashMap<>())
+                .put(resLocation.getPath(), recipeFn);
         }
+
         return grouped;
     }
 
     private Map<ResourceLocation, JSLambdaType> getPredefinedRecipeDocs(ScriptDump scriptDump) {
         val pred = new HashMap<ResourceLocation, JSLambdaType>();
         ProbeJSPlugin.forEachPlugin(p -> p.addPredefinedRecipeDoc(scriptDump, pred));
+        ProbeJS.LOGGER.debug("Read {} predefined recipe docs", pred.size());
         return pred;
     }
 
@@ -68,34 +80,20 @@ public class RecipeEvents extends ProbeJSPlugin {
         if (scriptDump.scriptType != ScriptType.SERVER) {
             return;
         }
-        val converter = scriptDump.transpiler.typeConverter;
 
         // Generate recipe schema classes
         // Also generate the documented recipe class containing all stuffs from everywhere
         val documentedRecipes = Statements.clazz(DOCUMENTED.getName());
 
-        val grouped = getGroupedRecipeTypes();
-        val predefinedTypes = getPredefinedRecipeDocs(scriptDump);
+        val grouped = getGroupedRecipeTypes(scriptDump);
 
         for (val entry : grouped.entrySet()) {
             val namespace = entry.getKey();
             val group = entry.getValue();
 
             val namespaced = Types.object();
-            for (Map.Entry<String, RecipeTypeJS> e : group.entrySet()) {
-                val path = e.getKey();
+            group.forEach(namespaced::member);
 
-                var fn = predefinedTypes.get(new ResourceLocation(namespace, path));
-                if (fn == null) {
-                    val type = e.getValue();
-                    fn = Types.lambda()
-                        .param("args", Types.ANY, false, true)
-                        .returnType(converter.convertType(type.getClass()))
-                        .build();
-                }
-
-                namespaced.member(path, fn);
-            }
             documentedRecipes.field(namespace, namespaced.build());
         }
 
@@ -127,16 +125,9 @@ public class RecipeEvents extends ProbeJSPlugin {
             if (!SHORTCUTS.containsKey(field.name)) {
                 continue;
             }
+
             val parts = SHORTCUTS.get(field.name);
-            if (predefinedTypes.containsKey(parts)) {
-                field.type = predefinedTypes.get(parts);
-            } else {
-                val type = grouped.get(parts.getNamespace()).get(parts.getPath());
-                field.type = Types.lambda()
-                    .param("args", Types.ANY, false, true)
-                    .returnType(converter.convertType(type.getClass()))
-                    .build();
-            }
+            field.type = grouped.get(parts.getNamespace()).get(parts.getPath());
 
             for (ClassPath usedClassPath : field.type.getUsedClassPaths()) {
                 recipeEventFile.declaration.addClass(usedClassPath);
