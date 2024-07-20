@@ -176,6 +176,9 @@ jar {
 shadowJar {
     archiveClassifier.set("shadow")
 
+    relocate("org.java_websocket", "zzzank.probejs.shaded.java_websocket")
+    relocate("org.slf4j", "zzzank.probejs.shaded.slf4j")
+
     configurations = [project.configurations.shade]
 }
 
