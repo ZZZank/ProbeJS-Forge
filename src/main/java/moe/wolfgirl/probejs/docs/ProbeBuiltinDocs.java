@@ -10,10 +10,12 @@ import moe.wolfgirl.probejs.lang.schema.SchemaDump;
 import moe.wolfgirl.probejs.lang.snippet.SnippetDump;
 import moe.wolfgirl.probejs.lang.typescript.ScriptDump;
 import moe.wolfgirl.probejs.lang.java.clazz.ClassPath;
+import moe.wolfgirl.probejs.lang.typescript.code.type.js.JSLambdaType;
 import moe.wolfgirl.probejs.plugin.ProbeJSPlugin;
 import moe.wolfgirl.probejs.lang.transpiler.Transpiler;
 import moe.wolfgirl.probejs.lang.transpiler.TypeConverter;
 import moe.wolfgirl.probejs.lang.typescript.TypeScriptFile;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -106,5 +108,10 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
     @Override
     public void addJsonSchema(SchemaDump dump) {
         forEach(builtinDoc -> builtinDoc.addJsonSchema(dump));
+    }
+
+    @Override
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
+        forEach(builtinDoc -> builtinDoc.addPredefinedRecipeDoc(scriptDump, predefined));
     }
 }
