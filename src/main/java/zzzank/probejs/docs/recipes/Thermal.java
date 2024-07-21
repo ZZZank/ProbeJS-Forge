@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @author ZZZank
  */
-public class Thermal extends ProbeJSPlugin {
+class Thermal extends ProbeJSPlugin {
 
     public static final BaseType MIXED_IN = Types.or(KubeJS.INGR, KubeJS.FLUID);
     public static final BaseType MIXED_OUT = Types.or(KubeJS.STACK, KubeJS.FLUID);

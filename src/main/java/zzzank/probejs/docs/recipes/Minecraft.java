@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * @author ZZZank
  */
-public class Minecraft extends ProbeJSPlugin {
+class Minecraft extends ProbeJSPlugin {
 
     public static final TSArrayType INGR_N = Types.array(KubeJS.INGR);
     public static final TSArrayType STR_N = Types.array(Primitives.CHAR_SEQUENCE);

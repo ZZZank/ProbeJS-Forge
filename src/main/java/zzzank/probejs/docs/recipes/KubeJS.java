@@ -20,7 +20,7 @@ import static zzzank.probejs.lang.typescript.code.type.Types.lambda;
 /**
  * @author ZZZank
  */
-public class KubeJS extends ProbeJSPlugin {
+class KubeJS extends ProbeJSPlugin {
 
     public static final TSClassType FLUID = Types.type(FluidStackJS.class);
     public static final TSClassType STACK = Types.type(ItemStackJS.class);
