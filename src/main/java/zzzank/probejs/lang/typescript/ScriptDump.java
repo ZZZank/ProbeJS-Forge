@@ -350,8 +350,7 @@ public class ScriptDump {
                     "skipLibCheck": true
                 },
                 "include": [
-                    "./**/*.js",
-                    "./**/*.ts",
+                    "./**/*.js"
                 ]
             }
             """, basePath.getFileName(), basePath.getFileName()));
