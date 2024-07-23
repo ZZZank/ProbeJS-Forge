@@ -43,8 +43,11 @@ public class TypeConverter {
             if (RhizoState.GENERIC_ANNOTATION) {
                 val generics = paramType.getAnnotation(Generics.class);
                 if (generics != null) {
-                    val baseType = new TSClassType(new ClassPath(generics.base()));
-                    val params = Arrays.stream(generics.value())
+                    val baseType = generics.base() == Object.class
+                        ? convertType(paramType.base)
+                        : new TSClassType(new ClassPath(generics.base()));
+                    val params = Arrays
+                        .stream(generics.value())
                         .map(c -> (BaseType) new TSClassType(new ClassPath(c)))
                         .collect(Collectors.toList());
                     return new TSParamType(baseType, params);
