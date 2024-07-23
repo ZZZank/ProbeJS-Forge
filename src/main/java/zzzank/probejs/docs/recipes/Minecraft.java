@@ -24,7 +24,8 @@ class Minecraft extends ProbeJSPlugin {
     public static final JSObjectType STR2INGR = Types.object().member("[x in string]", KubeJS.INGR).build();
 
     public static JSLambdaType simpleIngrToStackRecipe(BaseType returnType) {
-        return Types.lambda().param("output", KubeJS.STACK)
+        return Types.lambda()
+            .param("output", KubeJS.STACK)
             .param("input", KubeJS.INGR)
             .returnType(returnType)
             .build();

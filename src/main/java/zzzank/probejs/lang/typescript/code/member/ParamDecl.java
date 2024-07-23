@@ -6,7 +6,6 @@ import zzzank.probejs.utils.NameUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 
 public final class ParamDecl {
@@ -27,11 +26,10 @@ public final class ParamDecl {
     }
 
     public String format(int index, Declaration declaration) {
-        String result = NameUtils.isNameSafe(name) ? name : String.format("arg%d", index);
-        if (varArg) result = String.format("...%s", result);
         return String.format(
-            "%s%s: %s",
-            result,
+            "%s%s%s: %s",
+            varArg ? "..." : "",
+            NameUtils.isNameSafe(name) ? name : String.format("arg%d", index),
             optional ? "?" : "",
             type.line(declaration, BaseType.FormatType.INPUT)
         );
@@ -39,11 +37,9 @@ public final class ParamDecl {
 
     public static String formatParams(List<ParamDecl> params, Declaration declaration) {
         List<String> formattedParams = new ArrayList<>();
-        ListIterator<ParamDecl> it = params.listIterator();
-        while (it.hasNext()) {
-            int index = it.nextIndex();
-            ParamDecl param = it.next();
-            formattedParams.add(param.format(index, declaration));
+        for (int i = 0; i < params.size(); i++) {
+            ParamDecl param = params.get(i);
+            formattedParams.add(param.format(i, declaration));
         }
         return String.format("(%s)", String.join(", ", formattedParams));
     }

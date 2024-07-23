@@ -9,6 +9,11 @@ import java.util.function.Function;
 @Desugar
 public record JSParam(String name, boolean optional, BaseType type) {
     public String format(Declaration declaration, BaseType.FormatType formatType, Function<String, String> nameGetter) {
-        return String.format("%s%s: %s", nameGetter.apply(name), optional ? "?" : "", type.line(declaration, formatType));
+        return String.format(
+            "%s%s: %s",
+            nameGetter.apply(name),
+            optional ? "?" : "",
+            type.line(declaration, formatType)
+        );
     }
 }

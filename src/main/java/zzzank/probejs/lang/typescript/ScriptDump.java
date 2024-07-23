@@ -244,8 +244,9 @@ public class ScriptDump {
                 List<BaseType> allTypes = new ArrayList<>();
                 List<TypeDecl> delegatedTypes = new ArrayList<>();
                 for (TypeDecl typeDecl : convertibles.get(classPath)) {
-                    if (typeDecl.symbol == null) allTypes.add(typeDecl.type);
-                    else {
+                    if (typeDecl.symbol == null) {
+                        allTypes.add(typeDecl.type);
+                    } else {
                         delegatedTypes.add(typeDecl);
                         allTypes.add(Types.primitive(typeDecl.symbol));
                     }

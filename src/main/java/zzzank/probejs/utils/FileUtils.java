@@ -29,7 +29,9 @@ public class FileUtils {
 
     public static void writeMergedConfig(Path path, String config) throws IOException {
         JsonObject updates = ProbeJS.GSON.fromJson(config, JsonObject.class);
-        JsonObject read = Files.exists(path) ? ProbeJS.GSON.fromJson(Files.newBufferedReader(path), JsonObject.class) : new JsonObject();
+        JsonObject read = Files.exists(path)
+            ? ProbeJS.GSON.fromJson(Files.newBufferedReader(path), JsonObject.class)
+            : new JsonObject();
         if (read == null) {
             read = new JsonObject();
         }

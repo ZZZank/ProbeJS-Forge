@@ -81,7 +81,7 @@ public class RecipeEvents extends ProbeJSPlugin {
             return;
         }
 
-        // Generate recipe schema classes
+        //1.Generate recipe schema classes
         // Also generate the documented recipe class containing all stuffs from everywhere
         val documentedRecipes = Statements.clazz(DOCUMENTED.getName());
 
@@ -101,17 +101,19 @@ public class RecipeEvents extends ProbeJSPlugin {
         documentFile.addCode(documentedRecipes.build());
         globalClasses.put(DOCUMENTED, documentFile);
 
-        // Inject types into the RecipeEventJS
+        //2.Inject types into the RecipeEventJS
         val recipeEventFile = globalClasses.get(new ClassPath(RecipeEventJS.class));
         val recipeEvent = recipeEventFile.findCode(ClassDecl.class).orElse(null);
         if (recipeEvent == null) {
             ProbeJS.LOGGER.error("RecipeEventJS class declaration not found");
             return; // What???
         }
-        recipeEvent.methods.stream()
-            .filter(m -> m.params.isEmpty() && m.name.equals("getRecipes"))
-            .findFirst()
-            .ifPresent(methodDecl -> methodDecl.returnType = Types.type(DOCUMENTED));
+        for (val m : recipeEvent.methods) {
+            if (m.params.isEmpty() && m.name.equals("getRecipes")) {
+                m.returnType = Types.type(DOCUMENTED);
+                break;
+            }
+        }
         for (val code : recipeEvent.bodyCode) {
             if (code instanceof InjectBeans.BeanDecl beanDecl && beanDecl.name.equals("recipes")) {
                 beanDecl.baseType = Types.type(DOCUMENTED);
@@ -120,7 +122,7 @@ public class RecipeEvents extends ProbeJSPlugin {
         }
         recipeEventFile.declaration.addClass(DOCUMENTED);
 
-        // Make shortcuts valid recipe functions
+        //3.Make shortcuts valid recipe functions
         for (val field : recipeEvent.fields) {
             if (!SHORTCUTS.containsKey(field.name)) {
                 continue;
