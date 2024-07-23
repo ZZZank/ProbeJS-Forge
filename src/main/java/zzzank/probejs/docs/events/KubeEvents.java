@@ -25,20 +25,21 @@ public class KubeEvents extends ProbeJSPlugin {
         val converter = scriptDump.transpiler.typeConverter;
 
         List<Code> codes = new ArrayList<>();
-        for (val entry : KNOWN.entrySet()) {
+        for (val entry : new TreeMap<>(KNOWN).entrySet()) {
             val id = entry.getKey();
             val info = entry.getValue();
             if (disabled.contains(id) || !info.scriptTypes().contains(scriptDump.scriptType)) {
                 continue;
             }
             val decl = declareEventMethod(id, converter, info);
-            decl.addComment(
-                String.format(
-                    "@at %s",
-                    info.scriptTypes().stream().map(type -> type.name).collect(Collectors.joining(", "))
-                ),
-                String.format("@cancellable %s", info.cancellable() ? "Yes" : "No")
-            );
+            decl.addComment(String.format(
+                """
+                    @at %s
+                    @cancellable %s
+                    """,
+                info.scriptTypes().stream().map(type -> type.name).collect(Collectors.joining(", ")),
+                info.cancellable() ? "Yes" : "No"
+            ));
             if (info.hasSub()) {
                 decl.addComment(String.format(
                     "This event provides sub-event variant, e.g. `%s.%s`",
