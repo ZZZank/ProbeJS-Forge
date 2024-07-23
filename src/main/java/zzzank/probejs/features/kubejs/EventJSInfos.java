@@ -43,7 +43,7 @@ public final class EventJSInfos {
                 }
             }
         } catch (Exception e) {
-            ProbeJS.LOGGER.error("Cannot read EventJS infos", e);
+            ProbeJS.LOGGER.error("Error when reading EventJS infos", e);
         }
     }
 
@@ -54,9 +54,10 @@ public final class EventJSInfos {
                 obj.add(info.id(), info.toJson());
             }
             val writer = new FileWriter(path.toFile());
-            ProbeJS.GSON_WRITER.toJson(obj, writer);
+            //dont use ProbeJS.GSON_WRITER, there's too many lines
+            ProbeJS.GSON.toJson(obj, writer);
         } catch (Exception e) {
-            ProbeJS.LOGGER.error("Cannot write EventJS infos", e);
+            ProbeJS.LOGGER.error("Error when writing EventJS infos", e);
         }
     }
 }

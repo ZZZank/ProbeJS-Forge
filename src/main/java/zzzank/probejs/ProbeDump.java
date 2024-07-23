@@ -2,6 +2,8 @@ package zzzank.probejs;
 
 import dev.latvian.kubejs.text.Text;
 import net.minecraft.network.chat.Component;
+import zzzank.probejs.features.kubejs.EventJSInfo;
+import zzzank.probejs.features.kubejs.EventJSInfos;
 import zzzank.probejs.lang.decompiler.ProbeDecompiler;
 import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.schema.SchemaDump;
@@ -26,6 +28,7 @@ import static dev.latvian.kubejs.bindings.TextWrapper.translate;
 public class ProbeDump {
     public static final Path SNIPPET_PATH = ProbePaths.WORKSPACE_SETTINGS.resolve("probe.code-snippets");
     public static final Path CLASS_CACHE = ProbePaths.PROBE.resolve("classes.txt");
+    public static final Path EVENT_CACHE = ProbePaths.PROBE.resolve("kube_event.json");
 
     final SchemaDump schemaDump = new SchemaDump();
     final SnippetDump snippetDump = new SnippetDump();
@@ -95,6 +98,9 @@ public class ProbeDump {
         appendGitIgnore();
 
         report(translate("probejs.dump.snippets_generated"));
+
+        EventJSInfos.loadFrom(EVENT_CACHE);
+        EventJSInfos.writeTo(EVENT_CACHE);
 
         if (GameUtils.modHash() != ProbeJS.CONFIG.modHash.get()) {
             report(translate("probejs.dump.mod_changed").aqua());
