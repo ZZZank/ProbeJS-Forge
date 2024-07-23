@@ -33,7 +33,8 @@ public record EventJSInfo(
     }
 
     @SuppressWarnings("unchecked")
-    public static Optional<EventJSInfo> fromJson(JsonObject json) {
+    @Nullable
+    public static EventJSInfo fromJson(JsonObject json) {
         //id
         val id = json.get("id").getAsString();
         //class
@@ -41,7 +42,7 @@ public record EventJSInfo(
         try {
             clazz = Class.forName(json.get("class").getAsString());
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            return Optional.empty();
+            return null;
         }
         //type
         val types = EnumSet.noneOf(ScriptType.class);
@@ -54,7 +55,13 @@ public record EventJSInfo(
         //cancellable
         val cancellable = json.has("cancellable") && json.get("cancellable").getAsBoolean();
 
-        return Optional.of(new EventJSInfo((Class<? extends EventJS>) clazz, id, cancellable, types, new MutableObject<>()));
+        return new EventJSInfo(
+            (Class<? extends EventJS>) clazz,
+            id,
+            cancellable,
+            types,
+            new MutableObject<>(sub)
+        );
     }
 
     public boolean hasSub() {

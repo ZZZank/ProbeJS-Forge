@@ -3,6 +3,7 @@ package zzzank.probejs.docs.events;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.features.kubejs.EventJSInfo;
+import zzzank.probejs.features.kubejs.EventJSInfos;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.Code;
@@ -16,8 +17,6 @@ import java.util.stream.Collectors;
 
 public class KubeEvents extends ProbeJSPlugin {
 
-    public static final Map<String, EventJSInfo> KNOWN = new HashMap<>();
-
     @Override
     public void addGlobals(ScriptDump scriptDump) {
 
@@ -25,9 +24,8 @@ public class KubeEvents extends ProbeJSPlugin {
         val converter = scriptDump.transpiler.typeConverter;
 
         List<Code> codes = new ArrayList<>();
-        for (val entry : new TreeMap<>(KNOWN).entrySet()) {
-            val id = entry.getKey();
-            val info = entry.getValue();
+        for (val info : EventJSInfos.sortedInfos()) {
+            val id = info.id();
             if (disabled.contains(id) || !info.scriptTypes().contains(scriptDump.scriptType)) {
                 continue;
             }
@@ -74,7 +72,7 @@ public class KubeEvents extends ProbeJSPlugin {
 
     @Override
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
-        return KNOWN.values().stream().map(EventJSInfo::clazzRaw).collect(Collectors.toSet());
+        return EventJSInfos.provideClasses();
     }
 
     private static Set<String> getSkippedEvents(ScriptDump dump) {

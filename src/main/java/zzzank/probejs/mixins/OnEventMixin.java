@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import zzzank.probejs.ProbeJS;
-import zzzank.probejs.docs.events.KubeEvents;
 import zzzank.probejs.features.kubejs.EventJSInfo;
+import zzzank.probejs.features.kubejs.EventJSInfos;
 
 /**
  * @author ZZZank
@@ -26,9 +26,9 @@ public class OnEventMixin {
         if (!ProbeJS.CONFIG.enabled.get()) {
             return;
         }
-        val e = KubeEvents.KNOWN.get(id);
+        val e = EventJSInfos.KNOWN.get(id);
         if (e == null) {
-            KubeEvents.KNOWN.put(id, new EventJSInfo(t, (EventJS) (Object) this, id, null));
+            EventJSInfos.KNOWN.put(id, new EventJSInfo(t, (EventJS) (Object) this, id, null));
         } else {
             e.scriptTypes().add(t);
         }
@@ -43,9 +43,9 @@ public class OnEventMixin {
         if (!ProbeJS.CONFIG.enabled.get()) {
             return;
         }
-        val e = KubeEvents.KNOWN.get(id);
+        val e = EventJSInfos.KNOWN.get(id);
         if (e == null) {
-            KubeEvents.KNOWN.put(id, new EventJSInfo(t, (EventJS) (Object) this, id, sub));
+            EventJSInfos.KNOWN.put(id, new EventJSInfo(t, (EventJS) (Object) this, id, sub));
         } else {
             e.scriptTypes().add(t);
             if (e.sub().getValue() == null) {
