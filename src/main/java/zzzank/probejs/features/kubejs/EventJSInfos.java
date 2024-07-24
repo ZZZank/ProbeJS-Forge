@@ -4,8 +4,7 @@ import com.google.gson.JsonObject;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
 
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,9 +31,11 @@ public final class EventJSInfos {
         if (!path.toFile().exists()) {
             return;
         }
-        try {
-            val reader = new FileReader(path.toFile());
+        try (val reader = Files.newBufferedReader(path)) {
             val obj = ProbeJS.GSON.fromJson(reader, JsonObject.class);
+            if (obj == null) {
+                return;
+            }
             for (val entry : obj.entrySet()) {
                 val id = entry.getKey();
                 val info = EventJSInfo.fromJson(entry.getValue().getAsJsonObject());
@@ -48,12 +49,11 @@ public final class EventJSInfos {
     }
 
     public static void writeTo(Path path) {
-        try {
+        try (val writer = Files.newBufferedWriter(path)) {
             val obj = new JsonObject();
             for (val info : KNOWN.values()) {
                 obj.add(info.id(), info.toJson());
             }
-            val writer = new FileWriter(path.toFile());
             //dont use ProbeJS.GSON_WRITER, there's too many lines
             ProbeJS.GSON.toJson(obj, writer);
         } catch (Exception e) {
