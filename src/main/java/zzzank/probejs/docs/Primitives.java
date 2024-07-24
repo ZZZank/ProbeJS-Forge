@@ -5,6 +5,7 @@ import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.Code;
+import zzzank.probejs.lang.typescript.code.member.TypeDecl;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
@@ -23,6 +24,8 @@ public class Primitives extends ProbeJSPlugin {
     public static final JSPrimitiveType CHARACTER = Types.primitive("character");
     public static final JSPrimitiveType CHAR_SEQUENCE = Types.primitive("charseq");
 
+    private static final JSPrimitiveType TS_NUMBER = Types.primitive("Number");
+    private static final JSPrimitiveType JS_NUMBER = Types.primitive("number");
 
     static class JavaPrimitive extends Code {
         private final String javaPrimitive;
@@ -80,15 +83,19 @@ public class Primitives extends ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {
+        var numberBoth = Types.and(JS_NUMBER, TS_NUMBER);
         scriptDump.addGlobal("primitives",
-                JavaPrimitive.of("long", "Number"),
-                JavaPrimitive.of("integer", "Number"),
-                JavaPrimitive.of("short", "Number"),
-                JavaPrimitive.of("byte", "Number"),
-                JavaPrimitive.of("double", "Number"),
-                JavaPrimitive.of("float", "Number"),
-                JavaPrimitive.of("character", "String"),
-                JavaPrimitive.of("charseq", "String")
+            //for number types, we can safely mark them as a primitive type instead of an interface
+            //because the classes that represent them are `final`, so there's no need of taking inheritance into account
+            new TypeDecl("long", numberBoth),
+            new TypeDecl("integer", numberBoth),
+            new TypeDecl("short", numberBoth),
+            new TypeDecl("byte", numberBoth),
+            new TypeDecl("double", numberBoth),
+            new TypeDecl("float", numberBoth),
+            //for CharSequence, we should NOT mark it as a primitive type, because of inheritance
+            JavaPrimitive.of("character", "String"),
+            JavaPrimitive.of("charseq", "String")
         );
     }
 }
