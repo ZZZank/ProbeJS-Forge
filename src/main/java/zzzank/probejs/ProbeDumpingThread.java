@@ -28,10 +28,10 @@ public class ProbeDumpingThread extends Thread {
     private ProbeDumpingThread(final Consumer<Component> messageSender) {
         super(
             () -> {  // Don't stall the client
-                val dump = new ProbeDump();
-                dump.defaultScripts();
+                val probeDump = new ProbeDump();
+                probeDump.defaultScripts();
                 try {
-                    dump.trigger(messageSender);
+                    probeDump.trigger(messageSender);
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }

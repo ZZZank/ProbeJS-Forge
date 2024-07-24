@@ -2,7 +2,6 @@ package zzzank.probejs;
 
 import dev.latvian.kubejs.text.Text;
 import net.minecraft.network.chat.Component;
-import zzzank.probejs.features.kubejs.EventJSInfo;
 import zzzank.probejs.features.kubejs.EventJSInfos;
 import zzzank.probejs.lang.decompiler.ProbeDecompiler;
 import zzzank.probejs.lang.java.ClassRegistry;

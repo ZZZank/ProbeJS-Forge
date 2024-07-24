@@ -1,89 +1,141 @@
 package zzzank.probejs.utils;
 
-import java.util.Objects;
-
 /**
  * @author ZZZank
  */
-public final class Either<L, R> {
-    private final Object value;
-    private final boolean isRight;
+public interface Either<L, R> {
 
-    private Either(Object value, boolean isRight) {
-        this.value = value;
-        this.isRight = isRight;
+    static <L, R> Either<L, R> ofLeft(L value) {
+        return new Left<>(value);
     }
 
-    public static <L, R> Either<L, R> ofRight(R right) {
-        return new Either<>(right, true);
+    static <L, R> Either<L, R> ofRight(R value) {
+        return new Right<>(value);
     }
 
-    public static <L, R> Either<L, R> ofLeft(L left) {
-        return new Either<>(left, false);
+    static <L, R> Either<L, R> ofNone(boolean isRight) {
+        return (Either<L, R>) (isRight ? None.RIGHT : None.LEFT);
     }
 
-    public L left() {
-        if (isRight) {
+    L left();
+
+    R right();
+
+    Object value();
+
+    boolean isLeft();
+
+    boolean isRight();
+
+    L leftOrElse(L fallback);
+
+    R rightOrElse(R fallback);
+
+    record Left<L, R>(L value) implements Either<L, R> {
+
+        @Override
+        public L left() {
+            return value;
+        }
+
+        @Override
+        public R right() {
             throw new IllegalStateException();
         }
-        return (L) value;
-    }
 
-    public R right() {
-        if (!isRight) {
-            throw new IllegalStateException();
-        }
-        return (R) value;
-    }
-
-    public L leftOrElse(L fallback) {
-        if (isRight) {
-            return fallback;
-        }
-        return (L) value;
-    }
-
-    public R rightOrElse(R fallback) {
-        if (!isRight) {
-            return fallback;
-        }
-        return (R) value;
-    }
-
-    public Object raw() {
-        return value;
-    }
-
-    public boolean isLeft() {
-        return !isRight;
-    }
-
-    public boolean isRight() {
-        return isRight;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
+        @Override
+        public boolean isLeft() {
             return true;
         }
-        if (obj == null || obj.getClass() != this.getClass()) {
+
+        @Override
+        public boolean isRight() {
             return false;
         }
-        var that = (Either) obj;
-        return Objects.equals(this.value, that.value) &&
-            this.isRight == that.isRight;
+
+        @Override
+        public L leftOrElse(L fallback) {
+            return value;
+        }
+
+        @Override
+        public R rightOrElse(R fallback) {
+            return fallback;
+        }
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(value, isRight);
+    record Right<L, R>(R value) implements Either<L, R> {
+
+        @Override
+        public L left() {
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public R right() {
+            return value;
+        }
+
+        @Override
+        public boolean isLeft() {
+            return false;
+        }
+
+        @Override
+        public boolean isRight() {
+            return true;
+        }
+
+        @Override
+        public L leftOrElse(L fallback) {
+            return fallback;
+        }
+
+        @Override
+        public R rightOrElse(R fallback) {
+            return value;
+        }
     }
 
-    @Override
-    public String toString() {
-        return "Either[" +
-            "value=" + value + ", " +
-            "isRight=" + isRight + ']';
+    record None<L, R>(boolean isRight) implements Either<L, R> {
+
+        private static final None<Object, Object> LEFT = new None<>(false);
+        private static final None<Object, Object> RIGHT = new None<>(false);
+
+        @Override
+        public L left() {
+            if (isRight) {
+                throw new IllegalStateException();
+            }
+            return null;
+        }
+
+        @Override
+        public R right() {
+            if (isRight) {
+                return null;
+            }
+            throw new IllegalStateException();
+        }
+
+        @Override
+        public Object value() {
+            return null;
+        }
+
+        @Override
+        public boolean isLeft() {
+            return !isRight;
+        }
+
+        @Override
+        public L leftOrElse(L fallback) {
+            return isRight ? fallback : null;
+        }
+
+        @Override
+        public R rightOrElse(R fallback) {
+            return isRight ? null : fallback;
+        }
     }
 }

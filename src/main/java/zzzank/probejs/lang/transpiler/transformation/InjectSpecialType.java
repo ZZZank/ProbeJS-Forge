@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.transpiler.transformation;
 
+import lombok.val;
 import net.minecraft.resources.ResourceKey;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
@@ -16,7 +17,6 @@ import zzzank.probejs.lang.typescript.code.type.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.TSParamType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.TypeVariable;
 import java.util.*;
@@ -44,13 +44,16 @@ public class InjectSpecialType implements ClassTransformer {
     }
 
     private static int findReturnTypeIndex(Class<?> clazz) {
-        Method functional = Arrays.stream(clazz.getMethods()).filter(m -> {
-            int modifiers = m.getModifiers();
-            return Modifier.isAbstract(modifiers);
-        }).findFirst().orElse(null);
-        if (functional == null) return -1;
+        val functional = Arrays
+            .stream(clazz.getMethods())
+            .filter(m -> Modifier.isAbstract(m.getModifiers()))
+            .findFirst()
+            .orElse(null);
+        if (functional == null) {
+            return -1;
+        }
         if (functional.getGenericReturnType() instanceof TypeVariable<?> typeVariable) {
-            TypeVariable<?>[] typeVars = clazz.getTypeParameters();
+            val typeVars = clazz.getTypeParameters();
             for (int i = 0; i < typeVars.length; i++) {
                 if (typeVars[i].getName().equals(typeVariable.getName())) {
                     return i;
@@ -62,17 +65,17 @@ public class InjectSpecialType implements ClassTransformer {
 
     public static void modifyLambda(ParamDecl param, ParamInfo info) {
         if (info.type instanceof ParamType paramType &&
-                paramType.base instanceof ClassType classType &&
-                classType.clazz.isAnnotationPresent(FunctionalInterface.class) &&
-                param.type instanceof TSParamType tsParamType) {
+            paramType.base instanceof ClassType classType &&
+            classType.clazz.isAnnotationPresent(FunctionalInterface.class) &&
+            param.type instanceof TSParamType tsParamType) {
 
-            List<BaseType> params = new ArrayList<>(tsParamType.params);
-            int returnIndex = findReturnTypeIndex(classType.clazz);
+            val params = new ArrayList<>(tsParamType.params);
+            val returnIndex = findReturnTypeIndex(classType.clazz);
             for (int i = 0; i < params.size(); i++) {
-                BaseType p = params.get(i);
+                val p = params.get(i);
                 params.set(i, Types.ignoreContext(p, returnIndex == i ?
-                        BaseType.FormatType.INPUT :
-                        BaseType.FormatType.RETURN));
+                    BaseType.FormatType.INPUT :
+                    BaseType.FormatType.RETURN));
             }
 
             param.type = new TSParamType(tsParamType.baseType, params);
