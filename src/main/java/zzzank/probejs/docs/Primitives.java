@@ -1,18 +1,12 @@
 package zzzank.probejs.docs;
 
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.transpiler.TypeConverter;
-import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.TypeDecl;
+import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 public class Primitives extends ProbeJSPlugin {
     public static final JSPrimitiveType LONG = Types.primitive("long");
@@ -27,29 +21,7 @@ public class Primitives extends ProbeJSPlugin {
     private static final JSPrimitiveType TS_NUMBER = Types.primitive("Number");
     private static final JSPrimitiveType JS_NUMBER = Types.primitive("number");
 
-    static class JavaPrimitive extends Code {
-        private final String javaPrimitive;
-        private final String jsInterface;
-
-        JavaPrimitive(String javaPrimitive, String jsInterface) {
-            this.javaPrimitive = javaPrimitive;
-            this.jsInterface = jsInterface;
-        }
-
-        @Override
-        public Collection<ClassPath> getUsedClassPaths() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public List<String> format(Declaration declaration) {
-            return Collections.singletonList(String.format("interface %s extends %s {}", javaPrimitive, jsInterface));
-        }
-
-        static JavaPrimitive of(String javaPrimitive, String jsInterface) {
-            return new JavaPrimitive(javaPrimitive, jsInterface);
-        }
-    }
+    private static final JSPrimitiveType TS_STRING = Types.primitive("String");
 
     @Override
     public void addPredefinedTypes(TypeConverter converter) {
@@ -94,8 +66,8 @@ public class Primitives extends ProbeJSPlugin {
             new TypeDecl("double", numberBoth),
             new TypeDecl("float", numberBoth),
             //for CharSequence, we should NOT mark it as a primitive type, because of inheritance
-            JavaPrimitive.of("character", "String"),
-            JavaPrimitive.of("charseq", "String")
+            Statements.clazz("character").interfaceClass().superClass(TS_STRING).build(),
+            Statements.clazz("charseq").interfaceClass().superClass(TS_STRING).build()
         );
     }
 }
