@@ -109,13 +109,11 @@ public class RegistryTypes extends ProbeJSPlugin {
             entryNames.add(entryName.toString());
         }
 
-        BaseType types =
-            enabled ? Types.or(entryNames.stream().map(Types::literal).toArray(BaseType[]::new)) : Types.STRING;
-        String typeName = NameUtils.rlToTitle(key.location().getPath());
+        val types = enabled ? Types.or(entryNames.stream().map(Types::literal).toArray(BaseType[]::new)) : Types.STRING;
+        val typeName = NameUtils.rlToTitle(key.location().getPath());
 
-        TypeDecl typeDecl = new TypeDecl(typeName, types);
+        val typeDecl = new TypeDecl(typeName, types);
         special.addCode(typeDecl);
-
 
         val tagNames = info.tagHelper() == null
             ? new BaseType[0]

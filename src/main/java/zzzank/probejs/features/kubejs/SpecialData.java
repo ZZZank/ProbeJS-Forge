@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public record SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> tags,
                           Collection<RegistryInfo> registries) {
 
-    private static SpecialData INSTANCE;
+    private static SpecialData INSTANCE = null;
 
     public static SpecialData instance() {
         return INSTANCE;

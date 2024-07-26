@@ -29,7 +29,7 @@ public class TypeDecl extends CommentableCode {
     @Override
     public List<String> formatRaw(Declaration declaration) {
         return Collections.singletonList(
-            String.format("export type %s = %s;",symbol, type.line(declaration, BaseType.FormatType.INPUT))
+            String.format("export type %s = %s;", symbol, type.line(declaration, BaseType.FormatType.INPUT))
         );
     }
 }

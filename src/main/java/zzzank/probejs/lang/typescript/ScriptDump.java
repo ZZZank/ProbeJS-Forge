@@ -256,24 +256,16 @@ public class ScriptDump {
                     allTypes.add(thisType); // Don't add if there are wrapping, for better compatibility with duck typing
                 }
 
-                TypeDecl convertibleType = new TypeDecl(
-                        exportedSymbol,
-                        new JSJoinedType.Union(allTypes)
-                );
-                TypeDecl globalType = new TypeDecl(
-                        symbol,
-                        exportedType
-                );
-                Wrapped.Global typeExport = new Wrapped.Global();
+                val convertibleType = new TypeDecl(exportedSymbol, new JSJoinedType.Union(allTypes));
+                val globalType = new TypeDecl(symbol, exportedType);
+                val typeExport = new Wrapped.Global();
                 typeExport.addCode(globalType);
                 convertibleType.addComment("""
-                        Class-specific type exported by ProbeJS, use global Type_
-                        types for convenience unless there's a naming conflict.
-                        """);
+                    Class-specific type exported by ProbeJS, use global `{Type}_` types for convenience unless there's a naming conflict.
+                    """);
                 typeExport.addComment("""
-                        Global type exported for convenience, use class-specific
-                        types if there's a naming conflict.
-                        """);
+                    Global type exported for convenience, use class-specific types if there's a naming conflict.
+                    """);
                 for (TypeDecl delegatedType : delegatedTypes) {
                     output.addCode(delegatedType);
                 }
