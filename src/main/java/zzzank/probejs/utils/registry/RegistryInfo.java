@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
+@Getter
+@Accessors(fluent = true)
 public class RegistryInfo {
 
     private final Registry<?> raw;
