@@ -4,6 +4,7 @@ import com.github.bsideup.jabel.Desugar;
 import dev.latvian.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
+import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.features.rhizo.RemapperBridge;
 import zzzank.probejs.lang.java.ClassRegistry;
 
@@ -17,7 +18,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Desugar
-public record ClassPath(List<String> parts) {
+public record ClassPath(List<String> parts) implements Comparable<ClassPath> {
 
     private static final Pattern SPLIT = Pattern.compile("\\.");
 
@@ -97,5 +98,32 @@ public record ClassPath(List<String> parts) {
             UtilsJS.tryIO(() -> Files.createDirectories(full));
         }
         return full;
+    }
+
+    @Override
+    public int compareTo(@NotNull ClassPath o) {
+        val sizeThis = parts.size();
+        val sizeOther = o.parts.size();
+        val sizeCompare = Integer.min(sizeOther, sizeThis);
+
+        val common = getCommonPartsCount(o);
+        if (common == sizeCompare) { //
+            return Integer.compare(sizeThis, sizeOther);
+        }
+        return parts.get(common).compareTo(o.parts.get(common));
+    }
+
+    public int getCommonPartsCount(@NotNull ClassPath o) {
+        val sizeThis = parts.size();
+        val sizeOther = o.parts.size();
+        val sizeCompare = Integer.min(sizeOther, sizeThis);
+        for (int i = 0; i < sizeCompare; i++) {
+            val self = parts.get(i);
+            val other = o.parts.get(i);
+            if (!self.equals(other)) {
+                return i;
+            }
+        }
+        return sizeCompare;
     }
 }

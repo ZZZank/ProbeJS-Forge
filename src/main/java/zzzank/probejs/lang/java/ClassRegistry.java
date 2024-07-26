@@ -1,6 +1,7 @@
 package zzzank.probejs.lang.java;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
@@ -131,21 +132,40 @@ public class ClassRegistry {
     }
 
     public void writeTo(Path path) throws IOException {
-        try (var writer = Files.newBufferedWriter(path)) {
-            for (ClassPath classPath : foundClasses.keySet()) {
-                writer.write(classPath.getClassPathJava() + "\n");
+        val classPaths = new ArrayList<>(foundClasses.keySet());
+        Collections.sort(classPaths);
+
+        var lastPath = new ClassPath(Collections.emptyList());
+        try (val writer = Files.newBufferedWriter(path)) {
+            for (val classPath : classPaths) {
+                val commonPartsCount = classPath.getCommonPartsCount(lastPath);
+                val copy = new ArrayList<>(classPath.parts());
+                Collections.fill(copy.subList(0, commonPartsCount), "");
+                writer.write(String.join(".", copy));
+                writer.write('\n');
+                lastPath = classPath;
             }
         }
     }
 
     public void loadFrom(Path path) {
-        try (var reader = Files.newBufferedReader(path)) {
-            for (String className : (Iterable<String>) reader.lines()::iterator) {
+        var lastPath = new ClassPath(Collections.emptyList());
+        try (val reader = Files.newBufferedReader(path)) {
+            for (val className : (Iterable<String>) reader.lines()::iterator) {
+                val parts = className.split("\\.");
+                for (int i = 0; i < parts.length; i++) {
+                    if (parts[i].isEmpty()) {
+                        parts[i] = lastPath.parts().get(i);
+                    } else {
+                        break;
+                    }
+                }
+                val classPath = new ClassPath(Arrays.asList(parts));
                 try {
-                    Class<?> loaded = Class.forName(className);
-                    fromClasses(Collections.singleton(loaded));
+                    fromClasses(Collections.singleton(classPath.forName()));
                 } catch (Throwable ignored) {
                 }
+                lastPath = classPath;
             }
         } catch (IOException ignored) {
         }
