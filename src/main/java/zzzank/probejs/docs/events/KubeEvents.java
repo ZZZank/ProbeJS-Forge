@@ -42,7 +42,7 @@ public class KubeEvents extends ProbeJSPlugin {
                 decl.addComment(String.format(
                     "This event provides sub-event variant, e.g. `%s.%s`",
                     id,
-                    info.sub().getValue()
+                    info.sub().get()
                 ));
                 codes.add(declareEventMethod(id + ".${string}", converter, info));
             }

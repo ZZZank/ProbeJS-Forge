@@ -118,9 +118,7 @@ public record ClassPath(List<String> parts) implements Comparable<ClassPath> {
         val sizeOther = o.parts.size();
         val sizeCompare = Integer.min(sizeOther, sizeThis);
         for (int i = 0; i < sizeCompare; i++) {
-            val self = parts.get(i);
-            val other = o.parts.get(i);
-            if (!self.equals(other)) {
+            if (!parts.get(i).equals(o.parts.get(i))) {
                 return i;
             }
         }

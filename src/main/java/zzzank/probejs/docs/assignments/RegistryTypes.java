@@ -90,8 +90,8 @@ public class RegistryTypes extends ProbeJSPlugin {
 //        createTypes(special, new RegistryInfo(Registry.REGISTRY), enabled);
 
         // Expose LiteralOf<T> and TagOf<T>
-        val literalOf = new TypeDecl("LiteralOf<T>", Types.primitive(OF_TYPE_DECL.formatted(LITERAL_FIELD)));
-        val tagOf = new TypeDecl("TagOf<T>", Types.primitive(OF_TYPE_DECL.formatted(TAG_FIELD)));
+        val literalOf = new TypeDecl("LiteralOf<T>", Types.primitive(String.format(OF_TYPE_DECL, LITERAL_FIELD)));
+        val tagOf = new TypeDecl("TagOf<T>", Types.primitive(String.format(OF_TYPE_DECL, TAG_FIELD)));
         special.addCode(literalOf);
         special.addCode(tagOf);
 
@@ -105,15 +105,9 @@ public class RegistryTypes extends ProbeJSPlugin {
     ) {
         val key = info.resKey();
 
-        List<String> entryNames = new ArrayList<>(info.names().size());
-        for (ResourceLocation entryName : info.names()) {
-            if (entryName.getNamespace().equals("minecraft")) {
-                entryNames.add(entryName.getPath());
-            }
-            entryNames.add(entryName.toString());
-        }
-
-        val types = enabled ? Types.or(entryNames.stream().map(Types::literal).toArray(BaseType[]::new)) : Types.STRING;
+        val types = enabled
+            ? Types.or(info.names().stream().map(Types::literal).toArray(BaseType[]::new))
+            : Types.STRING;
         val typeName = NameUtils.rlToTitle(key.location().getPath());
 
         val typeDecl = new TypeDecl(typeName, types);

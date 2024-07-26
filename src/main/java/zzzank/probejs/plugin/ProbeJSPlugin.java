@@ -17,15 +17,14 @@ import java.util.function.Consumer;
 public class ProbeJSPlugin extends KubeJSPlugin implements ProbeDocPlugin, ProbeLifeCyclePlugin {
 
     @HideFromJS
-    public static void forEachPlugin(Consumer<ProbeJSPlugin> consumer) {
+    public static void forEachPlugin(Consumer<ProbeJSPlugin> action) {
         KubeJSPlugins.forEachPlugin(plugin -> {
-            if (!(plugin instanceof ProbeJSPlugin probePlugin)) {
-                return;
-            }
-            try {
-                consumer.accept(probePlugin);
-            } catch (Exception e) {
-                ProbeJS.LOGGER.error("Error happened when applying ProbeJS plugin", e);
+            if (plugin instanceof ProbeJSPlugin probePlugin) {
+                try {
+                    action.accept(probePlugin);
+                } catch (Exception e) {
+                    ProbeJS.LOGGER.error("Error happened when applying ProbeJS plugin", e);
+                }
             }
         });
     }

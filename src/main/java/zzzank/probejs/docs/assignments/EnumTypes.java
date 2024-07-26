@@ -3,6 +3,7 @@ package zzzank.probejs.docs.assignments;
 import dev.latvian.mods.rhino.util.wrap.EnumTypeWrapper;
 import lombok.val;
 import zzzank.probejs.features.rhizo.RhizoState;
+import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
@@ -21,7 +22,7 @@ public class EnumTypes extends ProbeJSPlugin {
         }
         LOCK.lock();
         for (val recordedClass : scriptDump.recordedClasses) {
-            if (!recordedClass.original.isEnum()) {
+            if (recordedClass.attribute.type != Clazz.ClassType.ENUM) {
                 continue;
             }
             try {
