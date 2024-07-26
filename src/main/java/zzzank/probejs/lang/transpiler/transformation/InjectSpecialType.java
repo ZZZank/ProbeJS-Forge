@@ -53,7 +53,7 @@ public class InjectSpecialType implements ClassTransformer {
             return -1;
         }
         if (functional.getGenericReturnType() instanceof TypeVariable<?> typeVariable) {
-            val typeVars = clazz.getTypeParameters();
+            TypeVariable<? extends Class<?>>[] typeVars = clazz.getTypeParameters();
             for (int i = 0; i < typeVars.length; i++) {
                 if (typeVars[i].getName().equals(typeVariable.getName())) {
                     return i;

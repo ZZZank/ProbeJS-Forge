@@ -46,7 +46,6 @@ public class GameEvents {
         final Consumer<Component> sendMsg = msg -> player.sendMessage(msg, NIL_UUID);
 
         if (config.enabled.get()) {
-            SpecialData.refresh();
             if (config.modHash.get() == -1) {
                 sendMsg.accept(TextWrapper.translate("probejs.hello").gold().component());
             }

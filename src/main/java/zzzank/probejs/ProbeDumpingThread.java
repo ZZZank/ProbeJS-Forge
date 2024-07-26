@@ -2,6 +2,7 @@ package zzzank.probejs;
 
 import lombok.val;
 import net.minecraft.network.chat.Component;
+import zzzank.probejs.features.kubejs.SpecialData;
 
 import java.util.function.Consumer;
 
@@ -11,6 +12,7 @@ import java.util.function.Consumer;
 public class ProbeDumpingThread extends Thread {
 
     public static ProbeDumpingThread INSTANCE;
+    private final Consumer<Component> messageSender;
 
     public static boolean exists() {
         return INSTANCE != null && INSTANCE.isAlive();
@@ -26,17 +28,19 @@ public class ProbeDumpingThread extends Thread {
     }
 
     private ProbeDumpingThread(final Consumer<Component> messageSender) {
-        super(
-            () -> {  // Don't stall the client
-                val probeDump = new ProbeDump();
-                probeDump.defaultScripts();
-                try {
-                    probeDump.trigger(messageSender);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-            },
-            "ProbeDumpingThread"
-        );
+        super("ProbeDumpingThread");
+        this.messageSender = messageSender;
+    }
+
+    @Override
+    public void run() {
+        SpecialData.refresh();
+        val probeDump = new ProbeDump();
+        probeDump.defaultScripts();
+        try {
+            probeDump.trigger(messageSender);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 }
