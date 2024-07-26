@@ -4,10 +4,8 @@ import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.*;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
+import zzzank.probejs.features.rhizo.RemapperBridge;
 import zzzank.probejs.lang.java.clazz.ClassPath;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 //TODO: replace with js file for full backward compat
 public class Require extends BaseFunction {
@@ -24,14 +22,12 @@ public class Require extends BaseFunction {
             return new RequireWrapper(null, Undefined.instance);
         }
         val parts = result.split("/", 2);
-        val path = new ClassPath(Arrays.stream(parts[1].split("/")).collect(Collectors.toList()));
+        val path = new ClassPath(RemapperBridge.unmapClass(parts[1].replace('/', '.')));
 
-        NativeJavaClass loaded = null;
+        NativeJavaClass loaded;
         try {
             loaded = manager.loadJavaClass(scope, new String[]{path.getClassPathJava()});
         } catch (Exception ignored) {
-        }
-        if (loaded == null) {
             manager.type.console.warn(String.format("Class '%s' not loaded", path.getClassPathJava()));
             return new RequireWrapper(path, Undefined.instance);
         }
