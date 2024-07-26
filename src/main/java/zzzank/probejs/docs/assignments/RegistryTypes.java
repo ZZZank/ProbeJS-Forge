@@ -47,7 +47,7 @@ public class RegistryTypes extends ProbeJSPlugin {
             val typeName = NameUtils.rlToTitle(key.location().getPath());
             scriptDump.assignType(
                 info.forgeRaw().getRegistrySuperType(),
-                Types.primitive(String.format("Special.%s",typeName))
+                Types.primitive(String.format("Special.%s", typeName))
             );
             registryNames.add(Types.literal(key.location().toString()));
         }
@@ -78,21 +78,25 @@ public class RegistryTypes extends ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {
-        val special = new Wrapped.Namespace("Special");
         if (ServerLifecycleHooks.getCurrentServer() == null) {
             return;
         }
+        val special = new Wrapped.Namespace("Special");
         val enabled = ProbeJS.CONFIG.complete.get();
 
         for (val info : SpecialData.instance().registries()) {
-//            if (info.raw() == null) {
-//                continue;
-//            }
             createTypes(special, info, enabled);
         }
-//        createTypes(special, Registry.REGISTRY.key(), Registry.REGISTRY, enabled);
-    }
+//        createTypes(special, new RegistryInfo(Registry.REGISTRY), enabled);
 
+        // Expose LiteralOf<T> and TagOf<T>
+        val literalOf = new TypeDecl("LiteralOf<T>", Types.primitive(OF_TYPE_DECL.formatted(LITERAL_FIELD)));
+        val tagOf = new TypeDecl("TagOf<T>", Types.primitive(OF_TYPE_DECL.formatted(TAG_FIELD)));
+        special.addCode(literalOf);
+        special.addCode(tagOf);
+
+        scriptDump.addGlobal("registry_type", special);
+    }
 
     private static void createTypes(
         Wrapped.Namespace special,
