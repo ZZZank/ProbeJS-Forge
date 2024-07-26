@@ -4,14 +4,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import dev.latvian.kubejs.item.ItemStackJS;
+import dev.latvian.kubejs.item.ingredient.IngredientJS;
+import dev.latvian.kubejs.text.Text;
 import dev.latvian.mods.rhino.util.unit.Unit;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CollectionTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import zzzank.probejs.docs.Primitives;
@@ -79,6 +86,7 @@ public class JavaPrimitives extends ProbeJSPlugin {
         scriptDump.assignType(Tag.class, Types.ANY.asArray());
         scriptDump.assignType(BlockPos.class, xyzOf(Primitives.INTEGER));
         scriptDump.assignType(Vec3.class, xyzOf(Primitives.DOUBLE));
+        scriptDump.assignType(Vec3i.class, xyzOf(Primitives.INTEGER));
         scriptDump.assignType(MobCategory.class, Types.STRING);
         scriptDump.assignType(AABB.class, Types.EMPTY_ARRAY);
         scriptDump.assignType(AABB.class, xyzOf(Primitives.DOUBLE));
@@ -90,5 +98,9 @@ public class JavaPrimitives extends ProbeJSPlugin {
             .member("y2", Primitives.DOUBLE)
             .member("z2", Primitives.DOUBLE)
             .build());
+        //kube wrapper -> raw
+        scriptDump.assignType(Component.class, Types.type(Text.class).contextShield(BaseType.FormatType.INPUT));
+        scriptDump.assignType(Ingredient.class, Types.type(IngredientJS.class));
+        scriptDump.assignType(ItemStack.class, Types.type(ItemStackJS.class));
     }
 }
