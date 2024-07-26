@@ -1,5 +1,7 @@
 package zzzank.probejs.utils.registry;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -43,33 +45,5 @@ public class RegistryInfo {
         this.id = resKey.location();
         this.names = raw.keySet();
         this.tagHelper = StaticTags.get(this.id);
-    }
-
-    public Registry<?> raw() {
-        return this.raw;
-    }
-
-    public ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRaw() {
-        return this.forgeRaw;
-    }
-
-    public ResourceKey<? extends Registry<?>> resKey() {
-        return this.resKey;
-    }
-
-    public ResourceLocation parentId() {
-        return this.parentId;
-    }
-
-    public ResourceLocation id() {
-        return this.id;
-    }
-
-    public Set<ResourceLocation> names() {
-        return this.names;
-    }
-
-    public StaticTagHelper<?> tagHelper() {
-        return tagHelper;
     }
 }
