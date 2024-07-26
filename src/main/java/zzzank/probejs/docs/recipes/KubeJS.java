@@ -2,11 +2,11 @@ package zzzank.probejs.docs.recipes;
 
 import dev.latvian.kubejs.fluid.FluidStackJS;
 import dev.latvian.kubejs.item.ItemStackJS;
+import dev.latvian.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.kubejs.recipe.special.ShapedKubeJSRecipe;
 import dev.latvian.kubejs.recipe.special.ShapelessKubeJSRecipe;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Ingredient;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.Types;
@@ -24,7 +24,7 @@ class KubeJS extends ProbeJSPlugin {
 
     public static final TSClassType FLUID = Types.type(FluidStackJS.class);
     public static final TSClassType STACK = Types.type(ItemStackJS.class);
-    public static final TSClassType INGR = Types.type(Ingredient.class);
+    public static final TSClassType INGR = Types.type(IngredientJS.class);
 
     @Override
     public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
