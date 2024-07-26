@@ -252,9 +252,10 @@ public class ScriptDump {
                     }
                 }
 
-                if (allTypes.isEmpty()) {
-                    allTypes.add(thisType); // Don't add if there are wrapping, for better compatibility with duck typing
-                }
+//                if (allTypes.isEmpty()) {
+//                    allTypes.add(thisType); // Don't add if there are wrapping, for better compatibility with duck typing
+//                }
+                allTypes.add(thisType);
 
                 val convertibleType = new TypeDecl(exportedSymbol, new JSJoinedType.Union(allTypes));
                 val globalType = new TypeDecl(symbol, exportedType);
