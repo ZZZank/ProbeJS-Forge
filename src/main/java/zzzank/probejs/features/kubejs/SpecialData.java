@@ -3,17 +3,12 @@ package zzzank.probejs.features.kubejs;
 import com.github.bsideup.jabel.Desugar;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryManager;
 import zzzank.probejs.mixins.access.ForgeRegistryManagerMixin;
 import zzzank.probejs.utils.registry.RegistryInfo;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import java.util.*;
 
 @Desugar
 public record SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> tags,
@@ -21,21 +16,20 @@ public record SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> ta
 
     private static SpecialData INSTANCE = null;
 
+    @Nonnull
     public static SpecialData instance() {
+        if (INSTANCE == null) {
+            refresh();
+        }
         return INSTANCE;
     }
 
     public static void refresh() {
-        val rInfos = SpecialData
-            .fetchRawRegistries()
-            .values()
-            .stream()
-            .map(RegistryInfo::new)
-            .collect(Collectors.toList());
-        SpecialData.INSTANCE = new SpecialData(extractTagsFrom(rInfos), rInfos);
+        val rInfos = fetchRegistries();
+        SpecialData.INSTANCE = new SpecialData(extractTagsFrom(rInfos.values()), rInfos.values());
     }
 
-    private static Map<ResourceLocation, Collection<ResourceLocation>> extractTagsFrom(List<RegistryInfo> registries) {
+    private static Map<ResourceLocation, Collection<ResourceLocation>> extractTagsFrom(Collection<RegistryInfo> registries) {
         val tags = new HashMap<ResourceLocation, Collection<ResourceLocation>>();
         for (val rInfo : registries) {
             val tagHelper = rInfo.tagHelper();
@@ -49,13 +43,10 @@ public record SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> ta
         return tags;
     }
 
-    private static Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> fetchRawRegistries() {
-        Map<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> registries = new HashMap<>();
-        try {
-            registries.putAll(((ForgeRegistryManagerMixin) RegistryManager.ACTIVE).getRegistries());
-            registries.putAll(((ForgeRegistryManagerMixin) RegistryManager.FROZEN).getRegistries());
-        } catch (Exception e) {
-            e.printStackTrace();
+    private static Map<ResourceLocation, RegistryInfo> fetchRegistries() {
+        val registries = new HashMap<ResourceLocation, RegistryInfo>();
+        for (val entry : ((ForgeRegistryManagerMixin) RegistryManager.ACTIVE).getRegistries().entrySet()) {
+            registries.put(entry.getKey(), new RegistryInfo(entry.getValue()));
         }
         return registries;
     }
