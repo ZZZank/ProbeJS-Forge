@@ -48,9 +48,7 @@ public class OnEventMixin {
             EventJSInfos.KNOWN.put(id, new EventJSInfo(t, (EventJS) (Object) this, id, sub));
         } else {
             e.scriptTypes().add(t);
-            if (e.sub().getValue() == null) {
-                e.sub().setValue(sub);
-            }
+            e.sub().setIfAbsent(sub);
         }
     }
 }

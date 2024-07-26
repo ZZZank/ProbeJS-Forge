@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
 import lombok.val;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
+import zzzank.probejs.utils.Mutable;
 import zzzank.probejs.utils.ReflectUtils;
 import zzzank.probejs.utils.json.JArray;
 import zzzank.probejs.utils.json.JObject;
@@ -24,11 +24,11 @@ public record EventJSInfo(
     String id,
     boolean cancellable,
     EnumSet<ScriptType> scriptTypes,
-    MutableObject<String> sub
+    Mutable<String> sub
 ) implements Comparable<EventJSInfo> {
 
     public EventJSInfo(ScriptType t, EventJS event, String id, @Nullable String sub) {
-        this(event.getClass(), id, event.canCancel(), EnumSet.of(t), new MutableObject<>(sub));
+        this(event.getClass(), id, event.canCancel(), EnumSet.of(t), new Mutable<>(sub));
     }
 
     @Nullable
@@ -55,18 +55,18 @@ public record EventJSInfo(
             id,
             cancellable,
             types,
-            new MutableObject<>(sub)
+            new Mutable<>(sub)
         );
     }
 
     public boolean hasSub() {
-        return sub.getValue() != null;
+        return sub.get() != null;
     }
 
     public JsonObject toJson() {
         return JObject.of()
             .add("id", id)
-            .ifThen(hasSub(), (jObj) -> jObj.add("sub", sub.getValue()))
+            .ifThen(hasSub(), (jObj) -> jObj.add("sub", sub.get()))
             .add("class", clazzRaw.getName())
             .add(
                 "type",
