@@ -15,7 +15,7 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Map;
 
-import static zzzank.probejs.lang.typescript.code.type.Types.lambda;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.recipeFn;
 
 /**
  * @author ZZZank
@@ -31,7 +31,7 @@ class KubeJS extends ProbeJSPlugin {
         val converter = scriptDump.transpiler.typeConverter;
         predefined.put(
             rl("shaped"),
-            lambda()
+            recipeFn()
                 .param("output", STACK)
                 .param("pattern", Minecraft.STR_N)
                 .param("keys", Minecraft.STR2INGR)
@@ -40,7 +40,7 @@ class KubeJS extends ProbeJSPlugin {
         );
         predefined.put(
             rl("shapeless"),
-            Types.lambda().param("output", KubeJS.STACK)
+            recipeFn().param("output", KubeJS.STACK)
                 .param("inputs", Minecraft.INGR_N)
                 .returnType(converter.convertType(ShapelessKubeJSRecipe.class))
                 .build()

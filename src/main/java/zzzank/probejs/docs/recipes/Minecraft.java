@@ -14,19 +14,23 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Map;
 
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.recipeFn;
+import static zzzank.probejs.docs.recipes.KubeJS.INGR;
+import static zzzank.probejs.docs.recipes.KubeJS.STACK;
+
 /**
  * @author ZZZank
  */
 class Minecraft extends ProbeJSPlugin {
 
-    public static final TSArrayType INGR_N = Types.array(KubeJS.INGR);
+    public static final TSArrayType INGR_N = Types.array(INGR);
     public static final TSArrayType STR_N = Types.array(Primitives.CHAR_SEQUENCE);
-    public static final JSObjectType STR2INGR = Types.object().member("[x in string]", KubeJS.INGR).build();
+    public static final JSObjectType STR2INGR = Types.object().member("[x in string]", INGR).build();
 
     public static JSLambdaType simpleIngrToStackRecipe(BaseType returnType) {
-        return Types.lambda()
-            .param("output", KubeJS.STACK)
-            .param("input", KubeJS.INGR)
+        return recipeFn()
+            .param("output", STACK)
+            .param("input", INGR)
             .returnType(returnType)
             .build();
     }
@@ -36,35 +40,35 @@ class Minecraft extends ProbeJSPlugin {
         val converter = scriptDump.transpiler.typeConverter;
         predefined.put(
             rl("smelting"),
-            Types.lambda().param("output", KubeJS.STACK)
-                .param("input", KubeJS.INGR)
+            recipeFn().param("output", STACK)
+                .param("input", INGR)
                 .returnType(converter.convertType(CookingRecipeJS.class))
                 .build()
         );
         predefined.put(
             rl("smoking"),
-            Types.lambda().param("output", KubeJS.STACK)
-                .param("input", KubeJS.INGR)
+            recipeFn().param("output", STACK)
+                .param("input", INGR)
                 .returnType(converter.convertType(CookingRecipeJS.class))
                 .build()
         );
         predefined.put(
             rl("blasting"),
-            Types.lambda().param("output", KubeJS.STACK)
-                .param("input", KubeJS.INGR)
+            recipeFn().param("output", STACK)
+                .param("input", INGR)
                 .returnType(converter.convertType(CookingRecipeJS.class))
                 .build()
         );
         predefined.put(
             rl("campfire_cooking"),
-            Types.lambda().param("output", KubeJS.STACK)
-                .param("input", KubeJS.INGR)
+            recipeFn().param("output", STACK)
+                .param("input", INGR)
                 .returnType(converter.convertType(CookingRecipeJS.class))
                 .build()
         );
         predefined.put(
             rl("crafting_shaped"),
-            Types.lambda().param("output", KubeJS.STACK)
+            recipeFn().param("output", STACK)
                 .param("pattern", STR_N)
                 .param("items", STR2INGR)
                 .returnType(converter.convertType(ShapedRecipeJS.class))
@@ -72,23 +76,23 @@ class Minecraft extends ProbeJSPlugin {
         );
         predefined.put(
             rl("crafting_shapeless"),
-            Types.lambda().param("output", KubeJS.STACK)
+            recipeFn().param("output", STACK)
                 .param("inputs", INGR_N)
                 .returnType(converter.convertType(ShapelessRecipeJS.class))
                 .build()
         );
         predefined.put(
             rl("stonecutting"),
-            Types.lambda().param("output", KubeJS.STACK)
+            recipeFn().param("output", STACK)
                 .param("inputs", INGR_N)
                 .returnType(converter.convertType(StonecuttingRecipeJS.class))
                 .build()
         );
         predefined.put(
             rl("smithing"),
-            Types.lambda().param("output", KubeJS.STACK)
-                .param("base", KubeJS.INGR)
-                .param("addition", KubeJS.INGR)
+            recipeFn().param("output", STACK)
+                .param("base", INGR)
+                .param("addition", INGR)
                 .returnType(converter.convertType(SmithingRecipeJS.class))
                 .build()
         );

@@ -2,6 +2,7 @@ package zzzank.probejs.docs.recipes;
 
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.lang.typescript.ScriptDump;
+import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
@@ -21,6 +22,10 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
         Thermal::new,
         KubeJS::new
     ));
+
+    public static JSLambdaType.Builder recipeFn() {
+        return Types.lambda().method();
+    }
 
     @Override
     public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {

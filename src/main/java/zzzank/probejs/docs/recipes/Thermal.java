@@ -12,24 +12,27 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Map;
 
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.recipeFn;
+import static zzzank.probejs.docs.recipes.KubeJS.*;
+
 /**
  * @author ZZZank
  */
 class Thermal extends ProbeJSPlugin {
 
-    public static final BaseType MIXED_IN = Types.or(KubeJS.INGR, KubeJS.FLUID);
-    public static final BaseType MIXED_OUT = Types.or(KubeJS.STACK, KubeJS.FLUID);
+    public static final BaseType MIXED_IN = Types.or(INGR, FLUID);
+    public static final BaseType MIXED_OUT = Types.or(STACK, FLUID);
 
     public static JSLambdaType catalystStyleRecipe() {
-        return Types.lambda()
-            .param("input", KubeJS.INGR)
+        return recipeFn()
+            .param("input", INGR)
             .returnType(classType("dev.latvian.kubejs.thermal.CatalystRecipeJS"))
             .build();
     }
 
     public static JSLambdaType fuelStyleRecipe() {
-        return Types.lambda()
-            .param("input", KubeJS.INGR)
+        return recipeFn()
+            .param("input", INGR)
             .returnType(classType("dev.latvian.kubejs.thermal.FuelRecipeJS"))
             .build();
     }
@@ -71,79 +74,79 @@ class Thermal extends ProbeJSPlugin {
         val basicReturn = classType("dev.latvian.kubejs.thermal.BasicThermalRecipeJS");
         predefined.put(
             rl("bottler"),
-            Types.lambda().param("output", KubeJS.STACK)
+            recipeFn().param("output", STACK)
                 .param("input", selfOrArray(MIXED_IN))
                 .returnType(basicReturn)
                 .build()
         );
         predefined.put(
             rl("brewer"),
-            Types.lambda().param("output", KubeJS.FLUID)
+            recipeFn().param("output", FLUID)
                 .param("input", selfOrArray(MIXED_IN))
                 .returnType(basicReturn)
                 .build()
         );
         predefined.put(
             rl("centrifuge"),
-            Types.lambda().param("output", selfOrArray(MIXED_OUT))
-                .param("input", KubeJS.INGR)
+            recipeFn().param("output", selfOrArray(MIXED_OUT))
+                .param("input", INGR)
                 .returnType(basicReturn)
                 .build()
         );
         predefined.put(
             rl("crucible"),
-            Types.lambda().param("output", KubeJS.FLUID).param("input", KubeJS.INGR).returnType(basicReturn).build()
+            recipeFn().param("output", FLUID).param("input", INGR).returnType(basicReturn).build()
         );
         predefined.put(
             rl("furnance"),
-            Types.lambda().param("output", KubeJS.STACK).param("input", KubeJS.INGR).returnType(basicReturn).build()
+            recipeFn().param("output", STACK).param("input", INGR).returnType(basicReturn).build()
         );
         predefined.put(
             rl("insolator"),
-            Types.lambda().param("output", selfOrArray(KubeJS.STACK))
-                .param("input", KubeJS.INGR)
+            recipeFn().param("output", selfOrArray(STACK))
+                .param("input", INGR)
                 .returnType(basicReturn)
                 .build()
         );
         predefined.put(
             rl("press"),
-            Types.lambda().param("outputs", selfOrArray(MIXED_OUT))
-                .param("input", selfOrArray(KubeJS.INGR))
+            recipeFn().param("outputs", selfOrArray(MIXED_OUT))
+                .param("input", selfOrArray(INGR))
                 .returnType(basicReturn)
                 .build()
         );
         predefined.put(
             rl("pulverizer"),
-            Types.lambda().param("output", selfOrArray(KubeJS.STACK))
-                .param("input", KubeJS.INGR)
+            recipeFn().param("output", selfOrArray(STACK))
+                .param("input", INGR)
                 .returnType(basicReturn)
                 .build()
         );
         predefined.put(
             rl("pyrolyzer"),
-            Types.lambda().param("outputs", selfOrArray(MIXED_OUT))
-                .param("input", KubeJS.INGR)
+            recipeFn().param("outputs", selfOrArray(MIXED_OUT))
+                .param("input", INGR)
                 .returnType(basicReturn)
                 .build()
         );
         predefined.put(
             rl("refinery"),
-            Types.lambda().param("outputs", selfOrArray(MIXED_OUT))
-                .param("input", KubeJS.FLUID)
+            recipeFn().param("outputs", selfOrArray(MIXED_OUT))
+                .param("input", FLUID)
                 .returnType(basicReturn)
                 .build()
         );
         predefined.put(
             rl("sawmill"),
-            Types.lambda().param("outputs", selfOrArray(MIXED_OUT))
-                .param("input", KubeJS.INGR)
+            recipeFn().param("outputs", selfOrArray(MIXED_OUT))
+                .param("input", INGR)
                 .returnType(basicReturn)
                 .build()
         );
         predefined.put(
             rl("smelter"),
-            Types.lambda().param("outputs", selfOrArray(KubeJS.STACK))
-                .param("inputs", selfOrArray(KubeJS.INGR))
+            recipeFn().param("outputs", selfOrArray(STACK))
+                .param("inputs", selfOrArray(INGR))
                 .returnType(basicReturn)
                 .build()
         );
