@@ -1,7 +1,9 @@
 package zzzank.probejs.docs.recipes;
 
+import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.lang.typescript.ScriptDump;
+import zzzank.probejs.lang.typescript.code.type.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
@@ -17,14 +19,24 @@ import java.util.function.Supplier;
  */
 public class BuiltinRecipeDocs extends ProbeJSPlugin {
 
-    public final List<Supplier<ProbeJSPlugin>> ALL = new ArrayList<>(Arrays.asList(
+    public static final List<Supplier<ProbeJSPlugin>> ALL = new ArrayList<>(Arrays.asList(
         Minecraft::new,
+        ArsNouveau::new,
         Thermal::new,
         KubeJS::new
     ));
 
     public static JSLambdaType.Builder recipeFn() {
         return Types.lambda().method();
+    }
+
+    public static TSClassType classType(String className) {
+        try {
+            val c = Class.forName(className);
+            return Types.type(c);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

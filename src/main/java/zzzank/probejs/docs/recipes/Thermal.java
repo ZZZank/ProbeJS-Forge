@@ -5,7 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModList;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.code.type.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
@@ -14,6 +13,7 @@ import java.util.Map;
 
 import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.recipeFn;
 import static zzzank.probejs.docs.recipes.KubeJS.*;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.classType;
 
 /**
  * @author ZZZank
@@ -35,15 +35,6 @@ class Thermal extends ProbeJSPlugin {
             .param("input", INGR)
             .returnType(classType("dev.latvian.kubejs.thermal.FuelRecipeJS"))
             .build();
-    }
-
-    public static TSClassType classType(String className) {
-        try {
-            val c = Class.forName(className);
-            return Types.type(c);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private static ResourceLocation rl(String path) {

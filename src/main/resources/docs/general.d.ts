@@ -1,42 +1,4 @@
 
-/**
- * @target dev.latvian.kubejs.recipe.ingredientaction.IngredientActionFilter
- * @assign number
- * @assign dev.latvian.kubejs.item.ingredient.IngredientJS
- * @assign {index: number, item: dev.latvian.kubejs.item.ingredient.IngredientJS}
- */
-class IngredientActionFilter {
-}
-
-/**
- * @target net.minecraft.core.Vec3i
- * @assign [number, number, number]
- */
-class Vec3i {
-}
-
-/**
- * @target net.minecraft.item.ItemStack
- * @assign Internal.ItemStackJS_
- */
-class ItemStack {
-}
-
-/**
- * @target com.google.gson.JsonObject
- * @assign {}
- */
-class JsonObject {
-}
-
-/**
-* @target dev.latvian.kubejs.item.ItemStackJS
-* @assign net.minecraft.item.Item
-* @assign `${number}x ${string}`
-* @assign object
-*/
-class ItemStackJS {
-}
 
 /**
  * @target dev.latvian.kubejs.item.ingredient.IngredientJS
@@ -86,32 +48,11 @@ class EntityJS {
 }
 
 /**
- * @target net.minecraft.util.ResourceLocation
- * @assign string
- */
-class ResourceLocation {
-}
-
-/**
  * @target net.minecraft.nbt.CompoundTag
  * @assign string
  * @assign {[x in string]: (string | number | boolean | net.minecraft.nbt.CompoundTag)}
  */
 class CompoundTag {
-}
-
-/**
- * @target java.util.Map
- * @assign {[key in K]: V}
- */
-class Map {
-}
-
-/**
- * @target dev.latvian.kubejs.text.Text
- * @assign string
- */
-class Text {
 }
 
 /**
@@ -158,38 +99,4 @@ class CompoundNBT {
  */
 class AttachedData {
     [x: string]: any;
-}
-
-/**
- * @target dev.latvian.kubejs.fluid.FluidStackJS
- * @assign net.minecraft.fluid.Fluid
- */
-class FluidStackJS {
-}
-
-/**
- * @target dev.latvian.mods.rhino.mod.util.color.Color
- * @assign string
- */
-class Color {
-}
-
-/**
- * @target dev.latvian.kubejs.recipe.filter.RecipeFilter
- * @assign dev.latvian.kubejs.recipe.filter.RecipeFilter[]
- * @assign {exact?: boolean, not?: Internal.RecipeFilter_, or?: Internal.RecipeFilter_[], id?: string | RegExp, type?: string, group?: string, mod?: string, input?: Internal.IngredientJS_, output?: Internal.IngredientJS_}
- */
-class RecipeFilter {
-}
-
-/**
- * @target dev.latvian.kubejs.block.BlockStatePredicate
- * @assign dev.latvian.kubejs.block.BlockStatePredicate[]
- * @assign {or?: dev.latvian.kubejs.block.BlockStatePredicate[], not?: dev.latvian.kubejs.block.BlockStatePredicate[]}
- * @assign net.minecraft.block.Block
- * @assign net.minecraft.block.BlockState
- * @assign `#${Tag.block}`
- * @assign RegExp
- */
-class BlockStatePredicate {
 }
