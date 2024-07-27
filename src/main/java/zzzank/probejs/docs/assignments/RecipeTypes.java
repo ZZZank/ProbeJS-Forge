@@ -1,7 +1,9 @@
 package zzzank.probejs.docs.assignments;
 
 
+import dev.latvian.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.kubejs.recipe.filter.RecipeFilter;
+import dev.latvian.kubejs.recipe.ingredientaction.IngredientActionFilter;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -33,8 +35,11 @@ public class RecipeTypes extends ProbeJSPlugin {
         scriptDump.assignType(RecipeFilter.class, Types.literal("*"));
         scriptDump.assignType(RecipeFilter.class, Types.literal("-"));
         scriptDump.assignType(RecipeFilter.class, Types.type(RecipeFilter.class).asArray());
-
-        scriptDump.assignType(RecipeFilter.class, "RecipeFilterObject", Types.object()
+        scriptDump.assignType(
+            RecipeFilter.class,
+            "RecipeFilterObject",
+            Types.object()
+                .member("exact", true, Types.BOOLEAN)
                 .member("or", true, Types.type(RecipeFilter.class))
                 .member("not", true, Types.type(RecipeFilter.class))
                 .member("id", true, Types.primitive("Special.RecipeId"))
@@ -43,7 +48,17 @@ public class RecipeTypes extends ProbeJSPlugin {
                 .member("mod", true, Types.primitive("Special.Mod"))
                 .member("input", true, Types.type(Ingredient.class))
                 .member("output", true, Types.type(ItemStack.class))
-                .build());
+                .build()
+        );
+
+        scriptDump.assignType(IngredientActionFilter.class, Types.NUMBER);
+        scriptDump.assignType(IngredientActionFilter.class, Types.type(IngredientJS.class));
+        scriptDump.assignType(IngredientActionFilter.class,
+            Types.object()
+                .member("index", true, Types.NUMBER)
+                .member("itemFilter", true, Types.type(IngredientJS.class))
+                .build()
+        );
 
         // Note that this is fluid ingredient without amount
 //        scriptDump.assignType(FluidIngredientJS.class, Types.type(Fluid.class));

@@ -4,9 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dev.latvian.kubejs.item.ItemStackJS;
-import dev.latvian.kubejs.item.ingredient.IngredientJS;
-import dev.latvian.kubejs.text.Text;
+import dev.latvian.kubejs.world.BlockContainerJS;
 import dev.latvian.mods.rhino.util.unit.Unit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -14,11 +12,8 @@ import net.minecraft.nbt.CollectionTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import zzzank.probejs.docs.Primitives;
@@ -33,6 +28,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class JavaPrimitives extends ProbeJSPlugin {
 
@@ -59,6 +55,11 @@ public class JavaPrimitives extends ProbeJSPlugin {
         scriptDump.assignType(Collection.class, Types.generic("E").asArray());
         scriptDump.assignType(Set.class, Types.generic("E").asArray());
         scriptDump.assignType(UUID.class, Types.STRING);
+        scriptDump.assignType(Path.class, Types.STRING);
+        scriptDump.assignType(File.class, Types.type(Path.class));
+        scriptDump.assignType(TemporalAmount.class, Types.STRING);
+        scriptDump.assignType(TemporalAmount.class, Types.NUMBER);
+
         scriptDump.assignType(JsonObject.class, Types.OBJECT);
         scriptDump.assignType(JsonArray.class, Types.ANY.asArray());
         scriptDump.assignType(JsonPrimitive.class, Types.NUMBER);
@@ -68,12 +69,11 @@ public class JavaPrimitives extends ProbeJSPlugin {
         scriptDump.assignType(JsonElement.class, Types.type(JsonObject.class));
         scriptDump.assignType(JsonElement.class, Types.type(JsonArray.class));
         scriptDump.assignType(JsonElement.class, Types.type(JsonPrimitive.class));
-        scriptDump.assignType(Path.class, Types.STRING);
-        scriptDump.assignType(File.class, Types.type(Path.class));
+
+        scriptDump.assignType(Pattern.class, Types.primitive("RegExp"));
         scriptDump.assignType(Unit.class, Types.STRING);
         scriptDump.assignType(Unit.class, Types.NUMBER);
-        scriptDump.assignType(TemporalAmount.class, Types.STRING);
-        scriptDump.assignType(TemporalAmount.class, Types.NUMBER);
+
         scriptDump.assignType(Duration.class, Types.type(TemporalAmount.class));
         scriptDump.assignType(ResourceLocation.class, Types.STRING);
         scriptDump.assignType(CompoundTag.class, Types.OBJECT);
@@ -85,6 +85,7 @@ public class JavaPrimitives extends ProbeJSPlugin {
         scriptDump.assignType(Tag.class, Types.OBJECT);
         scriptDump.assignType(Tag.class, Types.ANY.asArray());
         scriptDump.assignType(BlockPos.class, xyzOf(Primitives.INTEGER));
+        scriptDump.assignType(BlockPos.class, Types.type(BlockContainerJS.class));
         scriptDump.assignType(Vec3.class, xyzOf(Primitives.DOUBLE));
         scriptDump.assignType(Vec3i.class, xyzOf(Primitives.INTEGER));
         scriptDump.assignType(MobCategory.class, Types.STRING);
@@ -98,9 +99,5 @@ public class JavaPrimitives extends ProbeJSPlugin {
             .member("y2", Primitives.DOUBLE)
             .member("z2", Primitives.DOUBLE)
             .build());
-        //kube wrapper -> raw
-        scriptDump.assignType(Component.class, Types.type(Text.class).contextShield(BaseType.FormatType.INPUT));
-        scriptDump.assignType(Ingredient.class, Types.type(IngredientJS.class));
-        scriptDump.assignType(ItemStack.class, Types.type(ItemStackJS.class));
     }
 }
