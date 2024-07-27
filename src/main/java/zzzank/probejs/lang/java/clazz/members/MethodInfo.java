@@ -17,7 +17,7 @@ public class MethodInfo extends TypeVariableHolder {
     public TypeDescriptor returnType;
     public final MethodAttributes attributes;
 
-    public MethodInfo(Class<?> from, Method method, Map<TypeVariable<?>, Type> remapper) {
+    public MethodInfo(Class<?> from, Method method, Map<TypeVariable<?>, Type> typeRemapper) {
         super(method.getTypeParameters(), method.getAnnotations());
         this.attributes = new MethodAttributes(method);
         this.name = RemapperBridge.remapMethod(from, method);
@@ -32,7 +32,7 @@ public class MethodInfo extends TypeVariableHolder {
 
         this.returnType = TypeAdapter.getTypeDescription(method.getAnnotatedReturnType());
 
-        for (Map.Entry<TypeVariable<?>, Type> entry : remapper.entrySet()) {
+        for (Map.Entry<TypeVariable<?>, Type> entry : typeRemapper.entrySet()) {
             TypeVariable<?> symbol = entry.getKey();
             TypeDescriptor replacement = TypeAdapter.getTypeDescription(entry.getValue());
 

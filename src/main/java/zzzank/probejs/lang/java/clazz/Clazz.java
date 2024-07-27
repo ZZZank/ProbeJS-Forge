@@ -1,6 +1,7 @@
 package zzzank.probejs.lang.java.clazz;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.val;
 import org.jetbrains.annotations.Nullable;
 import zzzank.probejs.features.rhizo.RemapperBridge;
 import zzzank.probejs.lang.java.base.TypeVariableHolder;
@@ -40,22 +41,18 @@ public class Clazz extends TypeVariableHolder {
         Set<String> names = new HashSet<>();
         this.methods = Arrays.stream(ReflectUtils.methodsSafe(original))
             .peek(m -> names.add(RemapperBridge.remapMethod(original, m)))
-            .filter(m -> !m.isSynthetic())
-            .filter(m -> !hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterfaceSinceTypeScriptDoesNotHaveInterfaceAtRuntimeInTypeDeclarationFilesJustBecauseItSucks(
-                m,
-                clazz
+            .filter(m -> !m.isSynthetic()
+                && !m.isAnnotationPresent(HideFromJS.class)
+                && !hasIdenticalParentMethod(m, clazz)
+            )
+            .map(method -> new MethodInfo(
+                original,
+                method,
+                getGenericTypeReplacementForParentInterfaceMethods(clazz, method)
             ))
-            .map(method -> {
-                Map<TypeVariable<?>, Type> replacement =
-                    getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass(
-                        clazz,
-                        method
-                    );
-                return new MethodInfo(original ,method, replacement);
-            })
             .collect(Collectors.toList());
         this.fields = Arrays.stream(ReflectUtils.fieldsSafe(original))
-            .filter(f -> !names.contains(RemapperBridge.remapField(original, f)))
+            .filter(f -> !names.contains(RemapperBridge.remapField(original, f)) && !f.isAnnotationPresent(HideFromJS.class))
             .map(f -> new FieldInfo(original, f))
             .collect(Collectors.toList());
 
@@ -77,31 +74,23 @@ public class Clazz extends TypeVariableHolder {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Clazz clazz = (Clazz) o;
         return Objects.equals(classPath, clazz.classPath);
     }
 
     /**
-     * 天生万物以养民，民无一善可报天。
-     * 不知蝗蠹遍天下，苦尽苍生尽王臣。
-     * 人之生矣有贵贱，贵人长为天恩眷。
-     * 人生富贵总由天，草民之穷由天谴。
-     * 忽有狂徒夜磨刀，帝星飘摇荧惑高。
-     * 翻天覆地从今始，杀人何须惜手劳。
-     * 不忠之人曰可杀！不孝之人曰可杀！
-     * 不仁之人曰可杀！不义之人曰可杀！
-     * 不礼不智不信人，大西王曰杀杀杀！
-     * 我生不为逐鹿来，都门懒筑黄金台，
-     * 状元百官都如狗，总是刀下觳觫材。
-     * 传令麾下四王子，破城不须封刀匕。
-     * 山头代天树此碑，逆天之人立死跪亦死！
+     * hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterfaceSinceTypeScriptDoesNotHaveInterfaceAtRuntimeInTypeDeclarationFilesJustBecauseItSucks
      */
-    private static boolean hasIdenticalParentMethodAndEnsureNotDirectlyImplementsInterfaceSinceTypeScriptDoesNotHaveInterfaceAtRuntimeInTypeDeclarationFilesJustBecauseItSucks(Method method, Class<?> clazz) {
+    private static boolean hasIdenticalParentMethod(Method method, Class<?> clazz) {
         Class<?> parent = clazz.getSuperclass();
-        if (parent == null)
+        if (parent == null) {
             return false;
+        }
         while (parent != null && !parent.isInterface()) {
             try {
                 Method parentMethod = parent.getMethod(method.getName(), method.getParameterTypes());
@@ -115,16 +104,9 @@ public class Clazz extends TypeVariableHolder {
     }
 
     /**
-     * 我一直看着你👁👁
-     * 当你在寂静的深夜独自行走👁👁
-     * 感觉到背后幽幽的目光直流冷汗👁👁
-     * 转头却空空荡荡时👁👁
-     * 那是我在看着你👁👁
-     * 我会一直看着你👁👁
-     * 我不会干什么👁👁
-     * 我只是喜欢看着你而已👁👁
+     * getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass
      */
-    private static Map<TypeVariable<?>, Type> getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass(Class<?> thisClass, Method thatMethod) {
+    private static Map<TypeVariable<?>, Type> getGenericTypeReplacementForParentInterfaceMethods(Class<?> thisClass, Method thatMethod) {
         Class<?> targetClass = thatMethod.getDeclaringClass();
 
         Map<TypeVariable<?>, Type> replacement = new HashMap<>();
@@ -133,7 +115,7 @@ public class Clazz extends TypeVariableHolder {
             if (superInterface == null) {
                 return Collections.emptyMap();
             }
-            Map<TypeVariable<?>, Type> parentType = getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass(superInterface, thatMethod);
+            Map<TypeVariable<?>, Type> parentType = getGenericTypeReplacementForParentInterfaceMethods(superInterface, thatMethod);
             Map<TypeVariable<?>, Type> parentReplacement = getInterfaceRemap(thisClass, superInterface);
 
             for (Map.Entry<TypeVariable<?>, Type> entry : parentType.entrySet()) {
