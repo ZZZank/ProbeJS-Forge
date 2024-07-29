@@ -1,8 +1,13 @@
 package zzzank.probejs.lang.typescript.code.type;
 
+import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
+import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseType extends Code {
@@ -24,6 +29,30 @@ public abstract class BaseType extends Code {
 
     public ContextShield contextShield(FormatType formatType) {
         return new ContextShield(this, formatType);
+    }
+
+    public TSOptionalType optional() {
+        return new TSOptionalType(this);
+    }
+
+    public JSJoinedType.Union or(BaseType... types) {
+        val selfTypes = this instanceof JSJoinedType.Union u
+            ? u.types
+            : Collections.singletonList(this);
+        val joined = new ArrayList<BaseType>(selfTypes.size() + types.length);
+        joined.addAll(selfTypes);
+        joined.addAll(Arrays.asList(types));
+        return new JSJoinedType.Union(joined);
+    }
+
+    public JSJoinedType.Intersection and(BaseType... types) {
+        val selfTypes = this instanceof JSJoinedType.Intersection i
+            ? i.types
+            : Collections.singletonList(this);
+        val joined = new ArrayList<BaseType>(selfTypes.size() + types.length);
+        joined.addAll(selfTypes);
+        joined.addAll(Arrays.asList(types));
+        return new JSJoinedType.Intersection(joined);
     }
 
     public enum FormatType {
