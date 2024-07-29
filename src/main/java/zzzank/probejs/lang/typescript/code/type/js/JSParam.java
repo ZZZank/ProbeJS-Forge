@@ -1,19 +1,52 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
-import com.github.bsideup.jabel.Desugar;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 
 import java.util.function.Function;
 
-@Desugar
-public record JSParam(String name, boolean optional, BaseType type) {
-    public String format(Declaration declaration, BaseType.FormatType formatType, Function<String, String> nameGetter) {
+@Accessors(fluent = true)
+@Data
+public class JSParam {
+    private final String name;
+    private final boolean optional;
+    private final BaseType type;
+
+    public String format(
+        Declaration declaration,
+        BaseType.FormatType formatType,
+        Function<String, String> nameProcessor
+    ) {
         return String.format(
             "%s%s: %s",
-            nameGetter.apply(name),
+            nameProcessor.apply(name),
             optional ? "?" : "",
             type.line(declaration, formatType)
         );
+    }
+
+    /**
+     * {@code [x in string]: {type}}
+     */
+    public static class ObjIndex extends JSParam {
+
+        public ObjIndex(BaseType type) {
+            super("[x in string]", false, type);
+        }
+
+        @Override
+        public String format(
+            Declaration declaration,
+            BaseType.FormatType formatType,
+            Function<String, String> nameProcessor
+        ) {
+            return format(declaration, formatType);
+        }
+
+        public String format(Declaration declaration, BaseType.FormatType formatType) {
+            return super.format(declaration, formatType, Function.identity());
+        }
     }
 }

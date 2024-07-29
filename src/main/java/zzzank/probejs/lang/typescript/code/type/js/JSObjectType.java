@@ -2,6 +2,7 @@ package zzzank.probejs.lang.typescript.code.type.js;
 
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.code.type.BaseType;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +25,11 @@ public class JSObjectType extends JSMemberType {
     }
 
     public static class Builder extends JSMemberType.Builder<Builder, JSObjectType> {
+        public JSObjectType.Builder indexParam(BaseType type) {
+            this.members.add(new JSParam.ObjIndex(type));
+            return this;
+        }
+
         public JSObjectType build() {
             return new JSObjectType(members);
         }

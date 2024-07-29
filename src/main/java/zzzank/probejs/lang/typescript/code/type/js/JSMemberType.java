@@ -43,9 +43,13 @@ public abstract class JSMemberType extends BaseType {
         }
 
         @SuppressWarnings("unchecked")
-        public T member(String name, boolean optional, BaseType type) {
-            members.add(new JSParam(name, optional, type));
+        public T member(JSParam param) {
+            members.add(param);
             return (T) this;
+        }
+
+        public T member(String name, boolean optional, BaseType type) {
+            return member(new JSParam(name, optional, type));
         }
 
         public abstract O build();
