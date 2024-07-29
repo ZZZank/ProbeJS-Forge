@@ -25,10 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
-//    @Override
-//    public void registerEvents() {
-//        ProbeEvents.GROUP.register();
-//    }
 
     @Override
     public void addBindings(BindingsEvent event) {

@@ -28,7 +28,7 @@ public abstract class JSJoinedType extends BaseType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return Arrays.asList(
+        return Collections.singletonList(
             types.stream()
                 .map(type -> String.format("(%s)", type.line(declaration, input)))
                 .collect(Collectors.joining(delimiter))
