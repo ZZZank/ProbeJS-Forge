@@ -9,6 +9,11 @@ class RecipeHolder extends stub.probejs.RecipeHolder {
     readonly create: Document.CreateRecipes;
 }
 
+///notes for those who're working on recipe doc:
+///     `ItemStackOrFluid[]` or `IngredientOrFluid[]` should not be used anymore
+///     because members of used array are fixed, not dynamic
+///     use `Types.tuple()`
+
 /**
 * @mod create
 * @mod kubejs_create
