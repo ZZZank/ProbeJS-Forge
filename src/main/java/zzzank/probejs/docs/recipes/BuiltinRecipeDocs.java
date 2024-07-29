@@ -31,6 +31,7 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
     public static final List<Supplier<ProbeJSPlugin>> ALL = new ArrayList<>(Arrays.asList(
         Minecraft::new,
         ArtisanWorktables::new,
+        Botania::new,
         ArsNouveau::new,
         Thermal::new,
         KubeJS::new
