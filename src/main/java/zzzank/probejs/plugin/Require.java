@@ -22,13 +22,14 @@ public class Require extends BaseFunction {
             return new RequireWrapper(null, Undefined.instance);
         }
         val parts = result.split("/", 2);
-        val path = new ClassPath(RemapperBridge.unmapClass(parts[1].replace('/', '.')));
+        val path = new ClassPath(parts[1].replace('/', '.'));
+        val pathJava = RemapperBridge.unmapClass(path.getClassPathJava());
 
         NativeJavaClass loaded;
         try {
-            loaded = manager.loadJavaClass(scope, new String[]{path.getClassPathJava()});
+            loaded = manager.loadJavaClass(scope, new String[]{pathJava});
         } catch (Exception ignored) {
-            manager.type.console.warn(String.format("Class '%s' not loaded", path.getClassPathJava()));
+            manager.type.console.warn(String.format("Class '%s' not loaded", pathJava));
             return new RequireWrapper(path, Undefined.instance);
         }
         return new RequireWrapper(path, loaded);
