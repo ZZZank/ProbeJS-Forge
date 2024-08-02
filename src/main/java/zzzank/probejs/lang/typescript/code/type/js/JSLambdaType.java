@@ -33,9 +33,13 @@ public class JSLambdaType extends BaseType {
         // (arg0: type, arg1: type...) => returnType
         return Collections.singletonList(String.format(
             "(%s => %s)",
-            ParamDecl.formatParams(params, declaration, formatType),
-            //formatType for return should be flipped, to provide better support for type wrapper
-            returnType.line(declaration, formatType == FormatType.INPUT ? FormatType.RETURN : FormatType.INPUT)
+            //when formatType is INPUT, aka this lambda is a param itself, params of this lambda should be concrete
+            ParamDecl.formatParams(
+                params,
+                declaration,
+                formatType == FormatType.INPUT ? FormatType.RETURN : FormatType.INPUT
+            ),
+            returnType.line(declaration, formatType)
         ));
     }
 
