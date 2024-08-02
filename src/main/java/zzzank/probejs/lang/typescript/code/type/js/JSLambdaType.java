@@ -5,6 +5,7 @@ import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.code.type.ContextShield;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
 import java.util.*;
@@ -28,12 +29,13 @@ public class JSLambdaType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
+    public List<String> format(Declaration declaration, FormatType formatType) {
         // (arg0: type, arg1: type...) => returnType
         return Collections.singletonList(String.format(
             "(%s => %s)",
-            ParamDecl.formatParams(params, declaration),
-            returnType.line(declaration, FormatType.RETURN)
+            ParamDecl.formatParams(params, declaration, formatType),
+            //formatType for return should be flipped, to provide better support for type wrapper
+            returnType.line(declaration, formatType == FormatType.INPUT ? FormatType.RETURN : formatType)
         ));
     }
 
@@ -53,10 +55,10 @@ public class JSLambdaType extends BaseType {
     public static class Builder {
         public final List<ParamDecl> params = new ArrayList<>();
         public BaseType returnType = Types.VOID;
-        public boolean arrowFunction = true;
+        public FormatType forceFormatType = null;
 
         public Builder returnType(BaseType type) {
-            this.returnType = Types.ignoreContext(type, arrowFunction ? FormatType.INPUT : FormatType.RETURN);
+            this.returnType = type;
             return this;
         }
 
@@ -69,17 +71,34 @@ public class JSLambdaType extends BaseType {
         }
 
         public Builder param(String symbol, BaseType type, boolean isOptional, boolean isVarArg) {
-            params.add(new ParamDecl(symbol, Types.ignoreContext(type, arrowFunction ? FormatType.RETURN : FormatType.INPUT), isVarArg, isOptional));
+            params.add(new ParamDecl(symbol, type, isVarArg, isOptional));
             return this;
         }
 
-        public Builder method() {
-            arrowFunction = false;
+        public Builder forceFormatType(FormatType formatType) {
+            this.forceFormatType = formatType;
             return this;
         }
 
-        public JSLambdaType build() {
-            return new JSLambdaType(params, returnType);
+        public Builder methodStyle() {
+            forceFormatType = FormatType.RETURN;
+            return this;
+        }
+
+        public Builder lambdaStyle() {
+            forceFormatType = FormatType.INPUT;
+            return this;
+        }
+
+        /**
+         * @return a {@link JSLambdaType}, or {@link ContextShield} where its base type is guaranteed to be {@link JSLambdaType}
+         */
+        public BaseType build() {
+            JSLambdaType base = new JSLambdaType(params, returnType);
+            if (forceFormatType != null) {
+                return new ContextShield(base, forceFormatType);
+            }
+            return base;
         }
     }
 }

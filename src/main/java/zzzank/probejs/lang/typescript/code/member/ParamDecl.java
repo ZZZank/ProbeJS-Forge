@@ -26,20 +26,28 @@ public final class ParamDecl {
     }
 
     public String format(int index, Declaration declaration) {
+        return format(index, declaration, BaseType.FormatType.INPUT);
+    }
+
+    public String format(int index, Declaration declaration, BaseType.FormatType formatType) {
         return String.format(
             "%s%s%s: %s",
             varArg ? "..." : "",
             NameUtils.isNameSafe(name) ? name : String.format("arg%d", index),
             optional ? "?" : "",
-            type.line(declaration, BaseType.FormatType.INPUT)
+            type.line(declaration, formatType)
         );
     }
 
     public static String formatParams(List<ParamDecl> params, Declaration declaration) {
-        List<String> formattedParams = new ArrayList<>();
+        return formatParams(params, declaration, BaseType.FormatType.INPUT);
+    }
+
+    public static String formatParams(List<ParamDecl> params, Declaration declaration, BaseType.FormatType formatType) {
+        List<String> formattedParams = new ArrayList<>(params.size());
         for (int i = 0; i < params.size(); i++) {
             ParamDecl param = params.get(i);
-            formattedParams.add(param.format(i, declaration));
+            formattedParams.add(param.format(i, declaration, formatType));
         }
         return String.format("(%s)", String.join(", ", formattedParams));
     }
