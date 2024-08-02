@@ -35,7 +35,7 @@ public class JSLambdaType extends BaseType {
             "(%s => %s)",
             ParamDecl.formatParams(params, declaration, formatType),
             //formatType for return should be flipped, to provide better support for type wrapper
-            returnType.line(declaration, formatType == FormatType.INPUT ? FormatType.RETURN : formatType)
+            returnType.line(declaration, formatType == FormatType.INPUT ? FormatType.RETURN : FormatType.INPUT)
         ));
     }
 
