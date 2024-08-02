@@ -14,8 +14,8 @@ import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
+import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.*;
@@ -39,7 +39,7 @@ public class RecipeEvents extends ProbeJSPlugin {
 
     public final Map<ResourceLocation, RecipeTypeJS> ALL = new HashMap<>();
 
-    private Map<String, Map<String, JSLambdaType>> getGroupedRecipeTypes(ScriptDump scriptDump) {
+    private Map<String, Map<String, BaseType>> getGroupedRecipeTypes(ScriptDump scriptDump) {
         val converter = scriptDump.transpiler.typeConverter;
 
         val recipeEvent = new RegisterRecipeHandlersEvent(ALL);
@@ -47,7 +47,7 @@ public class RecipeEvents extends ProbeJSPlugin {
 
         val predefinedTypes = getPredefinedRecipeDocs(scriptDump);
 
-        val grouped = new HashMap<String, Map<String, JSLambdaType>>();
+        val grouped = new HashMap<String, Map<String, BaseType>>();
         for (val entry : ALL.entrySet()) {
             val resLocation = entry.getKey();
             var recipeFn = predefinedTypes.get(resLocation);
@@ -68,8 +68,8 @@ public class RecipeEvents extends ProbeJSPlugin {
         return grouped;
     }
 
-    private Map<ResourceLocation, JSLambdaType> getPredefinedRecipeDocs(ScriptDump scriptDump) {
-        val pred = new HashMap<ResourceLocation, JSLambdaType>();
+    private Map<ResourceLocation, BaseType> getPredefinedRecipeDocs(ScriptDump scriptDump) {
+        val pred = new HashMap<ResourceLocation, BaseType>();
         ProbeJSPlugin.forEachPlugin(p -> p.addPredefinedRecipeDoc(scriptDump, pred));
         ProbeJS.LOGGER.debug("Read {} predefined recipe docs", pred.size());
         return pred;

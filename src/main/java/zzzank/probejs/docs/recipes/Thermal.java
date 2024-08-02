@@ -6,7 +6,6 @@ import net.minecraftforge.fml.ModList;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Map;
@@ -23,14 +22,14 @@ class Thermal extends ProbeJSPlugin {
     public static final BaseType MIXED_IN = Types.or(INGR, FLUID);
     public static final BaseType MIXED_OUT = Types.or(STACK, FLUID);
 
-    public static JSLambdaType catalystStyleRecipe() {
+    public static BaseType catalystStyleRecipe() {
         return recipeFn()
             .param("input", INGR)
             .returnType(classType("dev.latvian.kubejs.thermal.CatalystRecipeJS"))
             .build();
     }
 
-    public static JSLambdaType fuelStyleRecipe() {
+    public static BaseType fuelStyleRecipe() {
         return recipeFn()
             .param("input", INGR)
             .returnType(classType("dev.latvian.kubejs.thermal.FuelRecipeJS"))
@@ -46,7 +45,7 @@ class Thermal extends ProbeJSPlugin {
     }
 
     @Override
-    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, BaseType> predefined) {
         if (!ModList.get().isLoaded("thermal") || !ModList.get().isLoaded("kubejs_thermal")) {
             return;
         }

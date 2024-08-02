@@ -28,7 +28,7 @@ public class FunctionalInterfaces extends ProbeJSPlugin {
                 continue;
             }
             val method = abstracts.get(0);
-            val type = Types.lambda().method().returnType(converter.convertType(method.returnType));
+            val type = Types.lambda().methodStyle().returnType(converter.convertType(method.returnType));
             for (val param : method.params) {
                 type.param(param.name, converter.convertType(param.type));
             }

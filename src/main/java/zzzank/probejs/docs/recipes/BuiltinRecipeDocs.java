@@ -5,7 +5,6 @@ import dev.latvian.kubejs.recipe.minecraft.ShapedRecipeJS;
 import dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
-import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSClassType;
@@ -38,7 +37,7 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
     ));
 
     public static JSLambdaType.Builder recipeFn() {
-        return Types.lambda().method();
+        return Types.lambda().methodStyle();
     }
 
     public static TSClassType classType(String className) {
@@ -50,11 +49,11 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
         }
     }
 
-    public static JSLambdaType basicShapedRecipe() {
+    public static BaseType basicShapedRecipe() {
         return basicShapedRecipe(Types.type(ShapedRecipeJS.class));
     }
 
-    public static JSLambdaType basicShapedRecipe(BaseType returnType) {
+    public static BaseType basicShapedRecipe(BaseType returnType) {
         return recipeFn()
             .param("output", STACK)
             .param("pattern", STR_N)
@@ -63,11 +62,11 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
             .build();
     }
 
-    public static JSLambdaType basicShapelessRecipe() {
+    public static BaseType basicShapelessRecipe() {
         return basicShapelessRecipe(Types.type(ShapelessRecipeJS.class));
     }
 
-    public static JSLambdaType basicShapelessRecipe(BaseType returnType) {
+    public static BaseType basicShapelessRecipe(BaseType returnType) {
         return recipeFn()
             .param("output", STACK)
             .param("inputs", INGR_N)
@@ -75,7 +74,7 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
             .build();
     }
 
-    public static JSLambdaType basicCookingRecipe(BaseType returnType) {
+    public static BaseType basicCookingRecipe(BaseType returnType) {
         return recipeFn()
             .param("output", STACK)
             .param("input", INGR)
@@ -83,12 +82,12 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
             .build();
     }
 
-    public static JSLambdaType basicCookingRecipe(TypeConverter converter) {
-        return basicCookingRecipe(converter.convertType(CookingRecipeJS.class));
+    public static BaseType basicCookingRecipe() {
+        return basicCookingRecipe(Types.type(CookingRecipeJS.class));
     }
 
     @Override
-    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, BaseType> predefined) {
         for (Supplier<ProbeJSPlugin> supplier : ALL) {
             supplier.get().addPredefinedRecipeDoc(scriptDump, predefined);
         }
