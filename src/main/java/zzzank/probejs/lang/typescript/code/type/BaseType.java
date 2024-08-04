@@ -27,6 +27,10 @@ public abstract class BaseType extends Code {
         return new TSArrayType(this);
     }
 
+    public ContextShield concrete() {
+        return contextShield(FormatType.RETURN);
+    }
+
     public ContextShield contextShield(FormatType formatType) {
         return new ContextShield(this, formatType);
     }
