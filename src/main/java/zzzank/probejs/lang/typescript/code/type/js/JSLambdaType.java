@@ -62,6 +62,9 @@ public class JSLambdaType extends BaseType {
         public FormatType forceFormatType = null;
 
         public Builder returnType(BaseType type) {
+            if (forceFormatType != null) {
+                type = type.contextShield(forceFormatType == FormatType.INPUT ? FormatType.RETURN : FormatType.INPUT);
+            }
             this.returnType = type;
             return this;
         }
@@ -75,6 +78,9 @@ public class JSLambdaType extends BaseType {
         }
 
         public Builder param(String symbol, BaseType type, boolean isOptional, boolean isVarArg) {
+            if (forceFormatType != null) {
+                type = type.contextShield(forceFormatType);
+            }
             params.add(new ParamDecl(symbol, type, isVarArg, isOptional));
             return this;
         }
@@ -94,15 +100,8 @@ public class JSLambdaType extends BaseType {
             return this;
         }
 
-        /**
-         * @return a {@link JSLambdaType}, or {@link ContextShield} where its base type is guaranteed to be {@link JSLambdaType}
-         */
-        public BaseType build() {
-            JSLambdaType base = new JSLambdaType(params, returnType);
-            if (forceFormatType != null) {
-                return new ContextShield(base, forceFormatType);
-            }
-            return base;
+        public JSLambdaType build() {
+            return new JSLambdaType(params, returnType);
         }
     }
 }

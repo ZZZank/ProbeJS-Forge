@@ -49,11 +49,11 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
         }
     }
 
-    public static BaseType basicShapedRecipe() {
+    public static JSLambdaType basicShapedRecipe() {
         return basicShapedRecipe(Types.type(ShapedRecipeJS.class));
     }
 
-    public static BaseType basicShapedRecipe(BaseType returnType) {
+    public static JSLambdaType basicShapedRecipe(BaseType returnType) {
         return recipeFn()
             .param("output", STACK)
             .param("pattern", STR_N)
@@ -62,11 +62,11 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
             .build();
     }
 
-    public static BaseType basicShapelessRecipe() {
+    public static JSLambdaType basicShapelessRecipe() {
         return basicShapelessRecipe(Types.type(ShapelessRecipeJS.class));
     }
 
-    public static BaseType basicShapelessRecipe(BaseType returnType) {
+    public static JSLambdaType basicShapelessRecipe(BaseType returnType) {
         return recipeFn()
             .param("output", STACK)
             .param("inputs", INGR_N)
@@ -74,7 +74,7 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
             .build();
     }
 
-    public static BaseType basicCookingRecipe(BaseType returnType) {
+    public static JSLambdaType basicCookingRecipe(BaseType returnType) {
         return recipeFn()
             .param("output", STACK)
             .param("input", INGR)
@@ -82,12 +82,12 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
             .build();
     }
 
-    public static BaseType basicCookingRecipe() {
+    public static JSLambdaType basicCookingRecipe() {
         return basicCookingRecipe(Types.type(CookingRecipeJS.class));
     }
 
     @Override
-    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, BaseType> predefined) {
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
         for (Supplier<ProbeJSPlugin> supplier : ALL) {
             supplier.get().addPredefinedRecipeDoc(scriptDump, predefined);
         }

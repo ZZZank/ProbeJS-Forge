@@ -18,8 +18,8 @@ import zzzank.probejs.lang.transpiler.Transpiler;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 
 import java.util.Map;
 import java.util.Set;
@@ -121,7 +121,7 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
     }
 
     @Override
-    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, BaseType> predefined) {
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
         ProbeBuiltinDocs.INSTANCE.addPredefinedRecipeDoc(scriptDump, predefined);
     }
 }

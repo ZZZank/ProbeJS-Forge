@@ -8,9 +8,9 @@ import dev.latvian.kubejs.recipe.special.ShapelessKubeJSRecipe;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Map;
@@ -27,7 +27,7 @@ class KubeJS extends ProbeJSPlugin {
     public static final TSClassType INGR = Types.type(IngredientJS.class);
 
     @Override
-    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, BaseType> predefined) {
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
         val converter = scriptDump.transpiler.typeConverter;
         predefined.put(
             rl("shaped"),

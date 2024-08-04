@@ -5,9 +5,9 @@ import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.docs.Primitives;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSArrayType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.lang.typescript.code.type.js.JSObjectType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
@@ -28,7 +28,7 @@ class Minecraft extends ProbeJSPlugin {
     public static final JSObjectType STR2INGR = Types.object().indexParam(INGR).build();
 
     @Override
-    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, BaseType> predefined) {
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
         val converter = scriptDump.transpiler.typeConverter;
         predefined.put(rl("smelting"), basicCookingRecipe());
         predefined.put(rl("smoking"), basicCookingRecipe());

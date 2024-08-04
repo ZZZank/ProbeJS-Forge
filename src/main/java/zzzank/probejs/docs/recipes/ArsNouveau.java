@@ -7,8 +7,8 @@ import me.shedaniel.architectury.platform.Platform;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.docs.Primitives;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Map;
@@ -24,7 +24,7 @@ import static zzzank.probejs.docs.recipes.Minecraft.INGR_N;
 class ArsNouveau extends ProbeJSPlugin {
 
     @Override
-    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, BaseType> predefined) {
+    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
         if (!Platform.isModLoaded("ars_nouveau")) {
             return;
         }

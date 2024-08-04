@@ -9,7 +9,7 @@ import zzzank.probejs.lang.transpiler.Transpiler;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 
 import java.util.Collections;
 import java.util.Map;
@@ -85,6 +85,6 @@ public interface ProbeDocPlugin {
      *                   of {@code {"some_id": ((someArg1: SomeType1, someArg2: SomeType2, someArg3: SomeType3)=>SomeRecipeTypeJS)}},
      *                   aka {@code {string: lambda}}
      */
-    default void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, BaseType> predefined) {
+    default void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
     }
 }
