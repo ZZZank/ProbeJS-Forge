@@ -28,12 +28,7 @@ class Botania extends RecipeDocProvider {
     }
 
     @Override
-    public String getNamespace() {
+    public String namespace() {
         return "botania";
-    }
-
-    @Override
-    public boolean shouldEnable() {
-        return Platform.isModLoaded(getNamespace());
     }
 }

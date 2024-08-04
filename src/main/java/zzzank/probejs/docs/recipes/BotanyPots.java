@@ -31,12 +31,7 @@ public class BotanyPots extends RecipeDocProvider {
     }
 
     @Override
-    public String getNamespace() {
+    public String namespace() {
         return "botanypots";
-    }
-
-    @Override
-    public boolean shouldEnable() {
-        return Platform.isModLoaded("botanypots");
     }
 }

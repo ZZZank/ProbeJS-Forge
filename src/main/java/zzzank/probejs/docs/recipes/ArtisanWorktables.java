@@ -26,12 +26,7 @@ class ArtisanWorktables extends RecipeDocProvider {
     }
 
     @Override
-    public String getNamespace() {
+    public String namespace() {
         return "artisanworktables";
-    }
-
-    @Override
-    public boolean shouldEnable() {
-        return Platform.isModLoaded("artisanworktables");
     }
 }

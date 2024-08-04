@@ -21,15 +21,12 @@ import static zzzank.probejs.docs.recipes.Minecraft.INGR_N;
 /**
  * @author ZZZank
  */
-class ArsNouveau extends ProbeJSPlugin {
+class ArsNouveau extends RecipeDocProvider {
 
     @Override
-    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
-        if (!Platform.isModLoaded("ars_nouveau")) {
-            return;
-        }
-        predefined.put(
-            rl("enchanting_apparatus"),
+    public void addDocs(ScriptDump scriptDump) {
+        add(
+            "enchanting_apparatus",
             recipeFn()
                 .param("output", STACK)
                 .param("reagent", INGR)
@@ -37,8 +34,8 @@ class ArsNouveau extends ProbeJSPlugin {
                 .returnType(Types.type(ArsNouveauEnchantingApparatusRecipeJS.class))
                 .build()
         );
-        predefined.put(
-            rl("enchantment"),
+        add(
+            "enchantment",
             recipeFn()
                 .param("enchantment", Types.primitive("Special.Enchantment"))
                 .param("level", Primitives.INTEGER)
@@ -47,8 +44,8 @@ class ArsNouveau extends ProbeJSPlugin {
                 .returnType(Types.type(ArsNouveauEnchantmentRecipeJS.class))
                 .build()
         );
-        predefined.put(
-            rl("glyph_recipe"),
+        add(
+            "glyph_recipe",
             recipeFn()
                 .param("output", STACK)
                 .param("input", STACK)
@@ -58,7 +55,8 @@ class ArsNouveau extends ProbeJSPlugin {
         );
     }
 
-    static ResourceLocation rl(String path) {
-        return new ResourceLocation("ars_nouveau", path);
+    @Override
+    public String namespace() {
+        return "ars_nouveau";
     }
 }
