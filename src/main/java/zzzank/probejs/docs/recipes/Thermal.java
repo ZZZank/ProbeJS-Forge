@@ -1,139 +1,125 @@
 package zzzank.probejs.docs.recipes;
 
 import lombok.val;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModList;
+import me.shedaniel.architectury.platform.Platform;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
-import zzzank.probejs.plugin.ProbeJSPlugin;
-
-import java.util.Map;
 
 import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.*;
 
 /**
  * @author ZZZank
  */
-class Thermal extends ProbeJSPlugin {
+class Thermal extends RecipeDocProvider {
 
     public static final BaseType MIXED_IN = Types.or(INGR, FLUID);
     public static final BaseType MIXED_OUT = Types.or(STACK, FLUID);
 
     public static JSLambdaType catalystStyleRecipe() {
         return recipeFn()
-            .param("input", INGR)
+            .input(INGR)
             .returnType(classType("dev.latvian.kubejs.thermal.CatalystRecipeJS"))
             .build();
     }
 
     public static JSLambdaType fuelStyleRecipe() {
         return recipeFn()
-            .param("input", INGR)
+            .input(INGR)
             .returnType(classType("dev.latvian.kubejs.thermal.FuelRecipeJS"))
             .build();
     }
 
-    private static ResourceLocation rl(String path) {
-        return new ResourceLocation("thermal", path);
-    }
-
     @Override
-    public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
-        if (!ModList.get().isLoaded("thermal") || !ModList.get().isLoaded("kubejs_thermal")) {
-            return;
-        }
-        val converter = scriptDump.transpiler.typeConverter;
+    public void addDocs(ScriptDump scriptDump) {
         //fuel
-        predefined.put(rl("compression_fuel"), fuelStyleRecipe());
-        predefined.put(rl("lapidary_fuel"), fuelStyleRecipe());
-        predefined.put(rl("magmatic_fuel"), fuelStyleRecipe());
-        predefined.put(rl("numismatic_fuel"), fuelStyleRecipe());
-        predefined.put(rl("stirling_fuel"), fuelStyleRecipe());
+        add("compression_fuel", fuelStyleRecipe());
+        add("lapidary_fuel", fuelStyleRecipe());
+        add("magmatic_fuel", fuelStyleRecipe());
+        add("numismatic_fuel", fuelStyleRecipe());
+        add("stirling_fuel", fuelStyleRecipe());
         //catalyst
-        predefined.put(rl("insolator_catalyst"), catalystStyleRecipe());
-        predefined.put(rl("pulverizer_catalyst"), catalystStyleRecipe());
-        predefined.put(rl("smelter_catalyst"), catalystStyleRecipe());
+        add("insolator_catalyst", catalystStyleRecipe());
+        add("pulverizer_catalyst", catalystStyleRecipe());
+        add("smelter_catalyst", catalystStyleRecipe());
         //general
         val basicReturn = classType("dev.latvian.kubejs.thermal.BasicThermalRecipeJS");
-        predefined.put(
-            rl("bottler"),
+        add("bottler",
             recipeFn().param("output", STACK)
                 .param("input", selfOrArray(MIXED_IN))
                 .returnType(basicReturn)
                 .build()
         );
-        predefined.put(
-            rl("brewer"),
+        add("brewer",
             recipeFn().param("output", FLUID)
                 .param("input", selfOrArray(MIXED_IN))
                 .returnType(basicReturn)
                 .build()
         );
-        predefined.put(
-            rl("centrifuge"),
+        add("centrifuge",
             recipeFn().param("output", selfOrArray(MIXED_OUT))
                 .param("input", INGR)
                 .returnType(basicReturn)
                 .build()
         );
-        predefined.put(
-            rl("crucible"),
+        add("crucible",
             recipeFn().param("output", FLUID).param("input", INGR).returnType(basicReturn).build()
         );
-        predefined.put(
-            rl("furnance"),
+        add("furnance",
             recipeFn().param("output", STACK).param("input", INGR).returnType(basicReturn).build()
         );
-        predefined.put(
-            rl("insolator"),
+        add("insolator",
             recipeFn().param("output", selfOrArray(STACK))
                 .param("input", INGR)
                 .returnType(basicReturn)
                 .build()
         );
-        predefined.put(
-            rl("press"),
+        add("press",
             recipeFn().param("outputs", selfOrArray(MIXED_OUT))
                 .param("input", selfOrArray(INGR))
                 .returnType(basicReturn)
                 .build()
         );
-        predefined.put(
-            rl("pulverizer"),
+        add("pulverizer",
             recipeFn().param("output", selfOrArray(STACK))
                 .param("input", INGR)
                 .returnType(basicReturn)
                 .build()
         );
-        predefined.put(
-            rl("pyrolyzer"),
+        add("pyrolyzer",
             recipeFn().param("outputs", selfOrArray(MIXED_OUT))
                 .param("input", INGR)
                 .returnType(basicReturn)
                 .build()
         );
-        predefined.put(
-            rl("refinery"),
+        add("refinery",
             recipeFn().param("outputs", selfOrArray(MIXED_OUT))
                 .param("input", FLUID)
                 .returnType(basicReturn)
                 .build()
         );
-        predefined.put(
-            rl("sawmill"),
+        add("sawmill",
             recipeFn().param("outputs", selfOrArray(MIXED_OUT))
                 .param("input", INGR)
                 .returnType(basicReturn)
                 .build()
         );
-        predefined.put(
-            rl("smelter"),
+        add("smelter",
             recipeFn().param("outputs", selfOrArray(STACK))
                 .param("inputs", selfOrArray(INGR))
                 .returnType(basicReturn)
                 .build()
         );
+    }
+
+    @Override
+    public String namespace() {
+        return "thermal";
+    }
+
+    @Override
+    public boolean shouldEnable() {
+        return super.shouldEnable() && Platform.isModLoaded("kubejs_thermal");
     }
 }
