@@ -17,12 +17,17 @@ import java.util.function.Supplier;
 public class BuiltinRecipeDocs extends ProbeJSPlugin {
 
     public static final List<Supplier<ProbeJSPlugin>> ALL = new ArrayList<>(Arrays.asList(
-        Minecraft::new,
+        ArsNouveau::new,
         ArtisanWorktables::new,
         Botania::new,
-        ArsNouveau::new,
-        Thermal::new,
-        KubeJS::new
+        BotanyPots::new,
+        Create::new,
+        Cucumber::new,
+        CustomMachinery::new,
+        IntegratedDynamics::new,
+        KubeJS::new,
+        Minecraft::new,
+        Thermal::new
     ));
 
     @Override
