@@ -47,6 +47,10 @@ public abstract class RecipeDocProvider extends ProbeJSPlugin {
         defined.put(new ResourceLocation(namespace(), name), doc);
     }
 
+    public void add(String name, JSLambdaType.Builder doc) {
+        defined.put(new ResourceLocation(namespace(), name), doc.build());
+    }
+
     public abstract String namespace();
 
     public boolean shouldEnable() {
