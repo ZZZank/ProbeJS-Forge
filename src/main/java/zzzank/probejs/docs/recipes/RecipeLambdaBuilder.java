@@ -38,4 +38,9 @@ public class RecipeLambdaBuilder extends JSLambdaType.Builder {
     public RecipeLambdaBuilder outputs(BaseType type) {
         return param("outputs", type);
     }
+
+    @Override
+    public RecipeLambdaBuilder returnType(BaseType type) {
+        return (RecipeLambdaBuilder) super.returnType(type);
+    }
 }

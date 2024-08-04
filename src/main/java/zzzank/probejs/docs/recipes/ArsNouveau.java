@@ -21,30 +21,27 @@ class ArsNouveau extends RecipeDocProvider {
         add(
             "enchanting_apparatus",
             recipeFn()
-                .param("output", STACK)
+                .output(STACK)
                 .param("reagent", INGR)
-                .param("inputs", INGR_N)
+                .inputs(INGR_N)
                 .returnType(Types.type(ArsNouveauEnchantingApparatusRecipeJS.class))
-                .build()
         );
         add(
             "enchantment",
             recipeFn()
                 .param("enchantment", Types.primitive("Special.Enchantment"))
                 .param("level", Primitives.INTEGER)
-                .param("inputs", INGR_N)
+                .inputs(INGR_N)
                 .param("mana", Primitives.INTEGER)
                 .returnType(Types.type(ArsNouveauEnchantmentRecipeJS.class))
-                .build()
         );
         add(
             "glyph_recipe",
             recipeFn()
-                .param("output", STACK)
-                .param("input", STACK)
+                .output(STACK)
+                .input(STACK)
                 .param("tier", Types.STRING)
                 .returnType(Types.type(ArsNouveauGlyphPressRecipeJS.class))
-                .build()
         );
     }
 

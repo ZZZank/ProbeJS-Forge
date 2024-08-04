@@ -4,9 +4,7 @@ import dev.latvian.kubejs.recipe.minecraft.*;
 import lombok.val;
 import zzzank.probejs.lang.typescript.ScriptDump;
 
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.basicCookingRecipe;
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.INGR;
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.STACK;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.*;
 
 /**
  * @author ZZZank
@@ -20,22 +18,20 @@ class Minecraft extends RecipeDocProvider {
         add("smoking", basicCookingRecipe());
         add("blasting", basicCookingRecipe());
         add("campfire_cooking", basicCookingRecipe());
-        add("crafting_shaped", BuiltinRecipeDocs.basicShapedRecipe());
-        add("crafting_shapeless", BuiltinRecipeDocs.basicShapelessRecipe());
+        add("crafting_shaped", basicShapedRecipe());
+        add("crafting_shapeless", basicShapelessRecipe());
         add(
             "stonecutting",
-            recipeFn().param("output", STACK)
-                .param("inputs", BuiltinRecipeDocs.INGR_N)
+            recipeFn().output(STACK)
+                .inputs(INGR_N)
                 .returnType(converter.convertType(StonecuttingRecipeJS.class))
-                .build()
         );
         add(
             "smithing",
-            recipeFn().param("output", STACK)
+            recipeFn().output(STACK)
                 .param("base", INGR)
                 .param("addition", INGR)
                 .returnType(converter.convertType(SmithingRecipeJS.class))
-                .build()
         );
     }
 

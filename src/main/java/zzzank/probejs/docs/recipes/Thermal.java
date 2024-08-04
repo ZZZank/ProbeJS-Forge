@@ -5,7 +5,6 @@ import me.shedaniel.architectury.platform.Platform;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 
 import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.*;
 
@@ -17,18 +16,16 @@ class Thermal extends RecipeDocProvider {
     public static final BaseType MIXED_IN = Types.or(INGR, FLUID);
     public static final BaseType MIXED_OUT = Types.or(STACK, FLUID);
 
-    public static JSLambdaType catalystStyleRecipe() {
+    public static RecipeLambdaBuilder catalystStyleRecipe() {
         return recipeFn()
             .input(INGR)
-            .returnType(classType("dev.latvian.kubejs.thermal.CatalystRecipeJS"))
-            .build();
+            .returnType(classType("dev.latvian.kubejs.thermal.CatalystRecipeJS"));
     }
 
-    public static JSLambdaType fuelStyleRecipe() {
+    public static RecipeLambdaBuilder fuelStyleRecipe() {
         return recipeFn()
             .input(INGR)
-            .returnType(classType("dev.latvian.kubejs.thermal.FuelRecipeJS"))
-            .build();
+            .returnType(classType("dev.latvian.kubejs.thermal.FuelRecipeJS"));
     }
 
     @Override
@@ -46,70 +43,67 @@ class Thermal extends RecipeDocProvider {
         //general
         val basicReturn = classType("dev.latvian.kubejs.thermal.BasicThermalRecipeJS");
         add("bottler",
-            recipeFn().param("output", STACK)
-                .param("input", selfOrArray(MIXED_IN))
+            recipeFn().output(STACK)
+                .input(selfOrArray(MIXED_IN))
                 .returnType(basicReturn)
-                .build()
         );
         add("brewer",
-            recipeFn().param("output", FLUID)
-                .param("input", selfOrArray(MIXED_IN))
+            recipeFn().output(FLUID)
+                .input(selfOrArray(MIXED_IN))
                 .returnType(basicReturn)
-                .build()
         );
         add("centrifuge",
-            recipeFn().param("output", selfOrArray(MIXED_OUT))
-                .param("input", INGR)
+            recipeFn().output(selfOrArray(MIXED_OUT))
+                .input(INGR)
                 .returnType(basicReturn)
-                .build()
         );
         add("crucible",
-            recipeFn().param("output", FLUID).param("input", INGR).returnType(basicReturn).build()
+            recipeFn().output(FLUID).input(INGR).returnType(basicReturn)
         );
         add("furnance",
-            recipeFn().param("output", STACK).param("input", INGR).returnType(basicReturn).build()
+            recipeFn().output(STACK).input(INGR).returnType(basicReturn)
         );
         add("insolator",
-            recipeFn().param("output", selfOrArray(STACK))
-                .param("input", INGR)
+            recipeFn()
+                .output(selfOrArray(STACK))
+                .input(INGR)
                 .returnType(basicReturn)
-                .build()
         );
         add("press",
-            recipeFn().param("outputs", selfOrArray(MIXED_OUT))
-                .param("input", selfOrArray(INGR))
+            recipeFn()
+                .outputs(selfOrArray(MIXED_OUT))
+                .input(selfOrArray(INGR))
                 .returnType(basicReturn)
-                .build()
         );
         add("pulverizer",
-            recipeFn().param("output", selfOrArray(STACK))
-                .param("input", INGR)
+            recipeFn()
+                .output(selfOrArray(STACK))
+                .input(INGR)
                 .returnType(basicReturn)
-                .build()
         );
         add("pyrolyzer",
-            recipeFn().param("outputs", selfOrArray(MIXED_OUT))
-                .param("input", INGR)
+            recipeFn()
+                .outputs(selfOrArray(MIXED_OUT))
+                .input(INGR)
                 .returnType(basicReturn)
-                .build()
         );
         add("refinery",
-            recipeFn().param("outputs", selfOrArray(MIXED_OUT))
-                .param("input", FLUID)
+            recipeFn()
+                .outputs(selfOrArray(MIXED_OUT))
+                .input(FLUID)
                 .returnType(basicReturn)
-                .build()
         );
         add("sawmill",
-            recipeFn().param("outputs", selfOrArray(MIXED_OUT))
-                .param("input", INGR)
+            recipeFn()
+                .outputs(selfOrArray(MIXED_OUT))
+                .input(INGR)
                 .returnType(basicReturn)
-                .build()
         );
         add("smelter",
-            recipeFn().param("outputs", selfOrArray(STACK))
-                .param("inputs", selfOrArray(INGR))
+            recipeFn()
+                .outputs(selfOrArray(STACK))
+                .inputs(selfOrArray(INGR))
                 .returnType(basicReturn)
-                .build()
         );
     }
 

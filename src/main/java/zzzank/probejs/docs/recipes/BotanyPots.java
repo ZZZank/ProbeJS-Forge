@@ -11,7 +11,7 @@ import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.STACK;
 /**
  * @author ZZZank
  */
-public class BotanyPots extends RecipeDocProvider {
+class BotanyPots extends RecipeDocProvider {
     @Override
     public void addDocs(ScriptDump scriptDump) {
         add("crop", recipeFn()
@@ -23,9 +23,8 @@ public class BotanyPots extends RecipeDocProvider {
                     .member("maxRolls", Primitives.INTEGER)
                     .build())
             )
-            .param("input", INGR)
+            .input(INGR)
             .returnType(Types.type(BotanyPotsCropRecipeJS.class))
-            .build()
         );
     }
 

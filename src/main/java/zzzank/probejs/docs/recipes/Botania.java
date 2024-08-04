@@ -18,11 +18,10 @@ class Botania extends RecipeDocProvider {
         add(
             "runic_altar",
             recipeFn()
-                .param("output", STACK)
-                .param("inputs", INGR_N)
+                .output(STACK)
+                .inputs(INGR_N)
                 .param("mana", Primitives.INTEGER, true)
                 .returnType(Types.type(BotaniaRunicAltarRecipeJS.class))
-                .build()
         );
     }
 

@@ -3,7 +3,6 @@ package zzzank.probejs.docs.recipes;
 import dev.latvian.kubejs.recipe.mod.ShapedArtisanRecipeJS;
 import dev.latvian.kubejs.recipe.mod.ShapelessArtisanRecipeJS;
 import lombok.val;
-import me.shedaniel.architectury.platform.Platform;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.Types;
 

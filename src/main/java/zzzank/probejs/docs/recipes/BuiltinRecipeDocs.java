@@ -60,7 +60,7 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
 
     public static JSLambdaType basicShapedRecipe(BaseType returnType) {
         return RecipeDocProvider.recipeFn()
-            .param("output", STACK)
+            .output(STACK)
             .param("pattern", STR_N)
             .param("items", STR2INGR)
             .returnType(returnType)
@@ -73,15 +73,16 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
 
     public static JSLambdaType.Builder basicShapelessRecipe(BaseType returnType) {
         return RecipeDocProvider.recipeFn()
-            .param("output", STACK)
-            .param("inputs", INGR_N)
+            .output(STACK)
+            .inputs(INGR_N)
             .returnType(returnType);
     }
 
     public static JSLambdaType.Builder basicCookingRecipe(BaseType returnType) {
-        return RecipeDocProvider.recipeFn()
-            .param("output", STACK)
-            .param("input", INGR)
+        return RecipeDocProvider
+            .recipeFn()
+            .output(STACK)
+            .input(INGR)
             .returnType(returnType);
     }
 
