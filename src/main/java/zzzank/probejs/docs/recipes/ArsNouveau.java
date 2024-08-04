@@ -3,20 +3,13 @@ package zzzank.probejs.docs.recipes;
 import dev.latvian.kubejs.recipe.mod.ArsNouveauEnchantingApparatusRecipeJS;
 import dev.latvian.kubejs.recipe.mod.ArsNouveauEnchantmentRecipeJS;
 import dev.latvian.kubejs.recipe.mod.ArsNouveauGlyphPressRecipeJS;
-import me.shedaniel.architectury.platform.Platform;
-import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.docs.Primitives;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
-import zzzank.probejs.plugin.ProbeJSPlugin;
 
-import java.util.Map;
-
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.recipeFn;
-import static zzzank.probejs.docs.recipes.KubeJS.INGR;
-import static zzzank.probejs.docs.recipes.KubeJS.STACK;
-import static zzzank.probejs.docs.recipes.Minecraft.INGR_N;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.INGR;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.STACK;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.INGR_N;
 
 /**
  * @author ZZZank

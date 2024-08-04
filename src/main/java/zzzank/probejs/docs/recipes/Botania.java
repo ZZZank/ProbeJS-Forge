@@ -1,14 +1,13 @@
 package zzzank.probejs.docs.recipes;
 
 import dev.latvian.kubejs.recipe.mod.BotaniaRunicAltarRecipeJS;
-import me.shedaniel.architectury.platform.Platform;
 import zzzank.probejs.docs.Primitives;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
 
-import static zzzank.probejs.docs.recipes.KubeJS.STACK;
-import static zzzank.probejs.docs.recipes.Minecraft.INGR_N;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.STACK;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.INGR_N;
 
 /**
  * @author ZZZank

@@ -3,29 +3,21 @@ package zzzank.probejs.docs.recipes;
 import dev.latvian.kubejs.recipe.minecraft.*;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
-import zzzank.probejs.docs.Primitives;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.lang.typescript.code.type.TSArrayType;
-import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
-import zzzank.probejs.lang.typescript.code.type.js.JSObjectType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Map;
 
 import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.basicCookingRecipe;
 import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.recipeFn;
-import static zzzank.probejs.docs.recipes.KubeJS.INGR;
-import static zzzank.probejs.docs.recipes.KubeJS.STACK;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.INGR;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.STACK;
 
 /**
  * @author ZZZank
  */
 class Minecraft extends ProbeJSPlugin {
-
-    public static final TSArrayType INGR_N = Types.array(INGR);
-    public static final TSArrayType STR_N = Types.array(Primitives.CHAR_SEQUENCE);
-    public static final JSObjectType STR2INGR = Types.object().indexParam(INGR).build();
 
     @Override
     public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
@@ -39,7 +31,7 @@ class Minecraft extends ProbeJSPlugin {
         predefined.put(
             rl("stonecutting"),
             recipeFn().param("output", STACK)
-                .param("inputs", INGR_N)
+                .param("inputs", BuiltinRecipeDocs.INGR_N)
                 .returnType(converter.convertType(StonecuttingRecipeJS.class))
                 .build()
         );

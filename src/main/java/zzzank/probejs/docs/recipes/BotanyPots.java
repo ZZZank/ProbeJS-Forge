@@ -1,13 +1,12 @@
 package zzzank.probejs.docs.recipes;
 
 import dev.latvian.kubejs.recipe.mod.BotanyPotsCropRecipeJS;
-import me.shedaniel.architectury.platform.Platform;
 import zzzank.probejs.docs.Primitives;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
-import static zzzank.probejs.docs.recipes.KubeJS.INGR;
-import static zzzank.probejs.docs.recipes.KubeJS.STACK;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.INGR;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.STACK;
 
 /**
  * @author ZZZank

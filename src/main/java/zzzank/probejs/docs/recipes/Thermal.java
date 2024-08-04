@@ -11,9 +11,7 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Map;
 
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.recipeFn;
-import static zzzank.probejs.docs.recipes.KubeJS.*;
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.classType;
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.*;
 
 /**
  * @author ZZZank
@@ -39,10 +37,6 @@ class Thermal extends ProbeJSPlugin {
 
     private static ResourceLocation rl(String path) {
         return new ResourceLocation("thermal", path);
-    }
-
-    public static BaseType selfOrArray(BaseType type) {
-        return Types.or(type, Types.array(type));
     }
 
     @Override
