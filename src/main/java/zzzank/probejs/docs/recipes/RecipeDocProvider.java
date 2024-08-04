@@ -3,7 +3,6 @@ package zzzank.probejs.docs.recipes;
 import me.shedaniel.architectury.platform.Platform;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
@@ -28,8 +27,8 @@ public abstract class RecipeDocProvider extends ProbeJSPlugin {
 
     protected Map<ResourceLocation, JSLambdaType> defined = null;
 
-    public static JSLambdaType.Builder recipeFn() {
-        return Types.lambda().methodStyle();
+    public static RecipeLambdaBuilder recipeFn() {
+        return new RecipeLambdaBuilder();
     }
 
     @Override

@@ -45,10 +45,6 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
     public static final TSArrayType INGR_N = Types.array(INGR);
     public static final TSArrayType STR_N = Types.array(Primitives.CHAR_SEQUENCE);
 
-    public static JSLambdaType.Builder recipeFn() {
-        return Types.lambda().methodStyle();
-    }
-
     public static TSClassType classType(String className) {
         try {
             val c = Class.forName(className);
@@ -63,7 +59,7 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
     }
 
     public static JSLambdaType basicShapedRecipe(BaseType returnType) {
-        return recipeFn()
+        return RecipeDocProvider.recipeFn()
             .param("output", STACK)
             .param("pattern", STR_N)
             .param("items", STR2INGR)
@@ -71,27 +67,25 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
             .build();
     }
 
-    public static JSLambdaType basicShapelessRecipe() {
+    public static JSLambdaType.Builder basicShapelessRecipe() {
         return basicShapelessRecipe(Types.type(ShapelessRecipeJS.class));
     }
 
-    public static JSLambdaType basicShapelessRecipe(BaseType returnType) {
-        return recipeFn()
+    public static JSLambdaType.Builder basicShapelessRecipe(BaseType returnType) {
+        return RecipeDocProvider.recipeFn()
             .param("output", STACK)
             .param("inputs", INGR_N)
-            .returnType(returnType)
-            .build();
+            .returnType(returnType);
     }
 
-    public static JSLambdaType basicCookingRecipe(BaseType returnType) {
-        return recipeFn()
+    public static JSLambdaType.Builder basicCookingRecipe(BaseType returnType) {
+        return RecipeDocProvider.recipeFn()
             .param("output", STACK)
             .param("input", INGR)
-            .returnType(returnType)
-            .build();
+            .returnType(returnType);
     }
 
-    public static JSLambdaType basicCookingRecipe() {
+    public static JSLambdaType.Builder basicCookingRecipe() {
         return basicCookingRecipe(Types.type(CookingRecipeJS.class));
     }
 
