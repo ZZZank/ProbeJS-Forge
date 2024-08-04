@@ -7,7 +7,7 @@ import zzzank.probejs.lang.typescript.code.type.TSArrayType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.*;
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.*;
 
 /**
  * @author ZZZank

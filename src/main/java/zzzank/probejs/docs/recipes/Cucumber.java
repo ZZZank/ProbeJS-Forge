@@ -2,7 +2,7 @@ package zzzank.probejs.docs.recipes;
 
 import zzzank.probejs.lang.typescript.ScriptDump;
 
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.basicShapedRecipe;
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.basicShapedRecipe;
 
 /**
  * @author ZZZank

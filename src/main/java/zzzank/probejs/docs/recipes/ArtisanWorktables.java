@@ -6,6 +6,9 @@ import lombok.val;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.basicShapedRecipe;
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.basicShapelessRecipe;
+
 /**
  * @author ZZZank
  */
@@ -19,8 +22,8 @@ class ArtisanWorktables extends RecipeDocProvider {
         val shapedReturn = Types.type(ShapedArtisanRecipeJS.class);
         val shapelessReturn = Types.type(ShapelessArtisanRecipeJS.class);
         for (val type : types) {
-            add(type + "_shaped", BuiltinRecipeDocs.basicShapedRecipe(shapedReturn));
-            add(type + "_shapeless", BuiltinRecipeDocs.basicShapelessRecipe(shapelessReturn));
+            add(type + "_shaped", basicShapedRecipe(shapedReturn));
+            add(type + "_shapeless", basicShapelessRecipe(shapelessReturn));
         }
     }
 

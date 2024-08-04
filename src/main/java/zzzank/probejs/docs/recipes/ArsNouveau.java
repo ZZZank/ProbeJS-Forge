@@ -7,9 +7,9 @@ import zzzank.probejs.docs.Primitives;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.INGR;
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.STACK;
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.INGR_N;
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.INGR;
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.STACK;
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.INGR_N;
 
 /**
  * @author ZZZank

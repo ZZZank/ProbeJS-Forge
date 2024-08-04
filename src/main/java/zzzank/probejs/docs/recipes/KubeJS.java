@@ -5,7 +5,7 @@ import dev.latvian.kubejs.recipe.special.ShapelessKubeJSRecipe;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.*;
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.*;
 
 /**
  * @author ZZZank

@@ -6,7 +6,7 @@ import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.*;
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.*;
 
 /**
  * @author ZZZank

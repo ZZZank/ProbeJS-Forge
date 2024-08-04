@@ -4,7 +4,7 @@ import dev.latvian.kubejs.recipe.minecraft.*;
 import lombok.val;
 import zzzank.probejs.lang.typescript.ScriptDump;
 
-import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.*;
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.*;
 
 /**
  * @author ZZZank
