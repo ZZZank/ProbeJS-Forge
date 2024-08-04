@@ -1,0 +1,29 @@
+package zzzank.probejs.docs.recipes;
+
+import net.minecraft.resources.ResourceLocation;
+import zzzank.probejs.docs.Primitives;
+import zzzank.probejs.lang.typescript.ScriptDump;
+import zzzank.probejs.lang.typescript.code.type.Types;
+
+import static zzzank.probejs.docs.recipes.BuiltinRecipeDocs.classType;
+
+/**
+ * @author ZZZank
+ */
+class CustomMachinery extends RecipeDocProvider {
+    @Override
+    public void addDocs(ScriptDump scriptDump) {
+        add(
+            "custom_machine",
+            recipeFn()
+                .param("machine_id", Types.type(ResourceLocation.class))
+                .param("duration", Primitives.INTEGER)
+                .returnType(classType("fr.frinn.custommachinery.common.integration.kubejs"))
+        );
+    }
+
+    @Override
+    public String namespace() {
+        return "custommachinery";
+    }
+}
