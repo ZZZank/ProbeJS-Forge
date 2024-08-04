@@ -70,7 +70,7 @@ public record EventJSInfo(
             .add("class", clazzRaw.getName())
             .add(
                 "type",
-                JArray.of().addAll(scriptTypes.stream().map(ScriptType::name).map(JPrimitive::of))
+                JArray.of(scriptTypes.stream().map(ScriptType::name).map(JPrimitive::of))
             )
             .add("cancellable", this.cancellable)
             .build();

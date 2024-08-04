@@ -99,10 +99,10 @@ public class FunctionDeclaration extends CommentableCode {
 
         public FunctionDeclaration build() {
             return new FunctionDeclaration(
-                    name,
-                    variableTypes,
-                    params,
-                    returnType
+                name,
+                variableTypes,
+                params,
+                returnType
             );
         }
     }

@@ -7,8 +7,8 @@ import zzzank.probejs.features.kubejs.EventJSInfos;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.Code;
-import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.ts.FunctionDeclaration;
+import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
@@ -53,21 +53,14 @@ public class KubeEvents extends ProbeJSPlugin {
     }
 
     private static @NotNull FunctionDeclaration declareEventMethod(String id, TypeConverter converter, EventJSInfo info) {
-        return new FunctionDeclaration(
-            "onEvent",
-            Collections.emptyList(),
-            Arrays.asList(
-                new ParamDecl("id", Types.literal(id)),
-                new ParamDecl(
-                    "handler",
-                    Types.lambda()
-                        .param("event", converter.convertType(info.clazzRaw()))
-                        .returnType(Types.VOID)
-                        .build()
-                )
-            ),
-            Types.VOID
-        );
+        return Statements
+            .func("onEvent")
+            .param("id", Types.literal(id))
+            .param("handler", Types.lambda()
+                .param("event", converter.convertType(info.clazzRaw()))
+                .build()
+            )
+            .build();
     }
 
     @Override

@@ -18,6 +18,10 @@ public class JArray implements IJsonBuilder<JsonArray> {
         return JArray.of().addAll(members);
     }
 
+    public static JArray of(Stream<IJsonBuilder<?>> members) {
+        return JArray.of().addAll(members);
+    }
+
     private JArray() {
         members = new ArrayList<>(3);
     }

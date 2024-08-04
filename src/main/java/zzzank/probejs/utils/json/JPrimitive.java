@@ -1,45 +1,30 @@
 package zzzank.probejs.utils.json;
 
 import com.google.gson.JsonPrimitive;
+import lombok.AllArgsConstructor;
 
 import javax.annotation.Nonnull;
 
+@AllArgsConstructor
 public class JPrimitive implements IJsonBuilder<JsonPrimitive> {
 
     public static JPrimitive of(@Nonnull Character value) {
-        return new JPrimitive(value);
+        return new JPrimitive(new JsonPrimitive(value));
     }
 
     public static JPrimitive of(@Nonnull String value) {
-        return new JPrimitive(value);
+        return new JPrimitive(new JsonPrimitive(value));
     }
 
     public static JPrimitive of(@Nonnull Number value) {
-        return new JPrimitive(value);
+        return new JPrimitive(new JsonPrimitive(value));
     }
 
     public static JPrimitive of(@Nonnull Boolean value) {
-        return new JPrimitive(value);
+        return new JPrimitive(new JsonPrimitive(value));
     }
 
     private final JsonPrimitive value;
-
-    public JPrimitive(Character value) {
-        this.value = new JsonPrimitive(value);
-    }
-
-    public JPrimitive(String value) {
-        this.value = new JsonPrimitive(value);
-    }
-
-    public JPrimitive(Number value) {
-        this.value = new JsonPrimitive(value);
-    }
-
-    public JPrimitive(boolean value) {
-        this.value = new JsonPrimitive(value);
-    }
-
 
     @Override
     public JsonPrimitive build() {
