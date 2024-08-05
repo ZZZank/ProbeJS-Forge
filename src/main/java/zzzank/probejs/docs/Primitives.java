@@ -66,8 +66,8 @@ public class Primitives extends ProbeJSPlugin {
             new TypeDecl("double", numberBoth),
             new TypeDecl("float", numberBoth),
             //for CharSequence, we should NOT mark it as a primitive type, because of inheritance
-            Statements.clazz("character").interfaceClass().superClass(TS_STRING).build(),
-            Statements.clazz("charseq").interfaceClass().superClass(TS_STRING).build()
+            Statements.clazz("character").interfaceClass().interfaces(TS_STRING).build(),
+            Statements.clazz("charseq").interfaceClass().interfaces(TS_STRING).build()
         );
     }
 }
