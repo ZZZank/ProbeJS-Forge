@@ -44,16 +44,17 @@ public class FileUtils {
 
     @Nullable
     public static Path parseSourcePath(String name) {
-        if (!name.contains(":")) return null;
+        if (!name.contains(":")) {
+            return null;
+        }
         String[] parts = name.split(":", 2);
-        Path base;
-        if (parts[0].equals("client_scripts")) {
-            base = KubeJSPaths.CLIENT_SCRIPTS;
-        } else if (parts[0].equals("server_scripts")) {
-            base = KubeJSPaths.SERVER_SCRIPTS;
-        } else if (parts[0].equals("startup_scripts")) {
-            base = KubeJSPaths.STARTUP_SCRIPTS;
-        } else {
+        Path base = switch (parts[0]) {
+            case "client_scripts" -> KubeJSPaths.CLIENT_SCRIPTS;
+            case "server_scripts" -> KubeJSPaths.SERVER_SCRIPTS;
+            case "startup_scripts" -> KubeJSPaths.STARTUP_SCRIPTS;
+            default -> null;
+        };
+        if (base == null) {
             return null;
         }
         return base.resolve(parts[1]);

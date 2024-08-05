@@ -22,7 +22,8 @@ public class LoadClassFn extends ProbeJSPlugin {
 
         fn.addComment(
             "@deprecated",
-            "Please use `require(...)` instead."
+            "Please use `require(...)` instead." ,
+            "Or just type `$`, and let auto-import call `require()` for you"
         );
 
         scriptDump.addGlobal("java", fn);

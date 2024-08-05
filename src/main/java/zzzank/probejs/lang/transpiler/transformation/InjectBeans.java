@@ -27,9 +27,9 @@ public class InjectBeans implements ClassTransformer {
                 String beanName = NameUtils.firstLower(method.name.substring(3));
                 if (names.contains(beanName)) continue;
                 classDecl.bodyCode.add(new BeanDecl(
-                        "set %s(value: %s)",
-                        beanName,
-                        Types.ignoreContext(method.params.get(0).type, BaseType.FormatType.INPUT)
+                    "set %s(value: %s)",
+                    beanName,
+                    Types.ignoreContext(method.params.get(0).type, BaseType.FormatType.INPUT)
                 ));
             } else if (method.params.isEmpty()) {
                 if (method.name.startsWith("get")) {

@@ -57,13 +57,16 @@ public class InterfaceDecl extends ClassDecl {
         }
         body.add("");
         for (MethodDecl method : methods) {
-            if (method.isStatic) namespace.addCode(new FunctionDeclaration(
+            if (method.isStatic) {
+                namespace.addCode(new FunctionDeclaration(
                     method.name,
                     method.variableTypes,
                     method.params,
                     method.returnType
-            ));
-            else body.addAll(method.format(declaration));
+                ));
+            } else {
+                body.addAll(method.format(declaration));
+            }
         }
 
         // Adds a marker in it to prevent VSCode from not recognizing the namespace to import

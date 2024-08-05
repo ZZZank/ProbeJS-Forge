@@ -8,10 +8,7 @@ import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSParamType;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Inject [Symbol.iterator](): IterableIterator<T>; for Iterable.
@@ -38,7 +35,7 @@ public class InjectArray implements ClassTransformer {
 
         @Override
         public List<String> format(Declaration declaration) {
-            return Arrays.asList(String.format(line, type.line(declaration, BaseType.FormatType.RETURN)));
+            return Collections.singletonList(String.format(line, type.line(declaration, BaseType.FormatType.RETURN)));
         }
     }
 
