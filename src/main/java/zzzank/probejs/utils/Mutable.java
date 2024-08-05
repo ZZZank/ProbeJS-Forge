@@ -1,16 +1,36 @@
 package zzzank.probejs.utils;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * @author ZZZank
  */
-@RequiredArgsConstructor
 @AllArgsConstructor
-public class Mutable<T> implements Supplier<T> {
+public class Mutable<T> implements Supplier<T>, Iterable<T> {
+
+    private static final Mutable<Object> NULL = new Mutable<>(null);
+
+    public static <T> Mutable<T> of(T value) {
+        return new Mutable<>(value);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Mutable<T> ofNull() {
+        return (Mutable<T>) NULL;
+    }
+
+    public static <T> Mutable<T> ofNullable(T value) {
+        return value == null ? ofNull() : of(value);
+    }
 
     private T value;
 
@@ -19,16 +39,42 @@ public class Mutable<T> implements Supplier<T> {
         return value;
     }
 
+    public T getOr(T otherValue) {
+        return isNull() ? otherValue : value;
+    }
+
+    public T getOr(Supplier<? extends T> otherValue) {
+        return isNull() ? otherValue.get() : value;
+    }
+
+    public T getOrThrow() {
+        if (value == null) {
+            throw new NoSuchElementException("No value present");
+        }
+        return value;
+    }
+
+    public <X extends Throwable> T getOrThrow(Supplier<? extends X> exceptionSupplier) throws X {
+        if (value == null) {
+            throw exceptionSupplier.get();
+        }
+        return value;
+    }
+
+    public boolean isNull() {
+        return value == null;
+    }
+
+    public boolean notNull() {
+        return value != null;
+    }
+
     /**
      * @return {@code this}
      */
     public Mutable<T> set(T newValue) {
         value = newValue;
         return this;
-    }
-
-    public boolean isNull() {
-        return value == null;
     }
 
     /**
@@ -41,6 +87,80 @@ public class Mutable<T> implements Supplier<T> {
             this.value = newValue;
         }
         return this;
+    }
+
+    /**
+     * If a value is present, returns an {@code Mutable} describing (as if by
+     * {@link #ofNullable}) the result of applying the given mapping function to
+     * the value, otherwise returns an empty {@code Mutable}.
+     *
+     * <p>If the mapping function returns a {@code null} result then this method
+     * returns an empty {@code Mutable}.
+     *
+     * @param mapper the mapping function to apply to a value, if present
+     * @param <U> The type of the value returned from the mapping function
+     * @return an {@code Mutable} describing the result of applying a mapping
+     *         function to the value of this {@code Mutable}, if a value is
+     *         present, otherwise an empty {@code Mutable}
+     * @throws NullPointerException if the mapping function is {@code null}
+     */
+    public <U> Mutable<U> map(Function<? super T, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (isNull()) {
+            return ofNull();
+        }
+        return Mutable.of(mapper.apply(value));
+    }
+
+    /**
+     * If a value is present, returns an {@code Mutable} describing the value,
+     * otherwise returns the provided {@code Mutable}.
+     *
+     * @param another a {@code Mutable} candidate to be returned
+     * @return returns an {@code Mutable} describing the value of this
+     *         {@code Mutable}, if a value is present, otherwise {@code another}.
+     * @throws NullPointerException if the provided {@code Mutable} is {@code null}
+     */
+    public Mutable<T> or(Mutable<? extends T> another) {
+        Objects.requireNonNull(another);
+        if (notNull()) {
+            return this;
+        }
+        @SuppressWarnings("unchecked")
+        Mutable<T> r = (Mutable<T>) another;
+        return r;
+    }
+
+    /**
+     * If a value is present, returns an {@code Mutable} describing the value,
+     * otherwise returns an {@code Mutable} produced by the supplying function.
+     *
+     * @param supplier the supplying function that produces an {@code Mutable}
+     *        to be returned
+     * @return returns an {@code Mutable} describing the value of this
+     *         {@code Mutable}, if a value is present, otherwise an
+     *         {@code Mutable} produced by the supplying function.
+     * @throws NullPointerException if the supplying function is {@code null} or
+     *         produces a {@code null} result
+     */
+    public Mutable<T> or(Supplier<? extends Mutable<? extends T>> supplier) {
+        Objects.requireNonNull(supplier);
+        @SuppressWarnings("unchecked")
+        Mutable<T> r = (Mutable<T>) supplier.get();
+        return or(r);
+    }
+
+    /**
+     * If a value is present, returns a sequential {@link Stream} containing
+     * only that value, otherwise returns an empty {@code Stream}.
+     *
+     * @return the optional value as a {@code Stream}
+     */
+    public Stream<T> stream() {
+        if (isNull()) {
+            return Stream.empty();
+        }
+        return Stream.of(value);
     }
 
     /**
@@ -79,5 +199,11 @@ public class Mutable<T> implements Supplier<T> {
     @Override
     public String toString() {
         return value == null ? "null" : value.toString();
+    }
+
+    @NotNull
+    @Override
+    public Iterator<T> iterator() {
+        return Collections.singletonList(value).iterator();
     }
 }

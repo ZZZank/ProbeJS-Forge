@@ -70,11 +70,11 @@ public class ProbeConfig {
             if (configValue == null) value = null;
             else if (configValue instanceof Number number) {
                 if (typeClass == Integer.class) configValue = number.intValue();
-                if (typeClass == Float.class) configValue = number.floatValue();
-                if (typeClass == Long.class) configValue = number.longValue();
-                if (typeClass == Byte.class) configValue = number.byteValue();
-                if (typeClass == Double.class) configValue = number.doubleValue();
-                if (typeClass == Short.class) configValue = number.shortValue();
+                else if (typeClass == Float.class) configValue = number.floatValue();
+                else if (typeClass == Long.class) configValue = number.longValue();
+                else if (typeClass == Byte.class) configValue = number.byteValue();
+                else if (typeClass == Double.class) configValue = number.doubleValue();
+                else if (typeClass == Short.class) configValue = number.shortValue();
                 value = (T) configValue;
             } else if (typeClass.isInstance(configValue)) {
                 value = (T) configValue;

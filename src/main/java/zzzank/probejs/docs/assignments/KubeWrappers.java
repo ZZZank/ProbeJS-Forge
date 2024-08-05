@@ -81,7 +81,5 @@ public class KubeWrappers extends ProbeJSPlugin {
         scriptDump.assignType(MutableComponent.class, Types.type(Text.class));
         scriptDump.assignType(Ingredient.class, Types.type(IngredientJS.class));
         scriptDump.assignType(ItemStack.class, Types.type(ItemStackJS.class));
-
-        BuiltinKubeJSPlugin s;
     }
 }

@@ -20,8 +20,7 @@ public class GameUtils {
             for (Mod mod : Platform.getMods()) {
                 digest.update((mod.getModId() + mod.getVersion()).getBytes());
             }
-            ByteBuffer buffer = ByteBuffer.wrap(digest.digest());
-            return buffer.getLong();
+            return ByteBuffer.wrap(digest.digest()).getLong();
         } catch (NoSuchAlgorithmException e) {
             return -1;
         }
