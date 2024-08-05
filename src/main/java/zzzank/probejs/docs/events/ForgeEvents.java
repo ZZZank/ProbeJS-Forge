@@ -5,6 +5,7 @@ import dev.latvian.kubejs.script.ScriptType;
 import lombok.val;
 import net.minecraftforge.eventbus.api.Event;
 import zzzank.probejs.GlobalStates;
+import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.type.Types;
@@ -42,5 +43,10 @@ public class ForgeEvents extends ProbeJSPlugin {
         Set<Class<?>> classes = new HashSet<>(GlobalStates.KNOWN_EVENTS);
         classes.add(Event.class);
         return classes;
+    }
+
+    @Override
+    public void denyBindings(BindingFilter filter) {
+        filter.denyFunction("onForgeEvent");
     }
 }

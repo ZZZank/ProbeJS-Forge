@@ -127,7 +127,7 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
     }
 
     @Override
-    public void denyBindings(BindingFilter bindingFilter) {
-        ProbeBuiltinDocs.INSTANCE.denyBindings(bindingFilter);
+    public void denyBindings(BindingFilter filter) {
+        ProbeBuiltinDocs.INSTANCE.denyBindings(filter);
     }
 }

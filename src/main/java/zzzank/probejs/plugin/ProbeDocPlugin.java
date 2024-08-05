@@ -89,6 +89,6 @@ public interface ProbeDocPlugin {
     default void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
     }
 
-    default void denyBindings(BindingFilter bindingFilter) {
+    default void denyBindings(BindingFilter filter) {
     }
 }

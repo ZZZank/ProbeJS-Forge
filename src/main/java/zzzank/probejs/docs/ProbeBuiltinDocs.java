@@ -43,6 +43,7 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
         FunctionalInterfaces::new,
         //binding
         Bindings::new,
+        LoadClassFn::new,
         //event
         KubeEvents::new,
 //            TagEvents::new,
@@ -118,7 +119,7 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
     }
 
     @Override
-    public void denyBindings(BindingFilter bindingFilter) {
-        forEach(builtinDoc -> builtinDoc.denyBindings(bindingFilter));
+    public void denyBindings(BindingFilter filter) {
+        forEach(builtinDoc -> builtinDoc.denyBindings(filter));
     }
 }

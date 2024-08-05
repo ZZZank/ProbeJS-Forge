@@ -2,6 +2,7 @@ package zzzank.probejs.docs.events;
 
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
+import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.features.kubejs.EventJSInfo;
 import zzzank.probejs.features.kubejs.EventJSInfos;
 import zzzank.probejs.lang.transpiler.TypeConverter;
@@ -72,5 +73,10 @@ public class KubeEvents extends ProbeJSPlugin {
         Set<String> events = new HashSet<>();
         ProbeJSPlugin.forEachPlugin(plugin -> events.addAll(plugin.disableEventDumps(dump)));
         return events;
+    }
+
+    @Override
+    public void denyBindings(BindingFilter filter) {
+        filter.denyFunction("onEvent");
     }
 }
