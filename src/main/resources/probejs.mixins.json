@@ -11,6 +11,7 @@
     "RecipeManagerMixin",
     "ScriptManagerMixin",
     "access.ForgeRegistryManagerMixin",
+    "access.TypedDynamicFunctionAccess",
     "integration.KubeJSForgeEventRedirection",
     "integration.ScopeSupportMixin"
   ],

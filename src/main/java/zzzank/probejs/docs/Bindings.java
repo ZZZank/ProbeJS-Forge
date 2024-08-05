@@ -2,6 +2,7 @@ package zzzank.probejs.docs;
 
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptManager;
+import dev.latvian.kubejs.script.TypedDynamicFunction;
 import dev.latvian.kubejs.util.KubeJSPlugins;
 import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.Context;
@@ -16,6 +17,7 @@ import zzzank.probejs.lang.typescript.code.ts.ReexportDeclaration;
 import zzzank.probejs.lang.typescript.code.ts.VariableDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.mixins.access.TypedDynamicFunctionAccess;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.*;
@@ -65,11 +67,17 @@ public class Bindings extends ProbeJSPlugin {
             if (filter.isFunctionDenied(name)) {
                 continue;
             }
-//            val fn = entry.getValue();
-            exported.put(
-                name,
-                Types.lambda().param("args", Types.ANY.asArray(), false, true).returnType(Types.ANY).build()
-            );
+            val fn = Types.lambda().returnType(Types.ANY);
+            if (entry.getValue() instanceof TypedDynamicFunction typed) {
+                val types = ((TypedDynamicFunctionAccess) typed).types();
+                for (int i = 0; i < types.length; i++) {
+                    Class<?> type = types[i];
+                    fn.param("arg" + i, type == null ? Types.ANY : Types.typeMaybeGeneric(type));
+                }
+            } else {
+                fn.param("args", Types.ANY.asArray(), false, true);
+            }
+            exported.put(name, fn.build());
         }
 
         for (val entry : event.constants.entrySet()) {
