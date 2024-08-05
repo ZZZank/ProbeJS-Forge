@@ -10,8 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.InventoryMenu;
 import zzzank.probejs.features.bridge.ProbeServer;
-import zzzank.probejs.mixins.access.TextureAtlasMixin;
-import zzzank.probejs.mixins.access.TextureManagerMixin;
+import zzzank.probejs.mixins.AccessTextureAtlas;
+import zzzank.probejs.mixins.AccessTextureManager;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -52,7 +52,7 @@ public class GlobalStates {
     };
 
     public static final Supplier<Set<String>> RAW_TEXTURES = () ->
-        ((TextureManagerMixin) Minecraft.getInstance().getTextureManager())
+        ((AccessTextureManager) Minecraft.getInstance().getTextureManager())
             .byPath()
             .keySet()
             .stream()
@@ -60,7 +60,7 @@ public class GlobalStates {
             .collect(Collectors.toSet());
 
     public static final Supplier<Set<String>> TEXTURES = () ->
-        ((TextureAtlasMixin) Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS))
+        ((AccessTextureAtlas) Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS))
             .texturesByName()
             .keySet()
             .stream().map(ResourceLocation::toString)

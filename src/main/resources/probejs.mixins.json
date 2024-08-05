@@ -3,15 +3,15 @@
   "compatibilityLevel": "JAVA_8",
   "package": "zzzank.probejs.mixins",
   "mixins": [
-    "ConsoleMixin",
-    "EventBusMixin",
-    "LootTableMixin",
-    "OnEventMixin",
-    "OnJavaMixin",
-    "RecipeManagerMixin",
-    "ScriptManagerMixin",
-    "access.ForgeRegistryManagerMixin",
-    "access.TypedDynamicFunctionAccess",
+    "MixinConsole",
+    "MixinEventBus",
+    "MixinLootTable",
+    "MixinOnEvent",
+    "MixinOnJava",
+    "MixinRecipeManager",
+    "MixinScriptManager",
+    "AccessForgeRegistryManager",
+    "AccessTypedDynamicFunction",
     "integration.KubeJSForgeEventRedirection",
     "integration.ScopeSupportMixin"
   ],
@@ -20,8 +20,8 @@
   },
   "minVersion": "0.8",
   "client": [
-    "access.LanguageManagerMixin",
-    "access.TextureAtlasMixin",
-    "access.TextureManagerMixin"
+    "AccessLanguageManager",
+    "AccessTextureAtlas",
+    "AccessTextureManager"
   ]
 }

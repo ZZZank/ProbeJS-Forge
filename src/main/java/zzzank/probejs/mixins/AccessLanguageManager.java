@@ -1,4 +1,4 @@
-package zzzank.probejs.mixins.access;
+package zzzank.probejs.mixins;
 
 import net.minecraft.client.resources.language.LanguageInfo;
 import net.minecraft.client.resources.language.LanguageManager;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
  * @author ZZZank
  */
 @Mixin(LanguageManager.class)
-public interface LanguageManagerMixin {
+public interface AccessLanguageManager {
 
     @Accessor("DEFAULT_LANGUAGE")
     @Contract(" -> _")

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import zzzank.probejs.GlobalStates;
 
 @Mixin(value = {ScriptManager.class}, remap = false)
-public abstract class ScriptManagerMixin {
+public abstract class MixinScriptManager {
 
     @Inject(method = "load", remap = false, at = @At("HEAD"))
     public void pjs$reloadStart(CallbackInfo ci) {

@@ -15,7 +15,7 @@ import zzzank.probejs.GlobalStates;
 import java.util.Map;
 
 @Mixin(LootTables.class)
-public class LootTableMixin {
+public abstract class MixinLootTable {
     @Inject(method = "apply*", at = @At("RETURN"))
     public void apply(
         Map<ResourceLocation, JsonElement> object,

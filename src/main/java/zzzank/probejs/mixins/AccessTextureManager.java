@@ -1,4 +1,4 @@
-package zzzank.probejs.mixins.access;
+package zzzank.probejs.mixins;
 
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -12,7 +12,7 @@ import java.util.Map;
  * @author ZZZank
  */
 @Mixin(TextureManager.class)
-public interface TextureManagerMixin {
+public interface AccessTextureManager {
 
     @Accessor("byPath")
     Map<ResourceLocation, AbstractTexture> byPath();

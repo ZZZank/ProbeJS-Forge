@@ -12,7 +12,7 @@ import zzzank.probejs.lang.java.ClassRegistry;
 import java.util.Collections;
 
 @Mixin(ScriptManager.class)
-public class OnJavaMixin {
+public abstract class MixinOnJava {
     @Inject(method = "loadJavaClass", at = @At("RETURN"), remap = false)
     public void loadJavaClass(Scriptable scope, Object[] args, CallbackInfoReturnable<NativeJavaClass> cir) {
         var result = cir.getReturnValue();

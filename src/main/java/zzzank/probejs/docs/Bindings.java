@@ -17,7 +17,7 @@ import zzzank.probejs.lang.typescript.code.ts.ReexportDeclaration;
 import zzzank.probejs.lang.typescript.code.ts.VariableDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.mixins.access.TypedDynamicFunctionAccess;
+import zzzank.probejs.mixins.AccessTypedDynamicFunction;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.*;
@@ -69,7 +69,7 @@ public class Bindings extends ProbeJSPlugin {
             }
             val fn = Types.lambda().returnType(Types.ANY);
             if (entry.getValue() instanceof TypedDynamicFunction typed) {
-                val types = ((TypedDynamicFunctionAccess) typed).types();
+                val types = ((AccessTypedDynamicFunction) typed).types();
                 for (int i = 0; i < types.length; i++) {
                     Class<?> type = types[i];
                     fn.param("arg" + i, type == null ? Types.ANY : Types.typeMaybeGeneric(type));

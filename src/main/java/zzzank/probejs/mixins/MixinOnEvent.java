@@ -15,7 +15,7 @@ import zzzank.probejs.features.kubejs.EventJSInfos;
  * @author ZZZank
  */
 @Mixin(EventJS.class)
-public class OnEventMixin {
+public abstract class MixinOnEvent {
 
     @Inject(
         method = "post(Ldev/latvian/kubejs/script/ScriptType;Ljava/lang/String;)Z",

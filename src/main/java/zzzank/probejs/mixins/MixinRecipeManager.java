@@ -14,7 +14,7 @@ import zzzank.probejs.GlobalStates;
 import java.util.Map;
 
 @Mixin(value = RecipeManager.class, priority = 900)
-public class RecipeManagerMixin {
+public abstract class MixinRecipeManager {
     @Inject(method = "apply*", at = @At("HEAD"))
     private void apply(Map<ResourceLocation, JsonObject> map, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         for (ResourceLocation resourceLocation : map.keySet()) {

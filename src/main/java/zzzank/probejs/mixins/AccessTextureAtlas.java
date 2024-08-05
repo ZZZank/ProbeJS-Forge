@@ -1,4 +1,4 @@
-package zzzank.probejs.mixins.access;
+package zzzank.probejs.mixins;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -12,7 +12,7 @@ import java.util.Map;
  * @author ZZZank
  */
 @Mixin(TextureAtlas.class)
-public interface TextureAtlasMixin {
+public interface AccessTextureAtlas {
 
     @Accessor("texturesByName")
     Map<ResourceLocation, TextureAtlasSprite> texturesByName();

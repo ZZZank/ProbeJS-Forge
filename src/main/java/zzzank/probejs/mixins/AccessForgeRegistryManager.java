@@ -1,4 +1,4 @@
-package zzzank.probejs.mixins.access;
+package zzzank.probejs.mixins;
 
 import com.google.common.collect.BiMap;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
  * @author ZZZank
  */
 @Mixin(RegistryManager.class)
-public interface ForgeRegistryManagerMixin {
+public interface AccessForgeRegistryManager {
 
     @Accessor(value = "registries", remap = false)
     BiMap<ResourceLocation, ForgeRegistry<? extends IForgeRegistryEntry<?>>> getRegistries();

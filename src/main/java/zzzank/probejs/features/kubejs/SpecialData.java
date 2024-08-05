@@ -4,7 +4,7 @@ import com.github.bsideup.jabel.Desugar;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.RegistryManager;
-import zzzank.probejs.mixins.access.ForgeRegistryManagerMixin;
+import zzzank.probejs.mixins.AccessForgeRegistryManager;
 import zzzank.probejs.utils.registry.RegistryInfo;
 
 import javax.annotation.Nonnull;
@@ -45,7 +45,7 @@ public record SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> ta
 
     private static Map<ResourceLocation, RegistryInfo> fetchRegistries() {
         val registries = new HashMap<ResourceLocation, RegistryInfo>();
-        for (val entry : ((ForgeRegistryManagerMixin) RegistryManager.ACTIVE).getRegistries().entrySet()) {
+        for (val entry : ((AccessForgeRegistryManager) RegistryManager.ACTIVE).getRegistries().entrySet()) {
             registries.put(entry.getKey(), new RegistryInfo(entry.getValue()));
         }
         return registries;

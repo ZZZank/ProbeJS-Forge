@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import zzzank.probejs.GlobalStates;
 
 @Mixin(EventBus.class)
-public class EventBusMixin {
+public abstract class MixinEventBus {
 
     /*
      * So we sneak peek all registered event listeners
