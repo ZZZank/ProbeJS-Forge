@@ -24,6 +24,8 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
         Create::new,
         Cucumber::new,
         CustomMachinery::new,
+        DankStorage::new,
+        ExtendedCrafting::new,
         IntegratedDynamics::new,
         KubeJS::new,
         Minecraft::new,
