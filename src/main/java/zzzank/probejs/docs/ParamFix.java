@@ -1,8 +1,8 @@
 package zzzank.probejs.docs;
 
 import dev.latvian.kubejs.bindings.TextWrapper;
+import dev.latvian.kubejs.text.Text;
 import lombok.val;
-import net.minecraft.network.chat.MutableComponent;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
@@ -23,7 +23,7 @@ public class ParamFix extends ProbeJSPlugin {
             textWrapper,
             m -> m.params.size() == 1 && m.name.equals("of"),
             0,
-            Types.type(MutableComponent.class)
+            Types.type(Text.class)
         );
     }
 }
