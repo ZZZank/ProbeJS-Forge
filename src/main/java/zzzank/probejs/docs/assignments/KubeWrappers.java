@@ -57,7 +57,7 @@ public class KubeWrappers extends ProbeJSPlugin {
 
         scriptDump.assignType(IngredientJS.class, Types.type(ItemStack.class));
         scriptDump.assignType(IngredientJS.class, Types.type(IngredientJS.class).asArray());
-        scriptDump.assignType(IngredientJS.class, Types.type(Ingredient.class).contextShield(BaseType.FormatType.INPUT));
+        scriptDump.assignType(IngredientJS.class, Types.type(Ingredient.class).concrete());
 
         scriptDump.assignType(IngredientJS.class, Types.primitive("RegExp"));
         scriptDump.assignType(IngredientJS.class, Types.literal("*"));
