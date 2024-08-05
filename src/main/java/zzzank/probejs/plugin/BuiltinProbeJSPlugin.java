@@ -11,6 +11,7 @@ import zzzank.probejs.events.ProbeEvents;
 import zzzank.probejs.events.SnippetGenerationEventJS;
 import zzzank.probejs.events.TypeAssignmentEventJS;
 import zzzank.probejs.events.TypingModificationEventJS;
+import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.schema.SchemaDump;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -123,5 +124,10 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
     @Override
     public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
         ProbeBuiltinDocs.INSTANCE.addPredefinedRecipeDoc(scriptDump, predefined);
+    }
+
+    @Override
+    public void denyBindings(BindingFilter bindingFilter) {
+        ProbeBuiltinDocs.INSTANCE.denyBindings(bindingFilter);
     }
 }

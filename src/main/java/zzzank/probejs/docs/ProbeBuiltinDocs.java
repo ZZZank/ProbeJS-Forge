@@ -7,6 +7,7 @@ import zzzank.probejs.docs.events.ForgeEvents;
 import zzzank.probejs.docs.events.KubeEvents;
 import zzzank.probejs.docs.events.RecipeEvents;
 import zzzank.probejs.docs.recipes.BuiltinRecipeDocs;
+import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.schema.SchemaDump;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -114,5 +115,10 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
     @Override
     public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
         forEach(builtinDoc -> builtinDoc.addPredefinedRecipeDoc(scriptDump, predefined));
+    }
+
+    @Override
+    public void denyBindings(BindingFilter bindingFilter) {
+        forEach(builtinDoc -> builtinDoc.denyBindings(bindingFilter));
     }
 }

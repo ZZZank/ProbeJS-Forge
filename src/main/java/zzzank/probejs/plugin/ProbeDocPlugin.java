@@ -2,6 +2,7 @@ package zzzank.probejs.plugin;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.resources.ResourceLocation;
+import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.schema.SchemaDump;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -86,5 +87,8 @@ public interface ProbeDocPlugin {
      *                   aka {@code {string: lambda}}
      */
     default void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
+    }
+
+    default void denyBindings(BindingFilter bindingFilter) {
     }
 }

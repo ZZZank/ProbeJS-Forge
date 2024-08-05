@@ -8,6 +8,7 @@ import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.NativeJavaClass;
 import dev.latvian.mods.rhino.Scriptable;
 import lombok.val;
+import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.Code;
@@ -52,18 +53,39 @@ public class Bindings extends ProbeJSPlugin {
         val event = new DummyBindingEvent(scriptDump.manager, scriptDump.attachedContext, scriptDump.attachedScope);
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(event));
 
+        val filter = new BindingFilter();
+        ProbeJSPlugin.forEachPlugin(plugin -> plugin.denyBindings(filter));
+
         TypeConverter converter = scriptDump.transpiler.typeConverter;
         Map<String, BaseType> exported = new HashMap<>();
         Map<String, BaseType> reexported = new HashMap<>(); // Namespaces
 
-        for (Map.Entry<String, Object> entry : event.constants.entrySet()) {
+        for (val entry : event.functions.entrySet()) {
             val name = entry.getKey();
+            if (filter.isFunctionDenied(name)) {
+                continue;
+            }
+//            val fn = entry.getValue();
+            exported.put(
+                name,
+                Types.lambda().param("args", Types.ANY.asArray(), false, true).returnType(Types.ANY).build()
+            );
+        }
+
+        for (val entry : event.constants.entrySet()) {
+            val name = entry.getKey();
+            if (filter.isConstantDenied(name)) {
+                continue;
+            }
             val obj = entry.getValue();
             exported.put(name, converter.convertType(obj.getClass()));
         }
 
         for (val entry : event.classes.entrySet()) {
             val id = entry.getKey();
+            if (filter.isClassDenied(id)) {
+                continue;
+            }
             val c = entry.getValue();
             if (c.isInterface()) {
                 reexported.put(id, converter.convertType(c));
