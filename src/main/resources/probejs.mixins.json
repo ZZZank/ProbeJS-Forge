@@ -11,7 +11,8 @@
     "RecipeManagerMixin",
     "ScriptManagerMixin",
     "access.ForgeRegistryManagerMixin",
-    "integration.KubeJSForgeEventRedirection"
+    "integration.KubeJSForgeEventRedirection",
+    "integration.ScopeSupportMixin"
   ],
   "injectors": {
     "defaultRequire": 1
