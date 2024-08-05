@@ -18,9 +18,6 @@ public record SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> ta
 
     @Nonnull
     public static SpecialData instance() {
-        if (INSTANCE == null) {
-            refresh();
-        }
         return INSTANCE;
     }
 

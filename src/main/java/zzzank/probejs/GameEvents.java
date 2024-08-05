@@ -42,50 +42,54 @@ public class GameEvents {
         if (player == null) {
             return;
         }
-        ProbeConfig config = ProbeJS.CONFIG;
-        final Consumer<Component> sendMsg = msg -> player.sendMessage(msg, NIL_UUID);
 
-        if (config.enabled.get()) {
-            if (config.modHash.get() == -1) {
-                sendMsg.accept(TextWrapper.translate("probejs.hello").gold().component());
+        ProbeConfig config = ProbeJS.CONFIG;
+        if (!config.enabled.get()) {
+            return;
+        }
+
+        final Consumer<Component> sendMsg = msg -> player.sendMessage(msg, NIL_UUID);
+        SpecialData.refresh();
+
+        if (config.modHash.get() == -1) {
+            sendMsg.accept(TextWrapper.translate("probejs.hello").gold().component());
+        }
+        if (config.registryHash.get() != GameUtils.registryHash()) {
+            if (!ProbeDumpingThread.exists()) {
+                ProbeDumpingThread.create(sendMsg).start();
             }
-            if (config.registryHash.get() != GameUtils.registryHash()) {
-                if (!ProbeDumpingThread.exists()) {
-                    ProbeDumpingThread.create(sendMsg).start();
-                }
-            } else {
+        } else {
+            sendMsg.accept(
+                TextWrapper
+                    .translate("probejs.enabled_warning")
+                    .append(TextWrapper.string("/probejs disable").click("command:/probejs disable").aqua())
+                    .component()
+            );
+            if (ModList.get().size() >= MOD_LIMIT && ProbeJS.CONFIG.complete.get()) {
                 sendMsg.accept(
-                    TextWrapper
-                        .translate("probejs.enabled_warning")
-                        .append(TextWrapper.string("/probejs disable").click("command:/probejs disable").aqua())
-                        .component()
+                    TextWrapper.translate("probejs.performance", ModList.get().size()).component()
                 );
-                if (ModList.get().size() >= MOD_LIMIT && ProbeJS.CONFIG.complete.get()) {
-                    sendMsg.accept(
-                        TextWrapper.translate("probejs.performance", ModList.get().size()).component()
-                    );
-                }
+            }
+        }
+        sendMsg.accept(
+            TextWrapper.translate("probejs.wiki")
+                .append(TextWrapper.string("Wiki Page")
+                    .aqua()
+                    .underlined()
+                    .click("https://kubejs.com/wiki/addons/third-party/probejs")
+                    .hover("https://kubejs.com/wiki/addons/third-party/probejs"))
+                .component());
+
+        if (config.interactive.get() && GlobalStates.SERVER == null) {
+            try {
+                GlobalStates.SERVER = new ProbeServer(config.interactivePort.get());
+                GlobalStates.SERVER.start();
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
             }
             sendMsg.accept(
-                TextWrapper.translate("probejs.wiki")
-                    .append(TextWrapper.string("Wiki Page")
-                        .aqua()
-                        .underlined()
-                        .click("https://kubejs.com/wiki/addons/third-party/probejs")
-                        .hover("https://kubejs.com/wiki/addons/third-party/probejs"))
-                    .component());
-
-            if (config.interactive.get() && GlobalStates.SERVER == null) {
-                try {
-                    GlobalStates.SERVER = new ProbeServer(config.interactivePort.get());
-                    GlobalStates.SERVER.start();
-                } catch (UnknownHostException e) {
-                    throw new RuntimeException(e);
-                }
-                sendMsg.accept(
-                    TextWrapper.translate("probejs.interactive", config.interactivePort.get()).component()
-                );
-            }
+                TextWrapper.translate("probejs.interactive", config.interactivePort.get()).component()
+            );
         }
     }
 
