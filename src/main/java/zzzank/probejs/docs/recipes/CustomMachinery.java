@@ -18,7 +18,7 @@ class CustomMachinery extends RecipeDocProvider {
             recipeFn()
                 .param("machine_id", Types.type(ResourceLocation.class))
                 .param("duration", Primitives.INTEGER)
-                .returnType(classType("fr.frinn.custommachinery.common.integration.kubejs"))
+                .returnType(classType("fr.frinn.custommachinery.common.integration.kubejs.CustomMachineJSRecipeBuilder"))
         );
     }
 
