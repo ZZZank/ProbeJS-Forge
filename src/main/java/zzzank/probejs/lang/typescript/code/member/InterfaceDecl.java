@@ -81,26 +81,6 @@ public class InterfaceDecl extends ClassDecl {
             });
         }
 
-        // Use hybrid to represent functional interfaces
-        // (a: SomeClass<number>, b: SomeClass<string>): void;
-        MutableInt count = new MutableInt(0);
-        MethodDecl hybrid = methods.stream()
-                .filter(method -> !method.isStatic)
-                .filter(method -> method.isAbstract)
-                .peek(c -> count.add(1))
-                .reduce((a, b) -> b)
-                .orElse(null);
-
-        if (count.getValue() == 1 && hybrid != null) {
-            body.add("");
-            for (ParamDecl param : hybrid.params) {
-                param.type = Types.ignoreContext(param.type, BaseType.FormatType.RETURN);
-            }
-            String hybridBody = ParamDecl.formatParams(hybrid.params, declaration);
-            String returnType = hybrid.returnType.line(declaration, BaseType.FormatType.INPUT);
-            body.add(String.format("%s: %s", hybridBody, returnType));
-        }
-
         // tail - }
         List<String> tail = new ArrayList<>();
         for (Code code : bodyCode) {
