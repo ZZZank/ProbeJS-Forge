@@ -77,6 +77,7 @@ public class JavaPrimitives extends ProbeJSPlugin {
         scriptDump.assignType(Duration.class, Types.type(TemporalAmount.class));
         scriptDump.assignType(ResourceLocation.class, Types.STRING);
         scriptDump.assignType(CompoundTag.class, Types.OBJECT);
+        scriptDump.assignType(CompoundTag.class, Types.STRING);
         scriptDump.assignType(CollectionTag.class, Types.ANY.asArray());
         scriptDump.assignType(ListTag.class, Types.ANY.asArray());
         scriptDump.assignType(Tag.class, Types.STRING);
