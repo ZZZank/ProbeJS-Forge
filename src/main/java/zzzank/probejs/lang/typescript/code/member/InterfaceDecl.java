@@ -1,6 +1,5 @@
 package zzzank.probejs.lang.typescript.code.member;
 
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
@@ -10,7 +9,6 @@ import zzzank.probejs.lang.typescript.code.ts.VariableDeclaration;
 import zzzank.probejs.lang.typescript.code.ts.Wrapped;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
-import zzzank.probejs.lang.typescript.code.type.Types;
 
 import java.util.ArrayList;
 import java.util.Collection;

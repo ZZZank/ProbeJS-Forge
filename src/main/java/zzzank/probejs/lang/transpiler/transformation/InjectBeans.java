@@ -65,7 +65,7 @@ public class InjectBeans implements ClassTransformer {
 
         @Override
         public List<String> format(Declaration declaration) {
-            return Arrays.asList(String.format(formattingString, ProbeJS.GSON.toJson(name), baseType.line(declaration)));
+            return Collections.singletonList(String.format(formattingString, ProbeJS.GSON.toJson(name), baseType.line(declaration)));
         }
     }
 }

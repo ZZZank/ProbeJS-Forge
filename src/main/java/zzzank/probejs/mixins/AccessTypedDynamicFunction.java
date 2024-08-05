@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(TypedDynamicFunction.class)
 public interface AccessTypedDynamicFunction {
 
-    @Accessor("types")
+    @Accessor(value = "types", remap = false)
     Class<?>[] types();
 }
