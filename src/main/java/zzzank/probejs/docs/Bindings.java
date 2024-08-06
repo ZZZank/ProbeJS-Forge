@@ -118,12 +118,11 @@ public class Bindings extends ProbeJSPlugin {
 
     @Override
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
-        Set<Class<?>> classes = new HashSet<>();
 
         val event = new DummyBindingEvent(scriptDump.manager, scriptDump.attachedContext, scriptDump.attachedScope);
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(event));
 
-        classes.addAll(event.classes.values());
+        Set<Class<?>> classes = new HashSet<>(event.classes.values());
         for (Object o : event.constants.values()) {
             if (o instanceof NativeJavaClass njc) {
                 classes.add(njc.getClassObject());
@@ -131,6 +130,16 @@ public class Bindings extends ProbeJSPlugin {
                 classes.add(c);
             } else {
                 classes.add(o.getClass());
+            }
+        }
+        for (BaseFunction fn : event.functions.values()) {
+            if (!(fn instanceof TypedDynamicFunction typed)) {
+                continue;
+            }
+            for (Class<?> type : ((AccessTypedDynamicFunction) typed).types()) {
+                if (type != null) {
+                    classes.add(type);
+                }
             }
         }
 
