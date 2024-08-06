@@ -355,8 +355,8 @@ public class ScriptDump {
     }
 
     public void dump() throws IOException, ClassNotFoundException {
-        getSource();
-        getTest();
+//        getSource();
+//        getTest();
 
         dumpClasses();
         dumpGlobal();
