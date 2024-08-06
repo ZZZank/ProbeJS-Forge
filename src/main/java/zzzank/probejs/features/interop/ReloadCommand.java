@@ -16,12 +16,14 @@ public class ReloadCommand extends Command {
     @Override
     public JsonElement handle(JsonObject payload) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        if (server == null) throw new RuntimeException("No current server found.");
+        if (server == null) {
+            throw new RuntimeException("No current server found.");
+        }
 
         switch (payload.get("scriptType").getAsString()) {
-            case "server_scripts" -> runCommand(server, "kubejs reload server-scripts");
-            case "startup_scripts" -> runCommand(server, "kubejs reload startup-scripts");
-            case "client_scripts" -> runCommand(server, "kubejs reload client-scripts");
+            case "server_scripts" -> runCommand(server, "kubejs reload server_scripts");
+            case "startup_scripts" -> runCommand(server, "kubejs reload startup_scripts");
+            case "client_scripts" -> runCommand(server, "kubejs reload client_scripts");
             case "reload" -> runCommand(server, "reload");
         }
 
