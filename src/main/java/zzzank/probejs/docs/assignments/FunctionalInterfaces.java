@@ -7,10 +7,6 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.stream.Collectors;
 
-/**
- * optional, only useful when `checkJS` in jsconfig is enabled
- * @author ZZZank
- */
 public class FunctionalInterfaces extends ProbeJSPlugin {
 
     @Override

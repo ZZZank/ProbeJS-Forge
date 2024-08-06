@@ -7,7 +7,6 @@ import lombok.val;
 import zzzank.probejs.features.rhizo.RemapperBridge;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 
-//TODO: replace with js file for full backward compat
 public class Require extends BaseFunction {
     private final ScriptManager manager;
 

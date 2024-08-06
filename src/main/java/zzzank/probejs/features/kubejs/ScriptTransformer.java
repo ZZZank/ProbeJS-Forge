@@ -44,7 +44,8 @@ public class ScriptTransformer {
             val variables = declaration.getVariables();
             for (val variable : variables) {
                 // used require()
-                if (variable.getInitializer() instanceof FunctionCall call
+                if (
+                    variable.getInitializer() instanceof FunctionCall call
                     && call.getTarget() instanceof Name name
                     && name.getIdentifier().equals("require")
                 ) {
@@ -89,16 +90,18 @@ public class ScriptTransformer {
                 tLine = tLine.substring(6).trim();
                 String[] parts = tLine.split(" ", 2);
 
-                var identifier = switch (parts[0]) {
+                val identifier = switch (parts[0]) {
                     case "function" -> parts[1].split("\\(")[0];
                     case "var", "let", "const" -> parts[1].split(" ")[0];
                     default -> null;
                 };
+                if (identifier == null) {
+                    continue;
+                }
 
-                if (identifier == null) continue;
                 exportedSymbols.add(identifier);
+                lines.set(i, tLine);
             }
-            lines.set(i, tLine);
         }
     }
 
