@@ -1,6 +1,6 @@
 package com.probejs.formatter.resolver;
 
-import com.probejs.ProbeJS;
+import com.probejs.integration.RhizoState;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,7 +22,7 @@ public class ClazzFilter {
     }
 
     public static boolean acceptMethod(String methodName) {
-        if (!ProbeJS.isRhizoLoaded()) {
+        if (!RhizoState.MOD.get()) {
             //fallback for Rhino
             return !methodName.equals("constructor");
         }
@@ -32,7 +32,7 @@ public class ClazzFilter {
     }
 
     public static boolean acceptField(String fieldName) {
-        if (!ProbeJS.isRhizoLoaded()) {
+        if (!RhizoState.MOD.get()) {
             //fallback for Rhino
             return !fieldName.equals("constructor");
         }

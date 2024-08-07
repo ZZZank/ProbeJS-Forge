@@ -2,7 +2,7 @@ package com.probejs.info.clazz;
 
 import com.probejs.info.type.TypeResolver;
 import com.probejs.util.PUtil;
-import com.probejs.util.RemapperBridge;
+import com.probejs.integration.RemapperBridge;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 
@@ -19,7 +19,7 @@ public class FieldInfo extends BaseMemberInfo implements Comparable<FieldInfo> {
     private final ClassInfo from;
 
     private static String getRemappedOrDefault(Field field, Class<?> clazz) {
-        String mapped = RemapperBridge.getRemapper().getMappedField(clazz, field);
+        String mapped = RemapperBridge.getRemapper().remapField(clazz, field);
         if (!mapped.isEmpty()) {
             return mapped;
         }

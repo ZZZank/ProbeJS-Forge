@@ -99,4 +99,23 @@ public abstract class PUtil {
         }
         return defaultVal;
     }
+
+    public static Class<?> classOrNull(String name) {
+        return classOrNull(name, false);
+    }
+
+    public static Class<?> classOrNull(String name, boolean printError) {
+        try {
+            return Class.forName(name);
+        } catch (Throwable e) {
+            if (printError) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static boolean classExist(String name) {
+        return classOrNull(name) != null;
+    }
 }

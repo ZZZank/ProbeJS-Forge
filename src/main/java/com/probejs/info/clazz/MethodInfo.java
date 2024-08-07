@@ -2,7 +2,7 @@ package com.probejs.info.clazz;
 
 import com.probejs.info.type.JavaType;
 import com.probejs.info.type.TypeResolver;
-import com.probejs.util.RemapperBridge;
+import com.probejs.integration.RemapperBridge;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +30,7 @@ public class MethodInfo extends BaseMemberInfo {
     private List<JavaType> typeVariables;
 
     private static String getRemappedOrDefault(Method method, Class<?> from) {
-        String mapped = RemapperBridge.getRemapper().getMappedMethod(from, method);
+        String mapped = RemapperBridge.getRemapper().remapMethod(from, method);
         if (!mapped.isEmpty()) {
             return mapped;
         }

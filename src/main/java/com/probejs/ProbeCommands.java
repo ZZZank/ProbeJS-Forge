@@ -14,8 +14,9 @@ import com.probejs.document.parser.processor.DocumentProviderManager;
 import com.probejs.formatter.resolver.ClazzFilter;
 import com.probejs.formatter.resolver.NameResolver;
 import com.probejs.info.SpecialData;
+import com.probejs.integration.RhizoState;
 import com.probejs.util.PText;
-import com.probejs.util.RemapperBridge;
+import com.probejs.integration.RemapperBridge;
 import dev.latvian.kubejs.KubeJSPaths;
 
 import java.nio.file.Files;
@@ -106,7 +107,7 @@ public class ProbeCommands {
     }
 
     private static int dump(CommandContext<CommandSourceStack> context) {
-        if (!ProbeJS.isRhizoLoaded()) {
+        if (!RhizoState.MOD.get()) {
             sendSuccess(PText.translatable("probejs.rhizo_missing").withStyle(ChatFormatting.RED), context);
             sendSuccess(PText.translatable("probejs.download_rhizo_help")
                 .append(PText.url("CurseForge",

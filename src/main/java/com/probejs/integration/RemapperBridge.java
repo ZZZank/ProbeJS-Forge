@@ -1,6 +1,7 @@
-package com.probejs.util;
+package com.probejs.integration;
 
 import com.probejs.ProbeJS;
+import com.probejs.util.PUtil;
 import dev.latvian.mods.rhino.Context;
 
 import java.lang.reflect.Field;
@@ -16,7 +17,7 @@ public abstract class RemapperBridge {
     }
 
     public static void refreshRemapper() {
-        if (!ProbeJS.isRhizoLoaded()) {
+        if (!RhizoState.MOD.get()) {
             ProbeJS.LOGGER.warn("You seem to be using Rhino instead of newer Rhizo, skipping Remapper check");
             return;
         }
@@ -33,13 +34,13 @@ public abstract class RemapperBridge {
 
     public interface IRemapper {
 
-        String getMappedClass(Class<?> from);
+        String remapClass(Class<?> from);
 
-        String getUnmappedClass(String from);
+        String unmapClass(String from);
 
-        String getMappedField(Class<?> from, Field field);
+        String remapField(Class<?> from, Field field);
 
-        String getMappedMethod(Class<?> from, Method method);
+        String remapMethod(Class<?> from, Method method);
 
     }
 
@@ -60,44 +61,44 @@ public abstract class RemapperBridge {
         }
 
         @Override
-        public String getMappedClass(Class<?> from) {
+        public String remapClass(Class<?> from) {
             return PUtil.tryOrDefault(()->(String) mapClass.invoke(source, from), "");
         }
 
         @Override
-        public String getUnmappedClass(String from) {
+        public String unmapClass(String from) {
             return PUtil.tryOrDefault(()->(String) unmapClass.invoke(source, from), "");
         }
 
         @Override
-        public String getMappedField(Class<?> from, Field field) {
+        public String remapField(Class<?> from, Field field) {
             return PUtil.tryOrDefault(()->(String) mapField.invoke(source, from, field), "");
         }
 
         @Override
-        public String getMappedMethod(Class<?> from, Method method) {
+        public String remapMethod(Class<?> from, Method method) {
             return PUtil.tryOrDefault(()->(String) mapMethod.invoke(source, from, method), "");
         }
     }
 
     private static class EmptyRemapper implements IRemapper {
         @Override
-        public String getMappedClass(Class<?> from) {
+        public String remapClass(Class<?> from) {
             return "";
         }
 
         @Override
-        public String getUnmappedClass(String from) {
+        public String unmapClass(String from) {
             return "";
         }
 
         @Override
-        public String getMappedField(Class<?> from, Field field) {
+        public String remapField(Class<?> from, Field field) {
             return "";
         }
 
         @Override
-        public String getMappedMethod(Class<?> from, Method method) {
+        public String remapMethod(Class<?> from, Method method) {
             return "";
         }
     }
