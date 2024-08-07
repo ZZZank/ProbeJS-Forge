@@ -1,4 +1,6 @@
 {
+  "probejs.rhizo_missing": "Rhizo未安装。这会严重破坏类的扫描，导致导出的类数量异常地少，并导致大部分方法/字段的命名令人发懵。",
+  "probejs.download_rhizo_help": "你可以通过CurseForge或者Github的Release页面下载Rhizo：",
   "probejs.dump.start": "ProbeJS 类型生成已启动。",
   "probejs.dump.snippets_generated": "VSCode快捷脚本已生成。",
   "probejs.dump.mod_changed": "检测到模组环境变动。",

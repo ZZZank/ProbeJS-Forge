@@ -1,8 +1,10 @@
 package zzzank.probejs;
 
+import dev.latvian.kubejs.bindings.TextWrapper;
 import lombok.val;
 import net.minecraft.network.chat.Component;
 import zzzank.probejs.features.kubejs.SpecialData;
+import zzzank.probejs.features.rhizo.RhizoState;
 import zzzank.probejs.utils.GameUtils;
 
 import java.util.function.Consumer;
@@ -35,6 +37,21 @@ public class ProbeDumpingThread extends Thread {
 
     @Override
     public void run() {
+        if (!RhizoState.MOD.get()) {
+            messageSender.accept(TextWrapper.translate("probejs.rhizo_missing").red().component());
+            messageSender.accept(TextWrapper
+                .translate("probejs.download_rhizo_help")
+                .append(TextWrapper.string("CurseForge")
+                    .underlined()
+                    .click("https://www.curseforge.com/minecraft/mc-mods/rhizo/files"))
+                .append(" / ")
+                .append(TextWrapper.string("Github")
+                    .underlined()
+                    .click("https://github.com/ZZZank/Rhizo/releases/latest"))
+                .component()
+            );
+        }
+
         SpecialData.refresh();
         val probeDump = new ProbeDump();
         probeDump.defaultScripts();

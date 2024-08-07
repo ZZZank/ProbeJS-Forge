@@ -1,4 +1,6 @@
 {
+  "probejs.rhizo_missing": "Rhizo is not installed. This will severely break class scanning, causing dumped classes to be abnormally few, and lead to confusing naming of most methods and fields.",
+  "probejs.download_rhizo_help": "You can download Rhizo via CurseForge or Github Release page: ",
   "probejs.dump.start": "ProbeJS dump started.",
   "probejs.dump.snippets_generated": "Snippets for VSCode generated.",
   "probejs.dump.mod_changed": "Mod environment changed.",
