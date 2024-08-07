@@ -64,6 +64,13 @@ repositories {
 			includeGroup "org.parchmentmc.data"
 		}
 	}
+
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
