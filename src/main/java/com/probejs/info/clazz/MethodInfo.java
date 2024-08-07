@@ -29,16 +29,8 @@ public class MethodInfo extends BaseMemberInfo {
     @Setter
     private List<JavaType> typeVariables;
 
-    private static String getRemappedOrDefault(Method method, Class<?> from) {
-        String mapped = RemapperBridge.getRemapper().remapMethod(from, method);
-        if (!mapped.isEmpty()) {
-            return mapped;
-        }
-        return method.getName();
-    }
-
     public MethodInfo(Method method, Class<?> from) {
-        super(getRemappedOrDefault(method, from), TypeResolver.resolve(method.getGenericReturnType()));
+        super(RemapperBridge.remapMethod(from, method), TypeResolver.resolve(method.getGenericReturnType()));
         this.raw = method;
         this.shouldHide = method.getAnnotation(HideFromJS.class) != null;
         this.from = ClassInfo.ofCache(from);

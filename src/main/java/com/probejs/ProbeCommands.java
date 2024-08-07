@@ -118,7 +118,6 @@ public class ProbeCommands {
         }
         try {
             sendSuccess("ProbeJS initializing...", context);
-            RemapperBridge.refreshRemapper();
             DocumentProviderManager.init();
             CommentHandler.init();
             DocManager.init();

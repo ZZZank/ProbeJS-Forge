@@ -18,16 +18,8 @@ public class FieldInfo extends BaseMemberInfo implements Comparable<FieldInfo> {
     private final Object staticValue;
     private final ClassInfo from;
 
-    private static String getRemappedOrDefault(Field field, Class<?> clazz) {
-        String mapped = RemapperBridge.getRemapper().remapField(clazz, field);
-        if (!mapped.isEmpty()) {
-            return mapped;
-        }
-        return field.getName();
-    }
-
     public FieldInfo(Field field, Class<?> clazz) {
-        super(getRemappedOrDefault(field, clazz), TypeResolver.resolve(field.getGenericType()));
+        super(RemapperBridge.remapField(clazz, field), TypeResolver.resolve(field.getGenericType()));
         this.raw = field;
         this.from = ClassInfo.ofCache(clazz);
         this.modifiers = field.getModifiers();

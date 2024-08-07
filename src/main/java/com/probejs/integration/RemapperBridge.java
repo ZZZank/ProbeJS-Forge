@@ -1,105 +1,52 @@
 package com.probejs.integration;
 
-import com.probejs.ProbeJS;
-import com.probejs.util.PUtil;
-import dev.latvian.mods.rhino.Context;
+import dev.latvian.mods.rhino.util.remapper.RemapperManager;
+import lombok.val;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public abstract class RemapperBridge {
 
-    public static final IRemapper emptyRemapper = new EmptyRemapper();
-    private static IRemapper reference = emptyRemapper;
+    private static final Function<Class<?>, String> remapClassFn;
+    private static final Function<String, String> unmapClassFn;
+    private static final BiFunction<Class<?>, Field, String> remapFieldFn;
+    private static final BiFunction<Class<?>, Method, String> remapMethodFn;
 
-    public static IRemapper getRemapper() {
-        return RemapperBridge.reference;
-    }
-
-    public static void refreshRemapper() {
-        if (!RhizoState.MOD.get()) {
-            ProbeJS.LOGGER.warn("You seem to be using Rhino instead of newer Rhizo, skipping Remapper check");
-            return;
-        }
-        ProbeJS.LOGGER.info("Refreshing Remapper reference");
-        try {
-            RemapperBridge.reference = new ReflectingRemapper();
-            ProbeJS.LOGGER.info("Remapper reference refreshed");
-        } catch (Exception e) {
-            ProbeJS.LOGGER.error("Unable to refresh Remapper reference");
-            e.printStackTrace();
-            RemapperBridge.reference = RemapperBridge.emptyRemapper;
+    static {
+        if (RhizoState.REMAPPER) {
+            val remapper = RemapperManager.getDefault();
+            remapClassFn = remapper::remapClass;
+            unmapClassFn = remapper::unmapClass;
+            remapFieldFn = remapper::remapField;
+            remapMethodFn = remapper::remapMethod;
+        } else {
+            remapClassFn = Class::getName;
+            unmapClassFn = Function.identity();
+            remapFieldFn = (c, f) -> f.getName();
+            remapMethodFn = (c, m) -> m.getName();
         }
     }
 
-    public interface IRemapper {
-
-        String remapClass(Class<?> from);
-
-        String unmapClass(String from);
-
-        String remapField(Class<?> from, Field field);
-
-        String remapMethod(Class<?> from, Method method);
-
+    public static String remapClass(Class<?> from) {
+        val remapped = remapClassFn.apply(from);
+        return remapped.isEmpty() ? from.getName() : remapped;
     }
 
-    private static class ReflectingRemapper implements IRemapper {
-        private final Object source;
-        private final Method mapClass;
-        private final Method unmapClass;
-        private final Method mapField;
-        private final Method mapMethod;
-
-        public ReflectingRemapper() throws Exception {
-            Class<?> c = Class.forName("dev.latvian.mods.rhino.util.remapper.Remapper");
-            source = Context.class.getMethod("getRemapper").invoke(null);
-            mapClass = c.getMethod("getMappedClass", Class.class);
-            unmapClass = c.getMethod("getUnmappedClass", String.class);
-            mapField = c.getMethod("getMappedField", Class.class, Field.class);
-            mapMethod = c.getMethod("getMappedMethod", Class.class, Method.class);
-        }
-
-        @Override
-        public String remapClass(Class<?> from) {
-            return PUtil.tryOrDefault(()->(String) mapClass.invoke(source, from), "");
-        }
-
-        @Override
-        public String unmapClass(String from) {
-            return PUtil.tryOrDefault(()->(String) unmapClass.invoke(source, from), "");
-        }
-
-        @Override
-        public String remapField(Class<?> from, Field field) {
-            return PUtil.tryOrDefault(()->(String) mapField.invoke(source, from, field), "");
-        }
-
-        @Override
-        public String remapMethod(Class<?> from, Method method) {
-            return PUtil.tryOrDefault(()->(String) mapMethod.invoke(source, from, method), "");
-        }
+    public static String unmapClass(String from) {
+        val remapped = unmapClassFn.apply(from);
+        return remapped.isEmpty() ? from : remapped;
     }
 
-    private static class EmptyRemapper implements IRemapper {
-        @Override
-        public String remapClass(Class<?> from) {
-            return "";
-        }
+    public static String remapField(Class<?> from, Field field) {
+        val remapped = remapFieldFn.apply(from, field);
+        return remapped.isEmpty() ? field.getName() : remapped;
+    }
 
-        @Override
-        public String unmapClass(String from) {
-            return "";
-        }
-
-        @Override
-        public String remapField(Class<?> from, Field field) {
-            return "";
-        }
-
-        @Override
-        public String remapMethod(Class<?> from, Method method) {
-            return "";
-        }
+    public static String remapMethod(Class<?> from, Method method) {
+        val remapped = remapMethodFn.apply(from, method);
+        return remapped.isEmpty() ? method.getName() : remapped;
     }
 }
