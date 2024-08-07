@@ -31,10 +31,8 @@ public class ForgeEvents extends ProbeJSPlugin {
                 "handler",
                 Types.lambda()
                     .param("event", Types.instanceType(Types.primitive(T)))
-                    .returnType(Types.VOID)
                     .build()
             )
-            .returnType(Types.VOID)
             .build());
     }
 

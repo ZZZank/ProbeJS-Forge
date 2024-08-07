@@ -9,13 +9,13 @@ import zzzank.probejs.ProbeJS;
 import zzzank.probejs.features.kubejs.SpecialData;
 import zzzank.probejs.utils.registry.RegistryInfo;
 
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GameUtils {
     public static long modHash() {
@@ -59,5 +59,16 @@ public class GameUtils {
         lines.add(t);
         lines.addAll(Arrays.asList(trace));
         ProbeJS.LOGGER.error(lines.stream().map(Object::toString).collect(Collectors.joining("\n")));
+    }
+
+    @Nullable
+    public static <T> T anyIn(Iterable<T> iterable) {
+        val iterator = iterable.iterator();
+        return iterator.hasNext() ? iterator.next() : null;
+    }
+
+    @Nullable
+    public static <T> T anyIn(Stream<T> stream) {
+        return stream.findAny().orElse(null);
     }
 }

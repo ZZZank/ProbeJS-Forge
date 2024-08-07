@@ -1,34 +1,50 @@
 package zzzank.probejs.docs.events;
 
+import dev.latvian.kubejs.script.ScriptType;
+import lombok.val;
+import zzzank.probejs.features.kubejs.SpecialData;
+import zzzank.probejs.lang.java.clazz.ClassPath;
+import zzzank.probejs.lang.typescript.ScriptDump;
+import zzzank.probejs.lang.typescript.code.ts.Statements;
+import zzzank.probejs.lang.typescript.code.ts.Wrapped;
+import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
+import zzzank.probejs.utils.GameUtils;
+import zzzank.probejs.utils.NameUtils;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class RegistryEvents extends ProbeJSPlugin {
 
-//    @Override
-//    public void addGlobals(ScriptDump scriptDump) {
-//        if (scriptDump.scriptType != ScriptType.STARTUP) return;
-//
-//        Wrapped.Namespace groupNamespace = new Wrapped.Namespace("StartupEvents");
-//
-//        for (ResourceKey<? extends Registry<?>> key : BuiltInRegistries.REGISTRY.registryKeySet()) {
-//            ClassPath registryPath = getRegistryClassPath(key.location().getNamespace(), key.location().getPath());
-//            String extraName = key.location().getNamespace().equals("minecraft") ?
-//                    key.location().getPath() :
-//                    key.location().toString();
-//
-//            MethodDeclaration declaration = Statements.method("registry")
-//                    .param("type", Types.literal(extraName))
-//                    .param("handler", Types.lambda()
-//                            .param("event", Types.type(registryPath))
-//                            .build()
-//                    )
-//                    .build();
-//            groupNamespace.addCode(declaration);
-//        }
-//
-//        scriptDump.addGlobal("registry_events", groupNamespace);
-//    }
-//
+    @Override
+    public void addGlobals(ScriptDump scriptDump) {
+        if (scriptDump.scriptType != ScriptType.STARTUP) {
+            return;
+        }
+
+        val groupNamespace = new Wrapped.Namespace("StartupEvents");
+
+        for (val info : SpecialData.instance().registries()) {
+            val key = info.resKey();
+            val registryPath = getRegistryClassPath(key.location().getNamespace(), key.location().getPath());
+            val extraName = key.location().getNamespace().equals("minecraft")
+                ? key.location().getPath()
+                : key.location().toString();
+
+            val declaration = Statements.func("registry")
+                .param("type", Types.literal(extraName))
+                .param("handler", Types.lambda()
+                    .param("event", Types.type(registryPath))
+                    .build()
+                )
+                .build();
+            groupNamespace.addCode(declaration);
+        }
+
+        scriptDump.addGlobal("registry_events", groupNamespace);
+    }
+
 //    @Override
 //    public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
 //        if (scriptDump.scriptType != ScriptType.STARTUP) return;
@@ -57,12 +73,14 @@ public class RegistryEvents extends ProbeJSPlugin {
 //                .ifPresent(method -> method.params.get(1).type = Types.lambda().returnType(Types.generic("T")).build());
 //
 //    }
-//
-//    private static ClassPath getRegistryClassPath(String namespace, String location) {
-//        return new ClassPath("zzzank.probejs.generated.registry.%s.%s".formatted(
-//                namespace, NameUtils.rlToTitle(location)
-//        ));
-//    }
+
+    private static ClassPath getRegistryClassPath(String namespace, String location) {
+        return new ClassPath(String.format(
+            "zzzank.probejs.generated.registry.%s.%s",
+            namespace,
+            NameUtils.rlToTitle(location)
+        ));
+    }
 //
 //    private static ClassDecl generateRegistryClass(ResourceKey<?> key, Class<?> baseClass, RegistryInfo<?> info) {
 //        ClassDecl.Builder builder = Statements.clazz(NameUtils.rlToTitle(key.location().getPath()))
@@ -84,20 +102,24 @@ public class RegistryEvents extends ProbeJSPlugin {
 //
 //        return builder.build();
 //    }
-//
-//    @Override
-//    public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
-//        Set<Class<?>> classes = new HashSet<>();
-//
-//        for (ResourceKey<? extends Registry<?>> key : BuiltInRegistries.REGISTRY.registryKeySet()) {
-//            RegistryInfo<?> registryInfo = RegistryInfo.of(RegistryUtils.castKey(key));
-//            var defaultType = registryInfo.getDefaultType();
-//            if (defaultType != null) classes.add(defaultType.builderClass());
-//            for (BuilderType<?> type : registryInfo.getTypes()) {
-//                classes.add(type.builderClass());
-//            }
-//        }
-//
-//        return classes;
-//    }
+
+    @Override
+    public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
+        Set<Class<?>> classes = new HashSet<>();
+
+        for (val info : SpecialData.instance().registries()) {
+            val forgeRegistry = info.forgeRaw();
+            val vanillaRegistry = info.raw();
+            classes.add(forgeRegistry.getRegistrySuperType());
+            if (vanillaRegistry != null) {
+                //dont use val here, it's unable to figure out the exact type
+                var instance = GameUtils.anyIn(vanillaRegistry.entrySet());
+                if (instance != null) {
+                    classes.add(instance.getValue().getClass());
+                }
+            }
+        }
+
+        return classes;
+    }
 }

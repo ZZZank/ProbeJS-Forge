@@ -42,10 +42,12 @@ public class ProbeDumpingThread extends Thread {
             messageSender.accept(TextWrapper
                 .translate("probejs.download_rhizo_help")
                 .append(TextWrapper.string("CurseForge")
+                    .aqua()
                     .underlined()
                     .click("https://www.curseforge.com/minecraft/mc-mods/rhizo/files"))
                 .append(" / ")
                 .append(TextWrapper.string("Github")
+                    .aqua()
                     .underlined()
                     .click("https://github.com/ZZZank/Rhizo/releases/latest"))
                 .component()
