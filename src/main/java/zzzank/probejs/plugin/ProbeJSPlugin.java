@@ -4,6 +4,7 @@ import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.util.KubeJSPlugins;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.utils.GameUtils;
 
 import java.util.function.Consumer;
 
@@ -23,7 +24,11 @@ public class ProbeJSPlugin extends KubeJSPlugin implements ProbeDocPlugin, Probe
                 try {
                     action.accept(probePlugin);
                 } catch (Exception e) {
-                    ProbeJS.LOGGER.error("Error happened when applying ProbeJS plugin", e);
+                    ProbeJS.LOGGER.error(
+                        "Error happened when applying ProbeJS plugin: {}",
+                        probePlugin.getClass().getName()
+                    );
+                    GameUtils.logThrowable(e);
                 }
             }
         });

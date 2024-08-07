@@ -28,6 +28,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
+import zzzank.probejs.utils.GameUtils;
 import zzzank.probejs.utils.Lazy;
 
 import java.io.BufferedWriter;
@@ -199,19 +200,12 @@ public class ScriptDump {
         dumped = 0;
         total = 0;
         transpiler.init();
-        ProbeJSPlugin.forEachPlugin(plugin -> {
-            try {
-                plugin.assignType(this);
-            } catch (Throwable t) {
-                ProbeJS.LOGGER.error(t.getMessage());
-                for (StackTraceElement stackTraceElement : t.getStackTrace()) {
-                    ProbeJS.LOGGER.error(stackTraceElement.toString());
-                }
-            }
-        });
+        ProbeJSPlugin.forEachPlugin(plugin -> plugin.assignType(this));
+
         Map<String, BufferedWriter> files = new HashMap<>();
         Map<ClassPath, TypeScriptFile> globalClasses = transpiler.dump(recordedClasses);
         ProbeJSPlugin.forEachPlugin(plugin -> plugin.modifyClasses(this, globalClasses));
+
         total = globalClasses.size();
         for (Map.Entry<ClassPath, TypeScriptFile> entry : globalClasses.entrySet()) {
             try {
@@ -287,10 +281,7 @@ public class ScriptDump {
                 if (writer != null) output.writeAsModule(writer);
                 dumped++;
             } catch (Throwable t) {
-                ProbeJS.LOGGER.error(t.getMessage());
-                for (StackTraceElement stackTraceElement : t.getStackTrace()) {
-                    ProbeJS.LOGGER.error(stackTraceElement.toString());
-                }
+                GameUtils.logThrowable(t);
             }
         }
 

@@ -3,6 +3,7 @@ package zzzank.probejs;
 import lombok.val;
 import net.minecraft.network.chat.Component;
 import zzzank.probejs.features.kubejs.SpecialData;
+import zzzank.probejs.utils.GameUtils;
 
 import java.util.function.Consumer;
 
@@ -40,7 +41,7 @@ public class ProbeDumpingThread extends Thread {
         try {
             probeDump.trigger(messageSender);
         } catch (Throwable e) {
-            e.printStackTrace();
+            GameUtils.logThrowable(e);
         }
     }
 }

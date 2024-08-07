@@ -17,6 +17,7 @@ import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
+import zzzank.probejs.utils.GameUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -62,10 +63,7 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
                 consumer.accept(builtinDoc.get());
             } catch (Throwable t) {
                 ProbeJS.LOGGER.error(String.format("Error when applying builtin doc: %s", builtinDoc.get().getClass()));
-                ProbeJS.LOGGER.error(t.getMessage());
-                for (StackTraceElement stackTraceElement : t.getStackTrace()) {
-                    ProbeJS.LOGGER.error(stackTraceElement.toString());
-                }
+                GameUtils.logThrowable(t);
                 ProbeJS.LOGGER.error("If you found any problem in generated docs, please report to ProbeJS's github!");
             }
         }

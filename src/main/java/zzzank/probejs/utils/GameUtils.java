@@ -5,13 +5,17 @@ import me.shedaniel.architectury.platform.Mod;
 import me.shedaniel.architectury.platform.Platform;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import zzzank.probejs.ProbeJS;
 import zzzank.probejs.features.kubejs.SpecialData;
 import zzzank.probejs.utils.registry.RegistryInfo;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GameUtils {
     public static long modHash() {
@@ -47,5 +51,13 @@ public class GameUtils {
         } catch (NoSuchAlgorithmException e) {
             return -1;
         }
+    }
+
+    public static void logThrowable(Throwable t) {
+        val trace = t.getStackTrace();
+        val lines = new ArrayList<>(1 + trace.length);
+        lines.add(t);
+        lines.addAll(Arrays.asList(trace));
+        ProbeJS.LOGGER.error(lines.stream().map(Object::toString).collect(Collectors.joining("\n")));
     }
 }
