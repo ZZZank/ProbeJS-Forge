@@ -38,8 +38,11 @@ public abstract class MixinConsole {
             if (path == null) {
                 return;
             }
-            LintingWarning warning = new LintingWarning(path, LintingWarning.Level.ERROR,
-                rhinoException.lineNumber(), rhinoException.columnNumber(),
+            LintingWarning warning = new LintingWarning(
+                path,
+                LintingWarning.Level.ERROR,
+                rhinoException.lineNumber(),
+                rhinoException.columnNumber(),
                 rhinoException.details()
             );
             GlobalStates.SERVER.broadcast("accept_error", warning.asPayload());

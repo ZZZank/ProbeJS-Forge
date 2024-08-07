@@ -30,7 +30,7 @@ public class EvaluateCommand extends Command {
             default -> throw new RuntimeException("Unable to get script manager.");
         };
 
-        //well, there's one and only one ScriptPack in so-called `scriptManager.packs`
+        //well, there's one and only one ScriptPack in so-called scriptManager.pack`s`
         val pack = scriptManager.packs.values().stream().findAny().get();
         Object result = pack.context.evaluateString(pack.scope, content, "probejsEvaluator", 1, null);
         if (result instanceof NativeJavaObject nativeJavaObject) {

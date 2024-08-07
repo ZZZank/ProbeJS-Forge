@@ -84,9 +84,10 @@ public class JsonUtils {
 
     public static Object deserializeObject(JsonElement jsonElement) {
         if (jsonElement instanceof JsonPrimitive primitive) {
-            if (primitive.isBoolean()) return primitive.getAsBoolean();
-            if (primitive.isString()) return primitive.getAsString();
-            if (primitive.isNumber()) return primitive.getAsNumber();
+            return primitive.isBoolean() ? primitive.getAsBoolean()
+                : primitive.isString() ? primitive.getAsString()
+                    : primitive.isNumber() ? primitive.getAsNumber()
+                        : null;
         } else if (jsonElement instanceof JsonArray array) {
             List<Object> deserialized = new ArrayList<>();
             for (JsonElement element : array) {

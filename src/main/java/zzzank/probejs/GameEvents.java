@@ -96,9 +96,8 @@ public class GameEvents {
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
         val dispatcher = event.getDispatcher();
-        BiConsumer<CommandContext<CommandSourceStack>, Component> sendMsg = (context, text) -> {
-            context.getSource().sendSuccess(text, true);
-        };
+        BiConsumer<CommandContext<CommandSourceStack>, Component> sendMsg =
+            (context, text) -> context.getSource().sendSuccess(text, true);
         dispatcher.register(
             Commands.literal("probejs")
                 .then(Commands.literal("dump")
@@ -109,8 +108,7 @@ public class GameEvents {
                             return Command.SINGLE_SUCCESS;
                         }
                         KubeJS.PROXY.reloadClientInternal();
-                        ProbeDumpingThread.create(msg -> sendMsg.accept(context, TextWrapper.of(msg).component()))
-                            .start();
+                        ProbeDumpingThread.create(msg -> sendMsg.accept(context, msg)).start();
                         return Command.SINGLE_SUCCESS;
                     })
                 )
