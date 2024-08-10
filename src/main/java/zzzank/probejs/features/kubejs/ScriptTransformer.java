@@ -111,8 +111,8 @@ public class ScriptTransformer {
             .map(s -> String.format("%s: %s", s, s))
             .collect(Collectors.joining(", "));
         String destructed = String.join(", ", exportedSymbols);
-        lines.add(0, String.format("const {%s} = (()=>{", destructed));
-        lines.add(String.format("return {%s};})()", exported));
+        lines.set(0, String.format("const {%s} = (()=>{ %s", destructed, lines.get(0)));
+        lines.set(lines.size() - 1, String.format("%s; return {%s};})()", lines.get(lines.size() - 1), exported));
     }
 
     public String[] transform() {
