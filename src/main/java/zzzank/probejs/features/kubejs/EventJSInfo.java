@@ -6,11 +6,10 @@ import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
+import zzzank.probejs.utils.CollectUtils;
+import zzzank.probejs.utils.JsonUtils;
 import zzzank.probejs.utils.Mutable;
 import zzzank.probejs.utils.ReflectUtils;
-import zzzank.probejs.utils.json.JArray;
-import zzzank.probejs.utils.json.JObject;
-import zzzank.probejs.utils.json.JPrimitive;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -64,16 +63,15 @@ public record EventJSInfo(
     }
 
     public JsonObject toJson() {
-        return JObject.of()
-            .add("id", id)
-            .ifThen(hasSub(), (jObj) -> jObj.add("sub", sub.get()))
-            .add("class", clazzRaw.getName())
-            .add(
-                "type",
-                JArray.of(scriptTypes.stream().map(ScriptType::name).map(JPrimitive::of))
+        return (JsonObject) JsonUtils.parseObject(
+            CollectUtils.ofMap(
+                "id", id,
+                "sub", sub.get(),
+                "class", clazzRaw.getName(),
+                "type", CollectUtils.mapToList(scriptTypes, ScriptType::name),
+                "cancellable", this.cancellable
             )
-            .add("cancellable", this.cancellable)
-            .build();
+        );
     }
 
     @Override

@@ -63,19 +63,15 @@ public class JsonUtils {
         } else if (obj instanceof Boolean bool) {
             return new JsonPrimitive(bool);
         } else if (obj instanceof List<?> list) {
-            JsonArray jsonArray = new JsonArray();
-            for (Object o : list) {
+            val jsonArray = new JsonArray();
+            for (val o : list) {
                 jsonArray.add(parseObject(o));
             }
             return jsonArray;
         } else if (obj instanceof Map<?, ?> map) {
-            JsonObject object = new JsonObject();
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                Object k = entry.getKey();
-                Object v = entry.getValue();
-                if (k instanceof String s) {
-                    object.add(s, parseObject(v));
-                }
+            val object = new JsonObject();
+            for (val entry : map.entrySet()) {
+                object.add(String.valueOf(entry.getKey()), parseObject(entry.getValue()));
             }
             return object;
         }
