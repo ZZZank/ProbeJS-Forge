@@ -47,10 +47,10 @@ public class SpecialTypes extends ProbeJSPlugin {
 
     private static void defineLiteralSnippets(SnippetDump dump, String symbol, Collection<String> literals) {
         dump.snippet(symbol)
-                .prefix("@" + symbol)
-                .choices(literals.stream()
-                        .map(ProbeJS.GSON::toJson)
-                        .collect(Collectors.toSet())
-                );
+            .prefix("@" + symbol)
+            .choices(literals.stream()
+                .map(ProbeJS.GSON::toJson)
+                .collect(Collectors.toSet())
+            );
     }
 }

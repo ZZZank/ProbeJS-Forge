@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class RegistryUtils {
 
     public static Collection<ResourceKey<? extends Registry<?>>> getRegistries(RegistryAccess access) {
-        return SpecialData.instance().registries().stream().map(RegistryInfo::resKey).collect(Collectors.toList());
+        return SpecialData.instance().registries().stream().map((RegistryInfo registryInfo) -> registryInfo.resKey).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")

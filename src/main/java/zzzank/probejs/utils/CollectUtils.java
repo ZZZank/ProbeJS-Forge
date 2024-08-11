@@ -2,8 +2,10 @@ package zzzank.probejs.utils;
 
 import lombok.val;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * utils for collections
@@ -72,5 +74,16 @@ public interface CollectUtils {
         m.put(k4, v4);
         m.put(k5, v5);
         return m;
+    }
+
+    @Nullable
+    static <T> T anyIn(Iterable<T> iterable) {
+        val iterator = iterable.iterator();
+        return iterator.hasNext() ? iterator.next() : null;
+    }
+
+    @Nullable
+    static <T> T anyIn(Stream<T> stream) {
+        return stream.findAny().orElse(null);
     }
 }

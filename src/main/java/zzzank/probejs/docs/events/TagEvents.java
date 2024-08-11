@@ -41,7 +41,7 @@ public class TagEvents extends ProbeJSPlugin {
 
         val events = new ArrayList<Code>();
         for (val info : SpecialData.instance().registries()) {
-            val forgeRegistry = info.forgeRaw();
+            val forgeRegistry = info.forgeRaw;
             val tagFolder = forgeRegistry.getTagFolder();
             if (tagFolder == null) {
                 continue;
@@ -51,8 +51,8 @@ public class TagEvents extends ProbeJSPlugin {
 
         val groupNamespace = new Wrapped.Namespace("ServerEvents");
         for (val info : SpecialData.instance().registries()) {
-            val key = info.resKey();
-            val registry = info.raw();
+            val key = info.resKey;
+            val registry = info.raw;
             if (registry == null) {
                 continue;
             }

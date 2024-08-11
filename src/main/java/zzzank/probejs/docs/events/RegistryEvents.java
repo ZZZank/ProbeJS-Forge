@@ -9,7 +9,7 @@ import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.ts.Wrapped;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
-import zzzank.probejs.utils.GameUtils;
+import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.NameUtils;
 
 import java.util.HashSet;
@@ -26,7 +26,7 @@ public class RegistryEvents extends ProbeJSPlugin {
         val groupNamespace = new Wrapped.Namespace("StartupEvents");
 
         for (val info : SpecialData.instance().registries()) {
-            val key = info.resKey();
+            val key = info.resKey;
             val registryPath = getRegistryClassPath(key.location().getNamespace(), key.location().getPath());
             val extraName = key.location().getNamespace().equals("minecraft")
                 ? key.location().getPath()
@@ -108,12 +108,12 @@ public class RegistryEvents extends ProbeJSPlugin {
         Set<Class<?>> classes = new HashSet<>();
 
         for (val info : SpecialData.instance().registries()) {
-            val forgeRegistry = info.forgeRaw();
-            val vanillaRegistry = info.raw();
+            val forgeRegistry = info.forgeRaw;
+            val vanillaRegistry = info.raw;
             classes.add(forgeRegistry.getRegistrySuperType());
             if (vanillaRegistry != null) {
                 //dont use val here, it's unable to figure out the exact type
-                var instance = GameUtils.anyIn(vanillaRegistry.entrySet());
+                var instance = CollectUtils.anyIn(vanillaRegistry.entrySet());
                 if (instance != null) {
                     classes.add(instance.getValue().getClass());
                 }

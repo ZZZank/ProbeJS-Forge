@@ -1,7 +1,5 @@
 package zzzank.probejs.utils.registry;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -13,18 +11,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-@Getter
-@Accessors(fluent = true)
 public class RegistryInfo {
 
-    private final Registry<?> raw;
-    private final ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRaw;
-    private final ResourceKey<? extends Registry<?>> resKey;
-    private final ResourceLocation parentId;
-    private final ResourceLocation id;
-    private final Set<ResourceLocation> names;
+    public final Registry<?> raw;
+    public final ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRaw;
+    public final ResourceKey<? extends Registry<?>> resKey;
+    public final ResourceLocation parentId;
+    public final ResourceLocation id;
+    public final Set<ResourceLocation> names;
     @Nullable
-    private final StaticTagHelper<?> tagHelper;
+    public final StaticTagHelper<?> tagHelper;
 
     public RegistryInfo(ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRegistry) {
         this.forgeRaw = forgeRegistry;

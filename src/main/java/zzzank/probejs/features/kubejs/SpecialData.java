@@ -29,12 +29,12 @@ public record SpecialData(Map<ResourceLocation, Collection<ResourceLocation>> ta
     private static Map<ResourceLocation, Collection<ResourceLocation>> extractTagsFrom(Collection<RegistryInfo> registries) {
         val tags = new HashMap<ResourceLocation, Collection<ResourceLocation>>();
         for (val rInfo : registries) {
-            val tagHelper = rInfo.tagHelper();
+            val tagHelper = rInfo.tagHelper;
             if (tagHelper == null) {
                 continue;
             }
             val names = tagHelper.getAllTags().getAvailableTags();
-            val id = rInfo.id();
+            val id = rInfo.id;
             tags.put(id, names);
         }
         return tags;

@@ -10,7 +10,7 @@ import dev.latvian.kubejs.server.ServerScriptManager;
 import dev.latvian.mods.rhino.NativeJavaObject;
 import lombok.val;
 import zzzank.probejs.features.bridge.Command;
-import zzzank.probejs.utils.GameUtils;
+import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.JsonUtils;
 
 public class EvaluateCommand extends Command {
@@ -32,7 +32,7 @@ public class EvaluateCommand extends Command {
         };
 
         //well, there's one and only one ScriptPack in so-called scriptManager.pack`s`
-        val pack = GameUtils.anyIn(scriptManager.packs.values());
+        val pack = CollectUtils.anyIn(scriptManager.packs.values());
         if (pack == null) {
             throw new RuntimeException("Unable to get script context or scope.");
         }

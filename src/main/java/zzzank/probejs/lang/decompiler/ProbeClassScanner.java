@@ -36,53 +36,6 @@ public class ProbeClassScanner {
         ProbeJS.LOGGER.debug("scanned file '{}', current class count: {}", file.getName(), scannedClasses.size());
     }
 
-    /**
-     * get all loaded classes by reading {@link ClassLoader#classes} from {@code Thread.currentThread().getContextClassLoader()}
-     * and its parents
-     */
-    private void fromClassLoader() throws IOException {
-        val loader = Thread.currentThread().getContextClassLoader();
-        val resources = loader.getResources("");
-        while (resources.hasMoreElements()) {
-            val res = resources.nextElement();
-            if (res.getProtocol().equals("file")) {
-                scannedClasses.addAll(loadClassByPath(null, res.getPath(), loader));
-            }
-        }
-        ProbeJS.LOGGER.debug("scanned: {}", scannedClasses.size());
-    }
-
-    private List<Class<?>> loadClassByPath(String root, String path, ClassLoader load) {
-        File f = new File(path);
-        if (root == null) {
-            root = f.getPath();
-        }
-
-        if (!f.isFile() || !f.getName().endsWith(CLASS_SUFFIX)) {
-            File[] fs = f.listFiles();
-            if (fs == null) {
-                return Collections.emptyList();
-            }
-            val classes = new ArrayList<Class<?>>();
-            for (File file : fs) {
-                classes.addAll(loadClassByPath(root, file.getPath(), load));
-            }
-            return classes;
-        }
-
-        try {
-            val classPath = f.getPath();
-            val className = classPath
-                .substring(root.length() + 1, classPath.length() - CLASS_SUFFIX.length())
-                .replace('/', '.')
-                .replace('\\', '.');
-            return Collections.singletonList(load.loadClass(className));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return Collections.emptyList();
-        }
-    }
-
     static class ModClassesScanner {
 
         private final ZipFile file;
@@ -126,7 +79,7 @@ public class ProbeClassScanner {
                 .filter(name -> name.endsWith(CLASS_SUFFIX))
                 .map(name -> name.substring(0, name.length() - CLASS_SUFFIX.length()).replace("/", "."))
                 .filter(this::notFromMixinPackages)
-                .map(ReflectUtils::classOrNull)
+                .map(c -> ReflectUtils.classOrNull(c, false, false))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         }
