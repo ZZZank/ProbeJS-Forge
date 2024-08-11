@@ -56,12 +56,16 @@ public class JsonUtils {
     }
 
     public static JsonElement parseObject(Object obj) {
-        if (obj instanceof Number number) {
+        if (obj == null) {
+            return JsonNull.INSTANCE;
+        } else if (obj instanceof Number number) {
             return new JsonPrimitive(number);
         } else if (obj instanceof String string) {
             return new JsonPrimitive(string);
         } else if (obj instanceof Boolean bool) {
             return new JsonPrimitive(bool);
+        } else if (obj instanceof Character c) {
+            return new JsonPrimitive(c);
         } else if (obj instanceof List<?> list) {
             val jsonArray = new JsonArray();
             for (val o : list) {
@@ -71,7 +75,11 @@ public class JsonUtils {
         } else if (obj instanceof Map<?, ?> map) {
             val object = new JsonObject();
             for (val entry : map.entrySet()) {
-                object.add(String.valueOf(entry.getKey()), parseObject(entry.getValue()));
+                val key = entry.getKey();
+                val value = entry.getValue();
+                if (key != null && value != null) {
+                    object.add(key.toString(), parseObject(value));
+                }
             }
             return object;
         }
