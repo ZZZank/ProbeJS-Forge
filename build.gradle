@@ -124,6 +124,8 @@ dependencies {
 //    shade('com.github.javaparser:javaparser-symbol-solver-core:3.25.8')
 //    shade('com.github.javaparser:javaparser-core:3.25.8')
 //    implementation("org.vineflower:vineflower:${project.vineflower_version}")
+//    // https://mvnrepository.com/artifact/io.github.classgraph/classgraph
+//    shade('io.github.classgraph:classgraph:4.8.174')
 }
 
 processResources {
@@ -178,6 +180,8 @@ shadowJar {
 
     relocate("org.java_websocket", "zzzank.probejs.shaded.java_websocket")
     relocate("org.slf4j", "zzzank.probejs.shaded.slf4j")
+//    relocate("io.github.classgraph", "zzzank.probejs.shaded.classgraph")
+//    relocate("nonapi.io.github.classgraph", "zzzank.probejs.shaded.classgraph_nonapi")
 
     configurations = [project.configurations.shade]
 }
