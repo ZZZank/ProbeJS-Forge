@@ -36,9 +36,9 @@ public interface ReflectUtils {
         return classOrNull(name, false);
     }
 
-    static Class<?> classOrNull(String name, boolean printError) {
+    static Class<?> classOrNull(String name, ClassLoader loader, boolean initialize, boolean printError) {
         try {
-            return Class.forName(name);
+            return Class.forName(name, initialize, loader);
         } catch (Throwable e) {
             if (printError) {
                 e.printStackTrace();
@@ -47,7 +47,15 @@ public interface ReflectUtils {
         return null;
     }
 
+    static Class<?> classOrNull(String name, boolean initialize, boolean printError) {
+        return classOrNull(name, Thread.currentThread().getContextClassLoader(), initialize, printError);
+    }
+
+    static Class<?> classOrNull(String name, boolean printError) {
+        return classOrNull(name, Thread.currentThread().getContextClassLoader(), true, printError);
+    }
+
     static boolean classExist(String name) {
-        return classOrNull(name) != null;
+        return classOrNull(name, false, false) != null;
     }
 }
