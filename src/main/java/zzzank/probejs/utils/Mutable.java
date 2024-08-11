@@ -16,20 +16,12 @@ import java.util.stream.Stream;
  */
 @AllArgsConstructor
 public class Mutable<T> implements Supplier<T>, Iterable<T> {
-
-    private static final Mutable<Object> NULL = new Mutable<>(null);
-
     public static <T> Mutable<T> of(T value) {
         return new Mutable<>(value);
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> Mutable<T> ofNull() {
-        return (Mutable<T>) NULL;
-    }
-
-    public static <T> Mutable<T> ofNullable(T value) {
-        return value == null ? ofNull() : of(value);
+        return new Mutable<>(null);
     }
 
     private T value;
@@ -90,9 +82,9 @@ public class Mutable<T> implements Supplier<T>, Iterable<T> {
     }
 
     /**
-     * If a value is present, returns an {@code Mutable} describing (as if by
-     * {@link #ofNullable}) the result of applying the given mapping function to
-     * the value, otherwise returns an empty {@code Mutable}.
+     * If a value is present, returns an {@code Mutable} describing the result
+     * of applying the given mapping function to the value, otherwise returns
+     * an empty {@code Mutable}.
      *
      * <p>If the mapping function returns a {@code null} result then this method
      * returns an empty {@code Mutable}.
