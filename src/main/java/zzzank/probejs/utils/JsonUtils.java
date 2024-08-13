@@ -77,9 +77,7 @@ public class JsonUtils {
             for (val entry : map.entrySet()) {
                 val key = entry.getKey();
                 val value = entry.getValue();
-                if (key != null && value != null) {
-                    object.add(key.toString(), parseObject(value));
-                }
+                object.add(String.valueOf(key), parseObject(value));
             }
             return object;
         }
