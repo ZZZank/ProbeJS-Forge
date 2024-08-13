@@ -63,15 +63,16 @@ public record EventJSInfo(
     }
 
     public JsonObject toJson() {
-        return (JsonObject) JsonUtils.parseObject(
-            CollectUtils.ofMap(
-                "id", id,
-                "sub", sub.get(),
-                "class", clazzRaw.getName(),
-                "type", CollectUtils.mapToList(scriptTypes, ScriptType::name),
-                "cancellable", this.cancellable
-            )
+        val m = CollectUtils.ofMap(
+            "id", id,
+            "class", clazzRaw.getName(),
+            "type", CollectUtils.mapToList(scriptTypes, ScriptType::name),
+            "cancellable", this.cancellable
         );
+        if (sub.notNull()) {
+            m.put("sub", sub.get());
+        }
+        return (JsonObject) JsonUtils.parseObject(m);
     }
 
     @Override
