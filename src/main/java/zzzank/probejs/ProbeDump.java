@@ -51,7 +51,7 @@ public class ProbeDump {
         // Decompile stuffs - here we scan mod classes even if we don't decompile
         // So we have all classes without needing to decompile
         decompiler.fromMods();
-        ClassRegistry.REGISTRY.fromClasses(decompiler.scanner.getScannedClasses());
+        ClassRegistry.REGISTRY.fromClasses(decompiler.scanner.scannedClasses);
 
         report(translate("probejs.dump.cleaning"));
         for (ScriptDump scriptDump : scriptDumps) {

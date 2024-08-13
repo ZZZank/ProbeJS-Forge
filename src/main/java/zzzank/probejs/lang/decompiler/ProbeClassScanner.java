@@ -1,24 +1,26 @@
 package zzzank.probejs.lang.decompiler;
 
 import com.google.gson.JsonObject;
-import lombok.Getter;
 import lombok.val;
+import org.spongepowered.asm.util.Constants;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.ReflectUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-@Getter
 public class ProbeClassScanner {
 
     private final static String CLASS_SUFFIX = ".class";
-    private final Set<Class<?>> scannedClasses = new HashSet<>();
+    public final Set<Class<?>> scannedClasses = new HashSet<>();
 
     public void acceptFile(File file) throws IOException {
         try (val jarFile = new ZipFile(file)) {
@@ -46,12 +48,24 @@ public class ProbeClassScanner {
             this.file = modJar;
             this.mixinPackages = new HashSet<>();
             mixinFiltered = 0;
+            fetchMixinPackages();
         }
 
-        void fetchMixinPackages(ZipEntry entry) {
-            if (!entry.getName().endsWith(".mixins.json")) {
-                return;
+        private void fetchMixinPackages() {
+            try (val in = this.file.getInputStream(this.file.getEntry("META-INF/MANIFEST.MF"))) {
+                for (String s :
+                    new Manifest(in)
+                        .getMainAttributes()
+                        .getValue(Constants.ManifestAttributes.MIXINCONFIGS)
+                        .split(",")
+                ) {
+                    fetchMixinPackage(this.file.getEntry(s));
+                }
+            } catch (IOException ignored) {
             }
+        }
+
+        void fetchMixinPackage(ZipEntry entry) {
             try {
                 val inputStream = file.getInputStream(entry);
                 val jObj = ProbeJS.GSON.fromJson(new InputStreamReader(inputStream), JsonObject.class);
@@ -74,7 +88,6 @@ public class ProbeClassScanner {
         Set<Class<?>> scanClasses() {
             return file.stream()
                 .filter(e -> !e.isDirectory())
-                .peek(this::fetchMixinPackages)
                 .map(ZipEntry::getName)
                 .filter(name -> name.endsWith(CLASS_SUFFIX))
                 .map(name -> name.substring(0, name.length() - CLASS_SUFFIX.length()).replace("/", "."))
