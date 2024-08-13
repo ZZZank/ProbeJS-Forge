@@ -3,6 +3,7 @@ package zzzank.probejs.mixins;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.RhinoException;
+import lombok.val;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,7 +15,6 @@ import zzzank.probejs.lang.linter.LintingWarning;
 import zzzank.probejs.utils.FileUtils;
 import zzzank.probejs.utils.JsonUtils;
 
-import java.nio.file.Path;
 import java.util.regex.Pattern;
 
 @Mixin(value = ConsoleJS.class, remap = false)
@@ -34,11 +34,11 @@ public abstract class MixinConsole {
             return;
         }
         if (error instanceof RhinoException rhinoException) {
-            Path path = FileUtils.parseSourcePath(rhinoException.sourceName());
+            val path = FileUtils.parseSourcePath(rhinoException.sourceName());
             if (path == null) {
                 return;
             }
-            LintingWarning warning = new LintingWarning(
+            val warning = new LintingWarning(
                 path,
                 LintingWarning.Level.ERROR,
                 rhinoException.lineNumber(),

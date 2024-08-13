@@ -7,11 +7,12 @@ import net.minecraft.tags.StaticTagHelper;
 import net.minecraft.tags.StaticTags;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public class RegistryInfo {
+public class RegistryInfo implements Comparable<RegistryInfo> {
 
     public final Registry<?> raw;
     public final ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRaw;
@@ -41,5 +42,10 @@ public class RegistryInfo {
         this.id = resKey.location();
         this.names = raw.keySet();
         this.tagHelper = StaticTags.get(this.id);
+    }
+
+    @Override
+    public int compareTo(@NotNull RegistryInfo o) {
+        return resKey.compareTo(o.resKey);
     }
 }

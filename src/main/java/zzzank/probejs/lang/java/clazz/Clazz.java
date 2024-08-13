@@ -52,7 +52,8 @@ public class Clazz extends TypeVariableHolder {
             ))
             .collect(Collectors.toList());
         this.fields = Arrays.stream(ReflectUtils.fieldsSafe(original))
-            .filter(f -> !names.contains(RemapperBridge.remapField(original, f)) && !f.isAnnotationPresent(HideFromJS.class))
+            .filter(f -> !names.contains(RemapperBridge.remapField(original, f))
+                && !f.isAnnotationPresent(HideFromJS.class))
             .map(f -> new FieldInfo(original, f))
             .collect(Collectors.toList());
 
@@ -106,28 +107,36 @@ public class Clazz extends TypeVariableHolder {
     /**
      * getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass
      */
-    private static Map<TypeVariable<?>, Type> getGenericTypeReplacementForParentInterfaceMethods(Class<?> thisClass, Method thatMethod) {
+    private static Map<TypeVariable<?>, Type> getGenericTypeReplacementForParentInterfaceMethods(
+        Class<?> thisClass,
+        Method thatMethod
+    ) {
         Class<?> targetClass = thatMethod.getDeclaringClass();
 
         Map<TypeVariable<?>, Type> replacement = new HashMap<>();
-        if (Arrays.stream(thisClass.getInterfaces()).noneMatch(c -> c.equals(targetClass))) {
-            Class<?> superInterface = Arrays.stream(thisClass.getInterfaces()).filter(targetClass::isAssignableFrom).findFirst().orElse(null);
-            if (superInterface == null) {
-                return Collections.emptyMap();
-            }
-            Map<TypeVariable<?>, Type> parentType = getGenericTypeReplacementForParentInterfaceMethods(superInterface, thatMethod);
-            Map<TypeVariable<?>, Type> parentReplacement = getInterfaceRemap(thisClass, superInterface);
-
-            for (Map.Entry<TypeVariable<?>, Type> entry : parentType.entrySet()) {
-                TypeVariable<?> variable = entry.getKey();
-                Type type = entry.getValue();
-
-                replacement.put(variable,
-                        type instanceof TypeVariable<?> typeVariable ? parentReplacement.getOrDefault(typeVariable, typeVariable) : type
-                );
-            }
-        } else {
+        if (Arrays.asList(thisClass.getInterfaces()).contains(targetClass)) {
             return getInterfaceRemap(thisClass, targetClass);
+        }
+        val superInterface = Arrays
+            .stream(thisClass.getInterfaces())
+            .filter(targetClass::isAssignableFrom)
+            .findFirst()
+            .orElse(null);
+        if (superInterface == null) {
+            return Collections.emptyMap();
+        }
+        val parentType = getGenericTypeReplacementForParentInterfaceMethods(superInterface, thatMethod);
+        val parentReplacement = getInterfaceRemap(thisClass, superInterface);
+
+        for (val entry : parentType.entrySet()) {
+            val variable = entry.getKey();
+            val type = entry.getValue();
+
+            replacement.put(variable,
+                type instanceof TypeVariable<?> typeVariable
+                    ? parentReplacement.getOrDefault(typeVariable, typeVariable)
+                    : type
+            );
         }
         return replacement;
     }

@@ -14,7 +14,6 @@ public class NameUtils {
     public static final Pattern MATCH_CONST_REQUIRE = Pattern.compile("^const \\{(.+)} = require\\((.+)\\)");
     public static final Pattern MATCH_ANY_REQUIRE = Pattern.compile("^.+ \\{(.+)} = require\\((.+)\\)");
 
-
     public static String[] extractAlphabets(String input) {
         return input.split("[^a-zA-Z]+");
     }

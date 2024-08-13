@@ -86,4 +86,22 @@ public interface CollectUtils {
     static <T> T anyIn(Stream<T> stream) {
         return stream.findAny().orElse(null);
     }
+
+    static <T> Iterator<T> enumToItr(Enumeration<T> enumeration) {
+        return new Iterator<T>() {
+            @Override
+            public boolean hasNext() {
+                return enumeration.hasMoreElements();
+            }
+
+            @Override
+            public T next() {
+                return enumeration.nextElement();
+            }
+        };
+    }
+
+    static <T> Iterable<T> enumToIterable(Enumeration<T> enumeration) {
+        return () -> enumToItr(enumeration);
+    }
 }
