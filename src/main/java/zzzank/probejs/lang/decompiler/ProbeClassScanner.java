@@ -52,20 +52,26 @@ public class ProbeClassScanner {
         }
 
         private void fetchMixinPackages() {
-            try (val in = this.file.getInputStream(this.file.getEntry("META-INF/MANIFEST.MF"))) {
-                for (String s :
-                    new Manifest(in)
-                        .getMainAttributes()
-                        .getValue(Constants.ManifestAttributes.MIXINCONFIGS)
-                        .split(",")
-                ) {
-                    fetchMixinPackage(this.file.getEntry(s));
+            val manifestEntry = this.file.getEntry("META-INF/MANIFEST.MF");
+            if (manifestEntry == null) {
+                return;
+            }
+            try (val in = this.file.getInputStream(manifestEntry)) {
+                val mixinConfigs = new Manifest(in)
+                    .getMainAttributes()
+                    .getValue(Constants.ManifestAttributes.MIXINCONFIGS);
+                if (mixinConfigs == null) {
+                    return;
+                }
+                for (String mixinConfig : mixinConfigs.split(",")) {
+                    //it is possible that `getEntry()` return null, but if so, Mixin will crash the game first
+                    fetchMixinPackage(this.file.getEntry(mixinConfig));
                 }
             } catch (IOException ignored) {
             }
         }
 
-        void fetchMixinPackage(ZipEntry entry) {
+        private void fetchMixinPackage(ZipEntry entry) {
             try {
                 val inputStream = file.getInputStream(entry);
                 val jObj = ProbeJS.GSON.fromJson(new InputStreamReader(inputStream), JsonObject.class);
@@ -75,7 +81,7 @@ public class ProbeClassScanner {
             }
         }
 
-        boolean notFromMixinPackages(String className) {
+        public boolean notFromMixinPackages(String className) {
             for (String mixinPackage : mixinPackages) {
                 if (className.startsWith(mixinPackage)) {
                     mixinFiltered += 1;
