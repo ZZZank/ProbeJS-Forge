@@ -1,7 +1,10 @@
 package zzzank.probejs.docs.recipes;
 
+import lombok.val;
 import net.minecraft.resources.ResourceLocation;
+import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.ScriptDump;
+import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
@@ -34,8 +37,15 @@ public class BuiltinRecipeDocs extends ProbeJSPlugin {
 
     @Override
     public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
-        for (Supplier<ProbeJSPlugin> supplier : ALL) {
+        for (val supplier : ALL) {
             supplier.get().addPredefinedRecipeDoc(scriptDump, predefined);
+        }
+    }
+
+    @Override
+    public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
+        for (val supplier : ALL) {
+            supplier.get().modifyClasses(scriptDump, globalClasses);
         }
     }
 }
