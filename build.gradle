@@ -130,7 +130,7 @@ dependencies {
 
 processResources {
     // define properties that can be used during resource processing
-    inputs.property "version", project.version
+    inputs.property("version", project.version)
 
     // this will replace the property "${version}" in your mods.toml
     // with the version you've defined in your gradle.properties
@@ -161,6 +161,12 @@ java {
 }
 
 jar {
+//    def containedDeps = [
+//        "classgraph-4.8.174"
+//    ]
+//        .collect { e -> "META-INF/jars/" + e + ".jar"}
+//        .join(",")
+
     // add some additional metadata to the jar manifest
     manifest {
         attributes([
@@ -171,6 +177,8 @@ jar {
             "Implementation-Version"  : version,
             "Implementation-Vendor"   : project.mod_author,
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+//            ,
+//            "ContainedDeps": containedDeps
         ])
     }
 }
