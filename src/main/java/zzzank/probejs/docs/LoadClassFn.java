@@ -19,7 +19,6 @@ public class LoadClassFn extends ProbeJSPlugin {
             .param("className", Types.STRING)
             .returnType(Types.ANY)
             .build();
-
         javaFn.addComment(
             "@deprecated Please use `require(...)` instead.",
             "" ,
@@ -32,7 +31,6 @@ public class LoadClassFn extends ProbeJSPlugin {
             .param("name", Types.STRING)
             .returnType(Types.ANY)
             .build();
-
         requireFn.addComment(
             "provided by ProbeJS, to support CommonJS style import/export",
             "",

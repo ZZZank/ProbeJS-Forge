@@ -31,6 +31,10 @@ public abstract class RecipeDocProvider extends ProbeJSPlugin {
         return new RecipeLambdaBuilder();
     }
 
+    /**
+     * you don't need to override this method, override {@link RecipeDocProvider#addDocs(ScriptDump)} instead
+     * @see RecipeDocProvider#addDocs(ScriptDump)
+     */
     @Override
     public void addPredefinedRecipeDoc(ScriptDump scriptDump, Map<ResourceLocation, JSLambdaType> predefined) {
         if (!shouldEnable()) {

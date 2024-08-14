@@ -19,19 +19,6 @@ public class Snippets extends ProbeJSPlugin {
             .variable(Variable.UUID)
             .literal("\"");
 
-        dump.snippet("recipes")
-            .prefix("#recipes")
-            .literal("ServerEvents.recipes(event => {")
-            .newline()
-            .literal("    const { ")
-            .tabStop(1)
-            .literal(" } = event.recipes")
-            .newline()
-            .literal("    ")
-            .tabStop(0)
-            .newline()
-            .literal("})");
-
         defineHeader(dump, "priority", "0");
         defineHeader(dump, "packmode", null);
 
