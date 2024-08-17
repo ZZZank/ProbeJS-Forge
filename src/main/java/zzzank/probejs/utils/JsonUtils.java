@@ -81,6 +81,13 @@ public class JsonUtils {
                 object.add(String.valueOf(key), parseObject(value));
             }
             return object;
+        } else if (obj.getClass().isArray()) {
+            val length = Array.getLength(obj);
+            val jsonArray = new JsonArray();
+            for (int i = 0; i < length; i++) {
+                jsonArray.add(parseObject(Array.get(obj, i)));
+            }
+            return jsonArray;
         }
         return JsonNull.INSTANCE;
     }
