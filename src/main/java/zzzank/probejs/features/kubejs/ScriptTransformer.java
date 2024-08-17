@@ -119,8 +119,8 @@ public class ScriptTransformer {
         try {
             processExport();
             processRequire();
-            // If there's no symbol to be exported, it will be global mode
-            if (ProbeJS.CONFIG.isolatedScopes.get() && !exportedSymbols.isEmpty()) {
+            // If there's no symbol to be exported, it will still be wrapped, for consistency
+            if (ProbeJS.CONFIG.isolatedScopes.get()) {
                 wrapScope();
             }
         } catch (Throwable t) {
