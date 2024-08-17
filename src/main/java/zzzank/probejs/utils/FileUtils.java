@@ -27,15 +27,14 @@ public class FileUtils {
         }
     }
 
-    public static void writeMergedConfig(Path path, String config) throws IOException {
-        JsonObject updates = ProbeJS.GSON.fromJson(config, JsonObject.class);
+    public static void writeMergedConfig(Path path, JsonObject config) throws IOException {
         JsonObject read = Files.exists(path)
             ? ProbeJS.GSON.fromJson(Files.newBufferedReader(path), JsonObject.class)
             : new JsonObject();
         if (read == null) {
             read = new JsonObject();
         }
-        JsonObject original = (JsonObject) JsonUtils.mergeJsonRecursively(read, updates);
+        JsonObject original = (JsonObject) JsonUtils.mergeJsonRecursively(read, config);
         JsonWriter jsonWriter = ProbeJS.GSON_WRITER.newJsonWriter(Files.newBufferedWriter(path));
         jsonWriter.setIndent("    ");
         ProbeJS.GSON_WRITER.toJson(original, JsonObject.class, jsonWriter);

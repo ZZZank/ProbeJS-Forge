@@ -2,6 +2,7 @@ package zzzank.probejs.lang.typescript;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import dev.latvian.kubejs.KubeJS;
 import dev.latvian.kubejs.KubeJSPaths;
@@ -28,7 +29,9 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
+import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.GameUtils;
+import zzzank.probejs.utils.JsonUtils;
 import zzzank.probejs.utils.Lazy;
 
 import java.io.BufferedWriter;
@@ -318,27 +321,21 @@ public class ScriptDump {
     }
 
     public void dumpJSConfig() throws IOException {
-        zzzank.probejs.utils.FileUtils.writeMergedConfig(scriptPath.resolve("jsconfig.json"), String.format("""
-            {
-                "compilerOptions": {
-                    "module": "commonjs",
-                    "target": "ES2015",
-                    "lib": [
-                        "ES5",
-                        "ES2015"
-                    ],
-                    "rootDir": ".",
-                    "typeRoots": [
-                        "../../.probe/%s/probe-types"
-                    ],
-                    "baseUrl": "../../.probe/%s/probe-types",
-                    "skipLibCheck": true
-                },
-                "include": [
-                    "./**/*.js"
-                ]
-            }
-            """, basePath.getFileName(), basePath.getFileName()));
+        val config = (JsonObject) JsonUtils.parseObject(
+            CollectUtils.ofMap(
+                "compilerOptions", CollectUtils.ofMap(
+                    "module", "commonjs",
+                    "target", "ES2015",
+                    "lib", CollectUtils.ofList("ES5", "ES2015"),
+                    "rootDir", ".",
+                    "typeRoots", CollectUtils.ofList("../../.probe/%s/probe-types"),
+                    "baseUrl", "../../.probe/%s/probe-types",
+                    "skipLibCheck", true
+                ),
+                "include", CollectUtils.ofList("./**/*.js")
+            )
+        );
+        zzzank.probejs.utils.FileUtils.writeMergedConfig(scriptPath.resolve("jsconfig.json"), config);
     }
 
     public void removeClasses() throws IOException {

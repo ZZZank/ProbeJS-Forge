@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -121,9 +122,8 @@ public class JsonUtils {
                 result.add(deepCopy(element));
             }
             return (T) result;
-        } else {
-            return elem;
         }
+        return elem;
     }
 
     public static JsonElement mergeJsonRecursively(JsonElement first, JsonElement second) {

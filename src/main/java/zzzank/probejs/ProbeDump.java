@@ -1,6 +1,8 @@
 package zzzank.probejs;
 
+import com.google.gson.JsonObject;
 import dev.latvian.kubejs.text.Text;
+import lombok.val;
 import net.minecraft.network.chat.Component;
 import zzzank.probejs.features.kubejs.EventJSInfos;
 import zzzank.probejs.lang.decompiler.ProbeDecompiler;
@@ -8,8 +10,10 @@ import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.schema.SchemaDump;
 import zzzank.probejs.lang.snippet.SnippetDump;
 import zzzank.probejs.lang.typescript.ScriptDump;
+import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.FileUtils;
 import zzzank.probejs.utils.GameUtils;
+import zzzank.probejs.utils.JsonUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -166,18 +170,15 @@ public class ProbeDump {
     }
 
     private void writeVSCodeConfig() throws IOException {
-        FileUtils.writeMergedConfig(ProbePaths.VSCODE_JSON, """
-                {
-                    "json.schemas": [
-                        {
-                            "fileMatch": [
-                                "/recipe_schemas/*.json"
-                            ],
-                            "url": "./.vscode/recipe.json"
-                        }
-                    ]
-                }
-                """);
+        val config = (JsonObject) JsonUtils.parseObject(CollectUtils.ofMap(
+            "json.schemas", CollectUtils.ofList(
+                CollectUtils.ofMap(
+                    "fileMatch", CollectUtils.ofList("/recipe_schemas/*.json"),
+                    "url", "./.vscode/recipe.json"
+                )
+            )
+        ));
+        FileUtils.writeMergedConfig(ProbePaths.VSCODE_JSON, config);
     }
 
     private void appendGitIgnore() throws IOException {

@@ -14,6 +14,7 @@ import java.util.stream.Stream;
  */
 public interface CollectUtils {
 
+    @SafeVarargs
     static <T> List<T> ofList(T... elements) {
         val list = new ArrayList<T>(elements.length);
         list.addAll(Arrays.asList(elements));
@@ -73,6 +74,42 @@ public interface CollectUtils {
         m.put(k3, v3);
         m.put(k4, v4);
         m.put(k5, v5);
+        return m;
+    }
+
+    static <K, V> HashMap<K, V> ofMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
+        val m = new HashMap<K, V>(calcMapExpectedSize(6));
+        m.put(k1, v1);
+        m.put(k2, v2);
+        m.put(k3, v3);
+        m.put(k4, v4);
+        m.put(k5, v5);
+        m.put(k6, v6);
+        return m;
+    }
+
+    static <K, V> HashMap<K, V> ofMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
+        val m = new HashMap<K, V>(calcMapExpectedSize(7));
+        m.put(k1, v1);
+        m.put(k2, v2);
+        m.put(k3, v3);
+        m.put(k4, v4);
+        m.put(k5, v5);
+        m.put(k6, v6);
+        m.put(k7, v7);
+        return m;
+    }
+
+    static <K, V> HashMap<K, V> ofMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8) {
+        val m = new HashMap<K, V>(calcMapExpectedSize(8));
+        m.put(k1, v1);
+        m.put(k2, v2);
+        m.put(k3, v3);
+        m.put(k4, v4);
+        m.put(k5, v5);
+        m.put(k6, v6);
+        m.put(k7, v7);
+        m.put(k8, v8);
         return m;
     }
 
