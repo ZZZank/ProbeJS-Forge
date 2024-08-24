@@ -9,6 +9,7 @@ import zzzank.probejs.utils.ReflectUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -99,7 +100,7 @@ public class ProbeClassScanner {
                 .map(name -> name.substring(0, name.length() - CLASS_SUFFIX.length()).replace("/", "."))
                 .filter(this::notFromMixinPackages)
                 .map(c -> ReflectUtils.classOrNull(c, false, false))
-                .filter(Objects::nonNull)
+                .filter(c -> Objects.nonNull(c) && Modifier.isPublic(c.getModifiers()))
                 .collect(Collectors.toSet());
         }
     }
