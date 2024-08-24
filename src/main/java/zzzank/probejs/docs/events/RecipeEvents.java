@@ -78,7 +78,7 @@ public class RecipeEvents extends ProbeJSPlugin {
 
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
-        if (scriptDump.scriptType != ScriptType.SERVER) {
+        if (scriptDump.scriptType != ScriptType.SERVER && scriptDump.scriptType != ScriptType.STARTUP) {
             return;
         }
 
