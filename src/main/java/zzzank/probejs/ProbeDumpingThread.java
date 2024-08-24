@@ -60,6 +60,7 @@ public class ProbeDumpingThread extends Thread {
         try {
             probeDump.trigger(messageSender);
         } catch (Throwable e) {
+            messageSender.accept(TextWrapper.translate("probejs.error").red().component());
             GameUtils.logThrowable(e);
         }
     }
