@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import zzzank.probejs.ProbeJS;
 import zzzank.probejs.features.kubejs.EventJSInfo;
 import zzzank.probejs.features.kubejs.EventJSInfos;
+import zzzank.probejs.ProbeConfig;
 
 /**
  * @author ZZZank
@@ -23,7 +23,7 @@ public abstract class MixinOnEvent {
         remap = false
     )
     private void captureKjsEvents(ScriptType t, String id, CallbackInfoReturnable<Boolean> returns) {
-        if (!ProbeJS.CONFIG.enabled.get()) {
+        if (!ProbeConfig.enabled.get()) {
             return;
         }
         val e = EventJSInfos.KNOWN.get(id);
@@ -40,7 +40,7 @@ public abstract class MixinOnEvent {
         remap = false
     )
     private void captureKjsSubEvents(ScriptType t, String id, String sub, CallbackInfoReturnable<Boolean> returns) {
-        if (!ProbeJS.CONFIG.enabled.get()) {
+        if (!ProbeConfig.enabled.get()) {
             return;
         }
         val e = EventJSInfos.KNOWN.get(id);

@@ -5,8 +5,8 @@ import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.Parser;
 import dev.latvian.mods.rhino.ast.*;
 import lombok.val;
-import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.NameUtils;
+import zzzank.probejs.ProbeConfig;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -120,7 +120,7 @@ public class ScriptTransformer {
             processExport();
             processRequire();
             // If there's no symbol to be exported, it will still be wrapped, for consistency
-            if (ProbeJS.CONFIG.isolatedScopes.get()) {
+            if (ProbeConfig.isolatedScopes.get()) {
                 wrapScope();
             }
         } catch (Throwable t) {

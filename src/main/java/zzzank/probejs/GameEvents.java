@@ -43,18 +43,17 @@ public class GameEvents {
             return;
         }
 
-        ProbeConfig config = ProbeJS.CONFIG;
-        if (!config.enabled.get()) {
+        if (!ProbeConfig.enabled.get()) {
             return;
         }
 
         final Consumer<Component> sendMsg = msg -> player.sendMessage(msg, NIL_UUID);
         SpecialData.refresh();
 
-        if (config.modHash.get() == -1) {
+        if (ProbeConfig.modHash.get() == -1) {
             sendMsg.accept(TextWrapper.translate("probejs.hello").gold().component());
         }
-        if (config.registryHash.get() != GameUtils.registryHash()) {
+        if (ProbeConfig.registryHash.get() != GameUtils.registryHash()) {
             if (!ProbeDumpingThread.exists()) {
                 ProbeDumpingThread.create(sendMsg).start();
             }
@@ -65,7 +64,7 @@ public class GameEvents {
                     .append(TextWrapper.string("/probejs disable").click("command:/probejs disable").aqua())
                     .component()
             );
-            if (ModList.get().size() >= MOD_LIMIT && ProbeJS.CONFIG.complete.get()) {
+            if (ModList.get().size() >= MOD_LIMIT && ProbeConfig.complete.get()) {
                 sendMsg.accept(
                     TextWrapper.translate("probejs.performance", ModList.get().size()).component()
                 );
@@ -80,15 +79,15 @@ public class GameEvents {
                     .hover("https://kubejs.com/wiki/addons/third-party/probejs"))
                 .component());
 
-        if (config.interactive.get() && GlobalStates.SERVER == null) {
+        if (ProbeConfig.interactive.get() && GlobalStates.SERVER == null) {
             try {
-                GlobalStates.SERVER = new ProbeServer(config.interactivePort.get());
+                GlobalStates.SERVER = new ProbeServer(ProbeConfig.interactivePort.get());
                 GlobalStates.SERVER.start();
             } catch (UnknownHostException e) {
                 throw new RuntimeException(e);
             }
             sendMsg.accept(
-                TextWrapper.translate("probejs.interactive", config.interactivePort.get()).component()
+                TextWrapper.translate("probejs.interactive", ProbeConfig.interactivePort.get()).component()
             );
         }
     }
@@ -101,7 +100,7 @@ public class GameEvents {
         dispatcher.register(
             Commands.literal("probejs")
                 .then(Commands.literal("dump")
-                    .requires(source -> ProbeJS.CONFIG.enabled.get() && source.hasPermission(2))
+                    .requires(source -> ProbeConfig.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
                         if (ProbeDumpingThread.exists()) {
                             sendMsg.accept(context, TextWrapper.translate("probejs.already_running").red().component());
@@ -113,9 +112,9 @@ public class GameEvents {
                     })
                 )
                 .then(Commands.literal("disable")
-                    .requires(source -> ProbeJS.CONFIG.enabled.get() && source.hasPermission(2))
+                    .requires(source -> ProbeConfig.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
-                        ProbeJS.CONFIG.enabled.set(false);
+                        ProbeConfig.enabled.set(false);
                         sendMsg.accept(context, TextWrapper.translate("probejs.bye_bye").gold().component());
                         return Command.SINGLE_SUCCESS;
                     })
@@ -123,16 +122,16 @@ public class GameEvents {
                 .then(Commands.literal("enable")
                     .requires(source -> source.hasPermission(2))
                     .executes(context -> {
-                        ProbeJS.CONFIG.enabled.set(true);
+                        ProbeConfig.enabled.set(true);
                         sendMsg.accept(context, TextWrapper.translate("probejs.hello_again").aqua().component());
                         return Command.SINGLE_SUCCESS;
                     })
                 )
                 .then(Commands.literal("scope_isolation")
-                    .requires(source -> ProbeJS.CONFIG.enabled.get() && source.hasPermission(2))
+                    .requires(source -> ProbeConfig.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
-                        boolean flag = !ProbeJS.CONFIG.isolatedScopes.get();
-                        ProbeJS.CONFIG.isolatedScopes.set(flag);
+                        boolean flag = !ProbeConfig.isolatedScopes.get();
+                        ProbeConfig.isolatedScopes.set(flag);
                         sendMsg.accept(
                             context,
                             TextWrapper.translate(flag ? "probejs.isolation" : "probejs.no_isolation").aqua().component()
@@ -141,17 +140,17 @@ public class GameEvents {
                     })
                 )
                 .then(Commands.literal("lint")
-                    .requires(source -> ProbeJS.CONFIG.enabled.get() && source.hasPermission(2))
+                    .requires(source -> ProbeConfig.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
                         Linter.defaultLint(msg -> sendMsg.accept(context, Text.of(msg).component()));
                         return Command.SINGLE_SUCCESS;
                     })
                 )
                 .then(Commands.literal("complete_dump")
-                    .requires(source -> ProbeJS.CONFIG.enabled.get() && source.hasPermission(2))
+                    .requires(source -> ProbeConfig.enabled.get() && source.hasPermission(2))
                     .executes(context -> {
-                        boolean flag = !ProbeJS.CONFIG.complete.get();
-                        ProbeJS.CONFIG.complete.set(flag);
+                        boolean flag = !ProbeConfig.complete.get();
+                        ProbeConfig.complete.set(flag);
                         sendMsg.accept(
                             context,
                             TextWrapper.translate(flag ? "probejs.complete" : "probejs.no_complete").component()

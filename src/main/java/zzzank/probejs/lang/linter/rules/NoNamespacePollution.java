@@ -3,8 +3,8 @@ package zzzank.probejs.lang.linter.rules;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
-import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.linter.LintingWarning;
+import zzzank.probejs.ProbeConfig;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class NoNamespacePollution extends Rule {
 
     @Override
     public void acceptFile(Path path, List<String> content) {
-        if (ProbeJS.CONFIG.isolatedScopes.get()) {
+        if (ProbeConfig.isolatedScopes.get()) {
             // scans for export ...
             for (int i = 0; i < content.size(); i++) {
                 String s = content.get(i).trim();

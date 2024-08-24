@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import zzzank.probejs.ProbeJS;
 import zzzank.probejs.features.kubejs.SpecialData;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.snippet.Snippet;
@@ -22,6 +21,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.utils.NameUtils;
+import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.utils.registry.RegistryInfo;
 
 import java.util.*;
@@ -82,7 +82,7 @@ public class RegistryTypes extends ProbeJSPlugin {
             return;
         }
         val special = new Wrapped.Namespace("Special");
-        val enabled = ProbeJS.CONFIG.complete.get();
+        val enabled = ProbeConfig.complete.get();
 
         for (val info : SpecialData.instance().registries()) {
             createTypes(special, info, enabled);
