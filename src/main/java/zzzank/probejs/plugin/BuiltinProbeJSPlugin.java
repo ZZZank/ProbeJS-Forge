@@ -30,9 +30,6 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
     @Override
     public void addBindings(BindingsEvent event) {
         readFromBindings(event);
-        if (event.manager.type == ScriptType.CLIENT) {
-            event.add("Types", Types.class);
-        }
         event.add("require", new Require(event.manager));
     }
 
