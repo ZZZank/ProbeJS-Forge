@@ -301,12 +301,12 @@ public class ScriptDump {
     public void dumpGlobal() throws IOException {
         ProbeJSPlugin.forEachPlugin(plugin -> plugin.addGlobals(this));
 
-        try (var writer = Files.newBufferedWriter(getGlobalFolder().resolve("index.d.ts"))) {
-            for (Map.Entry<String, Pair<Collection<String>, Wrapped.Global>> entry : globals.entrySet()) {
-                String identifier = entry.getKey();
-                Pair<Collection<String>, Wrapped.Global> pair = entry.getValue();
-                var global = pair.getSecond();
-                var excluded = pair.getFirst();
+        try (val writer = Files.newBufferedWriter(getGlobalFolder().resolve("index.d.ts"))) {
+            for (val entry : globals.entrySet()) {
+                val identifier = entry.getKey();
+                val pair = entry.getValue();
+                val global = pair.getSecond();
+                val excluded = pair.getFirst();
 
                 TypeScriptFile globalFile = new TypeScriptFile(null);
                 for (String s : excluded) {

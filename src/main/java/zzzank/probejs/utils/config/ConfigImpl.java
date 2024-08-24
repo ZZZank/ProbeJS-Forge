@@ -29,6 +29,7 @@ public class ConfigImpl {
     public void initFromFile() {
         try (val reader = Files.newBufferedReader(path)) {
             val object = ProbeJS.GSON.fromJson(reader, JsonObject.class);
+            //todo: config auto update
             for (val entry : object.entrySet()) {
                 val configEntry = serde.fromJson(entry.getKey(), entry.getValue().getAsJsonObject());
                 this.put(configEntry);
