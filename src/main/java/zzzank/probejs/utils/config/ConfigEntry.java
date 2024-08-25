@@ -2,6 +2,7 @@ package zzzank.probejs.utils.config;
 
 import com.google.common.collect.ImmutableList;
 import zzzank.probejs.ProbeJS;
+import lombok.val;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -40,6 +41,27 @@ public class ConfigEntry<T> {
         }
         this.value = value;
         source.save();
+    }
+
+    public T adaptValue(Object o) {
+        if (o == null) {
+            return defaultValue;
+        }
+        val result = switch (this.defaultValue) {
+            case null -> null;
+            case CharSequence c -> String.valueOf(o);
+            case Number n -> o instanceof Number targetNumber ? switch (n) {
+                case Long l -> targetNumber.longValue();
+                case Double d -> targetNumber.doubleValue();
+                case Float f -> targetNumber.floatValue();
+                case Integer i -> targetNumber.intValue();
+                case Short s -> targetNumber.shortValue();
+                case Byte b -> targetNumber.byteValue();
+                default -> targetNumber;
+            } : defaultValue;
+            default -> defaultValue.getClass().isInstance(o) ? (T) o : defaultValue;
+        };
+        return (T) result;
     }
 
     public T getRaw() {
