@@ -57,6 +57,7 @@ public interface JsonConfigParser {
 
         @Override
         public void parse(ConfigImpl source, JsonObject rawConfig) {
+            rawConfig.remove(ConfigImpl.VERSION_KEY);
             for (val entry : rawConfig.entrySet()) {
                 val configEntry = source.serde.fromJson(entry.getKey(), entry.getValue().getAsJsonObject());
                 if (configEntry == null) {

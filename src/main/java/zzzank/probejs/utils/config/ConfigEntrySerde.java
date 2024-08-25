@@ -30,10 +30,12 @@ public class ConfigEntrySerde {
         try {
             val name$namespace = jsonName.lastIndexOf('.');
 
-            val name = name$namespace < 0 ? jsonName : jsonName.substring(name$namespace);
+            val name = name$namespace < 0 ? jsonName : jsonName.substring(name$namespace + 1);
             val namespace = name$namespace < 0 ? null : jsonName.substring(0, name$namespace);
             val defaultValue = JsonUtils.deserializeObject(jsonObject.get(DEFAULT_VALUE_KEY));
-            val value = JsonUtils.deserializeObject(jsonObject.get(VALUE_KEY));
+            val value = jsonObject.has(VALUE_KEY)
+                ? JsonUtils.deserializeObject(jsonObject.get(VALUE_KEY))
+                : defaultValue;
             List<String> comments;
             val jsonComments = jsonObject.get(COMMENTS_KEY);
             if (jsonComments instanceof JsonPrimitive primitive) {
