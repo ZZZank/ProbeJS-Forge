@@ -34,17 +34,19 @@ public class ConfigEntrySerde {
             val namespace = name$namespace < 0 ? null : jsonName.substring(0, name$namespace);
             val defaultValue = JsonUtils.deserializeObject(jsonObject.get(DEFAULT_VALUE_KEY));
             val value = JsonUtils.deserializeObject(jsonObject.get(VALUE_KEY));
-            List<String> comments = switch (jsonObject.get(COMMENTS_KEY)) {
-                case JsonPrimitive primitive -> Collections.singletonList(primitive.getAsString());
-                case JsonArray array -> {
-                    val l = new ArrayList<String>(array.size());
-                    for (JsonElement element : array) {
-                        l.add(element.getAsString());
-                    }
-                    yield l;
+            List<String> comments;
+            val jsonComments = jsonObject.get(COMMENTS_KEY);
+            if (jsonComments instanceof JsonPrimitive primitive) {
+                comments = Collections.singletonList(primitive.getAsString());
+            } else if (jsonComments instanceof JsonArray array) {
+                val l = new ArrayList<String>(array.size());
+                for (val element : array) {
+                    l.add(element.getAsString());
                 }
-                case null, default -> Collections.emptyList();
-            };
+                comments = l;
+            } else {
+                comments = Collections.emptyList();
+            }
 
             val entry = new ConfigEntry<>(source, name, defaultValue, namespace, comments);
             entry.set(value);

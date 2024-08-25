@@ -44,20 +44,34 @@ public class ConfigEntry<T> {
         if (o == null) {
             return defaultValue;
         }
-        val result = switch (this.defaultValue) {
-            case null -> null;
-            case CharSequence c -> String.valueOf(o);
-            case Number n -> o instanceof Number targetNumber ? switch (n) {
-                case Long l -> targetNumber.longValue();
-                case Double d -> targetNumber.doubleValue();
-                case Float f -> targetNumber.floatValue();
-                case Integer i -> targetNumber.intValue();
-                case Short s -> targetNumber.shortValue();
-                case Byte b -> targetNumber.byteValue();
-                default -> targetNumber;
-            } : defaultValue;
-            default -> defaultValue.getClass().isInstance(o) ? (T) o : defaultValue;
-        };
+        Object result;
+        if (this.defaultValue == null) {
+            result = null;
+        } else if (this.defaultValue instanceof CharSequence) {
+            result = String.valueOf(o);
+        } else if (this.defaultValue instanceof Number n) {
+            if (o instanceof Number targetNumber) {
+                if (n instanceof Long) {
+                    result = targetNumber.longValue();
+                } else if (n instanceof Double) {
+                    result = targetNumber.doubleValue();
+                } else if (n instanceof Float) {
+                    result = targetNumber.floatValue();
+                } else if (n instanceof Integer) {
+                    result = targetNumber.intValue();
+                } else if (n instanceof Short) {
+                    result = targetNumber.shortValue();
+                } else if (n instanceof Byte) {
+                    result = targetNumber.byteValue();
+                } else {
+                    result = targetNumber;
+                }
+                return (T) result;
+            }
+            result = defaultValue;
+        } else {
+            result = defaultValue.getClass().isInstance(o) ? (T) o : defaultValue;
+        }
         return (T) result;
     }
 
