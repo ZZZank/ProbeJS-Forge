@@ -16,6 +16,9 @@ import java.util.Objects;
  */
 public class ConfigImpl {
 
+    public static final String VERSION_KEY = "$version";
+    public static final int VERSION = 2;
+
     public final String defaultNamespace;
     public final ConfigEntrySerde serde;
     private final Table<String, String, ConfigEntry<?>> all;
@@ -40,6 +43,7 @@ public class ConfigImpl {
     public void save() {
         try (val writer = Files.newBufferedWriter(path)) {
             val object = new JsonObject();
+            object.addProperty(VERSION_KEY, VERSION);
             all.cellSet()
                 .stream()
                 .map(Table.Cell::getValue)

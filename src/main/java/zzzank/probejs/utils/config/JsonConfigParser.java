@@ -12,7 +12,6 @@ import java.util.List;
  */
 public interface JsonConfigParser {
 
-    String VERSION_KEY = "$version";
     List<JsonConfigParser> REGISTERED = CollectUtils.ofList(
         new OldParser(),
         new DefaultParser()
@@ -35,7 +34,7 @@ public interface JsonConfigParser {
 
         @Override
         public boolean test(JsonObject rawConfig) {
-            return !rawConfig.has(VERSION_KEY);
+            return !rawConfig.has(ConfigImpl.VERSION_KEY);
         }
 
         @Override
