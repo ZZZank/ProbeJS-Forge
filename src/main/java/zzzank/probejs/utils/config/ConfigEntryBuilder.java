@@ -3,7 +3,10 @@ package zzzank.probejs.utils.config;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,9 +16,13 @@ import java.util.Objects;
 @Setter
 @Accessors(chain = true)
 public class ConfigEntryBuilder<T> {
+    @Nonnull
     public T defaultValue;
+    @Nullable
     public String namespace;
+    @Nonnull
     public String name;
+    @Nullable
     public List<String> comments;
 
     public static <T> ConfigEntryBuilder<T> of(T defaultValue) {
@@ -37,6 +44,9 @@ public class ConfigEntryBuilder<T> {
     public ConfigEntry<T> build(ConfigImpl source) {
         if (namespace == null) {
             namespace = source.defaultNamespace;
+        }
+        if (comments == null) {
+            comments = Collections.emptyList();
         }
         return new ConfigEntry<>(source, name, defaultValue, namespace, comments);
     }
