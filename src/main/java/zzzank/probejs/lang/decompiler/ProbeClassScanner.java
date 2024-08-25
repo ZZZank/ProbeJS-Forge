@@ -3,6 +3,7 @@ package zzzank.probejs.lang.decompiler;
 import com.google.gson.JsonObject;
 import lombok.val;
 import org.spongepowered.asm.util.Constants;
+import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.ReflectUtils;
 
@@ -100,7 +101,10 @@ public class ProbeClassScanner {
                 .map(name -> name.substring(0, name.length() - CLASS_SUFFIX.length()).replace("/", "."))
                 .filter(this::notFromMixinPackages)
                 .map(c -> ReflectUtils.classOrNull(c, false, false))
-                .filter(c -> Objects.nonNull(c) && Modifier.isPublic(c.getModifiers()))
+                .filter(c -> ProbeConfig.publicClassOnly.get()
+                    ? c != null && Modifier.isPublic(c.getModifiers())
+                    : c != null
+                )
                 .collect(Collectors.toSet());
         }
     }

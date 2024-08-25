@@ -2,18 +2,14 @@ package zzzank.probejs.lang.java;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
+import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
-import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
-import zzzank.probejs.lang.java.clazz.members.FieldInfo;
-import zzzank.probejs.lang.java.clazz.members.MethodInfo;
-import zzzank.probejs.lang.java.clazz.members.ParamInfo;
-import zzzank.probejs.lang.java.type.TypeDescriptor;
-import zzzank.probejs.lang.java.type.impl.VariableType;
 import zzzank.probejs.utils.ReflectUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -42,56 +38,60 @@ public class ClassRegistry {
 
     public void fromClasses(Collection<Class<?>> classes) {
         for (Class<?> c : classes) {
-            if (c.isSynthetic() || c.isAnonymousClass() || !ReflectUtils.classExist(c.getName())) {
-                // We test if the class actually exists from forName
-                // I think some runtime class can have non-existing Class<?> object due to .getSuperClass
-                // or .getInterfaces
-                continue;
+            fromClass(c);
+        }
+    }
+
+    private void fromClass(Class<?> c) {
+        if (!ReflectUtils.classExist(c.getName()) || c.isSynthetic() || c.isAnonymousClass() || Modifier.isPublic(c.getModifiers())) {
+            // We test if the class actually exists from forName
+            // I think some runtime class can have non-existing Class<?> object due to .getSuperClass
+            // or .getInterfaces
+            return;
+        }
+        try {
+            if (!foundClasses.containsKey(new ClassPath(c))) {
+                Clazz clazz = new Clazz(c);
+                foundClasses.put(clazz.classPath, clazz);
             }
-            try {
-                if (!foundClasses.containsKey(new ClassPath(c))) {
-                    Clazz clazz = new Clazz(c);
-                    foundClasses.put(clazz.classPath, clazz);
-                }
-            } catch (Throwable ignored) {
-            }
+        } catch (Throwable ignored) {
         }
     }
 
     private Set<Class<?>> retrieveClass(Clazz clazz) {
         Set<Class<?>> classes = new HashSet<>();
 
-        for (ConstructorInfo constructor : clazz.constructors) {
-            for (ParamInfo param : constructor.params) {
+        for (val constructor : clazz.constructors) {
+            for (val param : constructor.params) {
                 classes.addAll(param.type.getClasses());
             }
-            for (VariableType variableType : constructor.variableTypes) {
+            for (val variableType : constructor.variableTypes) {
                 classes.addAll(variableType.getClasses());
             }
         }
 
-        for (MethodInfo method : clazz.methods) {
-            for (ParamInfo param : method.params) {
+        for (val method : clazz.methods) {
+            for (val param : method.params) {
                 classes.addAll(param.type.getClasses());
             }
-            for (VariableType variableType : method.variableTypes) {
+            for (val variableType : method.variableTypes) {
                 classes.addAll(variableType.getClasses());
             }
             classes.addAll(method.returnType.getClasses());
         }
 
-        for (FieldInfo field : clazz.fields) {
+        for (val field : clazz.fields) {
             classes.addAll(field.type.getClasses());
         }
 
-        for (VariableType variableType : clazz.variableTypes) {
+        for (val variableType : clazz.variableTypes) {
             classes.addAll(variableType.getClasses());
         }
 
         if (clazz.superClass != null) {
             classes.addAll(clazz.superClass.getClasses());
         }
-        for (TypeDescriptor i : clazz.interfaces) {
+        for (val i : clazz.interfaces) {
             classes.addAll(i.getClasses());
         }
 
@@ -162,7 +162,11 @@ public class ClassRegistry {
                 }
                 val classPath = new ClassPath(Arrays.asList(parts));
                 try {
-                    fromClasses(Collections.singleton(classPath.forName()));
+                    val c= classPath.forName();
+                    if (ProbeConfig.publicClassOnly.get() && !Modifier.isPublic(c.getModifiers())) {
+                        continue;
+                    }
+                    fromClass(c);
                 } catch (Throwable ignored) {
                 }
                 lastPath = classPath;

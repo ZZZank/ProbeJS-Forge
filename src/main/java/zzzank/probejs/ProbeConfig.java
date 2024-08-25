@@ -19,5 +19,9 @@ public interface ProbeConfig {
     ConfigEntry<Long> registryHash = INSTANCE.addConfig(of("registryHash", -1L));
     ConfigEntry<Boolean> isolatedScopes = INSTANCE.addConfig(of("isolatedScope", false));
     ConfigEntry<Boolean> complete = INSTANCE.addConfig(of("complete", true));
-    ConfigEntry<Boolean> extendedDumping = INSTANCE.addConfig(of("extendedDumping", false));
+    ConfigEntry<Boolean> publicClassOnly = INSTANCE.addConfig(
+        of("publicClassOnly", false).comment("""
+            prevent classes that are not public and not referenced from being scanned
+            """)
+    );
 }
