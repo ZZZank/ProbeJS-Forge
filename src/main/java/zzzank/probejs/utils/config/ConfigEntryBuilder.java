@@ -2,13 +2,11 @@ package zzzank.probejs.utils.config;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.val;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author ZZZank
@@ -33,11 +31,12 @@ public class ConfigEntryBuilder<T> {
         return of(defaultValue).setName(Objects.requireNonNull(name));
     }
 
-    public ConfigEntryBuilder<T> comment(String commentLine) {
+    public ConfigEntryBuilder<T> comment(@Nonnull String commentLine) {
         if (comments == null) {
             comments = new ArrayList<>();
         }
-        comments.add(commentLine);
+        val lines = Objects.requireNonNull(commentLine).split("\n");
+        comments.addAll(Arrays.asList(lines));
         return this;
     }
 
