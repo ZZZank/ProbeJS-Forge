@@ -20,8 +20,8 @@ public interface ProbeConfig {
     ConfigEntry<Boolean> isolatedScopes = INSTANCE.addConfig(of("isolatedScope", false));
     ConfigEntry<Boolean> complete = INSTANCE.addConfig(of("complete", true));
     ConfigEntry<Boolean> publicClassOnly = INSTANCE.addConfig(
-        of("publicClassOnly", false).comment("""
-            prevent classes that are not public and not referenced from being scanned
-            """)
+        of("publicClassOnly", false).comment(
+            "prevent classes that are not public and not referenced from being scanned"
+        )
     );
 }

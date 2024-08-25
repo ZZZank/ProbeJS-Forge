@@ -13,10 +13,14 @@ import zzzank.probejs.GlobalStates;
 @Mixin(EventBus.class)
 public abstract class MixinEventBus {
 
-    /*
+    /**
      * So we sneak peek all registered event listeners
      */
-    @Inject(method = "post(Lnet/minecraftforge/eventbus/api/Event;Lnet/minecraftforge/eventbus/api/IEventBusInvokeDispatcher;)Z", at = @At("HEAD"), remap = false)
+    @Inject(
+        method = "post(Lnet/minecraftforge/eventbus/api/Event;Lnet/minecraftforge/eventbus/api/IEventBusInvokeDispatcher;)Z",
+        at = @At("HEAD"),
+        remap = false
+    )
     public void addToListeners(Event event, IEventBusInvokeDispatcher wrapper, CallbackInfoReturnable<Boolean> cir) {
         GlobalStates.KNOWN_EVENTS.add(event.getClass());
     }

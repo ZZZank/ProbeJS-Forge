@@ -31,12 +31,17 @@ public class ConfigEntryBuilder<T> {
         return of(defaultValue).setName(Objects.requireNonNull(name));
     }
 
-    public ConfigEntryBuilder<T> comment(@Nonnull String commentLine) {
-        if (comments == null) {
-            comments = new ArrayList<>();
+    public ConfigEntryBuilder<T> comment(@Nonnull String comment) {
+        return comments(Objects.requireNonNull(comment.split("\n")));
+    }
+
+    public ConfigEntryBuilder<T> comments(String... comments) {
+        if (this.comments == null) {
+            this.comments = new ArrayList<>();
         }
-        val lines = Objects.requireNonNull(commentLine).split("\n");
-        comments.addAll(Arrays.asList(lines));
+        for (val comment : comments) {
+            this.comments.add(Objects.requireNonNull(comment));
+        }
         return this;
     }
 

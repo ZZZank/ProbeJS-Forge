@@ -22,7 +22,7 @@ public class ConfigImpl {
     public final String defaultNamespace;
     public final ConfigEntrySerde serde;
     private final Table<String, String, ConfigEntry<?>> all;
-    private final Path path;
+    public final Path path;
 
     public ConfigImpl(Path path, String defaultNamespace) {
         this.path = path;
