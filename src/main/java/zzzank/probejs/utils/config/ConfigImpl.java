@@ -40,14 +40,12 @@ public class ConfigImpl {
     public void save() {
         try (val writer = Files.newBufferedWriter(path)) {
             val object = new JsonObject();
-            for (val cell : all.cellSet()) {
-                val configEntry = cell.getValue();
-                if (configEntry == null) {
-                    continue;
-                }
-                val pair = serde.toJson(configEntry);
-                object.add(pair.getFirst(), pair.getSecond());
-            }
+            all.cellSet()
+                .stream()
+                .map(Table.Cell::getValue)
+                .filter(Objects::nonNull)
+                .map(serde::toJson)
+                .forEach(pair -> object.add(pair.getFirst(), pair.getSecond()));
             ProbeJS.GSON_WRITER.toJson(object, writer);
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Error happened when writing configs to file", e);

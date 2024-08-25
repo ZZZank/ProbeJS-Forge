@@ -1,11 +1,8 @@
 package zzzank.probejs.utils.config;
 
 import com.google.common.collect.ImmutableList;
-import zzzank.probejs.ProbeJS;
 import lombok.val;
 
-import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,10 +16,6 @@ public class ConfigEntry<T> {
     private T value;
     public final String namespace;
     public final ImmutableList<String> comments;
-
-    public ConfigEntry(String name, @Nonnull T defaultValue) {
-        this(null, name, defaultValue, ProbeJS.MOD_ID, Collections.emptyList());
-    }
 
     public ConfigEntry(ConfigImpl source, String name, T defaultValue, String namespace, List<String> comments) {
         this.source = Objects.requireNonNull(source);
@@ -78,6 +71,4 @@ public class ConfigEntry<T> {
         }
         return value;
     }
-
-
 }
