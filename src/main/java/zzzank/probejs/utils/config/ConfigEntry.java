@@ -39,7 +39,11 @@ public class ConfigEntry<T> {
         if (Objects.equals(this.value, value)) {
             return;
         }
-        this.value = value;
+        try {
+            this.value = value;
+        } catch (Exception e) {
+            this.value = defaultValue;
+        }
         source.save();
     }
 
