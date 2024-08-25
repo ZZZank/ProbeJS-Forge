@@ -3,11 +3,13 @@ package zzzank.probejs.utils.config;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
+import dev.latvian.kubejs.util.UtilsJS;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * @author ZZZank
@@ -32,7 +34,10 @@ public class ConfigImpl {
             //todo: config auto update
             for (val entry : object.entrySet()) {
                 val configEntry = serde.fromJson(entry.getKey(), entry.getValue().getAsJsonObject());
-                this.put(configEntry);
+                if (configEntry == null) {
+                    continue;
+                }
+                this.merge(configEntry);
             }
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Error happened when reading configs from file", e);
@@ -70,10 +75,15 @@ public class ConfigImpl {
         return configEntry;
     }
 
-    /**
-     * @return the value previously associated with the keys, or null if no mapping existed for the keys
-     */
-    public ConfigEntry<?> put(ConfigEntry<?> configEntry) {
-        return all.put(configEntry.namespace, configEntry.name, configEntry);
+    public ConfigEntry<?> merge(ConfigEntry<?> configEntry) {
+        Objects.requireNonNull(configEntry);
+        val old = all.get(configEntry.namespace, configEntry.name);
+        if (old != null) {
+            old.set(UtilsJS.cast(old.adaptValue(configEntry.get())));
+            return old;
+        } else {
+            all.put(configEntry.namespace, configEntry.name, configEntry);
+            return configEntry;
+        }
     }
 }
