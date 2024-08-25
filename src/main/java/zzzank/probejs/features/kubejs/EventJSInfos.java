@@ -38,7 +38,7 @@ public final class EventJSInfos {
             }
             for (val entry : obj.entrySet()) {
                 val id = entry.getKey();
-                val info = EventJSInfo.fromJson(entry.getValue().getAsJsonObject());
+                val info = EventJSInfo.fromJson(id, entry.getValue().getAsJsonObject());
                 if (info != null) {
                     KNOWN.put(id, info);
                 }
@@ -52,7 +52,8 @@ public final class EventJSInfos {
         try (val writer = Files.newBufferedWriter(path)) {
             val obj = new JsonObject();
             for (val info : KNOWN.values()) {
-                obj.add(info.id(), info.toJson());
+                val pair = info.toJson();
+                obj.add(pair.getFirst(), pair.getSecond());
             }
             //dont use ProbeJS.GSON_WRITER, there's too many lines
             ProbeJS.GSON.toJson(obj, writer);

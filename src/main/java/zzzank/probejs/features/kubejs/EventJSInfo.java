@@ -2,6 +2,7 @@ package zzzank.probejs.features.kubejs;
 
 import com.github.bsideup.jabel.Desugar;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
 import lombok.val;
@@ -31,9 +32,7 @@ public record EventJSInfo(
     }
 
     @Nullable
-    public static EventJSInfo fromJson(JsonObject json) {
-        //id
-        val id = json.get("id").getAsString();
+    public static EventJSInfo fromJson(String id, JsonObject json) {
         //class
         val clazz = ReflectUtils.classOrNull(json.get("class").getAsString());
         if (clazz == null || !EventJS.class.isAssignableFrom(clazz)) {
@@ -62,9 +61,8 @@ public record EventJSInfo(
         return sub.get() != null;
     }
 
-    public JsonObject toJson() {
+    public Pair<String, JsonObject> toJson() {
         val m = CollectUtils.ofMap(
-            "id", id,
             "class", clazzRaw.getName(),
             "type", CollectUtils.mapToList(scriptTypes, ScriptType::name),
             "cancellable", this.cancellable
@@ -72,7 +70,7 @@ public record EventJSInfo(
         if (sub.notNull()) {
             m.put("sub", sub.get());
         }
-        return (JsonObject) JsonUtils.parseObject(m);
+        return Pair.of(id, (JsonObject) JsonUtils.parseObject(m));
     }
 
     @Override
