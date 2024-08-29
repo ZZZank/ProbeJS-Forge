@@ -66,7 +66,7 @@ public class ConfigImpl {
 
     public <T> ConfigEntry<T> addConfig(ConfigEntryBuilder<T> builder) {
         val configEntry = builder.build(this);
-        all.put(builder.namespace, builder.name, configEntry);
+        all.put(configEntry.namespace, configEntry.name, configEntry);
         return configEntry;
     }
 
