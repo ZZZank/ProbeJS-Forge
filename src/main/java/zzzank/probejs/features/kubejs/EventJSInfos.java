@@ -55,8 +55,7 @@ public final class EventJSInfos {
                 val pair = info.toJson();
                 obj.add(pair.getFirst(), pair.getSecond());
             }
-            //dont use ProbeJS.GSON_WRITER, there's too many lines
-            ProbeJS.GSON.toJson(obj, writer);
+            ProbeJS.GSON_WRITER.toJson(obj, writer);
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Error when writing EventJS infos", e);
         }
