@@ -1,11 +1,10 @@
 package zzzank.probejs.features.kubejs;
 
-import com.github.bsideup.jabel.Desugar;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import dev.latvian.kubejs.event.EventJS;
 import dev.latvian.kubejs.script.ScriptType;
-import lombok.val;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.JsonUtils;
@@ -13,19 +12,25 @@ import zzzank.probejs.utils.Mutable;
 import zzzank.probejs.utils.ReflectUtils;
 
 import javax.annotation.Nullable;
+import java.util.AbstractMap;
 import java.util.EnumSet;
+import java.util.Map;
 
 /**
  * @author ZZZank
  */
-@Desugar
-public record EventJSInfo(
-    Class<? extends EventJS> clazzRaw,
-    String id,
-    boolean cancellable,
-    EnumSet<ScriptType> scriptTypes,
-    Mutable<String> sub
-) implements Comparable<EventJSInfo> {
+
+@Getter
+@Accessors(fluent = true)
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor
+public final class EventJSInfo implements Comparable<EventJSInfo> {
+    private final Class<? extends EventJS> clazzRaw;
+    private final String id;
+    private final boolean cancellable;
+    private final EnumSet<ScriptType> scriptTypes;
+    private final Mutable<String> sub;
 
     public EventJSInfo(ScriptType t, EventJS event, String id, @Nullable String sub) {
         this(event.getClass(), id, event.canCancel(), EnumSet.of(t), new Mutable<>(sub));
@@ -61,7 +66,7 @@ public record EventJSInfo(
         return sub.get() != null;
     }
 
-    public Pair<String, JsonObject> toJson() {
+    public Map.Entry<String, JsonObject> toJson() {
         val m = CollectUtils.ofMap(
             "class", clazzRaw.getName(),
             "type", CollectUtils.mapToList(scriptTypes, ScriptType::name),
@@ -70,7 +75,7 @@ public record EventJSInfo(
         if (sub.notNull()) {
             m.put("sub", sub.get());
         }
-        return Pair.of(id, (JsonObject) JsonUtils.parseObject(m));
+        return new AbstractMap.SimpleImmutableEntry<>(id, (JsonObject) JsonUtils.parseObject(m));
     }
 
     @Override

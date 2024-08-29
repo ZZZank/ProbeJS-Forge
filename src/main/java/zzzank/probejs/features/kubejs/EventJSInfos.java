@@ -53,7 +53,7 @@ public final class EventJSInfos {
             val obj = new JsonObject();
             for (val info : KNOWN.values()) {
                 val pair = info.toJson();
-                obj.add(pair.getFirst(), pair.getSecond());
+                obj.add(pair.getKey(), pair.getValue());
             }
             ProbeJS.GSON_WRITER.toJson(obj, writer);
         } catch (Exception e) {

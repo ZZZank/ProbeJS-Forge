@@ -95,7 +95,7 @@ public class ScriptTransformer {
                 continue;
             }
             tLine = tLine.substring(7).trim();
-            String[] parts = tLine.split(" ", 2);
+            val parts = tLine.split(" ", 2);
 
             val identifier = switch (parts[0]) {
                 case "function" -> parts[1].split("\\(")[0];

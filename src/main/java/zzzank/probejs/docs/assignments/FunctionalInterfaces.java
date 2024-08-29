@@ -19,6 +19,7 @@ public class FunctionalInterfaces extends ProbeJSPlugin {
             }
             val abstracts = recordedClass.methods.stream()
                 .filter(methodInfo -> methodInfo.attributes.isAbstract)
+                .limit(2)
                 .collect(Collectors.toList());
             if (abstracts.size() != 1) {
                 continue;
