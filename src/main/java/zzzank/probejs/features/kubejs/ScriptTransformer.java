@@ -91,22 +91,23 @@ public class ScriptTransformer {
     public void processExport() {
         for (int i = 0; i < lines.size(); i++) {
             String tLine = lines.get(i).trim();
-            if (tLine.startsWith("export")) {
-                tLine = tLine.substring(6).trim();
-                String[] parts = tLine.split(" ", 2);
-
-                val identifier = switch (parts[0]) {
-                    case "function" -> parts[1].split("\\(")[0];
-                    case "var", "let", "const" -> parts[1].split(" ")[0];
-                    default -> null;
-                };
-                if (identifier == null) {
-                    continue;
-                }
-
-                exportedSymbols.add(identifier);
-                lines.set(i, tLine);
+            if (!tLine.startsWith("export ")) {
+                continue;
             }
+            tLine = tLine.substring(7).trim();
+            String[] parts = tLine.split(" ", 2);
+
+            val identifier = switch (parts[0]) {
+                case "function" -> parts[1].split("\\(")[0];
+                case "var", "let", "const" -> parts[1].split(" ")[0];
+                default -> null;
+            };
+            if (identifier == null) {
+                continue;
+            }
+
+            exportedSymbols.add(identifier);
+            lines.set(i, tLine);
         }
     }
 
