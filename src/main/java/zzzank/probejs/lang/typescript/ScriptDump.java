@@ -328,8 +328,8 @@ public class ScriptDump {
                     "target", "ES2015",
                     "lib", CollectUtils.ofList("ES5", "ES2015"),
                     "rootDir", ".",
-                    "typeRoots", CollectUtils.ofList("../../.probe/%s/probe-types"),
-                    "baseUrl", "../../.probe/%s/probe-types",
+                    "typeRoots", CollectUtils.ofList(String.format("../../.probe/%s/probe-types", basePath.getFileName())),
+                    "baseUrl", String.format("../../.probe/%s/probe-types", basePath.getFileName()),
                     "skipLibCheck", true
                 ),
                 "include", CollectUtils.ofList("./**/*.js")
