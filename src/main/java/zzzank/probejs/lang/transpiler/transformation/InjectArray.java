@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.transpiler.transformation;
 
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.typescript.Declaration;
@@ -19,23 +20,31 @@ import java.util.*;
  */
 public class InjectArray implements ClassTransformer {
 
-    static class FormattedLine extends Code {
+    public static class FormattedLine extends Code {
         private final String line;
-        private final BaseType type;
+        private final BaseType[] types;
 
-        FormattedLine(String line, BaseType type) {
+        FormattedLine(String line, BaseType... types) {
             this.line = line;
-            this.type = type;
+            this.types = types;
         }
 
         @Override
         public Collection<ClassPath> getUsedClassPaths() {
-            return type.getUsedClassPaths();
+            val paths = new HashSet<ClassPath>();
+            for (val type : types) {
+                paths.addAll(type.getUsedClassPaths());
+            }
+            return paths;
         }
 
         @Override
         public List<String> format(Declaration declaration) {
-            return Collections.singletonList(String.format(line, type.line(declaration, BaseType.FormatType.RETURN)));
+            val additions = new Object[types.length];
+            for (int i = 0; i < types.length; i++) {
+                additions[i] = types[i].line(declaration, BaseType.FormatType.RETURN);
+            }
+            return Collections.singletonList(String.format(line, additions));
         }
     }
 
