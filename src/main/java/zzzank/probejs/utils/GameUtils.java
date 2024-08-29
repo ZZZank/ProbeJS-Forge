@@ -54,6 +54,6 @@ public class GameUtils {
         val lines = new ArrayList<>(1 + trace.length);
         lines.add(t);
         lines.addAll(Arrays.asList(trace));
-        ProbeJS.LOGGER.error(lines.stream().map(Object::toString).collect(Collectors.joining("\n")));
+        ProbeJS.LOGGER.error(lines.stream().map(Object::toString).map("    "::concat).collect(Collectors.joining("\n")));
     }
 }
