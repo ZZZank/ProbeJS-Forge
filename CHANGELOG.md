@@ -1,3 +1,30 @@
+# ProbeJS Legacy 4.1.0 -> 4.2.0
+
+"global" resolving & config rewrite
+
+## What's new?
+
+-   values added to `global` can now be scanned and exported to typings
+    -   e.g. `global.jeiRuntime` (when JEI is installed) will now have typings provided
+    -   this is enabled by default, you can also disable it in config file
+-   config system is now rewritten. Now all available configs are written to `probe-settings.json`, allowing you to change them without in-game commands.
+-   new config system will also provide more information in config file:
+    -   current value, with `$value` as its key
+    -   default value, with `$default` as its key
+    -   comments, with `$comment` as its key
+-   a new config option for not dumping non-public and not referenced classes, disabled by default
+-   make event cache smaller by not storaging event id twice
+-   ProbeJS Legacy will warn players when typing generations failed
+-   recipe doc now also apply to startup events
+-   binding `Types` is removed, import `$Types` instead
+-   smarter scope wrapping, more in line with how CommonJS in VSCode works
+-   fix an edge-case bug where `exportXXXX` will cause scope problem
+-   fix `typeRoots` and `BaseUrl` in jsconfig.json
+
+Note: ProbeJS Legacy 4 is very different from ProbeJS Legacy 3.x and older versions, old typing files are invalid in 4.x version, see [ProbeJS 7 release note](https://github.com/Prunoideae/ProbeJS/releases/tag/v7.0.0) and [another ProbeJS 7 release note](https://github.com/Prunoideae/ProbeJS/releases/tag/v7.0.0-1.21) for more details. If you are unable to use 4.x, or just don't like it, `3.11.0` is the only recommended 3.x version of PJS Legacy.
+
+---
+
 # ProbeJS Legacy 4.0.0 -> 4.1.0
 
 Safer class scanning
