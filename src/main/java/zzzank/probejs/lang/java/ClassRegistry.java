@@ -43,7 +43,7 @@ public class ClassRegistry {
     }
 
     private void fromClass(Class<?> c) {
-        if (!ReflectUtils.classExist(c.getName()) || c.isSynthetic() || c.isAnonymousClass() || Modifier.isPublic(c.getModifiers())) {
+        if (!ReflectUtils.classExist(c.getName()) || c.isSynthetic() || c.isAnonymousClass()) {
             // We test if the class actually exists from forName
             // I think some runtime class can have non-existing Class<?> object due to .getSuperClass
             // or .getInterfaces
