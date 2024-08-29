@@ -24,4 +24,7 @@ public interface ProbeConfig {
             "prevent classes that are not public and not referenced from being scanned"
         )
     );
+    ConfigEntry<Boolean> resolveGlobal = INSTANCE.addConfig(of("resolveGlobal", true).comment(
+        "resolve defined values in `global`"
+    ));
 }

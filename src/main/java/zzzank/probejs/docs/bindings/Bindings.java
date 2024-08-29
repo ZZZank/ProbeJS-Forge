@@ -1,14 +1,11 @@
-package zzzank.probejs.docs;
+package zzzank.probejs.docs.bindings;
 
-import dev.latvian.kubejs.script.BindingsEvent;
-import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.kubejs.script.TypedDynamicFunction;
 import dev.latvian.kubejs.util.KubeJSPlugins;
 import dev.latvian.mods.rhino.BaseFunction;
-import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.NativeJavaClass;
-import dev.latvian.mods.rhino.Scriptable;
 import lombok.val;
+import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
@@ -26,28 +23,6 @@ import java.util.*;
  * Adds bindings to some stuffs...
  */
 public class Bindings extends ProbeJSPlugin {
-
-    private static class DummyBindingEvent extends BindingsEvent {
-
-        private final Map<String, Object> constants = new HashMap<>();
-        private final Map<String, Class<?>> classes = new HashMap<>();
-        private final Map<String, BaseFunction> functions = new HashMap<>();
-
-        public DummyBindingEvent(ScriptManager m, Context cx, Scriptable s) {
-            super(m, cx, s);
-        }
-
-        @Override
-        public void add(String name, Object value) {
-            if (value instanceof Class<?> c) {
-                classes.put(name, c);
-            } else if (value instanceof BaseFunction fn) {
-                functions.put(name, fn);
-            } else {
-                constants.put(name, value);
-            }
-        }
-    }
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {
@@ -100,6 +75,12 @@ public class Bindings extends ProbeJSPlugin {
             } else {
                 exported.put(id, Types.typeOf(converter.convertType(c)));
             }
+        }
+
+        if (ProbeConfig.resolveGlobal.get()) {
+            val resolveGlobal = new ResolveGlobal(event);
+            resolveGlobal.addGlobals(scriptDump);
+            exported.put(ResolveGlobal.NAME, exported.get(ResolveGlobal.NAME).and(ResolveGlobal.RESOLVED));
         }
 
         List<Code> codes = new ArrayList<>();

@@ -3,6 +3,7 @@ package zzzank.probejs.docs;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.docs.assignments.*;
+import zzzank.probejs.docs.bindings.Bindings;
 import zzzank.probejs.docs.events.ForgeEvents;
 import zzzank.probejs.docs.events.KubeEvents;
 import zzzank.probejs.docs.events.RecipeEvents;
