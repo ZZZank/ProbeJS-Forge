@@ -10,6 +10,7 @@ import java.util.Objects;
  * @author ZZZank
  */
 public class ConfigEntry<T> {
+
     public final ConfigImpl source;
     public final String name;
     public final T defaultValue;
@@ -26,6 +27,11 @@ public class ConfigEntry<T> {
     }
 
     public void set(T value) {
+        setNoSave(value);
+        source.save();
+    }
+
+    void setNoSave(T value) {
         if (value == null) {
             value = defaultValue;
         }
@@ -37,7 +43,6 @@ public class ConfigEntry<T> {
         } catch (Exception e) {
             this.value = defaultValue;
         }
-        source.save();
     }
 
     public T adaptValue(Object o) {

@@ -51,7 +51,7 @@ public class ConfigEntrySerde {
             }
 
             val entry = new ConfigEntry<>(source, name, defaultValue, namespace, comments);
-            entry.set(value);
+            entry.setNoSave(value);
             return entry;
         } catch (Exception e) {
             ProbeJS.LOGGER.error(e);

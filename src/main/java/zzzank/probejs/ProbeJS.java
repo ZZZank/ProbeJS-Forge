@@ -29,7 +29,7 @@ public class ProbeJS {
     public ProbeJS() {
         EventBuses.registerModEventBus(ProbeJS.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
 
-        ProbeConfig.INSTANCE.initFromFile();
+        ProbeConfig.INSTANCE.readFromFile();
         ProbeConfig.INSTANCE.save();
     }
 }

@@ -31,7 +31,7 @@ public class ConfigImpl {
         this.defaultNamespace = defaultNamespace;
     }
 
-    public void initFromFile() {
+    public void readFromFile() {
         try (val reader = Files.newBufferedReader(path)) {
             val object = ProbeJS.GSON.fromJson(reader, JsonObject.class);
             JsonConfigParser.select(object).parse(this, object);
