@@ -12,18 +12,35 @@ public interface ProbeConfig {
 
     ConfigImpl INSTANCE = new ConfigImpl(ProbePaths.SETTINGS_JSON, ProbeJS.MOD_ID);
 
-    ConfigEntry<Boolean> enabled = INSTANCE.addConfig(of("enabled", true));
-    ConfigEntry<Boolean> interactive = INSTANCE.addConfig(of("interactive", false));
-    ConfigEntry<Integer> interactivePort = INSTANCE.addConfig(of("interactivePort", 7796));
-    ConfigEntry<Long> modHash = INSTANCE.addConfig(of("modHash", -1L));
-    ConfigEntry<Long> registryHash = INSTANCE.addConfig(of("registryHash", -1L));
-    ConfigEntry<Boolean> isolatedScopes = INSTANCE.addConfig(of("isolatedScope", false));
-    ConfigEntry<Boolean> complete = INSTANCE.addConfig(of("complete", true));
-    ConfigEntry<Boolean> publicClassOnly = INSTANCE.addConfig(
-        of("publicClassOnly", false).comment(
-            "prevent classes that are not public and not referenced from being scanned"
-        )
-    );
+    ConfigEntry<Boolean> enabled = INSTANCE.addConfig(of("enabled", true).comments(
+        "enable or disable ProbeJS Legacy",
+        "note that `require()` function in script are always available"
+    ));
+    ConfigEntry<Boolean> interactive = INSTANCE.addConfig(of("interactive", false).comments(
+        "use with ProbeJS VSCode Extension." ,
+        "Semi-broken currently due to many breaking changes from KubeJS/ProbeJS from higher version"
+    ));
+    ConfigEntry<Integer> interactivePort = INSTANCE.addConfig(of("interactivePort", 7796).comment(
+        "use with ProbeJS VSCode Extension."
+    ));
+    ConfigEntry<Long> modHash = INSTANCE.addConfig(of("modHash", -1L).comment(
+        "internal config, used for tracking mod update and modlist change"
+    ));
+    ConfigEntry<Long> registryHash = INSTANCE.addConfig(of("registryHash", -1L).comment(
+        "internal config, used for tracking registry change"
+    ));
+    ConfigEntry<Boolean> isolatedScopes = INSTANCE.addConfig(of("isolatedScope", false).comments(
+        "isolate scripts from different script file with certain exposure,",
+        "used for making scripts actual running situation more in line with your coding"
+    ));
+    ConfigEntry<Boolean> complete = INSTANCE.addConfig(of("complete", true).comments(
+        "attach all registry names of each registry type to related JS types, for better code completion",
+        "disabling this can help with performance of your code editor",
+        "snippets for registry names are always available, regardless of this option"
+    ));
+    ConfigEntry<Boolean> publicClassOnly = INSTANCE.addConfig(of("publicClassOnly", false).comment(
+        "prevent classes that are not public and not referenced from being scanned"
+    ));
     ConfigEntry<Boolean> resolveGlobal = INSTANCE.addConfig(of("resolveGlobal", true).comment(
         "resolve defined values in `global`"
     ));
