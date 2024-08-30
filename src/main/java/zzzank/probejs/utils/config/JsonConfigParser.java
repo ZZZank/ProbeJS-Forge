@@ -34,10 +34,11 @@ public interface JsonConfigParser {
     void parse(ConfigImpl source, JsonObject rawConfig);
 
     class ParserOld implements JsonConfigParser {
+        public static final String VERSION_KEY = "$version";
 
         @Override
         public boolean test(JsonObject rawConfig) {
-            return !rawConfig.has(ConfigImpl.VERSION_KEY);
+            return !rawConfig.has(VERSION_KEY);
         }
 
         @Override
@@ -55,12 +56,12 @@ public interface JsonConfigParser {
 
         @Override
         public boolean test(JsonObject rawConfig) {
-            return rawConfig.has(ConfigImpl.VERSION_KEY);
+            return rawConfig.has(ParserOld.VERSION_KEY);
         }
 
         @Override
         public void parse(ConfigImpl source, JsonObject rawConfig) {
-            rawConfig.remove(ConfigImpl.VERSION_KEY);
+            rawConfig.remove(ParserOld.VERSION_KEY);
             for (val entry : rawConfig.entrySet()) {
                 val configEntry = source.serde.fromJson(entry.getKey(), entry.getValue().getAsJsonObject());
                 if (configEntry == null) {
