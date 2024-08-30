@@ -1,6 +1,7 @@
 package zzzank.probejs;
 
 import zzzank.probejs.utils.config.ConfigEntry;
+import zzzank.probejs.utils.config.ConfigEntrySerde;
 import zzzank.probejs.utils.config.ConfigImpl;
 
 import static zzzank.probejs.utils.config.ConfigEntryBuilder.of;
@@ -12,6 +13,18 @@ public interface ProbeConfig {
 
     ConfigImpl INSTANCE = new ConfigImpl(ProbePaths.SETTINGS_JSON, ProbeJS.MOD_ID);
 
+    ConfigEntry<Integer> configVersion = INSTANCE.addConfig(of("configVersion", 2).comments(
+        "welcome to ProbeJS Legacy config file",
+        "names of each config entry are in `{namespace}.{name}` form, e.g. 'probejs.version'",
+        "each name is mapped to a config entry, where default value, current value, and possibly comments, are provided",
+        String.format(
+            "sub-entry and keys: comments->'%s', current values->'%s', default values->'%s'",
+            ConfigEntrySerde.COMMENTS_KEY,
+            ConfigEntrySerde.VALUE_KEY,
+            ConfigEntrySerde.DEFAULT_VALUE_KEY
+        ),
+        "comments and default values are provided, but not modifiable, changes to them will be reverted"
+    ));
     ConfigEntry<Boolean> enabled = INSTANCE.addConfig(of("enabled", true).comments(
         "enable or disable ProbeJS Legacy",
         "note that `require()` function in script are always available"
