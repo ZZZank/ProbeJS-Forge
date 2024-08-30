@@ -106,7 +106,7 @@ public class RegistryTypes extends ProbeJSPlugin {
         val key = info.resKey;
 
         val types = enabled
-            ? Types.or(info.names.stream().map(Types::literal).toArray(BaseType[]::new))
+            ? Types.or(info.names.stream().map(ResourceLocation::toString).map(Types::literal).toArray(BaseType[]::new))
             : Types.STRING;
         val typeName = NameUtils.rlToTitle(key.location().getPath());
 
