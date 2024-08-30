@@ -13,7 +13,7 @@ public interface ProbeConfig {
 
     ConfigImpl INSTANCE = new ConfigImpl(ProbePaths.SETTINGS_JSON, ProbeJS.MOD_ID);
 
-    ConfigEntry<Integer> configVersion = INSTANCE.addConfig(of("configVersion", 2).comments(
+    ConfigEntry<Integer> configVersion = INSTANCE.addConfig(of("configVersion", 3).comments(
         "welcome to ProbeJS Legacy config file",
         "names of each config entry are in `{namespace}.{name}` form, e.g. 'probejs.version'",
         "each name is mapped to a config entry, where default value, current value, and possibly comments, are provided",
