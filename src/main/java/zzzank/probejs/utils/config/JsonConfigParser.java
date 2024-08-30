@@ -15,9 +15,9 @@ import java.util.List;
 public interface JsonConfigParser {
 
     List<JsonConfigParser> REGISTERED = CollectUtils.ofList(
-        new ParserOld(),
+        new ParserVersion3(),
         new ParserVersion2(),
-        new ParserVersion3()
+        new ParserOld()
     );
 
     static JsonConfigParser select(JsonObject rawConfig) {
