@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.type;
 
+import dev.latvian.mods.rhino.util.HideFromJS;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
@@ -29,11 +30,36 @@ public interface Types {
      * Returns a literal type of the input if it's something OK in TS,
      * otherwise, any will be returned.
      *
+     * @deprecated selecting this method overload means that your 'content' actually cannot be converted to JS literal
+     * , and only 'any' will be returned
      * @param content a string, number or boolean
      */
     static JSPrimitiveType literal(Object content) {
-        if (!(content instanceof String || content instanceof Number || content instanceof Boolean))
-            return ANY;
+        return content instanceof String
+            || content instanceof Number
+            || content instanceof Boolean
+            || content instanceof Character
+            ? new JSPrimitiveType(ProbeJS.GSON.toJson(content))
+            : ANY;
+    }
+
+    @HideFromJS
+    static JSPrimitiveType literal(String content) {
+        return new JSPrimitiveType(ProbeJS.GSON.toJson(content));
+    }
+
+    @HideFromJS
+    static JSPrimitiveType literal(Number content) {
+        return new JSPrimitiveType(ProbeJS.GSON.toJson(content));
+    }
+
+    @HideFromJS
+    static JSPrimitiveType literal(Boolean content) {
+        return new JSPrimitiveType(ProbeJS.GSON.toJson(content));
+    }
+
+    @HideFromJS
+    static JSPrimitiveType literal(Character content) {
         return new JSPrimitiveType(ProbeJS.GSON.toJson(content));
     }
 
