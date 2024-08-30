@@ -17,13 +17,16 @@ public interface ProbeConfig {
         "welcome to ProbeJS Legacy config file",
         "names of each config entry are in `{namespace}.{name}` form, e.g. 'probejs.version'",
         "each name is mapped to a config entry, where default value, current value, and possibly comments, are provided",
+        "",
         String.format(
             "sub-entry and keys: comments->'%s', current values->'%s', default values->'%s'",
             ConfigEntrySerde.COMMENTS_KEY,
             ConfigEntrySerde.VALUE_KEY,
             ConfigEntrySerde.DEFAULT_VALUE_KEY
         ),
-        "comments and default values are provided, but not modifiable, changes to them will be reverted"
+        "",
+        "comments and default values are provided, but not modifiable, changes to them will not be kept",
+        String.format("for changing certain config value, look for a sub entry whose key is '%s'", ConfigEntrySerde.VALUE_KEY)
     ));
     ConfigEntry<Boolean> enabled = INSTANCE.addConfig(of("enabled", true).comments(
         "enable or disable ProbeJS Legacy",
