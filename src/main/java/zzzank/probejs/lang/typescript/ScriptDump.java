@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
@@ -32,7 +33,6 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.GameUtils;
 import zzzank.probejs.utils.JsonUtils;
-import zzzank.probejs.utils.Lazy;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * maintaining the file structures
  */
 public class ScriptDump {
-    public static final Supplier<ScriptDump> SERVER_DUMP = Lazy.of(() -> {
+    public static final Supplier<ScriptDump> SERVER_DUMP = Suppliers.memoize(() -> {
         ServerScriptManager scriptManager = ServerScriptManager.instance;
         if (scriptManager == null) {
             return null;
@@ -69,7 +69,7 @@ public class ScriptDump {
         );
     });
 
-    public static final Supplier<ScriptDump> CLIENT_DUMP = Lazy.of(() -> new ScriptDump(
+    public static final Supplier<ScriptDump> CLIENT_DUMP = Suppliers.memoize(() -> new ScriptDump(
         KubeJS.clientScriptManager,
         ProbePaths.PROBE.resolve("client"),
         KubeJSPaths.CLIENT_SCRIPTS,
@@ -83,7 +83,7 @@ public class ScriptDump {
         })
     ));
 
-    public static final Supplier<ScriptDump> STARTUP_DUMP = Lazy.of(() -> new ScriptDump(
+    public static final Supplier<ScriptDump> STARTUP_DUMP = Suppliers.memoize(() -> new ScriptDump(
         KubeJS.startupScriptManager,
         ProbePaths.PROBE.resolve("startup"),
         KubeJSPaths.STARTUP_SCRIPTS,

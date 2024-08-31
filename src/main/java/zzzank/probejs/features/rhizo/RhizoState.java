@@ -1,7 +1,9 @@
 package zzzank.probejs.features.rhizo;
 
+import com.google.common.base.Suppliers;
 import net.minecraftforge.fml.ModList;
-import zzzank.probejs.utils.Lazy;
+
+import java.util.function.Supplier;
 
 import static zzzank.probejs.utils.ReflectUtils.classExist;
 
@@ -10,7 +12,7 @@ import static zzzank.probejs.utils.ReflectUtils.classExist;
  */
 public interface RhizoState {
 
-    Lazy<Boolean> MOD = Lazy.of(() -> ModList.get().isLoaded("rhizo"));
+    Supplier<Boolean> MOD = Suppliers.memoize(() -> ModList.get().isLoaded("rhizo"));
     boolean ENUM_TYPE_WRAPPER = classExist("dev.latvian.mods.rhino.util.wrap.EnumTypeWrapper");
     boolean REMAPPER = classExist("dev.latvian.mods.rhino.util.remapper.RemapperManager");
     boolean GENERIC_ANNOTATION = classExist("dev.latvian.mods.rhino.annotations.typing.Generics");
