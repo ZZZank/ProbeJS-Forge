@@ -6,7 +6,7 @@ import me.shedaniel.architectury.platform.Platform;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import zzzank.probejs.ProbeJS;
-import zzzank.probejs.features.kubejs.SpecialData;
+import zzzank.probejs.utils.registry.RegistryInfos;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -35,7 +35,7 @@ public class GameUtils {
                 return -1;
             }
 
-            SpecialData.instance().registries()
+            RegistryInfos.infos.values()
                 .stream()
                 .flatMap(registryInfo -> registryInfo.names.stream())
                 .map(ResourceLocation::toString)

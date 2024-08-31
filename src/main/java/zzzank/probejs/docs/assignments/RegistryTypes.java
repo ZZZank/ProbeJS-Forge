@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import zzzank.probejs.features.kubejs.SpecialData;
+import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.snippet.Snippet;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -42,7 +42,7 @@ public class RegistryTypes extends ProbeJSPlugin {
             return;
         }
 
-        for (val info : SpecialData.instance().registries()) {
+        for (val info : RegistryInfos.infos.values()) {
             val key = info.resKey;
             val typeName = NameUtils.rlToTitle(key.location().getPath());
             scriptDump.assignType(
@@ -84,7 +84,7 @@ public class RegistryTypes extends ProbeJSPlugin {
         val special = new Wrapped.Namespace("Special");
         val enabled = ProbeConfig.complete.get();
 
-        for (val info : SpecialData.instance().registries()) {
+        for (val info : RegistryInfos.infos.values()) {
             createTypes(special, info, enabled);
         }
 //        createTypes(special, new RegistryInfo(Registry.REGISTRY), enabled);
@@ -137,7 +137,7 @@ public class RegistryTypes extends ProbeJSPlugin {
         }
 
         // We inject literal and tag into registry types
-        for (val info : SpecialData.instance().registries()) {
+        for (val info : RegistryInfos.infos.values()) {
             val key = info.resKey;
             makeClassModifications(globalClasses, key, info.forgeRaw.getRegistrySuperType());
         }
@@ -169,7 +169,7 @@ public class RegistryTypes extends ProbeJSPlugin {
             return registryObjectClasses;
         }
 
-        for (val info : SpecialData.instance().registries()) {
+        for (val info : RegistryInfos.infos.values()) {
             val registry = info.raw;
             if (registry == null) {
                 continue;
@@ -189,7 +189,7 @@ public class RegistryTypes extends ProbeJSPlugin {
             return;
         }
 
-        for (val info : SpecialData.instance().registries()) {
+        for (val info : RegistryInfos.infos.values()) {
             val registry = info.raw;
             val key = info.resKey;
             if (registry == null) {

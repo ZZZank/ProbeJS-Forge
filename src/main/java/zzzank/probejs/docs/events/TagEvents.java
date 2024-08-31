@@ -4,7 +4,7 @@ import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.server.TagEventJS;
 import lombok.val;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import zzzank.probejs.features.kubejs.SpecialData;
+import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
@@ -40,7 +40,7 @@ public class TagEvents extends ProbeJSPlugin {
         }
 
         val events = new ArrayList<Code>();
-        for (val info : SpecialData.instance().registries()) {
+        for (val info : RegistryInfos.infos.values()) {
             val forgeRegistry = info.forgeRaw;
             val tagFolder = forgeRegistry.getTagFolder();
             if (tagFolder == null) {
@@ -50,7 +50,7 @@ public class TagEvents extends ProbeJSPlugin {
         }
 
         val groupNamespace = new Wrapped.Namespace("ServerEvents");
-        for (val info : SpecialData.instance().registries()) {
+        for (val info : RegistryInfos.infos.values()) {
             val key = info.resKey;
             val registry = info.raw;
             if (registry == null) {

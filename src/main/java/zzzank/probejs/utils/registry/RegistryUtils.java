@@ -3,7 +3,6 @@ package zzzank.probejs.utils.registry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
-import zzzank.probejs.features.kubejs.SpecialData;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
 public class RegistryUtils {
 
     public static Collection<ResourceKey<? extends Registry<?>>> getRegistries(RegistryAccess access) {
-        return SpecialData.instance().registries().stream().map((RegistryInfo registryInfo) -> registryInfo.resKey).collect(Collectors.toList());
+        return RegistryInfos.infos.values().stream().map((RegistryInfo registryInfo) -> registryInfo.resKey).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")

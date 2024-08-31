@@ -2,7 +2,7 @@ package zzzank.probejs.docs.events;
 
 import dev.latvian.kubejs.script.ScriptType;
 import lombok.val;
-import zzzank.probejs.features.kubejs.SpecialData;
+import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
@@ -25,7 +25,7 @@ public class RegistryEvents extends ProbeJSPlugin {
 
         val groupNamespace = new Wrapped.Namespace("StartupEvents");
 
-        for (val info : SpecialData.instance().registries()) {
+        for (val info : RegistryInfos.infos.values()) {
             val key = info.resKey;
             val registryPath = getRegistryClassPath(key.location().getNamespace(), key.location().getPath());
             val extraName = key.location().getNamespace().equals("minecraft")
@@ -107,7 +107,7 @@ public class RegistryEvents extends ProbeJSPlugin {
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
         Set<Class<?>> classes = new HashSet<>();
 
-        for (val info : SpecialData.instance().registries()) {
+        for (val info : RegistryInfos.infos.values()) {
             val forgeRegistry = info.forgeRaw;
             val vanillaRegistry = info.raw;
             classes.add(forgeRegistry.getRegistrySuperType());

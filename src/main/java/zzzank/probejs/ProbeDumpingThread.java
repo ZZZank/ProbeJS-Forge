@@ -3,7 +3,7 @@ package zzzank.probejs;
 import dev.latvian.kubejs.bindings.TextWrapper;
 import lombok.val;
 import net.minecraft.network.chat.Component;
-import zzzank.probejs.features.kubejs.SpecialData;
+import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.features.rhizo.RhizoState;
 import zzzank.probejs.utils.GameUtils;
 
@@ -54,7 +54,7 @@ public class ProbeDumpingThread extends Thread {
             );
         }
 
-        SpecialData.refresh();
+        RegistryInfos.refresh();
         val probeDump = new ProbeDump();
         probeDump.defaultScripts();
         try {
