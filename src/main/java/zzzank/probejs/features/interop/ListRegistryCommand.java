@@ -4,17 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dev.latvian.kubejs.util.UtilsJS;
 import lombok.val;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.StaticTags;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import zzzank.probejs.features.bridge.Command;
-import zzzank.probejs.utils.registry.RegistryUtils;
+import zzzank.probejs.utils.registry.RegistryInfos;
 
 import java.util.stream.Stream;
 
@@ -29,23 +26,21 @@ public abstract class ListRegistryCommand extends Command {
         if (currentServer == null) {
             return new JsonArray();
         }
-        RegistryAccess access = currentServer.registryAccess();
 
-        for (ResourceKey<? extends Registry<?>> key : RegistryUtils.getRegistries(access)) {
-            String registryName = key.location().getNamespace().equals("minecraft") ?
+        for (val info : RegistryInfos.infos.values()) {
+            val key = info.resKey;
+            val registryName = key.location().getNamespace().equals("minecraft") ?
                 key.location().getPath() :
                 key.location().toString();
             if (!registryKey.equals(registryName)) {
                 continue;
             }
-
-            Registry<?> registry = access.registry(UtilsJS.cast(key)).orElse(null);
-            if (registry == null) {
+            if (info.raw == null) {
                 break;
             }
 
-            var result = new JsonArray();
-            getItems(registry)
+            val result = new JsonArray();
+            getItems(info.raw)
                 .map(ResourceLocation::toString)
                 .map(JsonPrimitive::new)
                 .forEach(result::add);
