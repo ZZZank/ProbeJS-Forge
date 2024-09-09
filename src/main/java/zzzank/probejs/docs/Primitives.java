@@ -1,12 +1,17 @@
 package zzzank.probejs.docs;
 
+import com.google.common.collect.ImmutableMap;
 import zzzank.probejs.lang.transpiler.TypeConverter;
+import zzzank.probejs.lang.transpiler.redirect.SimpleTypeRedirect;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.member.TypeDecl;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
+import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
+
+import java.util.Map;
 
 public class Primitives extends ProbeJSPlugin {
     public static final JSPrimitiveType LONG = Types.primitive("long");
@@ -23,34 +28,39 @@ public class Primitives extends ProbeJSPlugin {
 
     private static final JSPrimitiveType TS_STRING = Types.primitive("String");
 
+    public static final Map<Class<?>, BaseType> MAPPING = ImmutableMap.<Class<?>, BaseType>builder()
+        //obj
+        .put(Object.class, Types.ANY)
+        //string
+        .put(String.class, Types.STRING)
+        .put(CharSequence.class, CHAR_SEQUENCE)
+        .put(Character.class, CHARACTER)
+        .put(Character.TYPE, CHARACTER)
+        //void
+        .put(Void.class, Types.VOID)
+        .put(Void.TYPE, Types.VOID)
+        //number
+        .put(Long.class, LONG)
+        .put(Long.TYPE, LONG)
+        .put(Integer.class, INTEGER)
+        .put(Integer.TYPE, INTEGER)
+        .put(Short.class, SHORT)
+        .put(Short.TYPE, SHORT)
+        .put(Byte.class, BYTE)
+        .put(Byte.TYPE, BYTE)
+        .put(Number.class, Types.NUMBER)
+        .put(Double.class, DOUBLE)
+        .put(Double.TYPE, DOUBLE)
+        .put(Float.class, FLOAT)
+        .put(Float.TYPE, FLOAT)
+        //bool
+        .put(Boolean.class, Types.BOOLEAN)
+        .put(Boolean.TYPE, Types.BOOLEAN)
+        .build();
+
     @Override
     public void addPredefinedTypes(TypeConverter converter) {
-        converter.addType(Object.class, Types.ANY);
-
-        converter.addType(String.class, Types.STRING);
-        converter.addType(CharSequence.class, CHAR_SEQUENCE);
-        converter.addType(Character.class, CHARACTER);
-        converter.addType(Character.TYPE, CHARACTER);
-
-        converter.addType(Void.class, Types.VOID);
-        converter.addType(Void.TYPE, Types.VOID);
-
-        converter.addType(Long.class, LONG);
-        converter.addType(Long.TYPE, LONG);
-        converter.addType(Integer.class, INTEGER);
-        converter.addType(Integer.TYPE, INTEGER);
-        converter.addType(Short.class, SHORT);
-        converter.addType(Short.TYPE, SHORT);
-        converter.addType(Byte.class, BYTE);
-        converter.addType(Byte.TYPE, BYTE);
-        converter.addType(Number.class, Types.NUMBER);
-        converter.addType(Double.class, DOUBLE);
-        converter.addType(Double.TYPE, DOUBLE);
-        converter.addType(Float.class, FLOAT);
-        converter.addType(Float.TYPE, FLOAT);
-
-        converter.addType(Boolean.class, Types.BOOLEAN);
-        converter.addType(Boolean.TYPE, Types.BOOLEAN);
+        converter.addTypeRedirect(new SimpleTypeRedirect(MAPPING.keySet(), (type) -> MAPPING.get(type.clazz)));
     }
 
     @Override

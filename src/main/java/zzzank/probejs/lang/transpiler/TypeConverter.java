@@ -8,14 +8,12 @@ import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.type.TypeAdapter;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
 import zzzank.probejs.lang.java.type.impl.*;
+import zzzank.probejs.lang.transpiler.redirect.TypeRedirect;
 import zzzank.probejs.lang.typescript.code.type.*;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,20 +21,25 @@ import java.util.stream.Collectors;
  */
 public class TypeConverter {
 
-    public final Map<ClassPath, BaseType> predefinedTypes = new HashMap<>();
+    public final List<TypeRedirect> typeRedirects = new ArrayList<>();
     public final ScriptManager scriptManager;
 
     public TypeConverter(ScriptManager manager) {
         this.scriptManager = manager;
     }
 
-    public void addType(Class<?> clazz, BaseType type) {
-        predefinedTypes.put(new ClassPath(clazz), type);
+    public void addTypeRedirect(TypeRedirect redirect) {
+        typeRedirects.add(Objects.requireNonNull(redirect));
     }
 
     public BaseType convertType(TypeDescriptor descriptor) {
+        for (val typeRedirect : typeRedirects) {
+            if (typeRedirect.test(descriptor)) {
+                return typeRedirect.apply(descriptor);
+            }
+        }
         if (descriptor instanceof ClassType classType) {
-            return predefinedTypes.getOrDefault(classType.classPath, new TSClassType(classType.classPath));
+            return new TSClassType(classType.classPath);
         } else if (descriptor instanceof ArrayType arrayType) {
             return new TSArrayType(convertType(arrayType.component));
         } else if (descriptor instanceof ParamType paramType) {
