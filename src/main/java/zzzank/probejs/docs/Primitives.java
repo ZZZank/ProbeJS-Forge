@@ -23,10 +23,8 @@ public class Primitives extends ProbeJSPlugin {
     public static final JSPrimitiveType CHARACTER = Types.primitive("character");
     public static final JSPrimitiveType CHAR_SEQUENCE = Types.primitive("charseq");
 
-    private static final JSPrimitiveType TS_NUMBER = Types.primitive("Number");
-    private static final JSPrimitiveType JS_NUMBER = Types.primitive("number");
-
-    private static final JSPrimitiveType TS_STRING = Types.primitive("String");
+    public static final JSPrimitiveType TS_NUMBER = Types.primitive("Number");
+    public static final JSPrimitiveType TS_STRING = Types.primitive("String");
 
     public static final Map<Class<?>, BaseType> MAPPING = ImmutableMap.<Class<?>, BaseType>builder()
         //obj
@@ -65,7 +63,7 @@ public class Primitives extends ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {
-        var numberBoth = Types.and(JS_NUMBER, TS_NUMBER);
+        var numberBoth = Types.and(Types.NUMBER, TS_NUMBER);
         scriptDump.addGlobal("primitives",
             //for number types, we can safely mark them as a primitive type instead of an interface
             //because the classes that represent them are `final`, so there's no need of taking inheritance into account

@@ -1,5 +1,6 @@
 package zzzank.probejs.utils;
 
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
@@ -15,13 +16,14 @@ public class DocUtils {
         if (file == null) {
             return;
         }
-        file.findCode(ClassDecl.class).ifPresent(classDecl -> {
-            for (MethodDecl method : classDecl.methods) {
+        val code = file.findCode(ClassDecl.class);
+        if (code.isPresent()) {
+            for (MethodDecl method : code.get().methods) {
                 if (test.test(method)) {
                     effect.accept(method.params.get(index));
                 }
             }
-        });
+        }
     }
 
     public static void replaceParamType(TypeScriptFile file, Predicate<MethodDecl> test, int index, BaseType toReplace) {

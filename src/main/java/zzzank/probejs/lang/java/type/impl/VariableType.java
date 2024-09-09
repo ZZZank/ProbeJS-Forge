@@ -57,6 +57,4 @@ public class VariableType extends TypeDescriptor {
     public List<TypeDescriptor> getDescriptors() {
         return descriptors;
     }
-
-    
 }

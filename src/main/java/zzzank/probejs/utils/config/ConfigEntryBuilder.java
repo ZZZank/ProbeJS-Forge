@@ -14,6 +14,7 @@ import java.util.*;
 @Setter
 @Accessors(chain = true)
 public class ConfigEntryBuilder<T> {
+
     @Nonnull
     public T defaultValue;
     @Nullable

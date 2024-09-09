@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 
 public class JsonUtils {
     private static final Pattern MATCH_TRAILING = Pattern.compile(",(?!\\s*?[{\\[\"'\\w])");
@@ -167,7 +168,6 @@ public class JsonUtils {
             }
             return result;
         }
-
         return second;
     }
 
