@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import dev.latvian.kubejs.text.Text;
 import lombok.val;
 import net.minecraft.network.chat.Component;
+import zzzank.probejs.features.forge_scan.ForgeModScanner;
 import zzzank.probejs.features.kubejs.EventJSInfos;
-import zzzank.probejs.lang.decompiler.ProbeDecompiler;
 import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.schema.SchemaDump;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -36,7 +36,6 @@ public class ProbeDump {
     final SchemaDump schemaDump = new SchemaDump();
     final SnippetDump snippetDump = new SnippetDump();
     final Collection<ScriptDump> scriptDumps = new ArrayList<>();
-    final ProbeDecompiler decompiler = new ProbeDecompiler();
     private Consumer<Component> progressReport;
 
     public void addScript(ScriptDump dump) {
@@ -54,8 +53,7 @@ public class ProbeDump {
     private void onModChange() throws IOException {
         // Decompile stuffs - here we scan mod classes even if we don't decompile
         // So we have all classes without needing to decompile
-        decompiler.fromMods();
-        ClassRegistry.REGISTRY.fromClasses(decompiler.scanner.scannedClasses);
+        ClassRegistry.REGISTRY.fromClasses(new ForgeModScanner().scanAll());
 
         report(translate("probejs.dump.cleaning"));
         for (ScriptDump scriptDump : scriptDumps) {
