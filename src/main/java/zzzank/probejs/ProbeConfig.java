@@ -60,4 +60,8 @@ public interface ProbeConfig {
     ConfigEntry<Boolean> resolveGlobal = INSTANCE.addConfig(of("resolveGlobal", true).comment(
         "resolve defined values in `global`"
     ));
+    ConfigEntry<Boolean> fullScan = INSTANCE.addConfig(of("fullScan", true).comments(
+        "apply no filter on class scanning process",
+        "disabling this will restrict class scanner to only scan ProbeJS captured classes and forge event classes"
+    ));
 }

@@ -3,6 +3,9 @@
   "compatibilityLevel": "JAVA_8",
   "package": "zzzank.probejs.mixins",
   "mixins": [
+    "AccessClassData",
+    "AccessForgeRegistryManager",
+    "AccessTypedDynamicFunction",
     "MixinConsole",
     "MixinEventBus",
     "MixinLootTable",
@@ -10,8 +13,6 @@
     "MixinOnJava",
     "MixinRecipeManager",
     "MixinScriptManager",
-    "AccessForgeRegistryManager",
-    "AccessTypedDynamicFunction",
     "integration.KubeJSForgeEventRedirection",
     "integration.ScopeSupportMixin"
   ],
