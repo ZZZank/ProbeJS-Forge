@@ -7,7 +7,7 @@ import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
-import zzzank.probejs.plugin.ProbeJSPlugin;
+import zzzank.probejs.plugin.ProbePlugins;
 
 import java.util.*;
 
@@ -29,7 +29,7 @@ public class Transpiler {
     }
 
     public void init() {
-        ProbeJSPlugin.forEachPlugin(plugin -> {
+        ProbePlugins.forEachPlugin(plugin -> {
             plugin.addPredefinedTypes(typeConverter);
             plugin.denyTypes(this);
         });

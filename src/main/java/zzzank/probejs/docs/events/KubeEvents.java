@@ -12,6 +12,7 @@ import zzzank.probejs.lang.typescript.code.ts.FunctionDeclaration;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
+import zzzank.probejs.plugin.ProbePlugins;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,7 +72,7 @@ public class KubeEvents extends ProbeJSPlugin {
 
     private static Set<String> getSkippedEvents(ScriptDump dump) {
         Set<String> events = new HashSet<>();
-        ProbeJSPlugin.forEachPlugin(plugin -> events.addAll(plugin.disableEventDumps(dump)));
+        ProbePlugins.forEachPlugin(plugin -> events.addAll(plugin.disableEventDumps(dump)));
         return events;
     }
 

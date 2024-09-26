@@ -18,6 +18,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
+import zzzank.probejs.plugin.ProbePlugins;
 
 import java.util.*;
 
@@ -71,7 +72,7 @@ public class RecipeEvents extends ProbeJSPlugin {
 
     private Map<ResourceLocation, JSLambdaType> getPredefinedRecipeDocs(ScriptDump scriptDump) {
         val pred = new HashMap<ResourceLocation, JSLambdaType>();
-        ProbeJSPlugin.forEachPlugin(p -> p.addPredefinedRecipeDoc(scriptDump, pred));
+        ProbePlugins.forEachPlugin(p -> p.addPredefinedRecipeDoc(scriptDump, pred));
         ProbeJS.LOGGER.debug("Read {} predefined recipe docs", pred.size());
         return pred;
     }

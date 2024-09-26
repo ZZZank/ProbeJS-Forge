@@ -16,6 +16,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.mixins.AccessTypedDynamicFunction;
 import zzzank.probejs.plugin.ProbeJSPlugin;
+import zzzank.probejs.plugin.ProbePlugins;
 
 import java.util.*;
 
@@ -31,7 +32,7 @@ public class Bindings extends ProbeJSPlugin {
         KubeJSPlugins.forEachPlugin(plugin -> plugin.addBindings(event));
 
         val filter = new BindingFilter();
-        ProbeJSPlugin.forEachPlugin(plugin -> plugin.denyBindings(filter));
+        ProbePlugins.forEachPlugin(plugin -> plugin.denyBindings(filter));
 
         TypeConverter converter = scriptDump.transpiler.typeConverter;
         Map<String, BaseType> exported = new HashMap<>();
