@@ -3,7 +3,7 @@ package zzzank.probejs.lang.schema;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import zzzank.probejs.ProbeJS;
-import zzzank.probejs.plugin.ProbePlugins;
+import zzzank.probejs.plugin.ProbeJSPlugins;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +15,7 @@ public class SchemaDump {
     public Map<String, SchemaElement<?>> schemas = new HashMap<>();
 
     public void fromDocs() {
-        ProbePlugins.forEachPlugin(plugin -> plugin.addJsonSchema(this));
+        ProbeJSPlugins.forEachPlugin(plugin -> plugin.addJsonSchema(this));
     }
 
     public void writeTo(Path path) throws IOException {

@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 /**
  * @author ZZZank
  */
-public class ProbePlugins {
+public class ProbeJSPlugins {
 
     private static final List<ProbeJSPlugin> ALL = new ArrayList<>();
     private static boolean initialized = false;

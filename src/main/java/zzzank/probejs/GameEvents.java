@@ -22,6 +22,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import zzzank.probejs.features.bridge.ProbeServer;
+import zzzank.probejs.plugin.ProbeJSPlugins;
 import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.lang.linter.Linter;
 import zzzank.probejs.utils.GameUtils;
@@ -49,6 +50,7 @@ public class GameEvents {
 
         final Consumer<Component> sendMsg = msg -> player.sendMessage(msg, NIL_UUID);
         RegistryInfos.refresh();
+        ProbeJSPlugins.init();
 
         if (ProbeConfig.modHash.get() == -1) {
             sendMsg.accept(TextWrapper.translate("probejs.hello").gold().component());

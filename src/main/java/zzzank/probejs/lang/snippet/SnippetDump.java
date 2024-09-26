@@ -3,7 +3,7 @@ package zzzank.probejs.lang.snippet;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import zzzank.probejs.ProbeJS;
-import zzzank.probejs.plugin.ProbePlugins;
+import zzzank.probejs.plugin.ProbeJSPlugins;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +24,7 @@ public class SnippetDump {
     }
 
     public void fromDocs() {
-        ProbePlugins.forEachPlugin(plugin -> plugin.addVSCodeSnippets(this));
+        ProbeJSPlugins.forEachPlugin(plugin -> plugin.addVSCodeSnippets(this));
     }
 
 

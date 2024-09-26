@@ -29,7 +29,7 @@ import zzzank.probejs.lang.typescript.code.ts.Wrapped;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
-import zzzank.probejs.plugin.ProbePlugins;
+import zzzank.probejs.plugin.ProbeJSPlugins;
 import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.GameUtils;
 import zzzank.probejs.utils.JsonUtils;
@@ -134,7 +134,7 @@ public class ScriptDump {
 
     public Set<Class<?>> retrieveClasses() {
         Set<Class<?>> classes = new HashSet<>();
-        ProbePlugins.forEachPlugin(plugin -> classes.addAll(plugin.provideJavaClass(this)));
+        ProbeJSPlugins.forEachPlugin(plugin -> classes.addAll(plugin.provideJavaClass(this)));
         return classes;
     }
 
@@ -203,11 +203,11 @@ public class ScriptDump {
         dumped = 0;
         total = 0;
         transpiler.init();
-        ProbePlugins.forEachPlugin(plugin -> plugin.assignType(this));
+        ProbeJSPlugins.forEachPlugin(plugin -> plugin.assignType(this));
 
         Map<String, BufferedWriter> files = new HashMap<>();
         Map<ClassPath, TypeScriptFile> globalClasses = transpiler.dump(recordedClasses);
-        ProbePlugins.forEachPlugin(plugin -> plugin.modifyClasses(this, globalClasses));
+        ProbeJSPlugins.forEachPlugin(plugin -> plugin.modifyClasses(this, globalClasses));
 
         total = globalClasses.size();
         for (Map.Entry<ClassPath, TypeScriptFile> entry : globalClasses.entrySet()) {
@@ -299,7 +299,7 @@ public class ScriptDump {
     }
 
     public void dumpGlobal() throws IOException {
-        ProbePlugins.forEachPlugin(plugin -> plugin.addGlobals(this));
+        ProbeJSPlugins.forEachPlugin(plugin -> plugin.addGlobals(this));
 
         try (val writer = Files.newBufferedWriter(getGlobalFolder().resolve("index.d.ts"))) {
             for (val entry : globals.entrySet()) {
