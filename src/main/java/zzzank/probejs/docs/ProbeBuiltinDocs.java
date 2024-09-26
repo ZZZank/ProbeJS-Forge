@@ -1,5 +1,6 @@
 package zzzank.probejs.docs;
 
+import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.docs.assignments.*;
@@ -22,7 +23,6 @@ import zzzank.probejs.utils.GameUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Delegate calls to a set of internal ProbeJSPlugin to separate different
@@ -32,38 +32,38 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
     public static final ProbeBuiltinDocs INSTANCE = new ProbeBuiltinDocs();
 
     // So docs can be added stateless
-    public final static List<Supplier<ProbeJSPlugin>> BUILTIN_DOCS = new ArrayList<>(Arrays.asList(
+    public final static List<ProbeJSPlugin> BUILTIN_DOCS = new ArrayList<>(Arrays.asList(
         //type
-        RegistryTypes::new,
-        SpecialTypes::new,
-        Primitives::new,
-        JavaPrimitives::new,
-        RecipeTypes::new,
-        WorldTypes::new,
-        EnumTypes::new,
-        KubeWrappers::new,
-        FunctionalInterfaces::new,
+        new RegistryTypes(),
+        new SpecialTypes(),
+        new Primitives(),
+        new JavaPrimitives(),
+        new RecipeTypes(),
+        new WorldTypes(),
+        new EnumTypes(),
+        new KubeWrappers(),
+        new FunctionalInterfaces(),
         //binding
-        Bindings::new,
-        LoadClassFn::new,
+        new Bindings(),
+        new LoadClassFn(),
         //event
-        KubeEvents::new,
-//            TagEvents::new,
-        RecipeEvents::new,
-        BuiltinRecipeDocs::new,
-//            RegistryEvents::new,
-        ForgeEvents::new,
+        new KubeEvents(),
+//      new TagEvents(),
+        new RecipeEvents(),
+        new BuiltinRecipeDocs(),
+//      new       RegistryEvents(,
+        new ForgeEvents(),
         //misc
-        ParamFix::new,
-        Snippets::new
+        new ParamFix(),
+        new Snippets()
     ));
 
     private static void forEach(Consumer<ProbeJSPlugin> consumer) {
-        for (Supplier<ProbeJSPlugin> builtinDoc : BUILTIN_DOCS) {
+        for (val builtinDoc : BUILTIN_DOCS) {
             try {
-                consumer.accept(builtinDoc.get());
+                consumer.accept(builtinDoc);
             } catch (Throwable t) {
-                ProbeJS.LOGGER.error(String.format("Error when applying builtin doc: %s", builtinDoc.get().getClass()));
+                ProbeJS.LOGGER.error("Error when applying builtin doc: {}", builtinDoc.getClass());
                 GameUtils.logThrowable(t);
                 ProbeJS.LOGGER.error("If you found any problem in generated docs, please report to ProbeJS's github!");
             }

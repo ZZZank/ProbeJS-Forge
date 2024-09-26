@@ -4,6 +4,7 @@ import dev.latvian.kubejs.util.KubeJSPlugins;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.docs.ProbeBuiltinDocs;
 import zzzank.probejs.utils.GameUtils;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class ProbePlugins {
         if (initialized) {
             return;
         }
+        register(ProbeBuiltinDocs.INSTANCE);
         collectFromKubeJS();
         initialized = true;
     }
