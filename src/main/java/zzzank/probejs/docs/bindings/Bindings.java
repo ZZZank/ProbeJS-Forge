@@ -2,12 +2,10 @@ package zzzank.probejs.docs.bindings;
 
 import dev.latvian.kubejs.script.TypedDynamicFunction;
 import dev.latvian.mods.rhino.BaseFunction;
-import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.NativeJavaClass;
 import lombok.val;
 import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.features.kubejs.BindingFilter;
-import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.ts.ReexportDeclaration;
@@ -15,7 +13,7 @@ import zzzank.probejs.lang.typescript.code.ts.VariableDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.mixins.AccessTypedDynamicFunction;
-import zzzank.probejs.mixins.patch.MixinNativeJavaObject;
+import zzzank.probejs.mixins.AccessNativeJavaObject;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 
@@ -37,9 +35,9 @@ public class Bindings extends ProbeJSPlugin {
         val filter = new BindingFilter();
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.denyBindings(filter));
 
-        TypeConverter converter = scriptDump.transpiler.typeConverter;
-        Map<String, BaseType> exported = new HashMap<>();
-        Map<String, BaseType> reexported = new HashMap<>(); // Namespaces
+        val converter = scriptDump.transpiler.typeConverter;
+        val exported = new HashMap<String, BaseType>();
+        val reexported = new HashMap<String, BaseType>(); // Namespaces
 
         for (val entry : functions.entrySet()) {
             val name = entry.getKey();
@@ -51,7 +49,7 @@ public class Bindings extends ProbeJSPlugin {
             if (entry.getValue() instanceof TypedDynamicFunction typed) {
                 val types = ((AccessTypedDynamicFunction) typed).types();
                 for (int i = 0; i < types.length; i++) {
-                    Class<?> type = types[i];
+                    val type = types[i];
                     fn.param("arg" + i, type == null ? Types.ANY : Types.typeMaybeGeneric(type));
                 }
             } else {
@@ -88,7 +86,7 @@ public class Bindings extends ProbeJSPlugin {
             exported.put(ResolveGlobal.NAME, exported.get(ResolveGlobal.NAME).and(ResolveGlobal.RESOLVED));
         }
 
-        List<Code> codes = new ArrayList<>();
+        val codes = new ArrayList<Code>();
         for (val entry : exported.entrySet()) {
             val symbol = entry.getKey();
             val type = entry.getValue();
@@ -120,7 +118,7 @@ public class Bindings extends ProbeJSPlugin {
             if (value instanceof NativeJavaClass nativeJavaClass) {
                 value = nativeJavaClass.getClassObject();
             } else {
-                value = MixinNativeJavaObject.coerceTypeImpl(
+                value = AccessNativeJavaObject.coerceTypeImpl(
                     context.hasTypeWrappers() ? context.getTypeWrappers() : null,
                     Object.class,
                     value

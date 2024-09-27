@@ -122,6 +122,10 @@ public class ScriptDump {
         this.transpiler = new Transpiler(manager);
         this.globals = new HashMap<>();
         this.accept = scriptPredicate;
+
+//        val pack = CollectUtils.anyIn(manager.packs.values());
+//        this.attachedContext = pack.context;
+//        this.attachedScope = pack.scope;
     }
 
     public void acceptClasses(Collection<Clazz> classes) {

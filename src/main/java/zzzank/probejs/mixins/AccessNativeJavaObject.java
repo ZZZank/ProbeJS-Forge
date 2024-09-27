@@ -1,4 +1,4 @@
-package zzzank.probejs.mixins.patch;
+package zzzank.probejs.mixins;
 
 import dev.latvian.mods.rhino.NativeJavaObject;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
@@ -10,9 +10,9 @@ import org.spongepowered.asm.mixin.gen.Invoker;
  * @author ZZZank
  */
 @Mixin(value = NativeJavaObject.class, remap = false)
-public abstract class MixinNativeJavaObject {
+public interface AccessNativeJavaObject {
     @Invoker("coerceTypeImpl")
-    public static Object coerceTypeImpl(@Nullable TypeWrappers typeWrappers, Class<?> type, Object value) {
+    static Object coerceTypeImpl(@Nullable TypeWrappers typeWrappers, Class<?> type, Object value) {
         return null;
     }
 }
