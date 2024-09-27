@@ -5,6 +5,7 @@ import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.GameUtils;
+import zzzank.probejs.utils.ShouldNotHappenException;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -50,7 +51,7 @@ public class AccessClassData {
         try {
             return (Type) accessClazz.invoke(raw);
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new ShouldNotHappenException(e);
         }
     }
 
@@ -58,7 +59,7 @@ public class AccessClassData {
         try {
             return (Type) accessParent.invoke(raw);
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new ShouldNotHappenException(e);
         }
     }
 
@@ -66,7 +67,7 @@ public class AccessClassData {
         try {
             return (Set<Type>) accessInterfaces.invoke(raw);
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new ShouldNotHappenException(e);
         }
     }
 }

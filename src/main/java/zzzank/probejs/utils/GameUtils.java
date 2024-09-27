@@ -49,11 +49,20 @@ public class GameUtils {
         }
     }
 
+    public static void logThrowable(Throwable t, int maxStackStraceCount) {
+        val traces = t.getStackTrace();
+        val limit = maxStackStraceCount < 0
+            ? traces.length
+            : Math.min(maxStackStraceCount, traces.length);
+        val lines = new ArrayList<String>(1 + limit);
+        lines.add(t.toString());
+        for (int i = 0; i < limit; i++) {
+            lines.add("    " + traces[i].toString());
+        }
+        ProbeJS.LOGGER.error(String.join("\n", lines));
+    }
+
     public static void logThrowable(Throwable t) {
-        val trace = t.getStackTrace();
-        val lines = new ArrayList<>(1 + trace.length);
-        lines.add(t);
-        lines.addAll(Arrays.asList(trace));
-        ProbeJS.LOGGER.error(lines.stream().map(Object::toString).map("    "::concat).collect(Collectors.joining("\n")));
+        logThrowable(t, -1);
     }
 }
