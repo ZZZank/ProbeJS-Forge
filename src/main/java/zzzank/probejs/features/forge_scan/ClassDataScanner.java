@@ -4,8 +4,9 @@ import com.mojang.datafixers.util.Pair;
 import lombok.val;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.forgespi.language.ModFileScanData;
-import org.objectweb.asm.Type;
+import zzzank.probejs.ProbeJS;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -15,11 +16,16 @@ import java.util.stream.Stream;
  * @author ZZZank
  */
 public interface ClassDataScanner {
-    ClassDataScanner FULL_SCAN = (dataStream) -> dataStream
-        .map(AccessClassData::new)
-        .map(AccessClassData::pjs$clazz)
-        .map(Type::getClassName)
-        .collect(Collectors.toList());
+    ClassDataScanner FULL_SCAN = (dataStream) -> {
+        val dataAll = dataStream.collect(Collectors.toList());
+        val names = new ArrayList<String>(dataAll.size());
+        for (val data : dataAll) {
+            val access = new AccessClassData(data);
+            names.add(access.pjs$clazz().getClassName());
+        }
+        ProbeJS.LOGGER.debug("FullScan collected {} class names", names.size());
+        return names;
+    };
     ClassDataScanner EVENT_SUBCLASS_ONLY = (dataStream) -> {
         val names = new HashSet<String>();
         names.add(Event.class.getName());
@@ -42,6 +48,7 @@ public interface ClassDataScanner {
                 break;
             }
         }
+        ProbeJS.LOGGER.debug("ForgeEventSubclassOnly collected {} class names", names.size());
         return names;
     };
 
