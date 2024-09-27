@@ -5,7 +5,6 @@ import lombok.val;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;
-import zzzank.probejs.mixins.AccessClassData;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,7 +16,7 @@ import java.util.stream.Stream;
  */
 public interface ClassDataScanner {
     ClassDataScanner FULL_SCAN = (dataStream) -> dataStream
-        .map(data -> (AccessClassData) data)
+        .map(AccessClassData::new)
         .map(AccessClassData::pjs$clazz)
         .map(Type::getClassName)
         .collect(Collectors.toList());
@@ -25,7 +24,7 @@ public interface ClassDataScanner {
         val names = new HashSet<String>();
         names.add(Event.class.getName());
         val dataNames = dataStream
-            .map(data -> ((AccessClassData) data))
+            .map(AccessClassData::new)
             .map(access -> access.pjs$parent() == null
                 ? new Pair<String, String>(null, access.pjs$clazz().getClassName())
                 : new Pair<>(access.pjs$parent().getClassName(), access.pjs$clazz().getClassName())
