@@ -1,7 +1,9 @@
 package zzzank.probejs.docs;
 
+import com.google.common.collect.ImmutableList;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.util.Lazy;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.docs.assignments.*;
 import zzzank.probejs.docs.bindings.Bindings;
@@ -28,11 +30,17 @@ import java.util.function.Consumer;
  * Delegate calls to a set of internal ProbeJSPlugin to separate different
  * features
  */
-public class ProbeBuiltinDocs extends ProbeJSPlugin {
-    public static final ProbeBuiltinDocs INSTANCE = new ProbeBuiltinDocs();
+public final class ProbeBuiltinDocs extends ProbeJSPlugin {
+    private static final Lazy<ProbeBuiltinDocs> INSTANCE = Lazy.of(ProbeBuiltinDocs::new);
+
+    public static ProbeBuiltinDocs get() {
+        return INSTANCE.get();
+    }
+
+    private ProbeBuiltinDocs() {}
 
     // So docs can be added stateless
-    public final static List<ProbeJSPlugin> BUILTIN_DOCS = new ArrayList<>(Arrays.asList(
+    public final List<ProbeJSPlugin> BUILTIN_DOCS = ImmutableList.of(
         //type
         new RegistryTypes(),
         new SpecialTypes(),
@@ -56,10 +64,10 @@ public class ProbeBuiltinDocs extends ProbeJSPlugin {
         //misc
         new ParamFix(),
         new Snippets()
-    ));
+    );
 
     private static void forEach(Consumer<ProbeJSPlugin> consumer) {
-        for (val builtinDoc : BUILTIN_DOCS) {
+        for (val builtinDoc : INSTANCE.get().BUILTIN_DOCS) {
             try {
                 consumer.accept(builtinDoc);
             } catch (Throwable t) {

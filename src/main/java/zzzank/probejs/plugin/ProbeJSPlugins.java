@@ -24,7 +24,7 @@ public class ProbeJSPlugins {
         if (initialized) {
             return;
         }
-        register(ProbeBuiltinDocs.INSTANCE);
+        register(ProbeBuiltinDocs.get());
         collectFromKubeJS();
         initialized = true;
     }
