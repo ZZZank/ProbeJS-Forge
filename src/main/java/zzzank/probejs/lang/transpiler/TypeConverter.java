@@ -3,6 +3,7 @@ package zzzank.probejs.lang.transpiler;
 import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.annotations.typing.Generics;
 import lombok.val;
+import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.features.rhizo.RhizoState;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.type.TypeAdapter;
@@ -38,6 +39,10 @@ public class TypeConverter {
                 return typeRedirect.apply(descriptor);
             }
         }
+        return convertTypeNoFirstRedirect(descriptor);
+    }
+
+    public @NotNull BaseType convertTypeNoFirstRedirect(TypeDescriptor descriptor) {
         if (descriptor instanceof ClassType classType) {
             return new TSClassType(classType.classPath);
         } else if (descriptor instanceof ArrayType arrayType) {
