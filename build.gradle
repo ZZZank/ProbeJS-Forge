@@ -35,6 +35,8 @@ loom {
         // in SRG mapped ("func_" / "field_" with MCP class names) to work!
         // (both of these things may be subject to change in the future)
     }
+
+    //accessWidenerPath = file("src/main/resources/probejs.accesswidener")
 }
 
 repositories {

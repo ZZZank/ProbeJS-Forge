@@ -52,7 +52,7 @@ public interface ReflectUtils {
     }
 
     static Class<?> classOrNull(String name, boolean printError) {
-        return classOrNull(name, Thread.currentThread().getContextClassLoader(), true, printError);
+        return classOrNull(name, Thread.currentThread().getContextClassLoader(), false, printError);
     }
 
     static boolean classExist(String name) {
