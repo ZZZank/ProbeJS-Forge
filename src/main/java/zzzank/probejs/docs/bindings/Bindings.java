@@ -98,6 +98,8 @@ public class Bindings extends ProbeJSPlugin {
             codes.add(new ReexportDeclaration(symbol, type));
         }
         scriptDump.addGlobal("bindings", exported.keySet(), codes.toArray(new Code[0]));
+
+        clearBindingCache();
     }
 
     private void clearBindingCache() {
@@ -159,6 +161,7 @@ public class Bindings extends ProbeJSPlugin {
             }
         }
 
+        clearBindingCache();
         return classes;
     }
 }
