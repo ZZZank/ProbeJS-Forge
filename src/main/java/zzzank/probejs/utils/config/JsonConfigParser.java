@@ -22,8 +22,11 @@ public interface JsonConfigParser {
 
     static JsonConfigParser select(JsonObject rawConfig) {
         for (JsonConfigParser parser : REGISTERED) {
-            if (parser.test(rawConfig)) {
-                return parser;
+            try {
+                if (parser.test(rawConfig)) {
+                    return parser;
+                }
+            } catch (Exception ignored) {
             }
         }
         throw new IllegalStateException("No JsonConfigParser available for provided rawConfig");
@@ -77,7 +80,7 @@ public interface JsonConfigParser {
         @Override
         public boolean test(JsonObject rawConfig) {
             val cfg = rawConfig.get(ProbeJS.MOD_ID + '.' + ProbeConfig.configVersion.name);
-            return cfg != null && cfg.getAsJsonObject().get(ConfigEntrySerde.VALUE_KEY).getAsInt() == 3;
+            return cfg instanceof JsonObject jObj && jObj.get(ConfigEntrySerde.VALUE_KEY).getAsInt() == 3;
         }
 
         @Override
