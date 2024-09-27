@@ -5,6 +5,7 @@ import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
 import zzzank.probejs.lang.java.type.impl.ClassType;
 import zzzank.probejs.lang.java.type.impl.ParamType;
+import zzzank.probejs.lang.java.type.impl.VariableType;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.transpiler.redirect.TypeRedirect;
 import zzzank.probejs.lang.typescript.code.type.*;
@@ -66,6 +67,7 @@ public class ClassWrapping extends ProbeJSPlugin {
         public boolean test(TypeDescriptor typeDescriptor) {
             return typeDescriptor instanceof ParamType paramType
                 && paramType.params.size() == 1
+                && !(paramType.params.get(0) instanceof VariableType)
                 && paramType.base instanceof ClassType base
                 && CONVERTIBLES.contains(base.clazz);
         }
