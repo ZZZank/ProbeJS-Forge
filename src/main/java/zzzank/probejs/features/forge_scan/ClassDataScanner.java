@@ -1,5 +1,6 @@
 package zzzank.probejs.features.forge_scan;
 
+import com.mojang.datafixers.util.Pair;
 import lombok.val;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.forgespi.language.ModFileScanData;
@@ -23,15 +24,18 @@ public interface ClassDataScanner {
     ClassDataScanner EVENT_SUBCLASS_ONLY = (dataStream) -> {
         val names = new HashSet<String>();
         names.add(Event.class.getName());
-        val dataAll = dataStream.collect(Collectors.toList());
+        val dataNames = dataStream
+            .map(data -> ((AccessClassData) data))
+            .map(access -> access.pjs$parent() == null
+                ? new Pair<String, String>(null, access.pjs$clazz().getClassName())
+                : new Pair<>(access.pjs$parent().getClassName(), access.pjs$clazz().getClassName())
+            )
+            .collect(Collectors.toList());
         while (true) {
             boolean changed = false;
-            for (val data : dataAll) {
-                val access = (AccessClassData) data;
-                if (access.pjs$parent() != null
-                    && names.contains(access.pjs$parent().getClassName())
-                ) {
-                    names.add(access.pjs$clazz().getClassName());
+            for (val data : dataNames) {
+                if (data.getFirst() != null && names.contains(data.getFirst())) {
+                    names.add(data.getSecond());
                     changed = true;
                 }
             }
