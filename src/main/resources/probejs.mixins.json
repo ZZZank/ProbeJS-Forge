@@ -13,7 +13,8 @@
     "MixinRecipeManager",
     "MixinScriptManager",
     "integration.KubeJSForgeEventRedirection",
-    "integration.ScopeSupportMixin"
+    "integration.ScopeSupportMixin",
+    "patch.MixinNativeJavaObject"
   ],
   "injectors": {
     "defaultRequire": 1

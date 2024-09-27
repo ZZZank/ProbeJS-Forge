@@ -15,6 +15,7 @@ import zzzank.probejs.lang.typescript.code.ts.VariableDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.mixins.AccessTypedDynamicFunction;
+import zzzank.probejs.mixins.patch.MixinNativeJavaObject;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 
@@ -119,7 +120,11 @@ public class Bindings extends ProbeJSPlugin {
             if (value instanceof NativeJavaClass nativeJavaClass) {
                 value = nativeJavaClass.getClassObject();
             } else {
-                value = Context.jsToJava(value, Object.class);
+                value = MixinNativeJavaObject.coerceTypeImpl(
+                    context.hasTypeWrappers() ? context.getTypeWrappers() : null,
+                    Object.class,
+                    value
+                );
             }
             if (value instanceof Class<?> c) {
                 classes.put(id, c);
