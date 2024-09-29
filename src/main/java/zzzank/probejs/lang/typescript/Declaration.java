@@ -69,6 +69,6 @@ public class Declaration {
             throw new RuntimeException("Trying to get a symbol of a classpath that is not resolved yet!");
         }
         var reference = this.references.get(path);
-        return input ? reference.input() : reference.original();
+        return input ? reference.input : reference.original;
     }
 }
