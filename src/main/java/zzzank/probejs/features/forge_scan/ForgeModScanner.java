@@ -18,7 +18,7 @@ public class ForgeModScanner {
         val allScanData = ModList.get().getAllScanData();
         val scanner = ProbeConfig.fullScan.get()
             ? ClassDataScanner.FULL_SCAN
-            : ClassDataScanner.EVENT_SUBCLASS_ONLY;
+            : ClassDataScanner.SUBCLASSES;
         return scanner.scan(
                 allScanData
                     .stream()

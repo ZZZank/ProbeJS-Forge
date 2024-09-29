@@ -1,14 +1,13 @@
 package zzzank.probejs.features.forge_scan;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import lombok.val;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import zzzank.probejs.ProbeJS;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,6 +15,13 @@ import java.util.stream.Stream;
  * @author ZZZank
  */
 public interface ClassDataScanner {
+    /**
+     * will only be used by {@link ClassDataScanner#SUBCLASSES}
+     */
+    ImmutableList<String> PREDEFINED_BASECLASS = ImmutableList.of(
+        Event.class.getName()
+    );
+    ClassDataScanner NONE = dataStream -> Collections.emptySet();
     ClassDataScanner FULL_SCAN = (dataStream) -> {
         val dataAll = dataStream.collect(Collectors.toList());
         val names = new ArrayList<String>(dataAll.size());
@@ -26,9 +32,8 @@ public interface ClassDataScanner {
         ProbeJS.LOGGER.debug("FullScan collected {} class names", names.size());
         return names;
     };
-    ClassDataScanner EVENT_SUBCLASS_ONLY = (dataStream) -> {
-        val names = new HashSet<String>();
-        names.add(Event.class.getName());
+    ClassDataScanner SUBCLASSES = (dataStream) -> {
+        val names = new HashSet<>(PREDEFINED_BASECLASS);
         val dataNames = dataStream
             .map(AccessClassData::new)
             .map(access -> access.pjs$parent() == null
