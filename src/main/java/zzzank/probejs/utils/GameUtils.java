@@ -1,20 +1,29 @@
 package zzzank.probejs.utils;
 
+import dev.latvian.mods.rhino.Context;
 import lombok.val;
 import me.shedaniel.architectury.platform.Mod;
 import me.shedaniel.architectury.platform.Platform;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.mixins.AccessNativeJavaObject;
 import zzzank.probejs.utils.registry.RegistryInfos;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class GameUtils {
+    public static Object jsToJava(Context cx, Object o, Class<?> desiredType) {
+        return AccessNativeJavaObject.coerceTypeImpl(
+            cx.hasTypeWrappers() ? cx.getTypeWrappers() : null,
+            desiredType,
+            o
+        );
+    }
+
     public static long modHash() {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

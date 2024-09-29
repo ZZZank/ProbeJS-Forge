@@ -6,6 +6,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
 import zzzank.probejs.features.rhizo.RemapperBridge;
 import zzzank.probejs.lang.java.clazz.ClassPath;
+import zzzank.probejs.utils.GameUtils;
 
 public class Require extends BaseFunction {
     private final ScriptManager manager;
@@ -16,7 +17,7 @@ public class Require extends BaseFunction {
 
     @Override
     public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-        val result = (String) Context.jsToJava(args[0], String.class);
+        val result = (String) GameUtils.jsToJava(cx, args[0], String.class);
         if (!result.startsWith("packages")) {
             return new RequireWrapper(null, Undefined.instance);
         }

@@ -17,6 +17,7 @@ import zzzank.probejs.mixins.AccessNativeJavaObject;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 import zzzank.probejs.utils.CollectUtils;
+import zzzank.probejs.utils.GameUtils;
 
 import java.util.*;
 
@@ -117,7 +118,7 @@ public class Bindings extends ProbeJSPlugin {
         }
         val context = pack.context;
         val scope = pack.scope;
-        for (Object idObj : scope.getIds()) {
+        for (val idObj : scope.getIds()) {
             if (!(idObj instanceof String id)) {
                 continue;
             }
@@ -125,11 +126,7 @@ public class Bindings extends ProbeJSPlugin {
             if (value instanceof NativeJavaClass nativeJavaClass) {
                 value = nativeJavaClass.getClassObject();
             } else {
-                value = AccessNativeJavaObject.coerceTypeImpl(
-                    context.hasTypeWrappers() ? context.getTypeWrappers() : null,
-                    Object.class,
-                    value
-                );
+                value = GameUtils.jsToJava(context, value, Object.class);
             }
             if (value instanceof Class<?> c) {
                 classes.put(id, c);
@@ -146,7 +143,7 @@ public class Bindings extends ProbeJSPlugin {
         refreshBindings(scriptDump);
 
         Set<Class<?>> classes = new HashSet<>(this.classes.values());
-        for (Object o : constants.values()) {
+        for (val o : constants.values()) {
             if (o instanceof NativeJavaClass njc) {
                 classes.add(njc.getClassObject());
             } else if (o instanceof Class<?> c) {
@@ -155,7 +152,7 @@ public class Bindings extends ProbeJSPlugin {
                 classes.add(o.getClass());
             }
         }
-        for (BaseFunction fn : functions.values()) {
+        for (val fn : functions.values()) {
             if (!(fn instanceof TypedDynamicFunction typed)) {
                 continue;
             }
