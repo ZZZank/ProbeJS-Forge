@@ -35,16 +35,15 @@ public interface ClassDataScanner {
                 ? new Pair<String, String>(null, access.pjs$clazz().getClassName())
                 : new Pair<>(access.pjs$parent().getClassName(), access.pjs$clazz().getClassName())
             )
-            .collect(Collectors.toList());
+            .toArray((size) -> (Pair<String, String>[]) new Pair[size]);
         while (true) {
-            boolean changed = false;
+            val oldSize = names.size();
             for (val data : dataNames) {
-                if (data.getFirst() != null && names.contains(data.getFirst())) {
+                if (names.contains(data.getFirst())) {
                     names.add(data.getSecond());
-                    changed = true;
                 }
             }
-            if (!changed) {
+            if (oldSize == names.size()) {
                 break;
             }
         }
