@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import zzzank.probejs.plugin.ProbeJSPlugins;
 import zzzank.probejs.utils.JsonUtils;
 
 import java.nio.file.Path;
@@ -28,6 +29,8 @@ public class ProbeJS {
 
     public ProbeJS() {
         EventBuses.registerModEventBus(ProbeJS.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+
+        ProbeJSPlugins.init();
 
         ProbeConfig.INSTANCE.readFromFile();
         ProbeConfig.INSTANCE.save();

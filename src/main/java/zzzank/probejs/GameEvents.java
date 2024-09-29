@@ -50,7 +50,6 @@ public class GameEvents {
 
         final Consumer<Component> sendMsg = msg -> player.sendMessage(msg, NIL_UUID);
         RegistryInfos.refresh();
-        ProbeJSPlugins.init();
 
         if (ProbeConfig.modHash.get() == -1) {
             sendMsg.accept(TextWrapper.translate("probejs.hello").gold().component());
