@@ -16,6 +16,7 @@ import zzzank.probejs.mixins.AccessTypedDynamicFunction;
 import zzzank.probejs.mixins.AccessNativeJavaObject;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.plugin.ProbeJSPlugins;
+import zzzank.probejs.utils.CollectUtils;
 
 import java.util.*;
 
@@ -110,8 +111,12 @@ public class Bindings extends ProbeJSPlugin {
 
     private void refreshBindings(ScriptDump scriptDump) {
         clearBindingCache();
-        val context = scriptDump.attachedContext;
-        val scope = scriptDump.attachedScope;
+        val pack = CollectUtils.anyIn(scriptDump.manager.packs.values());
+        if (pack == null) {
+            return;
+        }
+        val context = pack.context;
+        val scope = pack.scope;
         for (Object idObj : scope.getIds()) {
             if (!(idObj instanceof String id)) {
                 continue;

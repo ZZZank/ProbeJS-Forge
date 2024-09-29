@@ -1,6 +1,5 @@
 package zzzank.probejs.lang.typescript;
 
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
  * maintaining the file structures
  */
 public class ScriptDump {
-    public static final Supplier<ScriptDump> SERVER_DUMP = Suppliers.memoize(() -> {
+    public static final Supplier<ScriptDump> SERVER_DUMP = () -> {
         ServerScriptManager scriptManager = ServerScriptManager.instance;
         if (scriptManager == null) {
             return null;
@@ -58,50 +57,28 @@ public class ScriptDump {
             scriptManager.scriptManager,
             ProbePaths.PROBE.resolve("server"),
             KubeJSPaths.SERVER_SCRIPTS,
-            (clazz -> {
-                for (OnlyIn annotation : clazz.getAnnotations(OnlyIn.class)) {
-                    if (annotation.value().isClient()) {
-                        return false;
-                    }
-                }
-                return true;
-            })
+            clazz -> clazz.getAnnotations(OnlyIn.class)
+                .stream()
+                .noneMatch(annotation -> annotation.value().isClient())
         );
-    });
+    };
 
-    public static final Supplier<ScriptDump> CLIENT_DUMP = Suppliers.memoize(() -> new ScriptDump(
+    public static final Supplier<ScriptDump> CLIENT_DUMP = () -> new ScriptDump(
         KubeJS.clientScriptManager,
         ProbePaths.PROBE.resolve("client"),
         KubeJSPaths.CLIENT_SCRIPTS,
-        (clazz -> {
-            for (OnlyIn annotation : clazz.getAnnotations(OnlyIn.class)) {
-                if (annotation.value().isDedicatedServer()) {
-                    return false;
-                }
-            }
-            return true;
-        })
-    ));
+        clazz -> clazz.getAnnotations(OnlyIn.class)
+            .stream()
+            .noneMatch(annotation -> annotation.value().isDedicatedServer())
+    );
 
-    public static final Supplier<ScriptDump> STARTUP_DUMP = Suppliers.memoize(() -> new ScriptDump(
+    public static final Supplier<ScriptDump> STARTUP_DUMP = () -> new ScriptDump(
         KubeJS.startupScriptManager,
         ProbePaths.PROBE.resolve("startup"),
         KubeJSPaths.STARTUP_SCRIPTS,
         (clazz -> true)
-    ));
+    );
 
-    public static Supplier<ScriptDump> forType(ScriptType type) {
-        return switch (type) {
-            case CLIENT -> CLIENT_DUMP;
-            case SERVER -> SERVER_DUMP;
-            case STARTUP -> STARTUP_DUMP;
-        };
-    }
-
-    @HideFromJS
-    public Context attachedContext;
-    @HideFromJS
-    public Scriptable attachedScope;
     public final ScriptType scriptType;
     public final ScriptManager manager;
     public final Path basePath;

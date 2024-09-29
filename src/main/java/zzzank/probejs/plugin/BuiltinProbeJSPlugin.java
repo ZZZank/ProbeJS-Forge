@@ -21,16 +21,7 @@ public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
 
     @Override
     public void addBindings(BindingsEvent event) {
-        readFromBindings(event);
         event.add("require", new Require(event.manager));
-    }
-
-    private static void readFromBindings(BindingsEvent event) {
-        ProbeJS.LOGGER.debug("read binding infos for script type {}", event.type.name);
-        val dump = ScriptDump.forType(event.type).get();
-        //a bad idea, because KubeJS 1.16 will call BindingsEvent for EVERY script pack
-        dump.attachedContext = event.context;
-        dump.attachedScope = event.scope;
     }
 
     @Override
