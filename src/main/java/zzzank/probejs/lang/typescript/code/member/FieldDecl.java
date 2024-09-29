@@ -3,6 +3,7 @@ package zzzank.probejs.lang.typescript.code.member;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.code.ts.VariableDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 
 import java.util.ArrayList;
@@ -20,6 +21,13 @@ public class FieldDecl extends CommentableCode {
     public FieldDecl(String name, BaseType type) {
         this.name = name;
         this.type = type;
+    }
+
+    public VariableDeclaration asVariableDecl() {
+        return new VariableDeclaration(
+            this.name,
+            this.type
+        );
     }
 
     @Override

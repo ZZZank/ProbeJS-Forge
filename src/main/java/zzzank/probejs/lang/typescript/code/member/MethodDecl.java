@@ -3,6 +3,7 @@ package zzzank.probejs.lang.typescript.code.member;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.code.ts.FunctionDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
 
@@ -27,6 +28,14 @@ public class MethodDecl extends CommentableCode {
         this.returnType = returnType;
     }
 
+    public FunctionDeclaration asFunctionDecl() {
+        return new FunctionDeclaration(
+            this.name,
+            this.variableTypes,
+            this.params,
+            this.returnType
+        );
+    }
 
     @Override
     public Collection<ClassPath> getUsedClassPaths() {

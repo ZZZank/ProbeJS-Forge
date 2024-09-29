@@ -1,18 +1,15 @@
 package zzzank.probejs.lang.typescript.code.member;
 
 import org.jetbrains.annotations.Nullable;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
-import zzzank.probejs.lang.typescript.code.ts.FunctionDeclaration;
 import zzzank.probejs.lang.typescript.code.ts.VariableDeclaration;
 import zzzank.probejs.lang.typescript.code.ts.Wrapped;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
+import zzzank.probejs.lang.typescript.code.type.Types;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +19,6 @@ public class InterfaceDecl extends ClassDecl {
     public InterfaceDecl(String name, @Nullable BaseType superClass, List<BaseType> interfaces, List<TSVariableType> variableTypes) {
         super(name, superClass, interfaces, variableTypes);
         this.namespace = new Wrapped.Namespace(name);
-
     }
 
     @Override
@@ -48,20 +44,12 @@ public class InterfaceDecl extends ClassDecl {
         for (FieldDecl field : fields) {
             // if (!field.isStatic) throw new RuntimeException("Why an interface can have a non-static field?");
             // Because ProbeJS can add non-static fields to it... And it's legal in TypeScript.
-            namespace.addCode(new VariableDeclaration(
-                    field.name,
-                    field.type
-            ));
+            namespace.addCode(field.asVariableDecl());
         }
         body.add("");
         for (MethodDecl method : methods) {
             if (method.isStatic) {
-                namespace.addCode(new FunctionDeclaration(
-                    method.name,
-                    method.variableTypes,
-                    method.params,
-                    method.returnType
-                ));
+                namespace.addCode(method.asFunctionDecl());
             } else {
                 body.addAll(method.format(declaration));
             }
@@ -69,17 +57,7 @@ public class InterfaceDecl extends ClassDecl {
 
         // Adds a marker in it to prevent VSCode from not recognizing the namespace to import
         if (namespace.isEmpty()) {
-            namespace.addCode(new Code() {
-                @Override
-                public Collection<ClassPath> getUsedClassPaths() {
-                    return Collections.emptyList();
-                }
-
-                @Override
-                public List<String> format(Declaration declaration) {
-                    return Collections.singletonList("const probejs$$marker: never");
-                }
-            });
+            namespace.addCode(new VariableDeclaration("probejs$$marker", Types.NEVER));
         }
 
         // tail - }
