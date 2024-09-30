@@ -26,7 +26,7 @@ public interface ProbeConfig {
         ),
         "",
         "comments and default values are provided, but not modifiable, changes to them will not be kept",
-        String.format("for changing certain config value, look for a sub entry whose key is '%s'", ConfigEntrySerde.VALUE_KEY)
+        String.format("for changing certain config value, change sub-entry whose key is '%s'", ConfigEntrySerde.VALUE_KEY)
     ));
     ConfigEntry<Boolean> enabled = INSTANCE.addConfig(of("enabled", true).comments(
         "enable or disable ProbeJS Legacy",
@@ -34,7 +34,7 @@ public interface ProbeConfig {
     ));
     ConfigEntry<Boolean> interactive = INSTANCE.addConfig(of("interactive", false).comments(
         "use with ProbeJS VSCode Extension." ,
-        "Semi-broken currently due to many breaking changes from KubeJS/ProbeJS from higher version"
+        "Currently broken due to many breaking changes from KubeJS/ProbeJS from higher version"
     ));
     ConfigEntry<Integer> interactivePort = INSTANCE.addConfig(of("interactivePort", 7796).comment(
         "use with ProbeJS VSCode Extension."
@@ -60,8 +60,8 @@ public interface ProbeConfig {
     ConfigEntry<Boolean> resolveGlobal = INSTANCE.addConfig(of("resolveGlobal", true).comment(
         "resolve defined values in `global`"
     ));
-    ConfigEntry<Boolean> fullScan = INSTANCE.addConfig(of("fullScan", true).comments(
-        "apply no filter on class scanning process",
+    ConfigEntry<Boolean> fullScan = INSTANCE.addConfig(of("fullScan", false).comments(
+        "apply no filter on class scanning process if true",
         "disabling this will restrict class scanner to only scan ProbeJS captured classes and forge event classes"
     ));
 }
