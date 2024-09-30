@@ -24,8 +24,14 @@ public class ProbeJSPlugins {
         if (initialized) {
             return;
         }
+        //our own
         register(ProbeBuiltinDocs.get());
-        collectFromKubeJS();
+        //collect from KubeJS
+        KubeJSPlugins.forEachPlugin(kubeJSPlugin -> {
+            if (kubeJSPlugin instanceof ProbeJSPlugin probeJSPlugin) {
+                ALL.add(probeJSPlugin);
+            }
+        });
         initialized = true;
     }
 
@@ -35,14 +41,6 @@ public class ProbeJSPlugins {
 
     public static List<ProbeJSPlugin> getAll() {
         return Collections.unmodifiableList(ALL);
-    }
-
-    private static void collectFromKubeJS() {
-        KubeJSPlugins.forEachPlugin(kubeJSPlugin -> {
-            if (kubeJSPlugin instanceof ProbeJSPlugin probeJSPlugin) {
-                ALL.add(probeJSPlugin);
-            }
-        });
     }
 
     @HideFromJS
