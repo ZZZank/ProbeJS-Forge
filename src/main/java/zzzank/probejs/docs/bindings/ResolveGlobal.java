@@ -1,5 +1,6 @@
 package zzzank.probejs.docs.bindings;
 
+import dev.latvian.kubejs.BuiltinKubeJSPlugin;
 import lombok.val;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
@@ -7,7 +8,6 @@ import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,8 +29,7 @@ class ResolveGlobal extends ProbeJSPlugin {
     public void addGlobals(ScriptDump scriptDump) {
         val clazzDecl = Statements.clazz(RESOLVED.content);
 
-        val map = (HashMap<?, ?>) constants.get(NAME);
-        for (val entry : map.entrySet()) {
+        for (val entry : BuiltinKubeJSPlugin.GLOBAL.entrySet()) {
             val name = String.valueOf(entry.getKey());
             val value = entry.getValue();
             if (value == null) {
