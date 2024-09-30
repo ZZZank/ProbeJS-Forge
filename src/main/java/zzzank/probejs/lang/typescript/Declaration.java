@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportType;
 import zzzank.probejs.lang.typescript.refer.Reference;
 
 import java.util.HashMap;
@@ -69,6 +70,6 @@ public class Declaration {
         if (reference == null) {
             throw new RuntimeException("Trying to get a symbol of a classpath that is not resolved yet!");
         }
-        return input ? reference.deduped : reference.getOriginalName();
+        return input ? ImportType.TYPE.fmt(reference.deduped) : reference.deduped;
     }
 }
