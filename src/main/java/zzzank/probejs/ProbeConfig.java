@@ -13,10 +13,14 @@ public interface ProbeConfig {
 
     ConfigImpl INSTANCE = new ConfigImpl(ProbePaths.SETTINGS_JSON, ProbeJS.MOD_ID);
 
+    static void refresh() {
+        INSTANCE.readFromFile();
+        INSTANCE.save();
+    }
+
     ConfigEntry<Integer> configVersion = INSTANCE.addConfig(of("configVersion", 3).comments(
         "welcome to ProbeJS Legacy config file",
-        "names of each config entry are in `{namespace}.{name}` form, e.g. 'probejs.version'",
-        "each name is mapped to a config entry, where default value, current value, and possibly comments, are provided",
+        "remember to use '/probejs refresh_config' to refresh your config after changing config values",
         "",
         String.format(
             "sub-entry and keys: comments->'%s', current values->'%s', default values->'%s'",

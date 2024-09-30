@@ -9,6 +9,7 @@ import lombok.val;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -98,9 +99,10 @@ public class GameEvents {
     public static void registerCommand(RegisterCommandsEvent event) {
         Predicate<CommandSourceStack> spOrOp = (source) -> source.hasPermission(2) || source.getServer().isSingleplayer();
         Predicate<CommandSourceStack> pjsEnabled = (source) -> ProbeConfig.enabled.get();
-        val dispatcher = event.getDispatcher();
         BiConsumer<CommandContext<CommandSourceStack>, Component> sendMsg =
             (context, text) -> context.getSource().sendSuccess(text, true);
+
+        val dispatcher = event.getDispatcher();
         dispatcher.register(
             Commands.literal("probejs")
                 .then(Commands.literal("dump")
@@ -128,6 +130,14 @@ public class GameEvents {
                     .executes(context -> {
                         ProbeConfig.enabled.set(true);
                         sendMsg.accept(context, TextWrapper.translate("probejs.hello_again").aqua().component());
+                        return Command.SINGLE_SUCCESS;
+                    })
+                )
+                .then(Commands.literal("refresh_config")
+                    .requires(pjsEnabled.and(spOrOp))
+                    .executes(context -> {
+                        ProbeConfig.refresh();
+                        sendMsg.accept(context, new TranslatableComponent("probejs.config_refreshed"));
                         return Command.SINGLE_SUCCESS;
                     })
                 )

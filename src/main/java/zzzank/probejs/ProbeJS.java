@@ -32,7 +32,6 @@ public class ProbeJS {
 
         ProbeJSPlugins.init();
 
-        ProbeConfig.INSTANCE.readFromFile();
-        ProbeConfig.INSTANCE.save();
+        ProbeConfig.refresh();
     }
 }
