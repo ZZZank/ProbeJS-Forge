@@ -1,9 +1,7 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
@@ -20,8 +18,8 @@ public abstract class JSJoinedType extends BaseType {
 
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
-        return ImportInfos.of().fromCodes(types).getImports();
+    public ImportInfos getImportInfos() {
+        return ImportInfos.of().fromCodes(types);
     }
 
     @Override

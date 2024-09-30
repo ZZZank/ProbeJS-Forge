@@ -1,14 +1,12 @@
 package zzzank.probejs.lang.transpiler.transformation;
 
 import lombok.val;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSParamType;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
@@ -32,8 +30,8 @@ public class InjectArray implements ClassTransformer {
         }
 
         @Override
-        public Collection<ImportInfo> getImportInfos() {
-            return ImportInfos.of().fromCodes(Arrays.asList(types)).getImports();
+        public ImportInfos getImportInfos() {
+            return ImportInfos.of().fromCodes(Arrays.asList(types));
         }
 
         @Override

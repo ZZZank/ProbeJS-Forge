@@ -1,12 +1,10 @@
 package zzzank.probejs.lang.typescript.code.member;
 
 import zzzank.probejs.ProbeJS;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.ts.FunctionDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
@@ -40,11 +38,10 @@ public class MethodDecl extends CommentableCode {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
+    public ImportInfos getImportInfos() {
         return ImportInfos.of(returnType.getImportInfos())
             .fromCodes(variableTypes)
-            .fromCodes(params.stream().map(p -> p.type))
-            .getImports();
+            .fromCodes(params.stream().map(p -> p.type));
     }
 
     @Override

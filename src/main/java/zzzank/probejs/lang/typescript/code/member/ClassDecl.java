@@ -9,7 +9,6 @@ import zzzank.probejs.lang.typescript.code.member.clazz.MethodBuilder;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
@@ -46,7 +45,7 @@ public class ClassDecl extends CommentableCode {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
+    public ImportInfos getImportInfos() {
         val infos = ImportInfos.of()
             .fromCodes(fields)
             .fromCodes(constructors)
@@ -57,7 +56,7 @@ public class ClassDecl extends CommentableCode {
         if (superClass != null) {
             infos.addAll(superClass.getImportInfos());
         }
-        return infos.getImports();
+        return infos;
     }
 
     @Override

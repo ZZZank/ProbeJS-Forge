@@ -1,9 +1,8 @@
 package zzzank.probejs.lang.typescript.code.type;
 
 import zzzank.probejs.lang.typescript.Declaration;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class TSArrayType extends BaseType {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
+    public ImportInfos getImportInfos() {
         return component.getImportInfos();
     }
 

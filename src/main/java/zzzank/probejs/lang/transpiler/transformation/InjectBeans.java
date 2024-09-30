@@ -8,7 +8,7 @@ import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 import zzzank.probejs.utils.NameUtils;
 
 import java.util.*;
@@ -59,7 +59,7 @@ public class InjectBeans implements ClassTransformer {
         }
 
         @Override
-        public Collection<ImportInfo> getImportInfos() {
+        public ImportInfos getImportInfos() {
             return baseType.getImportInfos();
         }
 

@@ -2,9 +2,8 @@ package zzzank.probejs.lang.typescript.code.type;
 
 import org.jetbrains.annotations.Nullable;
 import zzzank.probejs.lang.typescript.Declaration;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,8 +17,8 @@ public class TSVariableType extends BaseType {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
-        return extendsType == null ? Collections.emptyList() : extendsType.getImportInfos();
+    public ImportInfos getImportInfos() {
+        return extendsType == null ? ImportInfos.ofImmutableEmpty() : extendsType.getImportInfos();
     }
 
     @Override

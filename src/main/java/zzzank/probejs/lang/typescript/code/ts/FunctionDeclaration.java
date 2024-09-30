@@ -1,14 +1,12 @@
 package zzzank.probejs.lang.typescript.code.ts;
 
 import lombok.val;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.member.CommentableCode;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
@@ -28,14 +26,14 @@ public class FunctionDeclaration extends CommentableCode {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
+    public ImportInfos getImportInfos() {
         val infos = ImportInfos.of()
             .addAll(returnType.getImportInfos())
             .fromCodes(variableTypes);
         for (val param : params) {
             infos.addAll(param.type.getImportInfos());
         }
-        return infos.getImports();
+        return infos;
     }
 
     @Override

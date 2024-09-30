@@ -8,9 +8,8 @@ import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,8 +41,8 @@ public class InjectHybrid implements ClassTransformer {
         }
         classDecl.bodyCode.add(new Code() {
             @Override
-            public Collection<ImportInfo> getImportInfos() {
-                return Collections.emptyList();
+            public ImportInfos getImportInfos() {
+                return ImportInfos.ofImmutableEmpty();
             }
 
             @Override

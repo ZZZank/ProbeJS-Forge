@@ -3,7 +3,6 @@ package zzzank.probejs.lang.typescript.refer;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.lang.java.clazz.ClassPath;
-import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 
 import java.util.*;
@@ -12,7 +11,25 @@ import java.util.stream.Stream;
 /**
  * @author ZZZank
  */
-public final class ImportInfos {
+public class ImportInfos implements Iterable<ImportInfo> {
+
+    private final Map<ClassPath, ImportInfo> raw;
+
+    ImportInfos() {
+        this.raw = new HashMap<>();
+    }
+
+    public static ImmutableImportInfos ofImmutableEmpty() {
+        return ImmutableImportInfos.EMPTY;
+    }
+
+    public static ImmutableImportInfos ofImmutable(Collection<ImportInfo> infos) {
+        return new ImmutableImportInfos(infos);
+    }
+
+    public static ImportInfos of(ImportInfos other) {
+        return new ImportInfos().addAll(other);
+    }
 
     public static ImportInfos of(ImportInfo... initial) {
         val infos = new ImportInfos();
@@ -30,18 +47,20 @@ public final class ImportInfos {
         return new ImportInfos().addAll(infos);
     }
 
-    private final Map<ClassPath, ImportInfo> raw;
-
-    private ImportInfos() {
-        this.raw = new HashMap<>();
+    public ImportInfos add(ImportInfo info) {
+        addImpl(info);
+        return this;
     }
 
-    public ImportInfos add(ImportInfo info) {
+    protected void addImpl(ImportInfo info) {
         val old = raw.put(info.path, info);
         if (old != null) {
             info.types.addAll(old.types);
         }
-        return this;
+    }
+
+    public ImportInfos addAll(ImportInfos other) {
+        return addAll(other.getImports());
     }
 
     public ImportInfos addAll(Stream<ImportInfo> infos) {
@@ -57,7 +76,7 @@ public final class ImportInfos {
     }
 
     public ImportInfos fromCode(Code code) {
-        return addAll(code != null ? code.getImportInfos() : Collections.emptySet());
+        return addAll(code != null ? code.getImportInfos().getImports() : Collections.emptySet());
     }
 
     public ImportInfos fromCodes(Stream<? extends Code> codes) {
@@ -72,18 +91,16 @@ public final class ImportInfos {
         return this;
     }
 
-    public void pushDeclarations(@NotNull Declaration declaration) {
-        Objects.requireNonNull(declaration);
-        for (val info : getImports()) {
-            declaration.addImport(info);
-        }
-    }
-
     public Collection<ImportInfo> getImports() {
         return raw.values();
     }
 
     public Map<ClassPath, ImportInfo> getRaw() {
         return Collections.unmodifiableMap(raw);
+    }
+
+    @Override
+    public @NotNull Iterator<ImportInfo> iterator() {
+        return raw.values().iterator();
     }
 }

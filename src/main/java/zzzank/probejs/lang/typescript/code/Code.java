@@ -1,16 +1,15 @@
 package zzzank.probejs.lang.typescript.code;
 
 import lombok.val;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
 public abstract class Code {
-    public abstract Collection<ImportInfo> getImportInfos();
+    public abstract ImportInfos getImportInfos();
 
     public abstract List<String> format(Declaration declaration);
 

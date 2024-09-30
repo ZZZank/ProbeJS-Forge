@@ -4,11 +4,10 @@ import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.ts.VariableDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -31,7 +30,7 @@ public class FieldDecl extends CommentableCode {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
+    public ImportInfos getImportInfos() {
         return type.getImportInfos();
     }
 

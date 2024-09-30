@@ -2,9 +2,8 @@ package zzzank.probejs.lang.typescript.code.member;
 
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class TypeDecl extends CommentableCode {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
+    public ImportInfos getImportInfos() {
         return type.getImportInfos();
     }
 

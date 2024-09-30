@@ -2,9 +2,9 @@ package zzzank.probejs.lang.typescript.code.type;
 
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -19,8 +19,8 @@ public class CustomType extends BaseType {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
-        return Arrays.asList(imports);
+    public ImportInfos getImportInfos() {
+        return ImportInfos.of(Arrays.asList(imports));
     }
 
     @Override

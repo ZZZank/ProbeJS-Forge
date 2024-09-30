@@ -1,8 +1,6 @@
 package zzzank.probejs.lang.typescript.code.type;
 
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
@@ -18,8 +16,8 @@ public class TSParamType extends BaseType {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
-        return ImportInfos.of(baseType.getImportInfos()).fromCodes(params).getImports();
+    public ImportInfos getImportInfos() {
+        return ImportInfos.of(baseType.getImportInfos()).fromCodes(params);
     }
 
     @Override

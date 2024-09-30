@@ -3,9 +3,8 @@ package zzzank.probejs.lang.typescript.code.ts;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.member.CommentableCode;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class VariableDeclaration extends CommentableCode {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
+    public ImportInfos getImportInfos() {
         return type.getImportInfos();
     }
 

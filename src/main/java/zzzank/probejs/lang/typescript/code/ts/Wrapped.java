@@ -3,7 +3,6 @@ package zzzank.probejs.lang.typescript.code.ts;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.CommentableCode;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
@@ -16,8 +15,8 @@ public abstract class Wrapped extends CommentableCode {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
-        return ImportInfos.of().fromCodes(codes).getImports();
+    public ImportInfos getImportInfos() {
+        return ImportInfos.of().fromCodes(codes);
     }
 
     @Override

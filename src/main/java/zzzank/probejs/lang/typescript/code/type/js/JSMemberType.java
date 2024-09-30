@@ -1,15 +1,11 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class JSMemberType extends BaseType {
@@ -21,8 +17,8 @@ public abstract class JSMemberType extends BaseType {
     }
 
     @Override
-    public Collection<ImportInfo> getImportInfos() {
-        return ImportInfos.of().fromCodes(members.stream().map(JSParam::type)).getImports();
+    public ImportInfos getImportInfos() {
+        return ImportInfos.of().fromCodes(members.stream().map(JSParam::type));
     }
 
     protected String formatMembers(Declaration declaration, FormatType type) {
