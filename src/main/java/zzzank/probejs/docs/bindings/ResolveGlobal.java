@@ -8,8 +8,6 @@ import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
-import java.util.Map;
-
 /**
  * resolve values in global, but keep in mind that only first level members are resolved
  *
@@ -19,10 +17,8 @@ class ResolveGlobal extends ProbeJSPlugin {
 
     public static final String NAME = "global";
     public static final JSPrimitiveType RESOLVED = Types.primitive("ProbeJS$$ResolvedGlobal");
-    private final Map<String, Object> constants;
 
-    ResolveGlobal(Map<String, Object> constants) {
-        this.constants = constants;
+    ResolveGlobal() {
     }
 
     @Override

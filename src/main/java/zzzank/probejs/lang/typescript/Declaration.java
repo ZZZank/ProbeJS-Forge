@@ -65,10 +65,10 @@ public class Declaration {
     }
 
     public String getSymbol(ClassPath path, boolean input) {
-        if (!this.references.containsKey(path)) {
+        val reference = this.references.get(path);
+        if (reference == null) {
             throw new RuntimeException("Trying to get a symbol of a classpath that is not resolved yet!");
         }
-        var reference = this.references.get(path);
         return input ? reference.deduped : reference.getOriginalName();
     }
 }

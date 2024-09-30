@@ -5,6 +5,7 @@ import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaClass;
 import lombok.val;
 import zzzank.probejs.ProbeConfig;
+import zzzank.probejs.ProbeJS;
 import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.Code;
@@ -13,7 +14,6 @@ import zzzank.probejs.lang.typescript.code.ts.VariableDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.mixins.AccessTypedDynamicFunction;
-import zzzank.probejs.mixins.AccessNativeJavaObject;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 import zzzank.probejs.utils.CollectUtils;
@@ -83,7 +83,7 @@ public class Bindings extends ProbeJSPlugin {
         }
 
         if (ProbeConfig.resolveGlobal.get()) {
-            val resolveGlobal = new ResolveGlobal(constants);
+            val resolveGlobal = new ResolveGlobal();
             resolveGlobal.addGlobals(scriptDump);
             exported.put(ResolveGlobal.NAME, exported.get(ResolveGlobal.NAME).and(ResolveGlobal.RESOLVED));
         }
@@ -114,6 +114,7 @@ public class Bindings extends ProbeJSPlugin {
         clearBindingCache();
         val pack = CollectUtils.anyIn(scriptDump.manager.packs.values());
         if (pack == null) {
+            ProbeJS.LOGGER.error("Script context not found, unable to read binding infos");
             return;
         }
         val context = pack.context;
