@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.ts;
 
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.member.CommentableCode;
@@ -8,6 +9,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,14 +29,13 @@ public class FunctionDeclaration extends CommentableCode {
 
     @Override
     public Collection<ImportInfo> getImportInfos() {
-        Set<ImportInfo> paths = new HashSet<>(returnType.getImportInfos());
-        for (TSVariableType variableType : variableTypes) {
-            paths.addAll(variableType.getImportInfos());
+        val infos = ImportInfos.of()
+            .addAll(returnType.getImportInfos())
+            .fromCodes(variableTypes);
+        for (val param : params) {
+            infos.addAll(param.type.getImportInfos());
         }
-        for (ParamDecl param : params) {
-            paths.addAll(param.type.getImportInfos());
-        }
-        return paths;
+        return infos.getImports();
     }
 
     @Override

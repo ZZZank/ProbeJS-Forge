@@ -1,10 +1,12 @@
 package zzzank.probejs.lang.typescript.code.member;
 
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,14 +23,14 @@ public class ConstructorDecl extends CommentableCode {
 
     @Override
     public Collection<ImportInfo> getImportInfos() {
-        Set<ImportInfo> paths = new HashSet<>();
+        val paths = ImportInfos.of();
         for (TSVariableType variable : variableTypes) {
             paths.addAll(variable.getImportInfos());
         }
         for (ParamDecl param : params) {
             paths.addAll(param.type.getImportInfos());
         }
-        return paths;
+        return paths.getImports();
     }
 
     @Override

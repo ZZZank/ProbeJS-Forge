@@ -3,6 +3,7 @@ package zzzank.probejs.lang.typescript.code.type;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,11 +19,7 @@ public class TSParamType extends BaseType {
 
     @Override
     public Collection<ImportInfo> getImportInfos() {
-        Set<ImportInfo> paths = new HashSet<>(baseType.getImportInfos());
-        for (BaseType param : params) {
-            paths.addAll(param.getImportInfos());
-        }
-        return paths;
+        return ImportInfos.of(baseType.getImportInfos()).fromCodes(params).getImports();
     }
 
     @Override

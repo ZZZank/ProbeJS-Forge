@@ -4,6 +4,7 @@ import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,11 +21,7 @@ public abstract class JSJoinedType extends BaseType {
 
     @Override
     public Collection<ImportInfo> getImportInfos() {
-        Set<ImportInfo> paths = new HashSet<>();
-        for (BaseType type : types) {
-            paths.addAll(type.getImportInfos());
-        }
-        return paths;
+        return ImportInfos.of().fromCodes(types).getImports();
     }
 
     @Override

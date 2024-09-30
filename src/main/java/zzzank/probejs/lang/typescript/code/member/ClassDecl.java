@@ -1,7 +1,7 @@
 package zzzank.probejs.lang.typescript.code.member;
 
+import lombok.val;
 import org.jetbrains.annotations.Nullable;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.clazz.ConstructorBuilder;
@@ -10,6 +10,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -46,28 +47,17 @@ public class ClassDecl extends CommentableCode {
 
     @Override
     public Collection<ImportInfo> getImportInfos() {
-        Set<ImportInfo> imports = new HashSet<>();
-        for (FieldDecl field : fields) {
-            imports.addAll(field.getImportInfos());
+        val infos = ImportInfos.of()
+            .fromCodes(fields)
+            .fromCodes(constructors)
+            .fromCodes(methods)
+            .fromCodes(interfaces)
+            .fromCodes(variableTypes)
+            .fromCodes(bodyCode);
+        if (superClass != null) {
+            infos.addAll(superClass.getImportInfos());
         }
-        for (ConstructorDecl constructor : constructors) {
-            imports.addAll(constructor.getImportInfos());
-        }
-        for (MethodDecl method : methods) {
-            imports.addAll(method.getImportInfos());
-        }
-        for (BaseType anInterface : interfaces) {
-            imports.addAll(anInterface.getImportInfos());
-        }
-        for (TSVariableType variableType : variableTypes) {
-            imports.addAll(variableType.getImportInfos());
-        }
-        for (Code code : bodyCode) {
-            imports.addAll(code.getImportInfos());
-        }
-        if (superClass != null) imports.addAll(superClass.getImportInfos());
-
-        return imports;
+        return infos.getImports();
     }
 
     @Override
