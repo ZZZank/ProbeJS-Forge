@@ -1,4 +1,4 @@
-package zzzank.probejs.docs.recipes;
+package zzzank.probejs.docs.recipes.doc;
 
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;

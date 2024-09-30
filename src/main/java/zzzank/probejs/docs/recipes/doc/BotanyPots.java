@@ -1,7 +1,8 @@
-package zzzank.probejs.docs.recipes;
+package zzzank.probejs.docs.recipes.doc;
 
 import dev.latvian.kubejs.recipe.mod.BotanyPotsCropRecipeJS;
 import zzzank.probejs.docs.Primitives;
+import zzzank.probejs.docs.recipes.RecipeDocProvider;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.Types;
 

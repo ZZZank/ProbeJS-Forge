@@ -1,8 +1,9 @@
-package zzzank.probejs.docs.recipes;
+package zzzank.probejs.docs.recipes.doc;
 
 import dev.latvian.kubejs.recipe.RecipeEventJS;
 import lombok.val;
 import me.shedaniel.architectury.platform.Platform;
+import zzzank.probejs.docs.recipes.RecipeDocProvider;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;

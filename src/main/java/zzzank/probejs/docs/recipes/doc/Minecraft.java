@@ -1,7 +1,8 @@
-package zzzank.probejs.docs.recipes;
+package zzzank.probejs.docs.recipes.doc;
 
 import dev.latvian.kubejs.recipe.minecraft.*;
 import lombok.val;
+import zzzank.probejs.docs.recipes.RecipeDocProvider;
 import zzzank.probejs.lang.typescript.ScriptDump;
 
 import static zzzank.probejs.docs.recipes.RecipeDocUtil.*;

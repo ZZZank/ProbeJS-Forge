@@ -1,5 +1,6 @@
-package zzzank.probejs.docs.recipes;
+package zzzank.probejs.docs.recipes.doc;
 
+import zzzank.probejs.docs.recipes.RecipeDocProvider;
 import zzzank.probejs.lang.typescript.ScriptDump;
 
 import static zzzank.probejs.docs.recipes.RecipeDocUtil.basicShapedRecipe;

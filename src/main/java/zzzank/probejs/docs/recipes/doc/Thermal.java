@@ -1,7 +1,9 @@
-package zzzank.probejs.docs.recipes;
+package zzzank.probejs.docs.recipes.doc;
 
 import lombok.val;
 import me.shedaniel.architectury.platform.Platform;
+import zzzank.probejs.docs.recipes.RecipeDocProvider;
+import zzzank.probejs.docs.recipes.RecipeLambdaBuilder;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
