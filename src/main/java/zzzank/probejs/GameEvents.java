@@ -30,6 +30,7 @@ import zzzank.probejs.utils.GameUtils;
 import java.net.UnknownHostException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static net.minecraft.Util.NIL_UUID;
 
@@ -95,13 +96,15 @@ public class GameEvents {
 
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
+        Predicate<CommandSourceStack> spOrOp = (source) -> source.hasPermission(2) || source.getServer().isSingleplayer();
+        Predicate<CommandSourceStack> pjsEnabled = (source) -> ProbeConfig.enabled.get();
         val dispatcher = event.getDispatcher();
         BiConsumer<CommandContext<CommandSourceStack>, Component> sendMsg =
             (context, text) -> context.getSource().sendSuccess(text, true);
         dispatcher.register(
             Commands.literal("probejs")
                 .then(Commands.literal("dump")
-                    .requires(source -> ProbeConfig.enabled.get() && source.hasPermission(2))
+                    .requires(pjsEnabled.and(spOrOp))
                     .executes(context -> {
                         if (ProbeDumpingThread.exists()) {
                             sendMsg.accept(context, TextWrapper.translate("probejs.already_running").red().component());
@@ -113,7 +116,7 @@ public class GameEvents {
                     })
                 )
                 .then(Commands.literal("disable")
-                    .requires(source -> ProbeConfig.enabled.get() && source.hasPermission(2))
+                    .requires(pjsEnabled.and(spOrOp))
                     .executes(context -> {
                         ProbeConfig.enabled.set(false);
                         sendMsg.accept(context, TextWrapper.translate("probejs.bye_bye").gold().component());
@@ -121,7 +124,7 @@ public class GameEvents {
                     })
                 )
                 .then(Commands.literal("enable")
-                    .requires(source -> source.hasPermission(2))
+                    .requires(spOrOp)
                     .executes(context -> {
                         ProbeConfig.enabled.set(true);
                         sendMsg.accept(context, TextWrapper.translate("probejs.hello_again").aqua().component());
@@ -129,7 +132,7 @@ public class GameEvents {
                     })
                 )
                 .then(Commands.literal("scope_isolation")
-                    .requires(source -> ProbeConfig.enabled.get() && source.hasPermission(2))
+                    .requires(pjsEnabled.and(spOrOp))
                     .executes(context -> {
                         boolean flag = !ProbeConfig.isolatedScopes.get();
                         ProbeConfig.isolatedScopes.set(flag);
@@ -141,14 +144,14 @@ public class GameEvents {
                     })
                 )
                 .then(Commands.literal("lint")
-                    .requires(source -> ProbeConfig.enabled.get() && source.hasPermission(2))
+                    .requires(pjsEnabled.and(spOrOp))
                     .executes(context -> {
                         Linter.defaultLint(msg -> sendMsg.accept(context, Text.of(msg).component()));
                         return Command.SINGLE_SUCCESS;
                     })
                 )
                 .then(Commands.literal("complete_dump")
-                    .requires(source -> ProbeConfig.enabled.get() && source.hasPermission(2))
+                    .requires(pjsEnabled.and(spOrOp))
                     .executes(context -> {
                         boolean flag = !ProbeConfig.complete.get();
                         ProbeConfig.complete.set(flag);
