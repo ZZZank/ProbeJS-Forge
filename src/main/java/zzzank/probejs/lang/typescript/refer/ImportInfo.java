@@ -36,8 +36,8 @@ public final class ImportInfo {
         val hasAltName = dedupedSymbol != null && !original.equals(dedupedSymbol);
         val names = this.types.stream()
             .map(type -> hasAltName
-                ? type.fmt(original)
-                : String.format("%s as %s", type.fmt(original), type.fmt(dedupedSymbol))
+                ? String.format("%s as %s", type.fmt(original), type.fmt(dedupedSymbol))
+                : type.fmt(original)
             )
             .collect(Collectors.joining(", "));
 
