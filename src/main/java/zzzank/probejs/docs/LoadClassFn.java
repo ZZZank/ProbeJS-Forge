@@ -63,9 +63,9 @@ public class LoadClassFn extends ProbeJSPlugin {
             val path = clazz.classPath;
             val typeOf = Types.typeOf(clazz.classPath);
             //original
-            paths.member(ProbeJS.GSON.toJson(clazz.original.getName()), typeOf);
+            paths.member(clazz.original.getName(), typeOf);
             //probejs style import
-            paths.member(ProbeJS.GSON.toJson(path.getTypeScriptPath()), typeOf);
+            paths.member(path.getTypeScriptPath(), typeOf);
         }
         dump.addGlobal("load_class",
             new TypeDecl("GlobalClasses", Types.ignoreContext(paths.build(), BaseType.FormatType.RETURN)),
