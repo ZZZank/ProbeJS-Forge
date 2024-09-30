@@ -43,13 +43,16 @@ public class ClassWrapping extends ProbeJSPlugin {
             val paramType = ((ParamType) typeDescriptor);
             val param1 = paramType.params.get(0);
 
+            val convertedParam = converter.convertType(param1);
             val raw = Types.parameterized(
                 converter.convertType(paramType.base),
-                converter.convertType(param1)
+                convertedParam
             );
-            val typeOf = Types.typeOf(
-                converter.convertType(param1)
-            );
+            if (convertedParam instanceof TSVariableType) {
+                //should be blocked by test(), why happening
+                return raw;
+            }
+            val typeOf = Types.typeOf(convertedParam);
             return new CustomType(
                 (declaration, formatType) -> {
                     val t = switch (formatType) {
