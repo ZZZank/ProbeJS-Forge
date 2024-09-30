@@ -1,9 +1,13 @@
 package zzzank.probejs.docs;
 
 import lombok.val;
+import zzzank.probejs.ProbeJS;
 import zzzank.probejs.features.kubejs.BindingFilter;
+import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.typescript.ScriptDump;
+import zzzank.probejs.lang.typescript.code.member.TypeDecl;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
+import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
@@ -14,17 +18,16 @@ public class LoadClassFn extends ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {
+        setupClassPaths(scriptDump);
         val javaFn = Statements
             .func("java")
-            .param("className", Types.STRING)
-            .returnType(Types.ANY)
+            .variable(Types.generic("T", Types.primitive("ClassPath")))
+            .param("classPath", Types.generic("T"))
+            .returnType(Types.parameterized(
+                Types.primitive("LoadClass"),
+                Types.generic("T")
+            ))
             .build();
-        javaFn.addComment(
-            "@deprecated Please use `require(...)` instead.",
-            "" ,
-            "Or just type `$`, and let auto-import call `require()` for you",
-            "@see require"
-        );
 
         val requireFn = Statements
             .func("require")
@@ -52,5 +55,22 @@ public class LoadClassFn extends ProbeJSPlugin {
     public void denyBindings(BindingFilter filter) {
         filter.denyFunction("java");
         filter.denyFunction("require");
+    }
+
+    private static void setupClassPaths(ScriptDump dump) {
+        val paths = Types.object();
+        for (val clazz : ClassRegistry.REGISTRY.foundClasses.values()) {
+            val path = clazz.classPath;
+            val typeOf = Types.typeOf(clazz.classPath);
+            //original
+            paths.member(ProbeJS.GSON.toJson(clazz.original.getName()), typeOf);
+            //probejs style import
+            paths.member(ProbeJS.GSON.toJson(path.getTypeScriptPath()), typeOf);
+        }
+        dump.addGlobal("load_class",
+            new TypeDecl("GlobalClasses", Types.ignoreContext(paths.build(), BaseType.FormatType.RETURN)),
+            new TypeDecl("ClassPath", Types.primitive("keyof GlobalClasses")),
+            new TypeDecl("LoadClass<T>", Types.primitive("T extends ClassPath ? GlobalClasses[T] : never"))
+        );
     }
 }
