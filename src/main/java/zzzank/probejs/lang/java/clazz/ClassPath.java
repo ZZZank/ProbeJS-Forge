@@ -60,7 +60,7 @@ public record ClassPath(List<String> parts) implements Comparable<ClassPath> {
     }
 
     public String getTypeScriptPath() {
-        return getConcatenated("/");
+        return "packages/" + getConcatenated("/");
     }
 
     @HideFromJS

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 
 import java.util.EnumSet;
@@ -41,8 +42,10 @@ public final class ImportInfo {
             .collect(Collectors.joining(", "));
 
         // Underscores can be recognized by using a global export
-        return String.format("import { %s } from \"packages/%s\"",
-            names, this.path.getTypeScriptPath()
+        return String.format(
+            "import { %s } from %s",
+            names,
+            ProbeJS.GSON.toJson(this.path.getTypeScriptPath())
         );
     }
 
