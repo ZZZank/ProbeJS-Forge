@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
+import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSClassType;
@@ -14,7 +15,8 @@ public class JSTypeOfType extends BaseType {
     public final BaseType inner;
 
     public JSTypeOfType(BaseType inner) {
-        this.inner = inner instanceof TSClassType cType
+        Clazz c;
+        this.inner = inner instanceof TSClassType cType && (c = cType.classPath.toClazz()) != null && c.attribute.isInterface
             ? new TSStaticType(cType.classPath)
             : inner;
     }
