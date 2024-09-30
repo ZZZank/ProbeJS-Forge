@@ -2,6 +2,7 @@ package zzzank.probejs.lang.schema;
 
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 
@@ -19,7 +20,7 @@ public class SchemaDump {
     }
 
     public void writeTo(Path path) throws IOException {
-        for (Map.Entry<String, SchemaElement<?>> entry : schemas.entrySet()) {
+        for (val entry : schemas.entrySet()) {
             String key = entry.getKey();
             SchemaElement<?> content = entry.getValue();
 

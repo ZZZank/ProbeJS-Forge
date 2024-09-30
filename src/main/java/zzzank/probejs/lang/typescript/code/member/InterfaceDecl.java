@@ -84,6 +84,7 @@ public class InterfaceDecl extends ClassDecl {
             //include static methods for StaticClass creation
             body.addAll(method.format(declaration));
         }
+        //but, includes no field
 
         // tail - }
         List<String> tail = new ArrayList<>();

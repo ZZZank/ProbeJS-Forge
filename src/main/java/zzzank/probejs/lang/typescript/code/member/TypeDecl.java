@@ -20,7 +20,6 @@ public class TypeDecl extends CommentableCode {
         this.type = type;
     }
 
-
     @Override
     public Collection<ClassPath> getUsedClassPaths() {
         return type.getUsedClassPaths();

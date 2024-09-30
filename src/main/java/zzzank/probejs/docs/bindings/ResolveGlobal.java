@@ -11,14 +11,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * resolve values in global, but keep in mind that only first level members are resolved
+ *
  * @author ZZZank
  */
 class ResolveGlobal extends ProbeJSPlugin {
 
-    static final String NAME = "global";
-    static final JSPrimitiveType RESOLVED = Types.primitive("ProbeJS$$ResolvedGlobal");
+    public static final String NAME = "global";
+    public static final JSPrimitiveType RESOLVED = Types.primitive("ProbeJS$$ResolvedGlobal");
     private final Map<String, Object> constants;
-    
+
     ResolveGlobal(Map<String, Object> constants) {
         this.constants = constants;
     }

@@ -18,12 +18,21 @@ public final class ImportInfo {
         return new ImportInfo(path, EnumSet.of(type, rest));
     }
 
+    public ImportInfo withType(ImportType type) {
+        types.add(type);
+        return this;
+    }
+
+    public static ImportInfo ofDefault(ClassPath path) {
+        return of(path, ImportType.TYPE, ImportType.ORIGINAL);
+    }
+
     public static ImportInfo ofType(ClassPath path) {
-        return of(path, ImportType.TYPE);
+        return of(path, ImportType.TYPE, ImportType.ORIGINAL);
     }
 
     public static ImportInfo ofOriginal(ClassPath path) {
-        return of(path, ImportType.ORIGINAL);
+        return of(path, ImportType.ORIGINAL, ImportType.TYPE);
     }
 
     public static ImportInfo ofStatic(ClassPath path) {
