@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 @Desugar
 public record ClassPath(List<String> parts) implements Comparable<ClassPath> {
 
+    public static final String TS_PATH_PREFIX = "packages/";
+
     private static final Pattern SPLIT = Pattern.compile("\\.");
 
     private static List<String> transformJavaClass(Class<?> clazz) {
@@ -60,7 +62,7 @@ public record ClassPath(List<String> parts) implements Comparable<ClassPath> {
     }
 
     public String getTypeScriptPath() {
-        return "packages/" + getConcatenated("/");
+        return TS_PATH_PREFIX + getConcatenated("/");
     }
 
     @HideFromJS

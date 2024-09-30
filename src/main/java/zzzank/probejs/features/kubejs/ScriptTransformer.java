@@ -5,6 +5,7 @@ import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.Parser;
 import dev.latvian.mods.rhino.ast.*;
 import lombok.val;
+import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.utils.GameUtils;
 import zzzank.probejs.utils.NameUtils;
 import zzzank.probejs.ProbeConfig;
@@ -61,7 +62,7 @@ public class ScriptTransformer {
                 }
                 requireCounts++;
                 // is java package, transform if it's const
-                if (literal.getValue().startsWith("packages/")) {
+                if (literal.getValue().startsWith(ClassPath.TS_PATH_PREFIX)) {
                     if (declaration.isConst()) {
                         joined = NameUtils.replaceRegion(
                             joined,
