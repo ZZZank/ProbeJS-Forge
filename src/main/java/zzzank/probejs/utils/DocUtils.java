@@ -29,8 +29,8 @@ public class DocUtils {
 
     public static void replaceParamType(TypeScriptFile file, Predicate<MethodDecl> test, int index, BaseType toReplace) {
         applyParam(file, test, index, decl -> decl.type = toReplace);
-        for (ClassPath usedClassPath : toReplace.getUsedClassPaths()) {
-            file.declaration.addImport(ImportInfo.of(usedClassPath));
+        for (val info : toReplace.getImportInfos()) {
+            file.declaration.addImport(info);
         }
     }
 }

@@ -1,7 +1,7 @@
 package zzzank.probejs.lang.typescript.code.type;
 
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,8 +16,8 @@ public class ContextShield extends BaseType {
     }
 
     @Override
-    public Collection<ClassPath> getUsedClassPaths() {
-        return inner.getUsedClassPaths();
+    public Collection<ImportInfo> getImportInfos() {
+        return inner.getImportInfos();
     }
 
     @Override

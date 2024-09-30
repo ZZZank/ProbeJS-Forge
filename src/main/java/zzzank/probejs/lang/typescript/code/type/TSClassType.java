@@ -2,6 +2,7 @@ package zzzank.probejs.lang.typescript.code.type;
 
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -15,8 +16,8 @@ public class TSClassType extends BaseType {
     }
 
     @Override
-    public Collection<ClassPath> getUsedClassPaths() {
-        return Collections.singletonList(classPath);
+    public Collection<ImportInfo> getImportInfos() {
+        return Collections.singletonList(ImportInfo.of(classPath));
     }
 
     @Override

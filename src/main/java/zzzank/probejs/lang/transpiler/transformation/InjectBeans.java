@@ -1,7 +1,6 @@
 package zzzank.probejs.lang.transpiler.transformation;
 
 import zzzank.probejs.ProbeJS;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
@@ -9,6 +8,7 @@ import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.utils.NameUtils;
 
 import java.util.*;
@@ -59,8 +59,8 @@ public class InjectBeans implements ClassTransformer {
         }
 
         @Override
-        public Collection<ClassPath> getUsedClassPaths() {
-            return baseType.getUsedClassPaths();
+        public Collection<ImportInfo> getImportInfos() {
+            return baseType.getImportInfos();
         }
 
         @Override

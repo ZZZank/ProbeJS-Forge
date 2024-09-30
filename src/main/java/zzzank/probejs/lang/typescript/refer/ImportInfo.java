@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
  * @author ZZZank
  */
 @AllArgsConstructor
-@EqualsAndHashCode
 public final class ImportInfo {
 
     public final ClassPath path;
@@ -65,5 +64,15 @@ public final class ImportInfo {
 
     public static ImportInfo ofStatic(ClassPath path) {
         return of(path, ImportType.STATIC);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ImportInfo info && path.equals(info.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return path.hashCode();
     }
 }

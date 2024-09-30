@@ -2,6 +2,7 @@ package zzzank.probejs.lang.typescript.code.type;
 
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,10 +17,10 @@ public class TSParamType extends BaseType {
     }
 
     @Override
-    public Collection<ClassPath> getUsedClassPaths() {
-        Set<ClassPath> paths = new HashSet<>(baseType.getUsedClassPaths());
+    public Collection<ImportInfo> getImportInfos() {
+        Set<ImportInfo> paths = new HashSet<>(baseType.getImportInfos());
         for (BaseType param : params) {
-            paths.addAll(param.getUsedClassPaths());
+            paths.addAll(param.getImportInfos());
         }
         return paths;
     }

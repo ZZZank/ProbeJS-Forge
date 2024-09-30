@@ -4,6 +4,7 @@ import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.CommentableCode;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.*;
 
@@ -15,10 +16,10 @@ public abstract class Wrapped extends CommentableCode {
     }
 
     @Override
-    public Collection<ClassPath> getUsedClassPaths() {
-        Set<ClassPath> innerPaths = new HashSet<>();
+    public Collection<ImportInfo> getImportInfos() {
+        Set<ImportInfo> innerPaths = new HashSet<>();
         for (Code code : codes) {
-            innerPaths.addAll(code.getUsedClassPaths());
+            innerPaths.addAll(code.getImportInfos());
         }
         return innerPaths;
     }

@@ -2,13 +2,13 @@ package zzzank.probejs.lang.transpiler.transformation;
 
 import lombok.val;
 import org.apache.commons.lang3.mutable.MutableInt;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -42,7 +42,7 @@ public class InjectHybrid implements ClassTransformer {
         }
         classDecl.bodyCode.add(new Code() {
             @Override
-            public Collection<ClassPath> getUsedClassPaths() {
+            public Collection<ImportInfo> getImportInfos() {
                 return Collections.emptyList();
             }
 

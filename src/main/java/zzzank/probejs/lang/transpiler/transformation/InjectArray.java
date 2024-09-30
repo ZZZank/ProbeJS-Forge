@@ -8,6 +8,7 @@ import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSParamType;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.*;
 
@@ -30,10 +31,10 @@ public class InjectArray implements ClassTransformer {
         }
 
         @Override
-        public Collection<ClassPath> getUsedClassPaths() {
-            val paths = new HashSet<ClassPath>();
+        public Collection<ImportInfo> getImportInfos() {
+            val paths = new HashSet<ImportInfo>();
             for (val type : types) {
-                paths.addAll(type.getUsedClassPaths());
+                paths.addAll(type.getImportInfos());
             }
             return paths;
         }

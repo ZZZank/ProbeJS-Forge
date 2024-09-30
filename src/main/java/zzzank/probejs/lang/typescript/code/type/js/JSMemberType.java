@@ -3,6 +3,7 @@ package zzzank.probejs.lang.typescript.code.type.js;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,10 +20,10 @@ public abstract class JSMemberType extends BaseType {
     }
 
     @Override
-    public Collection<ClassPath> getUsedClassPaths() {
-        Set<ClassPath> paths = new HashSet<>();
+    public Collection<ImportInfo> getImportInfos() {
+        Set<ImportInfo> paths = new HashSet<>();
         for (JSParam member : members) {
-            paths.addAll(member.type().getUsedClassPaths());
+            paths.addAll(member.type().getImportInfos());
         }
         return paths;
     }

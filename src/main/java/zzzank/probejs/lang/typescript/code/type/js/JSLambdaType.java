@@ -5,8 +5,8 @@ import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.code.type.ContextShield;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.*;
 
@@ -20,10 +20,10 @@ public class JSLambdaType extends BaseType {
     }
 
     @Override
-    public Collection<ClassPath> getUsedClassPaths() {
-        Set<ClassPath> classPaths = new HashSet<>(returnType.getUsedClassPaths());
+    public Collection<ImportInfo> getImportInfos() {
+        Set<ImportInfo> classPaths = new HashSet<>(returnType.getImportInfos());
         for (ParamDecl param : params) {
-            classPaths.addAll(param.type.getUsedClassPaths());
+            classPaths.addAll(param.type.getImportInfos());
         }
         return classPaths;
     }

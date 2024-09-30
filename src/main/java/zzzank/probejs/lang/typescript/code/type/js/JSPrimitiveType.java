@@ -1,8 +1,8 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +19,7 @@ public class JSPrimitiveType extends BaseType {
 
 
     @Override
-    public Collection<ClassPath> getUsedClassPaths() {
+    public Collection<ImportInfo> getImportInfos() {
         return Collections.emptyList();
     }
 

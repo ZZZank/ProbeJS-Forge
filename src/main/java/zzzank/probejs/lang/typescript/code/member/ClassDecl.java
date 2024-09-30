@@ -9,6 +9,7 @@ import zzzank.probejs.lang.typescript.code.member.clazz.MethodBuilder;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -44,29 +45,29 @@ public class ClassDecl extends CommentableCode {
     }
 
     @Override
-    public Collection<ClassPath> getUsedClassPaths() {
-        Set<ClassPath> paths = new HashSet<>();
+    public Collection<ImportInfo> getImportInfos() {
+        Set<ImportInfo> imports = new HashSet<>();
         for (FieldDecl field : fields) {
-            paths.addAll(field.getUsedClassPaths());
+            imports.addAll(field.getImportInfos());
         }
         for (ConstructorDecl constructor : constructors) {
-            paths.addAll(constructor.getUsedClassPaths());
+            imports.addAll(constructor.getImportInfos());
         }
         for (MethodDecl method : methods) {
-            paths.addAll(method.getUsedClassPaths());
+            imports.addAll(method.getImportInfos());
         }
         for (BaseType anInterface : interfaces) {
-            paths.addAll(anInterface.getUsedClassPaths());
+            imports.addAll(anInterface.getImportInfos());
         }
         for (TSVariableType variableType : variableTypes) {
-            paths.addAll(variableType.getUsedClassPaths());
+            imports.addAll(variableType.getImportInfos());
         }
         for (Code code : bodyCode) {
-            paths.addAll(code.getUsedClassPaths());
+            imports.addAll(code.getImportInfos());
         }
-        if (superClass != null) paths.addAll(superClass.getUsedClassPaths());
+        if (superClass != null) imports.addAll(superClass.getImportInfos());
 
-        return paths;
+        return imports;
     }
 
     @Override

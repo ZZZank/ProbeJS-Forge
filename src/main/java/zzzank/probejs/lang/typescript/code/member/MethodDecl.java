@@ -6,6 +6,7 @@ import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.ts.FunctionDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,13 +39,13 @@ public class MethodDecl extends CommentableCode {
     }
 
     @Override
-    public Collection<ClassPath> getUsedClassPaths() {
-        Set<ClassPath> paths = new HashSet<>(returnType.getUsedClassPaths());
+    public Collection<ImportInfo> getImportInfos() {
+        Set<ImportInfo> paths = new HashSet<>(returnType.getImportInfos());
         for (TSVariableType variableType : variableTypes) {
-            paths.addAll(variableType.getUsedClassPaths());
+            paths.addAll(variableType.getImportInfos());
         }
         for (ParamDecl param : params) {
-            paths.addAll(param.type.getUsedClassPaths());
+            paths.addAll(param.type.getImportInfos());
         }
         return paths;
     }

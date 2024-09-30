@@ -134,8 +134,8 @@ public class RecipeEvents extends ProbeJSPlugin {
             val parts = SHORTCUTS.get(field.name);
             field.type = grouped.get(parts.getNamespace()).get(parts.getPath());
 
-            for (ClassPath usedClassPath : field.type.getUsedClassPaths()) {
-                recipeEventFile.declaration.addImport(ImportInfo.of(usedClassPath));
+            for (val info : field.type.getImportInfos()) {
+                recipeEventFile.declaration.addImport(info);
             }
         }
     }

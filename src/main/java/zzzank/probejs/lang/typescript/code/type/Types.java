@@ -5,6 +5,7 @@ import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.js.*;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -141,7 +142,7 @@ public interface Types {
         return new ContextShield(type, formatType);
     }
 
-    static BaseType custom(BiFunction<Declaration, BaseType.FormatType, String> formatter, ClassPath... imports) {
+    static BaseType custom(BiFunction<Declaration, BaseType.FormatType, String> formatter, ImportInfo... imports) {
         return new CustomType(formatter, imports);
     }
 

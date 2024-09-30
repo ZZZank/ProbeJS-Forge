@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript;
 
+import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.code.Code;
@@ -35,8 +36,8 @@ public class TypeScriptFile {
 
     public void addCode(Code code) {
         codeList.add(code);
-        for (ClassPath usedClassPath : code.getUsedClassPaths()) {
-            declaration.addImport(ImportInfo.of(usedClassPath));
+        for (val info : code.getImportInfos()) {
+            declaration.addImport(info);
         }
     }
 

@@ -1,10 +1,10 @@
 package zzzank.probejs.lang.typescript.code.member;
 
 import zzzank.probejs.ProbeJS;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.ts.VariableDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,8 +31,8 @@ public class FieldDecl extends CommentableCode {
     }
 
     @Override
-    public Collection<ClassPath> getUsedClassPaths() {
-        return type.getUsedClassPaths();
+    public Collection<ImportInfo> getImportInfos() {
+        return type.getImportInfos();
     }
 
     @Override

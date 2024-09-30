@@ -1,7 +1,6 @@
 package zzzank.probejs.docs;
 
 import lombok.val;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
 import zzzank.probejs.lang.java.type.impl.ClassType;
 import zzzank.probejs.lang.java.type.impl.ParamType;
@@ -9,6 +8,7 @@ import zzzank.probejs.lang.java.type.impl.VariableType;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.transpiler.redirect.TypeRedirect;
 import zzzank.probejs.lang.typescript.code.type.*;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.HashSet;
@@ -53,7 +53,7 @@ public class ClassWrapping extends ProbeJSPlugin {
                 return raw;
             }
             val typeOf = Types.typeOf(convertedParam);
-            return new CustomType(
+            return Types.custom(
                 (declaration, formatType) -> {
                     val t = switch (formatType) {
                         case INPUT -> raw.or(typeOf);
@@ -62,7 +62,7 @@ public class ClassWrapping extends ProbeJSPlugin {
                     };
                     return t.line(declaration, formatType);
                 },
-                paramType.getClassPaths().toArray(new ClassPath[0])
+                paramType.getClassPaths().stream().map(ImportInfo::of).toArray(ImportInfo[]::new)
             );
         }
 
