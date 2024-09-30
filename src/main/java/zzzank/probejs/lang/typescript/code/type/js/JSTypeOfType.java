@@ -3,7 +3,7 @@ package zzzank.probejs.lang.typescript.code.type.js;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSClassType;
-import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.code.type.TSStaticType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 import zzzank.probejs.lang.typescript.refer.ImportType;
 
@@ -18,8 +18,7 @@ public class JSTypeOfType extends BaseType {
         //            this.isInterface = clazz.attribute.isInterface;
         //            isInterface = false;
         this.inner = inner instanceof TSClassType cType
-            ? Types.custom((declaration, formatType) ->
-            ImportType.STATIC.fmt(declaration.getSymbol(cType.classPath)))
+            ? new TSStaticType(cType.classPath)
             : inner;
     }
 
