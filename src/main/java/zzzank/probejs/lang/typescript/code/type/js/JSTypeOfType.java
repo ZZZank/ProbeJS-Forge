@@ -1,10 +1,11 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
-import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSClassType;
+import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
+import zzzank.probejs.lang.typescript.refer.ImportType;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,12 +13,14 @@ import java.util.List;
 public class JSTypeOfType extends BaseType {
 
     public final BaseType inner;
-    private final boolean isInterface;
 
     public JSTypeOfType(BaseType inner) {
-        this.inner = inner;
-        Clazz clazz = inner instanceof TSClassType classType ? classType.classPath.toClazz() : null;
-        this.isInterface = clazz != null && clazz.attribute.isInterface;
+        //            this.isInterface = clazz.attribute.isInterface;
+        //            isInterface = false;
+        this.inner = inner instanceof TSClassType cType
+            ? Types.custom((declaration, formatType) ->
+            ImportType.STATIC.fmt(declaration.getSymbol(cType.classPath)))
+            : inner;
     }
 
     @Override
@@ -27,9 +30,6 @@ public class JSTypeOfType extends BaseType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(isInterface ?
-            inner.line(declaration, FormatType.RETURN) :
-            String.format("typeof %s", inner.line(declaration, FormatType.RETURN))
-        );
+        return Collections.singletonList(String.format("typeof %s", inner.line(declaration, FormatType.RETURN)));
     }
 }
