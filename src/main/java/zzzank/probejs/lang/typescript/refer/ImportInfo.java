@@ -21,10 +21,6 @@ public final class ImportInfo {
     public final ClassPath path;
     public final EnumSet<ImportType> types;
 
-    public static ImportInfo of(ClassPath path, ImportType type, ImportType... rest) {
-        return new ImportInfo(Objects.requireNonNull(path), EnumSet.of(type, rest));
-    }
-
     public ImportInfo addType(@NotNull ImportType type) {
         types.add(type);
         return this;
@@ -51,7 +47,11 @@ public final class ImportInfo {
         );
     }
 
-    public static ImportInfo ofDefault(ClassPath path) {
+    public static ImportInfo of(ClassPath path, ImportType type, ImportType... rest) {
+        return new ImportInfo(Objects.requireNonNull(path), EnumSet.of(type, rest));
+    }
+
+    public static ImportInfo of(ClassPath path) {
         return of(path, ImportType.TYPE, ImportType.ORIGINAL);
     }
 

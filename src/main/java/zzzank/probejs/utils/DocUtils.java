@@ -7,6 +7,7 @@ import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -29,7 +30,7 @@ public class DocUtils {
     public static void replaceParamType(TypeScriptFile file, Predicate<MethodDecl> test, int index, BaseType toReplace) {
         applyParam(file, test, index, decl -> decl.type = toReplace);
         for (ClassPath usedClassPath : toReplace.getUsedClassPaths()) {
-            file.declaration.addClass(usedClassPath);
+            file.declaration.addImport(ImportInfo.of(usedClassPath));
         }
     }
 }

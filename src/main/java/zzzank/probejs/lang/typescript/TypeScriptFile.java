@@ -3,6 +3,7 @@ package zzzank.probejs.lang.typescript;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.code.Code;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.Reference;
 
 import java.io.BufferedWriter;
@@ -23,7 +24,7 @@ public class TypeScriptFile {
         this.codeList = new ArrayList<>();
 
         if (self != null) {
-            declaration.addClass(self);
+            declaration.addImport(ImportInfo.of(self));
         }
         this.classPath = self;
     }
@@ -35,7 +36,7 @@ public class TypeScriptFile {
     public void addCode(Code code) {
         codeList.add(code);
         for (ClassPath usedClassPath : code.getUsedClassPaths()) {
-            declaration.addClass(usedClassPath);
+            declaration.addImport(ImportInfo.of(usedClassPath));
         }
     }
 

@@ -12,4 +12,8 @@ public final class Reference {
     public String getImport() {
         return info.toImport(deduped);
     }
+
+    public String getOriginalName() {
+        return info.path.getName();
+    }
 }

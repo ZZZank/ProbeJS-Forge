@@ -17,6 +17,7 @@ import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 
@@ -122,7 +123,7 @@ public class RecipeEvents extends ProbeJSPlugin {
                 break;
             }
         }
-        recipeEventFile.declaration.addClass(DOCUMENTED);
+        recipeEventFile.declaration.addImport(ImportInfo.of(DOCUMENTED));
 
         //3.Make shortcuts valid recipe functions
         for (val field : recipeEvent.fields) {
@@ -134,7 +135,7 @@ public class RecipeEvents extends ProbeJSPlugin {
             field.type = grouped.get(parts.getNamespace()).get(parts.getPath());
 
             for (ClassPath usedClassPath : field.type.getUsedClassPaths()) {
-                recipeEventFile.declaration.addClass(usedClassPath);
+                recipeEventFile.declaration.addImport(ImportInfo.of(usedClassPath));
             }
         }
     }

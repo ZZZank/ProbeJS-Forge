@@ -1,8 +1,10 @@
 package zzzank.probejs.lang.typescript;
 
-import com.mojang.datafixers.util.Pair;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
-import zzzank.probejs.lang.typescript.refer.ImportType;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.Reference;
 
 import java.util.HashMap;
@@ -11,54 +13,51 @@ import java.util.Map;
 import java.util.Set;
 
 public class Declaration {
-    private static final String SYMBOL_TEMPLATE = "%s$%d";
+    private static final String UNIQUE_TEMPLATE = "%s$%d";
 
     public final Map<ClassPath, Reference> references;
-    private final Map<ClassPath, Pair<String, String>> symbols;
+    private final BiMap<ClassPath, String> dedupedSymbols;
 
     private final Set<String> excludedName;
 
     public Declaration() {
         this.references = new HashMap<>();
-        this.symbols = new HashMap<>();
         this.excludedName = new HashSet<>();
+        this.dedupedSymbols = HashBiMap.create();
     }
 
-    public void addClass(ClassPath path) {
+    public void addImport(ImportInfo info) {
         // So we determine a unique original that is safe to use at startup
-        var names = getSymbolName(path);
-        this.references.put(path, new Reference(path, names.getFirst(), names.getSecond()));
+        val name = resolveSymbol(info.path);
+        val old = references.get(info.path);
+        if (old != null) {
+            old.info.types.addAll(info.types);
+        }
+        this.references.put(info.path, new Reference(info, name));
     }
 
     public void exclude(String name) {
         excludedName.add(name);
     }
 
-    private void putSymbolName(ClassPath path, String name) {
-        symbols.put(path, new Pair<>(name, ImportType.TYPE.fmt(name)));
+    public boolean containsSymbol(String name) {
+        return excludedName.contains(name) || dedupedSymbols.containsValue(name);
     }
 
-    private boolean containsSymbol(String name) {
-        return excludedName.contains(name)
-            || symbols.containsValue(new Pair<>(name, ImportType.TYPE.fmt(name)));
-    }
-
-
-    private Pair<String, String> getSymbolName(ClassPath path) {
-        if (!symbols.containsKey(path)) {
-            String name = path.getName();
-            if (!containsSymbol(name)) {
-                putSymbolName(path, name);
-            } else {
-                int counter = 0;
-                while (containsSymbol(String.format(SYMBOL_TEMPLATE, name, counter))) {
-                    counter++;
-                }
-                putSymbolName(path, String.format(SYMBOL_TEMPLATE, name, counter));
-            }
+    public String resolveSymbol(ClassPath path) {
+        //already resolved
+        var deduped = dedupedSymbols.get(path);
+        if (deduped != null) {
+            return deduped;
         }
-
-        return symbols.get(path);
+        //try original, then try template
+        val original = path.getName();
+        deduped = original;
+        int counter = 0;
+        while (containsSymbol(deduped)) {
+            deduped = String.format(UNIQUE_TEMPLATE, original, counter++);
+        }
+        return deduped;
     }
 
     public String getSymbol(ClassPath path) {
@@ -70,6 +69,6 @@ public class Declaration {
             throw new RuntimeException("Trying to get a symbol of a classpath that is not resolved yet!");
         }
         var reference = this.references.get(path);
-        return input ? reference.input : reference.original;
+        return input ? reference.deduped : reference.getOriginalName();
     }
 }
