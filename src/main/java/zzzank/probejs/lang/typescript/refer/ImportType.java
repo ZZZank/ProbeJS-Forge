@@ -8,8 +8,8 @@ import java.util.function.UnaryOperator;
  */
 public enum ImportType {
     ORIGINAL(UnaryOperator.identity()),
-    STATIC(s -> String.format(ImportInfo.STATIC_TEMPLATE, s)),
-    TYPE(s -> String.format(ImportInfo.INPUT_TEMPLATE, s))
+    STATIC(s -> s + "$$Static"),
+    TYPE(s -> s + "$$Type")
     ;
 
     private final UnaryOperator<String> formatter;

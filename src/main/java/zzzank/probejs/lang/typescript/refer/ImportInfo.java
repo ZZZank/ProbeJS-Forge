@@ -10,8 +10,6 @@ import java.util.EnumSet;
  */
 @AllArgsConstructor
 public final class ImportInfo {
-    public static final String INPUT_TEMPLATE = "%s$$Type";
-    public static final String STATIC_TEMPLATE = "%s$$Static";
 
     public final ClassPath path;
     public final EnumSet<ImportType> types;
