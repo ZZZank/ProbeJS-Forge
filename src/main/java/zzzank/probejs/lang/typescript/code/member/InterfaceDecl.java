@@ -101,7 +101,7 @@ public class InterfaceDecl extends ClassDecl {
 
         // Static methods and fields, adds it even if it's empty, so auto import can still discover it
         formatted.addAll(createNamespace().format(declaration));
-//        formatted.addAll(createStaticClass().format(declaration));
+        formatted.addAll(createStaticClass().format(declaration));
         return formatted;
     }
 }
