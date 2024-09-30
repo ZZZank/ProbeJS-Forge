@@ -3,6 +3,7 @@ package zzzank.probejs.lang.typescript;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.code.Code;
+import zzzank.probejs.lang.typescript.refer.Reference;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

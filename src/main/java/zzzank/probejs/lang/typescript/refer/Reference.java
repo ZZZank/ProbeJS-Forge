@@ -1,4 +1,4 @@
-package zzzank.probejs.lang.typescript;
+package zzzank.probejs.lang.typescript.refer;
 
 import lombok.*;
 import zzzank.probejs.lang.java.clazz.ClassPath;
@@ -12,9 +12,10 @@ public final class Reference {
     public final String input;
 
     public String getImport() {
-        val importOriginal =
-            original.equals(classPath.getName()) ? original : String.format("%s as %s", classPath.getName(), original);
-        val exportedInput = String.format(Declaration.INPUT_TEMPLATE, classPath.getName());
+        val importOriginal = original.equals(classPath.getName())
+            ? original
+            : String.format("%s as %s", classPath.getName(), original);
+        val exportedInput = String.format(ImportInfo.INPUT_TEMPLATE, classPath.getName());
         val importInput = input.equals(exportedInput) ? input : String.format("%s as %s", exportedInput, input);
 
         // Underscores can be recognized by using a global export

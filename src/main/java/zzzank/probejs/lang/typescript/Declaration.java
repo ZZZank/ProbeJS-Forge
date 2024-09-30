@@ -2,6 +2,8 @@ package zzzank.probejs.lang.typescript;
 
 import com.mojang.datafixers.util.Pair;
 import zzzank.probejs.lang.java.clazz.ClassPath;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.Reference;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +12,6 @@ import java.util.Set;
 
 public class Declaration {
     private static final String SYMBOL_TEMPLATE = "%s$%d";
-    public static final String INPUT_TEMPLATE = "%s$$Type";
 
     public final Map<ClassPath, Reference> references;
     private final Map<ClassPath, Pair<String, String>> symbols;
@@ -34,12 +35,12 @@ public class Declaration {
     }
 
     private void putSymbolName(ClassPath path, String name) {
-        symbols.put(path, new Pair<>(name, String.format(INPUT_TEMPLATE, name)));
+        symbols.put(path, new Pair<>(name, String.format(ImportInfo.INPUT_TEMPLATE, name)));
     }
 
     private boolean containsSymbol(String name) {
         return excludedName.contains(name)
-            || symbols.containsValue(new Pair<>(name, String.format(INPUT_TEMPLATE, name)));
+            || symbols.containsValue(new Pair<>(name, String.format(ImportInfo.INPUT_TEMPLATE, name)));
     }
 
 

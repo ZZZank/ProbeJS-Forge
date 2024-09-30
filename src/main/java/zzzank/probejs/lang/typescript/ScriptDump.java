@@ -10,9 +10,6 @@ import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.server.ServerScriptManager;
 import dev.latvian.kubejs.util.UtilsJS;
-import dev.latvian.mods.rhino.Context;
-import dev.latvian.mods.rhino.Scriptable;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.FileUtils;
@@ -28,6 +25,7 @@ import zzzank.probejs.lang.typescript.code.ts.Wrapped;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
+import zzzank.probejs.lang.typescript.refer.ImportType;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.GameUtils;
@@ -204,7 +202,7 @@ public class ScriptDump {
                 //     type Type_ = ExportedType
                 // }
                 String symbol = classPath.getName() + "_";
-                String exportedSymbol = String.format(Declaration.INPUT_TEMPLATE, classPath.getName());
+                String exportedSymbol = ImportType.TYPE.fmt(classPath.getName());
                 BaseType exportedType = Types.type(classPath);
                 BaseType thisType = Types.type(classPath);
                 List<String> generics = classDecl.variableTypes.stream().map(v -> v.symbol).collect(Collectors.toList());
