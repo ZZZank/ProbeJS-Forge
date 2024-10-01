@@ -30,9 +30,12 @@ public abstract class MixinScriptManager {
 
     @ModifyVariable(method = "loadJavaClass", at = @At("HEAD"), index = 2, argsOnly = true)
     public Object[] pjs$redirectAutoImport(Object[] args) {
-        if (args.length > 0 && args[0] instanceof String s && s.startsWith(ClassPath.TS_PATH_PREFIX)) {
-            val remappedName = s.substring(ClassPath.TS_PATH_PREFIX.length()).replace('/', '.');
-            args[0] = RemapperBridge.unmapClass(remappedName);
+        if (args.length > 0) {
+            val name = args[0].toString();
+            if (name.startsWith(ClassPath.TS_PATH_PREFIX)) {
+                val remappedName = name.substring(ClassPath.TS_PATH_PREFIX.length()).replace('/', '.');
+                args[0] = RemapperBridge.unmapClass(remappedName);
+            }
         }
         return args;
     }
