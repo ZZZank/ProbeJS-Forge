@@ -1,5 +1,30 @@
 # ProbeJS Legacy 4.1.0 -> 4.2.0
 
+`java()` revive && native class scanner
+
+- `java()` revive
+    - performance issue of `java()` has been resolved, so it's enabled again
+    - two paths are provided for each class that can be loaded by `java()`, one Java style, one TS style. It will be used by VSCode plugin in the future 
+    - `SomeInterface$$Static` will now exported for Java interface `SomeInterface`, used for better `java()` support
+    - `require()` is now redirected to `java()`, and is deprecated
+- now a filter will be applied to class scanner, to prevent crash due to scanning dangerous classes, and performance issue due to dumping too many classes
+    - it's enabled by default, but you can also disable it in config fil: `probejs.fullScan`
+- native class scanner via class data scanned by Forge
+- a new command for refreshing config
+- `Class<SomeClass>` will now be redirected to `typeof SomeClass`, allowing better type hint for `Class`
+- bindings and recipes are now read directly instead of via a dummy event
+    - a side effect of this is that it prevents spamming log file
+    - binding reading will now read some more user defined global values, it's due to a design from KubeJS side
+- ProbeJS now allows registering plugins independently, instead of relying on KubeJS(1.16)'s too-simple plugin management
+- config file will not be saved during initialization, making IO performance a little bit better
+- more config comments
+- fix registry types' type assignment
+    - this means that `Special.XXX` will not always be `(any) | (any) | ...`
+- Context#jsToJava() is replaced by a context specific variant, should be more precise
+- some more fail-safe and error logging
+
+# ProbeJS Legacy 4.1.0 -> 4.2.0
+
 "global" resolving & config rewrite
 
 ## What's new?
