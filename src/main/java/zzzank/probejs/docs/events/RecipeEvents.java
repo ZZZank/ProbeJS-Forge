@@ -5,6 +5,7 @@ import dev.latvian.kubejs.script.ScriptType;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.docs.recipes.RecipeEventReader;
 import zzzank.probejs.features.kubejs.RecipeTypesHolder;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.transpiler.transformation.InjectBeans;
@@ -44,7 +45,7 @@ public class RecipeEvents extends ProbeJSPlugin {
         val predefinedTypes = getPredefinedRecipeDocs(scriptDump);
 
         val grouped = new HashMap<String, Map<String, BaseType>>();
-        val types = ((RecipeTypesHolder) RecipeEventJS.instance).pjs$recipeTypes();
+        val types = RecipeEventReader.readFromPlugins();
         for (val entry : types.entrySet()) {
             val resLocation = entry.getKey();
             var recipeFn = predefinedTypes.get(resLocation);
@@ -146,7 +147,7 @@ public class RecipeEvents extends ProbeJSPlugin {
         }
 
         val jClassses = new HashSet<Class<?>>();
-        val types = ((RecipeTypesHolder) RecipeEventJS.instance).pjs$recipeTypes();
+        val types = RecipeEventReader.readFromPlugins();
         for (val recipeTypeJS : types.values()) {
             jClassses.add(recipeTypeJS.getClass());
         }
