@@ -27,7 +27,8 @@ public final class BindingReader {
     }
 
     public void read() {
-        val pack = CollectUtils.anyIn(scriptDump.manager.packs.values());
+        val manager = scriptDump.manager;
+        val pack = manager.packs.get(manager.directory.getFileName().toString());
         if (pack == null) {
             ProbeJS.LOGGER.error("Script context not found, unable to read binding infos");
             return;
@@ -39,11 +40,9 @@ public final class BindingReader {
                 continue;
             }
             var value = scope.get(id, scope);
-            if (value instanceof NativeJavaClass nativeJavaClass) {
-                value = nativeJavaClass.getClassObject();
-            } else {
-                value = GameUtils.jsToJava(context, value, Object.class);
-            }
+            value = value instanceof NativeJavaClass nativeJavaClass
+                ? nativeJavaClass.getClassObject()
+                : GameUtils.jsToJava(context, value, Object.class);
             if (value instanceof Class<?> c) {
                 classes.put(id, c);
             } else if (value instanceof BaseFunction fn) {
