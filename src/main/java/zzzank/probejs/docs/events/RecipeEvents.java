@@ -1,13 +1,11 @@
 package zzzank.probejs.docs.events;
 
 import dev.latvian.kubejs.recipe.RecipeEventJS;
-import dev.latvian.kubejs.recipe.RecipeTypeJS;
-import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
 import dev.latvian.kubejs.script.ScriptType;
-import dev.latvian.kubejs.util.KubeJSPlugins;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.features.kubejs.RecipeTypesHolder;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.transpiler.transformation.InjectBeans;
 import zzzank.probejs.lang.typescript.ScriptDump;
@@ -40,18 +38,14 @@ public class RecipeEvents extends ProbeJSPlugin {
         SHORTCUTS.put("smithing", new ResourceLocation("minecraft", "smithing"));
     }
 
-    public final Map<ResourceLocation, RecipeTypeJS> ALL = new HashMap<>();
-
     private Map<String, Map<String, BaseType>> getGroupedRecipeTypes(ScriptDump scriptDump) {
         val converter = scriptDump.transpiler.typeConverter;
-
-        val recipeEvent = new RegisterRecipeHandlersEvent(ALL);
-        KubeJSPlugins.forEachPlugin(plugin -> plugin.addRecipes(recipeEvent));
 
         val predefinedTypes = getPredefinedRecipeDocs(scriptDump);
 
         val grouped = new HashMap<String, Map<String, BaseType>>();
-        for (val entry : ALL.entrySet()) {
+        val types = ((RecipeTypesHolder) RecipeEventJS.instance).pjs$recipeTypes();
+        for (val entry : types.entrySet()) {
             val resLocation = entry.getKey();
             var recipeFn = predefinedTypes.get(resLocation);
             if (recipeFn == null) {
@@ -132,6 +126,11 @@ public class RecipeEvents extends ProbeJSPlugin {
             }
 
             val parts = SHORTCUTS.get(field.name);
+            val replace = grouped.get(parts.getNamespace()).get(parts.getPath());
+            if (replace == null) {
+                ProbeJS.LOGGER.error("predefined recipe type '%s' not found");
+                continue;
+            }
             field.type = grouped.get(parts.getNamespace()).get(parts.getPath());
 
             for (val info : field.type.getImportInfos()) {
@@ -147,7 +146,8 @@ public class RecipeEvents extends ProbeJSPlugin {
         }
 
         val jClassses = new HashSet<Class<?>>();
-        for (RecipeTypeJS recipeTypeJS : ALL.values()) {
+        val types = ((RecipeTypesHolder) RecipeEventJS.instance).pjs$recipeTypes();
+        for (val recipeTypeJS : types.values()) {
             jClassses.add(recipeTypeJS.getClass());
         }
         //make sure RecipeEventJS has TSFile generated, to prevent modifyClasses from failing

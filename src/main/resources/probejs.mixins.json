@@ -4,16 +4,17 @@
   "package": "zzzank.probejs.mixins",
   "mixins": [
     "AccessForgeRegistryManager",
+    "AccessNativeJavaObject",
     "AccessTypedDynamicFunction",
     "MixinConsole",
     "MixinEventBus",
     "MixinLootTable",
     "MixinOnEvent",
+    "MixinRecipeEventJS",
     "MixinRecipeManager",
     "MixinScriptManager",
     "integration.KubeJSForgeEventRedirection",
-    "integration.ScopeSupportMixin",
-    "AccessNativeJavaObject"
+    "integration.ScopeSupportMixin"
   ],
   "injectors": {
     "defaultRequire": 1
