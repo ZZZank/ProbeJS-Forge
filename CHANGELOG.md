@@ -1,4 +1,12 @@
-# ProbeJS Legacy 4.1.0 -> 4.2.0
+# ProbeJS Legacy 4.3.0 -> 4.3.1
+
+fix recipe docs
+
+- see 4.3.0 changelog for full changelog
+
+---
+
+# ProbeJS Legacy 4.2.0 -> 4.3.0
 
 `java()` revive && native class scanner
 
@@ -7,6 +15,7 @@
     - two paths are provided for each class that can be loaded by `java()`, one Java style, one TS style. It will be used by VSCode plugin in the future 
     - `SomeInterface$$Static` will now exported for Java interface `SomeInterface`, used for better `java()` support
     - `require()` is now redirected to `java()`, and is deprecated
+    - you can use RegEx `^const\s?\{\s*(\S+)\s*\}\s*=\s*require\s?\((\S+)\)` to `let $1 = java($2)` to remove `require` usage
 - now a filter will be applied to class scanner, to prevent crash due to scanning dangerous classes, and performance issue due to dumping too many classes
     - it's enabled by default, but you can also disable it in config fil: `probejs.fullScan`
 - native class scanner via class data scanned by Forge
@@ -22,6 +31,8 @@
     - this means that `Special.XXX` will not always be `(any) | (any) | ...`
 - Context#jsToJava() is replaced by a context specific variant, should be more precise
 - some more fail-safe and error logging
+
+---
 
 # ProbeJS Legacy 4.1.0 -> 4.2.0
 
