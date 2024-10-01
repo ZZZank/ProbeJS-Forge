@@ -25,7 +25,7 @@ public class RecipeEvents extends ProbeJSPlugin {
 
     public static final Map<String, ResourceLocation> SHORTCUTS = new HashMap<>();
     public static final String PATH_BASE = "zzzank.probejs.generated.recipes";
-    public static final ClassPath DOCUMENTED = new ClassPath(PATH_BASE + ".DocumentedRecipes");
+    public static final ClassPath DOCUMENTED = ClassPath.fromJavaPath(PATH_BASE + ".DocumentedRecipes");
 
     static {
         SHORTCUTS.put("shaped", new ResourceLocation("kubejs", "shaped"));

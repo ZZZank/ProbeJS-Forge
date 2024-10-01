@@ -23,7 +23,6 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import zzzank.probejs.features.bridge.ProbeServer;
-import zzzank.probejs.plugin.ProbeJSPlugins;
 import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.lang.linter.Linter;
 import zzzank.probejs.utils.GameUtils;

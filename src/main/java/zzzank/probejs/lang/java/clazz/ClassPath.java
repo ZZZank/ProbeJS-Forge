@@ -24,15 +24,23 @@ public record ClassPath(List<String> parts) implements Comparable<ClassPath> {
 
     private static final Pattern SPLIT = Pattern.compile("\\.");
 
+    public static ClassPath fromJavaPath(String className) {
+        return new ClassPath(Arrays.asList(SPLIT.split(className)));
+    }
+
+    public static ClassPath fromTSPath(String typeScriptPath) {
+        if (!typeScriptPath.startsWith(TS_PATH_PREFIX)) {
+            throw new IllegalArgumentException(String.format("path '%s' is not ProbeJS TS path", typeScriptPath));
+        }
+        val names = typeScriptPath.substring(TS_PATH_PREFIX.length()).split("/");
+        return new ClassPath(Arrays.asList(names));
+    }
+
     private static List<String> transformJavaClass(Class<?> clazz) {
         val name = RemapperBridge.remapClass(clazz);
         val parts = SPLIT.split(name);
         parts[parts.length - 1] = "$" + parts[parts.length - 1];
         return Arrays.asList(parts);
-    }
-
-    public ClassPath(String className) {
-        this(Arrays.asList(SPLIT.split(className)));
     }
 
     public ClassPath(Class<?> clazz) {

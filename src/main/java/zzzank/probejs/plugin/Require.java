@@ -16,23 +16,19 @@ public class Require extends BaseFunction {
     }
 
     @Override
-    public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-        val result = (String) GameUtils.jsToJava(cx, args[0], String.class);
-        if (!result.startsWith("packages")) {
+    public Object call(Context cx, Scriptable scope, Scriptable self, Object[] args) {
+        String name;
+        if (args.length == 0 || !(name = args[0].toString()).startsWith(ClassPath.TS_PATH_PREFIX)) {
             return new RequireWrapper(null, Undefined.instance);
         }
-        val parts = result.split("/", 2);
-        val path = new ClassPath(parts[1].replace('/', '.'));
-        val pathJava = RemapperBridge.unmapClass(path.getClassPathJava());
+        val path = ClassPath.fromTSPath(name);
 
-        NativeJavaClass loaded;
         try {
-            loaded = manager.loadJavaClass(scope, new String[]{pathJava});
+            return new RequireWrapper(path, manager.loadJavaClass(scope, new String[]{name}));
         } catch (Exception ignored) {
-            manager.type.console.warn(String.format("Class '%s' not loaded", pathJava));
+            manager.type.console.warn(String.format("Class '%s' not loaded", path.getClassPathJava()));
             return new RequireWrapper(path, Undefined.instance);
         }
-        return new RequireWrapper(path, loaded);
     }
 
     public static class RequireWrapper extends ScriptableObject {

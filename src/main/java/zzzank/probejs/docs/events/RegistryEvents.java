@@ -75,7 +75,7 @@ public class RegistryEvents extends ProbeJSPlugin {
 //    }
 
     private static ClassPath getRegistryClassPath(String namespace, String location) {
-        return new ClassPath(String.format(
+        return ClassPath.fromJavaPath(String.format(
             "zzzank.probejs.generated.registry.%s.%s",
             namespace,
             NameUtils.rlToTitle(location)
