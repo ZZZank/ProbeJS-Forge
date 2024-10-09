@@ -7,7 +7,6 @@
     "AccessNativeJavaObject",
     "AccessTypedDynamicFunction",
     "MixinConsole",
-    "MixinEventBus",
     "MixinLootTable",
     "MixinOnEvent",
     "MixinRecipeManager",
