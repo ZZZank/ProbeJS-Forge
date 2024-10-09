@@ -1,5 +1,8 @@
 package zzzank.probejs.utils;
 
+import lombok.val;
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -44,9 +47,21 @@ public class NameUtils {
     }
 
     public static String finalComponentToTitle(String resourceLocation) {
-        String[] path = resourceLocationToPath(resourceLocation);
-        String last = path[path.length - 1];
+        val path = resourceLocationToPath(resourceLocation);
+        val last = path[path.length - 1];
         return Arrays.stream(last.split("_")).map(NameUtils::getCapitalized).collect(Collectors.joining());
+    }
+
+    public static String registryName(ResourceLocation location) {
+        return rlToTitle(location, true);
+    }
+
+    public static String rlToTitle(ResourceLocation location, boolean ignoreVanillaNamespace) {
+        val pathName = rlToTitle(location.getPath());
+        if (ignoreVanillaNamespace && location.getNamespace().equals("minecraft")) {
+            return pathName;
+        }
+        return rlToTitle(location.getNamespace()) + '$' + pathName;
     }
 
     public static String rlToTitle(String s) {
