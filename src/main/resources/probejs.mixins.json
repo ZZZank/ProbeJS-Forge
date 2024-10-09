@@ -10,7 +10,6 @@
     "MixinEventBus",
     "MixinLootTable",
     "MixinOnEvent",
-    "MixinRecipeEventJS",
     "MixinRecipeManager",
     "MixinScriptManager",
     "integration.KubeJSForgeEventRedirection",

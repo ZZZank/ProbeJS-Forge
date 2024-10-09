@@ -6,7 +6,6 @@ import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.docs.recipes.RecipeEventReader;
-import zzzank.probejs.features.kubejs.RecipeTypesHolder;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.transpiler.transformation.InjectBeans;
 import zzzank.probejs.lang.typescript.ScriptDump;
