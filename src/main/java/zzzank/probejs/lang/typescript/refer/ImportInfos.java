@@ -55,7 +55,7 @@ public class ImportInfos implements Iterable<ImportInfo> {
     protected void addImpl(ImportInfo info) {
         val old = raw.put(info.path, info);
         if (old != null) {
-            info.types.addAll(old.types);
+            info.mergeWith(old);
         }
     }
 

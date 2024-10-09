@@ -32,7 +32,7 @@ public class Declaration {
         val name = resolveSymbol(info.path);
         val old = references.get(info.path);
         if (old != null) {
-            old.info.types.addAll(info.types);
+            old.info.mergeWith(info);
         }
         this.references.put(info.path, new Reference(info, name));
     }

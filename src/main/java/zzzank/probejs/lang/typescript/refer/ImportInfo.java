@@ -1,27 +1,43 @@
 package zzzank.probejs.lang.typescript.refer;
 
-import lombok.AllArgsConstructor;
+import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 
-import java.util.EnumSet;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * @author ZZZank
  */
-@AllArgsConstructor
 public final class ImportInfo {
 
     public final ClassPath path;
-    public final EnumSet<ImportType> types;
+    public final boolean[] imports;
+
+    public ImportInfo(ClassPath path, ImportType type, ImportType[] rest) {
+        this.path = path;
+        this.imports = new boolean[ImportType.ALL.size()];
+        addType(type);
+        for (val importType : rest) {
+            addType(importType);
+        }
+    }
 
     public ImportInfo addType(@NotNull ImportType type) {
-        types.add(type);
+        imports[type.ordinal()] = true;
+        return this;
+    }
+
+    public ImportInfo mergeWith(@NotNull ImportInfo addition) {
+        for (int i = 0; i < this.imports.length; i++) {
+            this.imports[i] |= addition.imports[i];
+        }
         return this;
     }
 
@@ -32,12 +48,10 @@ public final class ImportInfo {
      */
     public @NotNull String toImport(@Nullable String dedupedSymbol) {
         val original = this.path.getName();
-        val hasAltName = dedupedSymbol != null && !original.equals(dedupedSymbol);
-        val names = this.types.stream()
-            .map(type -> hasAltName
-                ? String.format("%s as %s", type.fmt(original), type.fmt(dedupedSymbol))
-                : type.fmt(original)
-            )
+        val names = this.getTypes()
+            .map(original.equals(dedupedSymbol)
+                ? type -> type.fmt(original)
+                : type -> String.format("%s as %s", type.fmt(original), type.fmt(dedupedSymbol)))
             .collect(Collectors.joining(", "));
 
         // Underscores can be recognized by using a global export
@@ -49,7 +63,7 @@ public final class ImportInfo {
     }
 
     public static ImportInfo of(ClassPath path, ImportType type, ImportType... rest) {
-        return new ImportInfo(Objects.requireNonNull(path), EnumSet.of(type, rest));
+        return new ImportInfo(Objects.requireNonNull(path), type, rest);
     }
 
     public static ImportInfo of(ClassPath path) {
@@ -57,11 +71,11 @@ public final class ImportInfo {
     }
 
     public static ImportInfo ofType(ClassPath path) {
-        return of(path, ImportType.TYPE, ImportType.ORIGINAL);
+        return of(path, ImportType.TYPE);
     }
 
     public static ImportInfo ofOriginal(ClassPath path) {
-        return of(path, ImportType.ORIGINAL, ImportType.TYPE);
+        return of(path, ImportType.ORIGINAL);
     }
 
     public static ImportInfo ofStatic(ClassPath path) {
@@ -76,5 +90,11 @@ public final class ImportInfo {
     @Override
     public int hashCode() {
         return path.hashCode();
+    }
+
+    public Stream<ImportType> getTypes() {
+        return IntStream.range(0, ImportType.ALL.size())
+            .filter(i -> imports[i])
+            .mapToObj(ImportType.ALL::get);
     }
 }

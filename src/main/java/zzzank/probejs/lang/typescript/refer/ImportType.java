@@ -1,5 +1,7 @@
 package zzzank.probejs.lang.typescript.refer;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
@@ -11,6 +13,8 @@ public enum ImportType {
     STATIC(s -> s + "$$Static"),
     TYPE(s -> s + "$$Type")
     ;
+
+    public static final ImmutableList<ImportType> ALL = ImmutableList.copyOf(ImportType.values());
 
     private final UnaryOperator<String> formatter;
 
