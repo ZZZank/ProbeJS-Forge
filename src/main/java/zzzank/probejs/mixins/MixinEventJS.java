@@ -15,24 +15,7 @@ import zzzank.probejs.ProbeConfig;
  * @author ZZZank
  */
 @Mixin(EventJS.class)
-public abstract class MixinOnEvent {
-
-    @Inject(
-        method = "post(Ldev/latvian/kubejs/script/ScriptType;Ljava/lang/String;)Z",
-        at = @At("HEAD"),
-        remap = false
-    )
-    private void captureKjsEvents(ScriptType t, String id, CallbackInfoReturnable<Boolean> returns) {
-        if (!ProbeConfig.enabled.get()) {
-            return;
-        }
-        val e = EventJSInfos.KNOWN.get(id);
-        if (e == null) {
-            EventJSInfos.KNOWN.put(id, new EventJSInfo(t, (EventJS) (Object) this, id, null));
-        } else {
-            e.scriptTypes().add(t);
-        }
-    }
+public abstract class MixinEventJS {
 
     @Inject(
         method = "post(Ldev/latvian/kubejs/script/ScriptType;Ljava/lang/String;Ljava/lang/String;)Z",

@@ -32,8 +32,8 @@ public final class EventJSInfo implements Comparable<EventJSInfo> {
     private final EnumSet<ScriptType> scriptTypes;
     private final Mutable<String> sub;
 
-    public EventJSInfo(ScriptType t, EventJS event, String id, @Nullable String sub) {
-        this(event.getClass(), id, event.canCancel(), EnumSet.of(t), new Mutable<>(sub));
+    public EventJSInfo(ScriptType type, EventJS event, String id, @Nullable String sub) {
+        this(event.getClass(), id, event.canCancel(), EnumSet.of(type), new Mutable<>(sub));
     }
 
     @Nullable

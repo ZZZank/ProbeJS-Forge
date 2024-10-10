@@ -29,7 +29,7 @@ public abstract class MixinScriptManager {
     }
 
     @ModifyVariable(method = "loadJavaClass", at = @At("HEAD"), index = 2, argsOnly = true)
-    public Object[] pjs$redirectAutoImport(Object[] args) {
+    public Object[] pjs$redirectLoadClass(Object[] args) {
         if (args.length > 0) {
             val name = args[0].toString();
             if (name.startsWith(ClassPath.TS_PATH_PREFIX)) {
