@@ -18,6 +18,7 @@ import java.util.function.Consumer;
 public class ProbeJSPlugins {
 
     private static final List<ProbeJSPlugin> ALL = new ArrayList<>();
+    private static final List<ProbeJSPlugin> QUEUED = new ArrayList<>();
     private static boolean initialized = false;
 
     public static void init() {
@@ -32,11 +33,14 @@ public class ProbeJSPlugins {
                 ALL.add(probeJSPlugin);
             }
         });
+        //collect from registering
+        ALL.addAll(QUEUED);
+        //prevent initializing again
         initialized = true;
     }
 
     public static void register(ProbeJSPlugin plugin) {
-        ALL.add(plugin);
+        (initialized ? ALL : QUEUED).add(plugin);
     }
 
     public static List<ProbeJSPlugin> getAll() {
