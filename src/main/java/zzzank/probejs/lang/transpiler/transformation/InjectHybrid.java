@@ -42,7 +42,7 @@ public class InjectHybrid implements ClassTransformer {
         classDecl.bodyCode.add(new Code() {
             @Override
             public ImportInfos getImportInfos() {
-                return ImportInfos.ofImmutableEmpty();
+                return ImportInfos.of();
             }
 
             @Override

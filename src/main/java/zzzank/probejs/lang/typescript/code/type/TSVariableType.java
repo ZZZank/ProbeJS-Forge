@@ -18,7 +18,7 @@ public class TSVariableType extends BaseType {
 
     @Override
     public ImportInfos getImportInfos() {
-        return extendsType == null ? ImportInfos.ofImmutableEmpty() : extendsType.getImportInfos();
+        return extendsType == null ? ImportInfos.of() : extendsType.getImportInfos();
     }
 
     @Override

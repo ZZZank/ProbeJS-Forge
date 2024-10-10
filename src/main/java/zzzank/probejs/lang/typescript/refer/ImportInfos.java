@@ -11,20 +11,12 @@ import java.util.stream.Stream;
 /**
  * @author ZZZank
  */
-public class ImportInfos implements Iterable<ImportInfo> {
+public final class ImportInfos implements Iterable<ImportInfo> {
 
     private final Map<ClassPath, ImportInfo> raw;
 
     ImportInfos() {
         this.raw = new HashMap<>();
-    }
-
-    public static ImmutableImportInfos ofImmutableEmpty() {
-        return ImmutableImportInfos.EMPTY;
-    }
-
-    public static ImmutableImportInfos ofImmutable(Collection<ImportInfo> infos) {
-        return new ImmutableImportInfos(infos);
     }
 
     public static ImportInfos of(ImportInfos other) {

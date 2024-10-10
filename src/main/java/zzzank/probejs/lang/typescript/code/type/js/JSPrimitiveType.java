@@ -19,7 +19,7 @@ public class JSPrimitiveType extends BaseType {
 
     @Override
     public ImportInfos getImportInfos() {
-        return ImportInfos.ofImmutableEmpty();
+        return ImportInfos.of();
     }
 
     @Override
