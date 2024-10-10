@@ -33,7 +33,7 @@ public abstract class MixinScriptManager {
         if (args.length > 0) {
             val name = args[0].toString();
             if (name.startsWith(ClassPath.TS_PATH_PREFIX)) {
-                args[0] = RemapperBridge.unmapClass(ClassPath.fromTSPath(name).getClassPathJava());
+                args[0] = RemapperBridge.unmapClass(ClassPath.fromTS(name).getJavaPath());
             }
         }
         return args;

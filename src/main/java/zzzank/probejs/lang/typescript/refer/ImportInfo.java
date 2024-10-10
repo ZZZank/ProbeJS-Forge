@@ -1,6 +1,5 @@
 package zzzank.probejs.lang.typescript.refer;
 
-import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,7 +57,7 @@ public final class ImportInfo {
         return String.format(
             "import { %s } from %s",
             names,
-            ProbeJS.GSON.toJson(this.path.getTypeScriptPath())
+            ProbeJS.GSON.toJson(this.path.getTSPath())
         );
     }
 

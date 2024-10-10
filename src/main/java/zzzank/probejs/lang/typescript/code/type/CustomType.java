@@ -20,7 +20,7 @@ public class CustomType extends BaseType {
 
     @Override
     public ImportInfos getImportInfos() {
-        return ImportInfos.of(Arrays.asList(imports));
+        return ImportInfos.of(imports);
     }
 
     @Override

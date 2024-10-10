@@ -21,15 +21,15 @@ public class ClassRegistry {
     public Map<ClassPath, Clazz> foundClasses = new HashMap<>(256);
 
     public void fromPackage(Collection<ClassPath> classPaths) {
-        for (ClassPath pack : classPaths) {
-            if (!foundClasses.containsKey(pack)) {
-                foundClasses.put(pack, pack.toClazz());
+        for (val path : classPaths) {
+            if (!foundClasses.containsKey(path)) {
+                foundClasses.put(path, path.toClazz());
             }
         }
     }
 
     public void fromClazz(Collection<Clazz> classes) {
-        for (Clazz c : classes) {
+        for (val c : classes) {
             if (!foundClasses.containsKey(c.classPath)) {
                 foundClasses.put(c.classPath, c);
             }
@@ -37,7 +37,7 @@ public class ClassRegistry {
     }
 
     public void fromClasses(Collection<Class<?>> classes) {
-        for (Class<?> c : classes) {
+        for (val c : classes) {
             fromClass(c);
         }
     }
@@ -50,7 +50,7 @@ public class ClassRegistry {
             return;
         }
         try {
-            if (!foundClasses.containsKey(new ClassPath(c))) {
+            if (!foundClasses.containsKey(ClassPath.fromJava(c))) {
                 Clazz clazz = new Clazz(c);
                 foundClasses.put(clazz.classPath, clazz);
             }
@@ -113,7 +113,7 @@ public class ClassRegistry {
             currentClasses.clear();
 
             for (Class<?> c : fetchedClass) {
-                if (foundClasses.containsKey(new ClassPath(c))) {
+                if (foundClasses.containsKey(ClassPath.fromJava(c))) {
                     continue;
                 }
                 try {

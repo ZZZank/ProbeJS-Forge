@@ -15,7 +15,7 @@ import java.util.Map;
 public class ParamFix extends ProbeJSPlugin {
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
-        val textWrapper = globalClasses.get(new ClassPath(TextWrapper.class));
+        val textWrapper = globalClasses.get(ClassPath.fromJava(TextWrapper.class));
         if (textWrapper == null) {
             return;
         }

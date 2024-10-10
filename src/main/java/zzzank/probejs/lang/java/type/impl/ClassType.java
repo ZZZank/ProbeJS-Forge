@@ -17,13 +17,13 @@ public class ClassType extends TypeDescriptor {
     public ClassType(AnnotatedType type) {
         super(type.getAnnotations());
         clazz = (Class<?>) type.getType();
-        classPath = new ClassPath(clazz);
+        classPath = ClassPath.fromJava(clazz);
     }
 
     public ClassType(Type type) {
         super(new Annotation[]{});
         clazz = (Class<?>) type;
-        classPath = new ClassPath(clazz);
+        classPath = ClassPath.fromJava(clazz);
     }
 
     @Override

@@ -146,7 +146,7 @@ public class RegistryTypes extends ProbeJSPlugin {
     }
 
     private static void makeClassModifications(Map<ClassPath, TypeScriptFile> globalClasses, ResourceKey<? extends Registry<?>> key, Class<?> baseClass) {
-        val typeScriptFile = globalClasses.get(new ClassPath(baseClass));
+        val typeScriptFile = globalClasses.get(ClassPath.fromJava(baseClass));
         if (typeScriptFile == null) return;
         val classDecl = typeScriptFile.findCode(ClassDecl.class).orElse(null);
         if (classDecl == null) return;

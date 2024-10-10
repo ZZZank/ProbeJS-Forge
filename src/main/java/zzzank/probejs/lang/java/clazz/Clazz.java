@@ -33,7 +33,7 @@ public class Clazz extends TypeVariableHolder {
         super(clazz.getTypeParameters(), clazz.getAnnotations());
 
         this.original = clazz;
-        this.classPath = new ClassPath(original);
+        this.classPath = ClassPath.fromJava(original);
         this.constructors = Arrays.stream(ReflectUtils.constructorsSafe(original))
             .filter(ctor -> !ctor.isAnnotationPresent(HideFromJS.class))
             .map(ConstructorInfo::new)

@@ -17,7 +17,7 @@ public class TypingModificationEventJS extends ScriptEventJS {
     }
 
     public void modify(Class<?> clazz, Consumer<TypeScriptFile> file) {
-        TypeScriptFile ts = files.get(new ClassPath(clazz));
+        TypeScriptFile ts = files.get(ClassPath.fromJava(clazz));
         if (ts != null) file.accept(ts);
     }
 }

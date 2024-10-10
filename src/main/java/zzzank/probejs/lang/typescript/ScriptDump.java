@@ -118,7 +118,7 @@ public class ScriptDump {
     }
 
     public void assignType(Class<?> classPath, BaseType type) {
-        assignType(new ClassPath(classPath), type);
+        assignType(ClassPath.fromJava(classPath), type);
     }
 
     public void assignType(ClassPath classPath, BaseType type) {
@@ -126,7 +126,7 @@ public class ScriptDump {
     }
 
     public void assignType(Class<?> classPath, String name, BaseType type) {
-        assignType(new ClassPath(classPath), name, type);
+        assignType(ClassPath.fromJava(classPath), name, type);
     }
 
     public void assignType(ClassPath classPath, String name, BaseType type) {

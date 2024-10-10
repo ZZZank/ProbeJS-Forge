@@ -77,7 +77,7 @@ public class TypeScriptFile {
     public void writeAsModule(BufferedWriter writer) throws IOException {
         writer.write(String.format(
             "declare module %s {\n",
-            ProbeJS.GSON.toJson(classPath.getTypeScriptPath())
+            ProbeJS.GSON.toJson(classPath.getTSPath())
         ));
         this.write(writer);
         writer.write("}\n");

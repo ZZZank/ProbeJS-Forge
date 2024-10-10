@@ -27,7 +27,7 @@ public class InjectSpecialType implements ClassTransformer {
 
     static {
         NO_WRAPPING = new HashSet<>();
-        NO_WRAPPING.add(new ClassPath(ResourceKey.class));
+        NO_WRAPPING.add(ClassPath.fromJava(ResourceKey.class));
     }
 
     public static void modifyWrapping(ParamDecl param) {

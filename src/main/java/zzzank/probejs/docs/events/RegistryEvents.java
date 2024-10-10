@@ -63,7 +63,7 @@ public class RegistryEvents extends ProbeJSPlugin {
 //        }
 //
 //        // Let createCustom to use Supplier<T> instead of object
-//        TypeScriptFile registryEvent = globalClasses.get(new ClassPath(RegistryKubeEvent.class));
+//        TypeScriptFile registryEvent = globalClasses.get(ClassPath.fromJava(RegistryKubeEvent.class));
 //        ClassDecl eventClass = registryEvent.findCode(ClassDecl.class).orElse(null);
 //        if (eventClass == null) return;
 //
@@ -75,7 +75,7 @@ public class RegistryEvents extends ProbeJSPlugin {
 //    }
 
     private static ClassPath getRegistryClassPath(String namespace, String location) {
-        return ClassPath.fromJavaPath(String.format(
+        return ClassPath.fromJava(String.format(
             "zzzank.probejs.generated.registry.%s.%s",
             namespace,
             NameUtils.rlToTitle(location)

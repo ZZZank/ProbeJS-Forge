@@ -53,10 +53,10 @@ public class TypeConverter {
                 if (generics != null) {
                     val baseType = generics.base() == Object.class
                         ? convertType(paramType.base)
-                        : new TSClassType(new ClassPath(generics.base()));
+                        : new TSClassType(ClassPath.fromJava(generics.base()));
                     val params = Arrays
                         .stream(generics.value())
-                        .map(c -> (BaseType) new TSClassType(new ClassPath(c)))
+                        .map(c -> (BaseType) new TSClassType(ClassPath.fromJava(c)))
                         .collect(Collectors.toList());
                     return new TSParamType(baseType, params);
                 }

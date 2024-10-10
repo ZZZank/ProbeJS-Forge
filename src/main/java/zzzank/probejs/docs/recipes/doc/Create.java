@@ -117,7 +117,7 @@ class Create extends RecipeDocProvider {
         if (!shouldEnable()) {
             return;
         }
-        val file = globalClasses.get(new ClassPath(RecipeEventJS.class));
+        val file = globalClasses.get(ClassPath.fromJava(RecipeEventJS.class));
         if (file == null) {
             return;
         }

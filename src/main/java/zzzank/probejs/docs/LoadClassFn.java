@@ -1,7 +1,6 @@
 package zzzank.probejs.docs;
 
 import lombok.val;
-import zzzank.probejs.ProbeJS;
 import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.typescript.ScriptDump;
@@ -56,7 +55,7 @@ public class LoadClassFn extends ProbeJSPlugin {
             //original
             paths.member(clazz.original.getName(), typeOf);
             //probejs style import
-            paths.member(path.getTypeScriptPath(), typeOf);
+            paths.member(path.getTSPath(), typeOf);
         }
         dump.addGlobal("load_class",
             new TypeDecl("GlobalClasses", Types.ignoreContext(paths.build(), BaseType.FormatType.RETURN)),

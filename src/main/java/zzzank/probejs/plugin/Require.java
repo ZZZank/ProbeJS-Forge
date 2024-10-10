@@ -4,9 +4,7 @@ import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.*;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
-import zzzank.probejs.features.rhizo.RemapperBridge;
 import zzzank.probejs.lang.java.clazz.ClassPath;
-import zzzank.probejs.utils.GameUtils;
 
 public class Require extends BaseFunction {
     private final ScriptManager manager;
@@ -21,12 +19,12 @@ public class Require extends BaseFunction {
         if (args.length == 0 || !(name = args[0].toString()).startsWith(ClassPath.TS_PATH_PREFIX)) {
             return new RequireWrapper(null, Undefined.instance);
         }
-        val path = ClassPath.fromTSPath(name);
+        val path = ClassPath.fromTS(name);
 
         try {
             return new RequireWrapper(path, manager.loadJavaClass(scope, new String[]{name}));
         } catch (Exception ignored) {
-            manager.type.console.warn(String.format("Class '%s' not loaded", path.getClassPathJava()));
+            manager.type.console.warn(String.format("Class '%s' not loaded", path.getJavaPath()));
             return new RequireWrapper(path, Undefined.instance);
         }
     }
@@ -43,7 +41,7 @@ public class Require extends BaseFunction {
 
         @Override
         public String getClassName() {
-            return path.getClassPathJava();
+            return path.getJavaPath();
         }
 
         @Override

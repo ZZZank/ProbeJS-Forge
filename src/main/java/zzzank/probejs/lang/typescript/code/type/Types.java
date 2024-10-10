@@ -115,7 +115,7 @@ public interface Types {
      * Otherwise, use typeMaybeGeneric
      */
     static TSClassType type(Class<?> clazz) {
-        return type(new ClassPath(clazz));
+        return type(ClassPath.fromJava(clazz));
     }
 
     static TSClassType type(ClassPath classPath) {
@@ -123,7 +123,7 @@ public interface Types {
     }
 
     static JSTypeOfType typeOf(Class<?> clazz) {
-        return typeOf(new ClassPath(clazz));
+        return typeOf(ClassPath.fromJava(clazz));
     }
 
     static JSTypeOfType typeOf(ClassPath classPath) {

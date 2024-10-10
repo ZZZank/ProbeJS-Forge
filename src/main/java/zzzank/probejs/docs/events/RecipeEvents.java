@@ -25,7 +25,7 @@ public class RecipeEvents extends ProbeJSPlugin {
 
     public static final Map<String, ResourceLocation> SHORTCUTS = new HashMap<>();
     public static final String PATH_BASE = "zzzank.probejs.generated.recipes";
-    public static final ClassPath DOCUMENTED = ClassPath.fromJavaPath(PATH_BASE + ".DocumentedRecipes");
+    public static final ClassPath DOCUMENTED = ClassPath.fromJava(PATH_BASE + ".DocumentedRecipes");
 
     static {
         SHORTCUTS.put("shaped", new ResourceLocation("kubejs", "shaped"));
@@ -99,7 +99,7 @@ public class RecipeEvents extends ProbeJSPlugin {
         globalClasses.put(DOCUMENTED, documentFile);
 
         //2.Inject types into the RecipeEventJS
-        val recipeEventFile = globalClasses.get(new ClassPath(RecipeEventJS.class));
+        val recipeEventFile = globalClasses.get(ClassPath.fromJava(RecipeEventJS.class));
         val recipeEvent = recipeEventFile.findCode(ClassDecl.class).orElse(null);
         if (recipeEvent == null) {
             ProbeJS.LOGGER.error("RecipeEventJS class declaration not found");

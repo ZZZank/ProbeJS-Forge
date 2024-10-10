@@ -25,7 +25,7 @@ public class Transpiler {
     }
 
     public void reject(Class<?> clazz) {
-        rejectedClasses.add(new ClassPath(clazz));
+        rejectedClasses.add(ClassPath.fromJava(clazz));
     }
 
     public void init() {
