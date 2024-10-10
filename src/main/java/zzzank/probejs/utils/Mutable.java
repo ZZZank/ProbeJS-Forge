@@ -1,6 +1,7 @@
 package zzzank.probejs.utils;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -29,6 +30,16 @@ public class Mutable<T> implements Supplier<T>, Iterable<T> {
     @Override
     public T get() {
         return value;
+    }
+
+    /**
+     * get the value this {@code Mutable} holds, and set it to null
+     * @return
+     */
+    public T getAndForget() {
+        val tmp = this.value;
+        value = null;
+        return tmp;
     }
 
     public T getOr(T otherValue) {

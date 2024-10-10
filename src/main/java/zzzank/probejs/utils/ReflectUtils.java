@@ -48,11 +48,11 @@ public interface ReflectUtils {
     }
 
     static Class<?> classOrNull(String name, boolean initialize, boolean printError) {
-        return classOrNull(name, Thread.currentThread().getContextClassLoader(), initialize, printError);
+        return classOrNull(name, ReflectUtils.class.getClassLoader(), initialize, printError);
     }
 
     static Class<?> classOrNull(String name, boolean printError) {
-        return classOrNull(name, Thread.currentThread().getContextClassLoader(), false, printError);
+        return classOrNull(name, false, printError);
     }
 
     static boolean classExist(String name) {

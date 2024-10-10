@@ -24,11 +24,7 @@ public final class ImportInfos implements Iterable<ImportInfo> {
     }
 
     public static ImportInfos of(ImportInfo... initial) {
-        val infos = new ImportInfos();
-        for (val info : initial) {
-            infos.add(info);
-        }
-        return infos;
+        return of(Arrays.asList(initial));
     }
 
     public static ImportInfos of(Collection<ImportInfo> infos) {
