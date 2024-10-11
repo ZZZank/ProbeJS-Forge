@@ -4,8 +4,8 @@ import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeJavaClass;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.features.kesseractjs.KessJSState;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.GameUtils;
 
 import java.util.HashMap;
@@ -34,7 +34,11 @@ public final class BindingReader {
             return;
         }
         val context = pack.context;
-        val scope = pack.scope;
+        var scope = pack.scope;
+        if (KessJSState.MOD) {
+            scope = scope.getParentScope();
+        }
+
         for (val idObj : scope.getIds()) {
             if (!(idObj instanceof String id)) {
                 continue;
