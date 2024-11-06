@@ -40,7 +40,7 @@ public final class ImportInfos implements Iterable<ImportInfo> {
         return this;
     }
 
-    protected void addImpl(ImportInfo info) {
+    private void addImpl(ImportInfo info) {
         val old = raw.put(info.path, info);
         if (old != null) {
             info.mergeWith(old);

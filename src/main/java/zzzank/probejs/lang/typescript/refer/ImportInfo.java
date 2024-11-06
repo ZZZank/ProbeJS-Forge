@@ -17,11 +17,11 @@ import java.util.stream.Stream;
 public final class ImportInfo {
 
     public final ClassPath path;
-    public final boolean[] imports;
+    public byte imports;
 
     public ImportInfo(ClassPath path, ImportType type, ImportType[] rest) {
         this.path = path;
-        this.imports = new boolean[ImportType.ALL.size()];
+        this.imports = 0;
         addType(type);
         for (val importType : rest) {
             addType(importType);
@@ -29,14 +29,12 @@ public final class ImportInfo {
     }
 
     public ImportInfo addType(@NotNull ImportType type) {
-        imports[type.ordinal()] = true;
+        imports |= (byte) (1 << type.ordinal());
         return this;
     }
 
     public ImportInfo mergeWith(@NotNull ImportInfo addition) {
-        for (int i = 0; i < this.imports.length; i++) {
-            this.imports[i] |= addition.imports[i];
-        }
+        imports |= addition.imports;
         return this;
     }
 
@@ -93,7 +91,7 @@ public final class ImportInfo {
 
     public Stream<ImportType> getTypes() {
         return IntStream.range(0, ImportType.ALL.size())
-            .filter(i -> imports[i])
+            .filter(i -> (imports >> i) != 0)
             .mapToObj(ImportType.ALL::get);
     }
 }
