@@ -35,14 +35,23 @@ public class TypeConverter {
 
     public BaseType convertType(TypeDescriptor descriptor) {
         for (val typeRedirect : typeRedirects) {
-            if (typeRedirect.test(descriptor)) {
-                return typeRedirect.apply(descriptor);
+            if (typeRedirect.test(descriptor, this)) {
+                return typeRedirect.apply(descriptor, this);
             }
         }
-        return convertTypeNoFirstRedirect(descriptor);
+        return convertTypeBuiltin(descriptor);
     }
 
-    public @NotNull BaseType convertTypeNoFirstRedirect(TypeDescriptor descriptor) {
+    public BaseType convertTypeExcluding(TypeDescriptor descriptor, TypeRedirect redirectInstance) {
+        for (val typeRedirect : typeRedirects) {
+            if (typeRedirect != redirectInstance && typeRedirect.test(descriptor, this)) {
+                return typeRedirect.apply(descriptor, this);
+            }
+        }
+        return convertTypeBuiltin(descriptor);
+    }
+
+    public @NotNull BaseType convertTypeBuiltin(TypeDescriptor descriptor) {
         if (descriptor instanceof ClassType classType) {
             return new TSClassType(classType.classPath);
         } else if (descriptor instanceof ArrayType arrayType) {

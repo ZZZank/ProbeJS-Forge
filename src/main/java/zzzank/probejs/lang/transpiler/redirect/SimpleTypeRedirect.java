@@ -3,6 +3,7 @@ package zzzank.probejs.lang.transpiler.redirect;
 import com.google.common.collect.ImmutableSet;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
 import zzzank.probejs.lang.java.type.impl.ClassType;
+import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 
 import java.util.Collection;
@@ -30,12 +31,12 @@ public class SimpleTypeRedirect implements TypeRedirect {
     }
 
     @Override
-    public BaseType apply(TypeDescriptor typeDesc) {
+    public BaseType apply(TypeDescriptor typeDesc, TypeConverter converter) {
         return mapper.apply((ClassType) typeDesc);
     }
 
     @Override
-    public boolean test(TypeDescriptor typeDescriptor) {
+    public boolean test(TypeDescriptor typeDescriptor, TypeConverter converter) {
         return typeDescriptor instanceof ClassType classType && targets.contains(classType.clazz);
     }
 }

@@ -1,14 +1,14 @@
 package zzzank.probejs.docs;
 
 import lombok.val;
+import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
 import zzzank.probejs.lang.java.type.impl.ClassType;
 import zzzank.probejs.lang.java.type.impl.ParamType;
-import zzzank.probejs.lang.java.type.impl.VariableType;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.transpiler.redirect.TypeRedirect;
 import zzzank.probejs.lang.typescript.code.type.*;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.HashSet;
@@ -27,50 +27,32 @@ public class ClassWrapping extends ProbeJSPlugin {
 
     @Override
     public void addPredefinedTypes(TypeConverter converter) {
-        converter.addTypeRedirect(new ClassWrapperRedirect(converter));
+        converter.addTypeRedirect(new ClassWrapperRedirect());
     }
 
     public static class ClassWrapperRedirect implements TypeRedirect {
 
-        private final TypeConverter converter;
-
-        public ClassWrapperRedirect(TypeConverter converter) {
-            this.converter = converter;
-        }
-
         @Override
-        public BaseType apply(TypeDescriptor typeDescriptor) {
-            val paramType = ((ParamType) typeDescriptor);
-            val param1 = paramType.params.get(0);
-
-            val convertedParam = converter.convertType(param1);
-            val raw = Types.parameterized(
-                converter.convertType(paramType.base),
-                convertedParam
-            );
-            if (convertedParam instanceof TSVariableType) {
-                //should be blocked by test(), why happening
-                return raw;
+        public BaseType apply(TypeDescriptor typeDescriptor, TypeConverter converter) {
+            val converted = converter.convertTypeExcluding(typeDescriptor, this);
+            if (!(converted instanceof TSParamType paramType)) {
+                ProbeJS.LOGGER.error("a ParamType type desc is converted to a not-param doc type, skipping modification");
+                return converted;
             }
-            val typeOf = Types.typeOf(convertedParam);
-            return Types.custom(
-                (declaration, formatType) -> {
-                    val t = switch (formatType) {
-                        case INPUT -> raw.or(typeOf);
-                        case VARIABLE -> raw;
-                        case RETURN -> raw.and(typeOf);
-                    };
-                    return t.line(declaration, formatType);
-                },
-                paramType.getClassPaths().stream().map(ImportInfo::of).toArray(ImportInfo[]::new)
+            val param = paramType.params.get(0);
+            if (param instanceof JSPrimitiveType || param instanceof TSVariableType) {
+                return converted;
+            }
+            return Types.and(
+                converted,
+                Types.typeOf(param)
             );
         }
 
         @Override
-        public boolean test(TypeDescriptor typeDescriptor) {
+        public boolean test(TypeDescriptor typeDescriptor, TypeConverter converter) {
             return typeDescriptor instanceof ParamType paramType
                 && paramType.params.size() == 1
-                && !(paramType.params.get(0) instanceof VariableType)
                 && paramType.base instanceof ClassType base
                 && CONVERTIBLES.contains(base.clazz);
         }
