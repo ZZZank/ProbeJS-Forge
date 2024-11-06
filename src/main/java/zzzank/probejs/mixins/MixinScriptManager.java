@@ -45,6 +45,6 @@ public abstract class MixinScriptManager {
         if (result == null) {
             return;
         }
-        ClassRegistry.REGISTRY.fromClasses(Collections.singleton(result.getClassObject()));
+        ClassRegistry.REGISTRY.fromClass(result.getClassObject());
     }
 }

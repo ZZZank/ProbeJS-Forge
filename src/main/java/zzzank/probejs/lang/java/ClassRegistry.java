@@ -42,8 +42,8 @@ public class ClassRegistry {
         }
     }
 
-    private void fromClass(Class<?> c) {
-        if (!ReflectUtils.classExist(c.getName()) || c.isSynthetic() || c.isAnonymousClass()) {
+    public void fromClass(Class<?> c) {
+        if (!ReflectUtils.classExist(c.getName()) || c.isSynthetic() || c.isAnonymousClass() || c.isPrimitive()) {
             // We test if the class actually exists from forName
             // I think some runtime class can have non-existing Class<?> object due to .getSuperClass
             // or .getInterfaces
@@ -51,7 +51,7 @@ public class ClassRegistry {
         }
         try {
             if (!foundClasses.containsKey(ClassPath.fromJava(c))) {
-                Clazz clazz = new Clazz(c);
+                val clazz = new Clazz(c);
                 foundClasses.put(clazz.classPath, clazz);
             }
         } catch (Throwable ignored) {
