@@ -1,7 +1,5 @@
 package zzzank.probejs.plugin;
 
-import zzzank.probejs.lang.typescript.ScriptDump;
-
 /**
  * @author ZZZank
  */

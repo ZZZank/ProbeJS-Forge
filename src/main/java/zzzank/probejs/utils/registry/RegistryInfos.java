@@ -20,6 +20,9 @@ public final class RegistryInfos {
 
     public static void refresh() {
         infos.clear();
+        for (val entry : ((AccessForgeRegistryManager) RegistryManager.FROZEN).getRegistries().entrySet()) {
+            infos.put(entry.getKey(), new RegistryInfo(entry.getValue()));
+        }
         for (val entry : ((AccessForgeRegistryManager) RegistryManager.ACTIVE).getRegistries().entrySet()) {
             infos.put(entry.getKey(), new RegistryInfo(entry.getValue()));
         }
