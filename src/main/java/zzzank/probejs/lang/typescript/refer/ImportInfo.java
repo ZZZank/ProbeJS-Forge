@@ -91,7 +91,7 @@ public final class ImportInfo {
 
     public Stream<ImportType> getTypes() {
         return IntStream.range(0, ImportType.ALL.size())
-            .filter(i -> (imports >> i) != 0)
+            .filter(i -> ((imports >> i) & 1) != 0)
             .mapToObj(ImportType.ALL::get);
     }
 }
