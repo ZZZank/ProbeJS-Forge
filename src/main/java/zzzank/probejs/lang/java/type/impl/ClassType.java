@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.stream.Stream;
 
 public class ClassType extends TypeDescriptor {
+    public static final Annotation[] NO_ANNOTATIONS = new Annotation[0];
+
     public final ClassPath classPath;
     public final Class<?> clazz;
 
@@ -21,7 +23,7 @@ public class ClassType extends TypeDescriptor {
     }
 
     public ClassType(Type type) {
-        super(new Annotation[]{});
+        super(NO_ANNOTATIONS);
         clazz = (Class<?>) type;
         classPath = ClassPath.fromJava(clazz);
     }

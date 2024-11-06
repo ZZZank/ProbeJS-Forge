@@ -57,11 +57,10 @@ public class Clazz extends TypeVariableHolder {
             .map(f -> new FieldInfo(original, f))
             .collect(Collectors.toList());
 
-        if (clazz.getSuperclass() != Object.class) {
-            this.superClass = TypeAdapter.getTypeDescription(clazz.getAnnotatedSuperclass());
-        } else {
-            this.superClass = null;
-        }
+        this.superClass = clazz.getSuperclass() == Object.class
+            ? null
+            : TypeAdapter.getTypeDescription(clazz.getAnnotatedSuperclass());
+
         this.interfaces = Arrays.stream(clazz.getAnnotatedInterfaces())
             .map(TypeAdapter::getTypeDescription)
             .collect(Collectors.toList());

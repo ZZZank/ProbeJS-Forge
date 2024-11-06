@@ -26,7 +26,7 @@ public class ScriptTransformer {
 
     public final Set<String> exportedSymbols;
     private int requireCounts;
-    public List<String> lines;
+    private List<String> lines;
 
     public ScriptTransformer(String[] lines) {
         this.lines = Arrays.asList(lines);
