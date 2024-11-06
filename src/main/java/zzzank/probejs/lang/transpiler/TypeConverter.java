@@ -71,9 +71,9 @@ public class TypeConverter {
         } else if (descriptor instanceof VariableType variableType) {
             List<TypeDescriptor> desc = variableType.descriptors;
             return switch (desc.size()) {
-                case 0 -> new TSVariableType(variableType.symbol, null);
-                case 1 -> new TSVariableType(variableType.symbol, convertType(desc.get(0)));
-                default -> new TSVariableType(
+                case 0 -> Types.generic(variableType.symbol);
+                case 1 -> Types.generic(variableType.symbol, convertType(desc.get(0)));
+                default -> Types.generic(
                     variableType.symbol,
                     new JSJoinedType.Intersection(desc.stream().map(this::convertType).collect(Collectors.toList()))
                 );

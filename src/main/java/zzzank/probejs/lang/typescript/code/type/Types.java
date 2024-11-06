@@ -72,7 +72,6 @@ public interface Types {
         return new JSPrimitiveType(type);
     }
 
-
     static JSTupleType.Builder tuple() {
         return new JSTupleType.Builder();
     }
@@ -82,24 +81,28 @@ public interface Types {
     }
 
     static JSJoinedType.Intersection and(BaseType... types) {
-        return new JSJoinedType.Intersection(Arrays.stream(types).collect(Collectors.toList()));
+        return new JSJoinedType.Intersection(Arrays.asList(types));
     }
 
     static BaseType or(BaseType... types) {
         if (types.length == 0) return NEVER;
-        return new JSJoinedType.Union(Arrays.stream(types).collect(Collectors.toList()));
+        return new JSJoinedType.Union(Arrays.asList(types));
     }
 
     static TSParamType parameterized(BaseType base, BaseType... params) {
-        return new TSParamType(base, Arrays.stream(params).collect(Collectors.toList()));
+        return new TSParamType(base, Arrays.asList(params));
     }
 
     static TSVariableType generic(String symbol) {
-        return generic(symbol, Types.ANY);
+        return generic(symbol, null);
     }
 
     static TSVariableType generic(String symbol, BaseType extendOn) {
-        return new TSVariableType(symbol, extendOn);
+        return generic(symbol, extendOn, null);
+    }
+
+    static TSVariableType generic(String symbol, BaseType extendOn, BaseType defaultTo) {
+        return new TSVariableType(symbol, extendOn, defaultTo);
     }
 
     static BaseType typeMaybeGeneric(Class<?> clazz) {

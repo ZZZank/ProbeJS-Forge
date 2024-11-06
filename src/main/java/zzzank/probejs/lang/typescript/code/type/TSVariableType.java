@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.type;
 
+import lombok.val;
 import org.jetbrains.annotations.Nullable;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
@@ -9,11 +10,13 @@ import java.util.List;
 
 public class TSVariableType extends BaseType {
     public final String symbol;
-    public BaseType extendsType;
+    public final BaseType extendsType;
+    public final BaseType defaultTo;
 
-    public TSVariableType(String symbol, @Nullable BaseType extendsType) {
+    public TSVariableType(String symbol, @Nullable BaseType extendsType, BaseType defaultTo) {
         this.symbol = symbol;
         this.extendsType = extendsType == Types.ANY ? null : extendsType;
+        this.defaultTo = defaultTo == Types.ANY ? null : defaultTo;
     }
 
     @Override
@@ -22,12 +25,16 @@ public class TSVariableType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(switch (input) {
+    public List<String> format(Declaration declaration, FormatType formatType) {
+        val name = switch (formatType) {
             case INPUT, RETURN -> symbol;
             case VARIABLE -> extendsType == null
                 ? symbol
                 : String.format("%s extends %s", symbol, extendsType.line(declaration, FormatType.RETURN));
-        });
+        };
+        return Collections.singletonList(defaultTo == null
+            ? name
+            : name + " = " + defaultTo.format(declaration, formatType)
+        );
     }
 }
