@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.transpiler.transformation;
 
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
 import zzzank.probejs.lang.java.clazz.members.FieldInfo;
@@ -23,25 +24,25 @@ public interface ClassTransformer {
     };
 
     static void transformClass(Clazz clazz, ClassDecl classDecl) {
-        for (ClassTransformer classTransformer : CLASS_TRANSFORMERS) {
+        for (val classTransformer : CLASS_TRANSFORMERS) {
             classTransformer.transform(clazz, classDecl);
         }
     }
 
     static void transformMethods(Clazz clazz, MethodInfo methodInfo, MethodDecl methodDecl) {
-        for (ClassTransformer classTransformer : CLASS_TRANSFORMERS) {
+        for (val classTransformer : CLASS_TRANSFORMERS) {
             classTransformer.transformMethod(clazz, methodInfo, methodDecl);
         }
     }
 
     static void transformConstructors(ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
-        for (ClassTransformer classTransformer : CLASS_TRANSFORMERS) {
+        for (val classTransformer : CLASS_TRANSFORMERS) {
             classTransformer.transformConstructor(constructorInfo, constructorDecl);
         }
     }
 
     static void transformFields(FieldInfo fieldInfo, FieldDecl fieldDecl) {
-        for (ClassTransformer classTransformer : CLASS_TRANSFORMERS) {
+        for (val classTransformer : CLASS_TRANSFORMERS) {
             classTransformer.transformField(fieldInfo, fieldDecl);
         }
     }

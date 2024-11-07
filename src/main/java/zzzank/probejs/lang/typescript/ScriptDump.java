@@ -249,9 +249,12 @@ public class ScriptDump {
                 output.addCode(convertibleType);
                 output.addCode(typeExport);
 
-                val fileKey = classPath.parts().size() > 1
-                    ? classPath.parts().get(0) + "." + classPath.parts().get(1)
-                    : classPath.parts().get(0);
+                String fileKey;
+                if (classPath.parts.length > 1) {
+                    fileKey = classPath.parts[0] + "." + classPath.parts[1];
+                } else {
+                    fileKey = classPath.parts[0]; //todo: do we need this
+                }
                 BufferedWriter writer = files.computeIfAbsent(fileKey, key -> {
                     try {
                         return Files.newBufferedWriter(getPackageFolder().resolve(key + ".d.ts"));

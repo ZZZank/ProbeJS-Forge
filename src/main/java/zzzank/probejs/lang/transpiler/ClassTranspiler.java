@@ -1,10 +1,7 @@
 package zzzank.probejs.lang.transpiler;
 
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.Clazz;
-import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
-import zzzank.probejs.lang.java.clazz.members.FieldInfo;
-import zzzank.probejs.lang.java.clazz.members.MethodInfo;
-import zzzank.probejs.lang.java.type.impl.VariableType;
 import zzzank.probejs.lang.transpiler.members.Constructor;
 import zzzank.probejs.lang.transpiler.members.Converter;
 import zzzank.probejs.lang.transpiler.members.Field;
@@ -12,12 +9,10 @@ import zzzank.probejs.lang.transpiler.members.Method;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.InterfaceDecl;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
@@ -35,12 +30,12 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
 
     @Override
     public ClassDecl transpile(Clazz input) {
-        List<TSVariableType> variableTypes = new ArrayList<>();
-        for (VariableType variableType : input.variableTypes) {
+        val variableTypes = new ArrayList<TSVariableType>(input.variableTypes.size());
+        for (val variableType : input.variableTypes) {
             variableTypes.add((TSVariableType) converter.convertType(variableType));
         }
-        BaseType superClass = input.superClass == null ? null : converter.convertType(input.superClass);
-        ClassDecl decl = input.attribute.isInterface ?
+        val superClass = input.superClass == null ? null : converter.convertType(input.superClass);
+        val decl = input.attribute.isInterface ?
             new InterfaceDecl(
                 input.classPath.getName(),
                 superClass == Types.ANY ? null : superClass,
@@ -60,20 +55,20 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
                 variableTypes
             );
 
-        for (FieldInfo fieldInfo : input.fields) {
-            var fieldDecl = field.transpile(fieldInfo);
+        for (val fieldInfo : input.fields) {
+            val fieldDecl = field.transpile(fieldInfo);
             ClassTransformer.transformFields(fieldInfo, fieldDecl);
             decl.fields.add(fieldDecl);
         }
 
-        for (MethodInfo methodInfo : input.methods) {
-            var methodDecl = method.transpile(methodInfo);
+        for (val methodInfo : input.methods) {
+            val methodDecl = method.transpile(methodInfo);
             ClassTransformer.transformMethods(input, methodInfo, methodDecl);
             decl.methods.add(methodDecl);
         }
 
-        for (ConstructorInfo constructorInfo : input.constructors) {
-            var constructorDecl = constructor.transpile(constructorInfo);
+        for (val constructorInfo : input.constructors) {
+            val constructorDecl = constructor.transpile(constructorInfo);
             ClassTransformer.transformConstructors(constructorInfo, constructorDecl);
             decl.constructors.add(constructorDecl);
         }

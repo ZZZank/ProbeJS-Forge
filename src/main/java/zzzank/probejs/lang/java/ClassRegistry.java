@@ -107,18 +107,18 @@ public class ClassRegistry {
 
             Set<Class<?>> fetchedClass = new HashSet<>(256);
             ProbeJS.LOGGER.debug("walking {} newly discovered classes", currentClasses.size());
-            for (Clazz currentClass : currentClasses) {
+            for (val currentClass : currentClasses) {
                 fetchedClass.addAll(retrieveClass(currentClass));
             }
             currentClasses.clear();
 
-            for (Class<?> c : fetchedClass) {
+            for (val c : fetchedClass) {
                 if (foundClasses.containsKey(ClassPath.fromJava(c))) {
                     continue;
                 }
                 try {
 //                    Class.forName(c.getName());
-                    Clazz clazz = new Clazz(c);
+                    val clazz = new Clazz(c);
                     foundClasses.put(clazz.classPath, clazz);
                     currentClasses.add(clazz);
                 } catch (Throwable ignored) {
@@ -135,12 +135,12 @@ public class ClassRegistry {
         val classPaths = new ArrayList<>(foundClasses.keySet());
         Collections.sort(classPaths);
 
-        var lastPath = new ClassPath(Collections.emptyList());
+        var lastPath = new ClassPath(new String[0]);
         try (val writer = Files.newBufferedWriter(path)) {
             for (val classPath : classPaths) {
                 val commonPartsCount = classPath.getCommonPartsCount(lastPath);
-                val copy = new ArrayList<>(classPath.parts());
-                Collections.fill(copy.subList(0, commonPartsCount), "");
+                val copy = Arrays.copyOf(classPath.parts, classPath.parts.length);
+                Arrays.fill(copy, 0, commonPartsCount, "");
                 writer.write(String.join(".", copy));
                 writer.write('\n');
                 lastPath = classPath;
@@ -149,18 +149,18 @@ public class ClassRegistry {
     }
 
     public void loadFrom(Path path) {
-        var lastPath = new ClassPath(Collections.emptyList());
+        var lastPath = new ClassPath(new String[0]);
         try (val reader = Files.newBufferedReader(path)) {
             for (val className : (Iterable<String>) reader.lines()::iterator) {
                 val parts = className.split("\\.");
                 for (int i = 0; i < parts.length; i++) {
                     if (parts[i].isEmpty()) {
-                        parts[i] = lastPath.parts().get(i);
+                        parts[i] = lastPath.parts[i];
                     } else {
                         break;
                     }
                 }
-                val classPath = new ClassPath(Arrays.asList(parts));
+                val classPath = new ClassPath(parts);
                 try {
                     val c= classPath.forName();
                     if (ProbeConfig.publicClassOnly.get() && !Modifier.isPublic(c.getModifiers())) {

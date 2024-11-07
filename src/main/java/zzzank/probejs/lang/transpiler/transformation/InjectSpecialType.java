@@ -16,29 +16,30 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.TSParamType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.utils.CollectUtils;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.TypeVariable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InjectSpecialType implements ClassTransformer {
-    public static final Set<ClassPath> NO_WRAPPING;
+    public static final Set<ClassPath> NO_WRAPPING = new HashSet<>();
 
     static {
-        NO_WRAPPING = new HashSet<>();
         NO_WRAPPING.add(ClassPath.fromJava(ResourceKey.class));
     }
 
     public static void modifyWrapping(ParamDecl param) {
-        if (param.type instanceof TSParamType paramType &&
-            paramType.baseType instanceof TSClassType baseClass &&
-            NO_WRAPPING.contains(baseClass.classPath)) {
+        if (param.type instanceof TSParamType paramType
+            && paramType.baseType instanceof TSClassType baseClass
+            && NO_WRAPPING.contains(baseClass.classPath)
+        ) {
             param.type = new TSParamType(
                 paramType.baseType,
-                paramType.params.stream()
-                    .map(c -> Types.ignoreContext(c, BaseType.FormatType.RETURN))
-                    .collect(Collectors.toList())
+                CollectUtils.mapToList(
+                    paramType.params,
+                    c -> c.contextShield(BaseType.FormatType.RETURN)
+                )
             );
         }
     }
