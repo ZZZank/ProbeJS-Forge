@@ -20,6 +20,6 @@ public class ClassWrapping extends ProbeJSPlugin {
 
     @Override
     public void addPredefinedTypes(TypeConverter converter) {
-        converter.addTypeRedirect(new ClassRedirect());
+        converter.addTypeRedirect(new ClassRedirect(CONVERTIBLES));
     }
 }

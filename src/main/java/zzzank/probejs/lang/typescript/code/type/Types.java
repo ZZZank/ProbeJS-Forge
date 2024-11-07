@@ -6,11 +6,13 @@ import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.js.*;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public interface Types {
@@ -146,6 +148,10 @@ public interface Types {
     }
 
     static BaseType custom(BiFunction<Declaration, BaseType.FormatType, String> formatter, ImportInfo... imports) {
+        return new CustomType(formatter, imports);
+    }
+
+    static BaseType custom(BiFunction<Declaration, BaseType.FormatType, String> formatter, Supplier<ImportInfos> imports) {
         return new CustomType(formatter, imports);
     }
 
