@@ -2,6 +2,7 @@ package zzzank.probejs.docs.assignments;
 
 import lombok.val;
 import zzzank.probejs.lang.typescript.ScriptDump;
+import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
@@ -25,11 +26,14 @@ public class FunctionalInterfaces extends ProbeJSPlugin {
                 continue;
             }
             val method = abstracts.get(0);
-            val type = Types.lambda().methodStyle().returnType(converter.convertType(method.returnType));
+            val type = Types.lambda().returnType(converter.convertType(method.returnType));
             for (val param : method.params) {
                 type.param(param.name, converter.convertType(param.type));
             }
-            scriptDump.assignType(recordedClass.original, type.build());
+            scriptDump.assignType(
+                recordedClass.original,
+                type.build().contextShield(BaseType.FormatType.RETURN)
+            );
         }
     }
 }
