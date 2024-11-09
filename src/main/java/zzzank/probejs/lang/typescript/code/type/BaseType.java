@@ -5,6 +5,8 @@ import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 import zzzank.probejs.lang.typescript.code.type.utility.ContextShield;
+import zzzank.probejs.lang.typescript.code.type.utility.ImportShield;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,12 +30,12 @@ public abstract class BaseType extends Code {
         return new TSArrayType(this);
     }
 
-    public ContextShield concrete() {
-        return contextShield(FormatType.RETURN);
+    public ContextShield<BaseType> contextShield(FormatType formatType) {
+        return new ContextShield<>(this, formatType);
     }
 
-    public ContextShield contextShield(FormatType formatType) {
-        return new ContextShield(this, formatType);
+    public ImportShield<BaseType> importShield(ImportInfos imports) {
+        return new ImportShield<>(this, imports);
     }
 
     public TSOptionalType optional() {

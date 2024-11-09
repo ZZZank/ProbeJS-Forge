@@ -74,7 +74,7 @@ public class InjectSpecialType implements ClassTransformer {
             val returnIndex = findReturnTypeIndex(classType.clazz);
             for (int i = 0; i < params.size(); i++) {
                 val p = params.get(i);
-                params.set(i, Types.ignoreContext(p, returnIndex == i ?
+                params.set(i, Types.contextShield(p, returnIndex == i ?
                     BaseType.FormatType.INPUT :
                     BaseType.FormatType.RETURN));
             }

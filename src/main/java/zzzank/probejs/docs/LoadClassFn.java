@@ -31,7 +31,7 @@ public class LoadClassFn extends ProbeJSPlugin {
             paths.member(path.getTSPath(), typeOf);
         }
         scriptDump.addGlobal("load_class",
-            new TypeDecl("GlobalClasses", Types.ignoreContext(paths.build(), BaseType.FormatType.RETURN)),
+            new TypeDecl("GlobalClasses", Types.contextShield(paths.build(), BaseType.FormatType.RETURN)),
             new TypeDecl("ClassPath", Types.primitive("keyof GlobalClasses")),
             new TypeDecl("LoadClass<T>", Types.primitive("T extends ClassPath ? GlobalClasses[T] : never"))
         );

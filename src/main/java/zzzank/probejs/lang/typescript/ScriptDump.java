@@ -214,8 +214,8 @@ public class ScriptDump {
                     thisType = Types.parameterized(thisType, generics.stream().map(Types::generic).toArray(BaseType[]::new));
                     exportedType = Types.parameterized(exportedType, generics.stream().map(Types::generic).toArray(BaseType[]::new));
                 }
-                exportedType = Types.ignoreContext(exportedType, BaseType.FormatType.INPUT);
-                thisType = Types.ignoreContext(thisType, BaseType.FormatType.RETURN);
+                exportedType = Types.contextShield(exportedType, BaseType.FormatType.INPUT);
+                thisType = Types.contextShield(thisType, BaseType.FormatType.RETURN);
 
                 List<BaseType> allTypes = new ArrayList<>();
                 List<TypeDecl> delegatedTypes = new ArrayList<>();

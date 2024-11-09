@@ -9,7 +9,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.lang.java.clazz.ClassPath;
-import zzzank.probejs.lang.snippet.Snippet;
 import zzzank.probejs.lang.snippet.SnippetDump;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
@@ -69,7 +68,7 @@ public class RegistryTypes extends ProbeJSPlugin {
     private static void assignRegistryType(ScriptDump scriptDump, Class<?> type, String literalType, String symbol) {
         scriptDump.assignType(type, Types.parameterized(Types.primitive(literalType), Types.generic(symbol)));
         scriptDump.assignType(type,
-            Types.ignoreContext(
+            Types.contextShield(
                 Types.parameterized(Types.type(type), Types.generic(symbol)),
                 BaseType.FormatType.RETURN
             )

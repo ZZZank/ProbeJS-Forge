@@ -6,22 +6,25 @@ import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.List;
 
-public class ContextShield<T extends BaseType> extends BaseType {
+/**
+ * @author ZZZank
+ */
+public class ImportShield<T extends BaseType> extends BaseType {
     public final T inner;
-    public final FormatType formatType;
+    private final ImportInfos imports;
 
-    public ContextShield(T inner, FormatType formatType) {
+    public ImportShield(T inner, ImportInfos imports) {
         this.inner = inner;
-        this.formatType = formatType;
+        this.imports = imports;
     }
 
     @Override
     public ImportInfos getImportInfos() {
-        return inner.getImportInfos();
+        return imports == null ? inner.getImportInfos() : imports;
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
+    public List<String> format(Declaration declaration, FormatType formatType) {
         return inner.format(declaration, formatType);
     }
 }

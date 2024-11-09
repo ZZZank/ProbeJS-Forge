@@ -7,6 +7,7 @@ import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.js.*;
 import zzzank.probejs.lang.typescript.code.type.utility.ContextShield;
 import zzzank.probejs.lang.typescript.code.type.utility.CustomType;
+import zzzank.probejs.lang.typescript.code.type.utility.ImportShield;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
@@ -140,8 +141,12 @@ public interface Types {
         return new JSTypeOfType(classType);
     }
 
-    static BaseType ignoreContext(BaseType type, BaseType.FormatType formatType) {
-        return new ContextShield(type, formatType);
+    static <T extends BaseType> ContextShield<T> contextShield(T type, BaseType.FormatType formatType) {
+        return new ContextShield<>(type, formatType);
+    }
+
+    static <T extends BaseType> ImportShield<T> importShield(T type, ImportInfos imports) {
+        return new ImportShield<>(type, imports);
     }
 
     static BaseType custom(BiFunction<Declaration, BaseType.FormatType, String> formatter, ImportInfo... imports) {
