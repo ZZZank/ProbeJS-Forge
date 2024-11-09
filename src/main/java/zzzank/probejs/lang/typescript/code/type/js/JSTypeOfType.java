@@ -4,7 +4,7 @@ import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.TSClassType;
-import zzzank.probejs.lang.typescript.code.type.TSStaticType;
+import zzzank.probejs.lang.typescript.code.type.utility.TSStaticType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.Collections;

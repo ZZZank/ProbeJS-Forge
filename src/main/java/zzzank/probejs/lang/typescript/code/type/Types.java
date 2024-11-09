@@ -5,6 +5,8 @@ import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.js.*;
+import zzzank.probejs.lang.typescript.code.type.utility.ContextShield;
+import zzzank.probejs.lang.typescript.code.type.utility.CustomType;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
@@ -26,7 +28,6 @@ public interface Types {
     JSPrimitiveType THIS = new JSPrimitiveType("this");
     JSPrimitiveType OBJECT = new JSPrimitiveType("object");
     JSPrimitiveType NULL = new JSPrimitiveType("null");
-    JSPrimitiveType INSTANCE_TYPE = new JSPrimitiveType("InstanceType");
     JSTupleType EMPTY_ARRAY = Types.tuple().build();
 
     /**
@@ -137,10 +138,6 @@ public interface Types {
 
     static JSTypeOfType typeOf(BaseType classType) {
         return new JSTypeOfType(classType);
-    }
-
-    static TSParamType instanceType(BaseType type) {
-        return new TSParamType(INSTANCE_TYPE, Collections.singletonList(type));
     }
 
     static BaseType ignoreContext(BaseType type, BaseType.FormatType formatType) {

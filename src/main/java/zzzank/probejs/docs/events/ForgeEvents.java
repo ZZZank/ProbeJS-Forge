@@ -8,6 +8,7 @@ import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.code.type.utility.TSUtilityType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Collections;
@@ -29,7 +30,7 @@ public class ForgeEvents extends ProbeJSPlugin {
             .param(
                 "handler",
                 Types.lambda()
-                    .param("event", Types.instanceType(Types.primitive(T)))
+                    .param("event", TSUtilityType.instanceType(Types.primitive(T)))
                     .build()
             )
             .build());

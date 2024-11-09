@@ -42,10 +42,10 @@ public class TypeConverter {
         return convertTypeBuiltin(descriptor);
     }
 
-    public BaseType convertTypeExcluding(TypeDescriptor descriptor, TypeRedirect redirectInstance) {
-        for (val typeRedirect : typeRedirects) {
-            if (typeRedirect != redirectInstance && typeRedirect.test(descriptor, this)) {
-                return typeRedirect.apply(descriptor, this);
+    public BaseType convertTypeExcluding(TypeDescriptor descriptor, TypeRedirect excludedRedirect) {
+        for (val redirect : typeRedirects) {
+            if (redirect != excludedRedirect && redirect.test(descriptor, this)) {
+                return redirect.apply(descriptor, this);
             }
         }
         return convertTypeBuiltin(descriptor);

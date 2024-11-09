@@ -4,6 +4,7 @@ import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
+import zzzank.probejs.lang.typescript.code.type.utility.ContextShield;
 
 import java.util.ArrayList;
 import java.util.Arrays;

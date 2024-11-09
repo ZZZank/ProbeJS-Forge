@@ -1,6 +1,7 @@
-package zzzank.probejs.lang.typescript.code.type;
+package zzzank.probejs.lang.typescript.code.type.utility;
 
 import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.List;
