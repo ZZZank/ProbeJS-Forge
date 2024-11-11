@@ -8,6 +8,9 @@ import zzzank.probejs.lang.typescript.code.member.TypeDecl;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
+import zzzank.probejs.lang.typescript.refer.ImportType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 /**
@@ -30,8 +33,18 @@ public class LoadClassFn extends ProbeJSPlugin {
             //probejs style import
             paths.member(path.getTSPath(), typeOf);
         }
-        scriptDump.addGlobal("load_class",
-            new TypeDecl("GlobalClasses", Types.contextShield(paths.build(), BaseType.FormatType.RETURN)),
+        scriptDump.addGlobal(
+            "load_class",
+            new TypeDecl(
+                "GlobalClasses",
+                paths.build()
+                    .contextShield(BaseType.FormatType.RETURN)
+                    .importShield(ImportInfos.of(ClassRegistry.REGISTRY.foundClasses.values()
+                        .stream()
+                        .map(c -> c.classPath)
+                        .map(path -> ImportInfo.of(path, ImportType.ORIGINAL)))
+                    )
+            ),
             new TypeDecl("ClassPath", Types.primitive("keyof GlobalClasses")),
             new TypeDecl("LoadClass<T>", Types.primitive("T extends ClassPath ? GlobalClasses[T] : never"))
         );
