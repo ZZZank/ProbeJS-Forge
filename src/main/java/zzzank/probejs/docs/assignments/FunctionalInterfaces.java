@@ -1,12 +1,10 @@
 package zzzank.probejs.docs.assignments;
 
 import lombok.val;
+import zzzank.probejs.lang.java.clazz.members.MethodInfo;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
-
-import java.util.stream.Collectors;
 
 public class FunctionalInterfaces extends ProbeJSPlugin {
 
@@ -14,26 +12,32 @@ public class FunctionalInterfaces extends ProbeJSPlugin {
     public void assignType(ScriptDump scriptDump) {
         val converter = scriptDump.transpiler.typeConverter;
 
-        for (val recordedClass : scriptDump.recordedClasses) {
-            if (!recordedClass.attribute.isInterface) {
+        for (val recorded : scriptDump.recordedClasses) {
+            if (!recorded.attribute.isInterface) {
                 continue;
             }
-            val abstracts = recordedClass.methods.stream()
-                .filter(methodInfo -> methodInfo.attributes.isAbstract)
-                .limit(2)
-                .collect(Collectors.toList());
-            if (abstracts.size() != 1) {
+
+            MethodInfo abstractM = null;
+            for (val method : recorded.methods) {
+                if (!method.attributes.isAbstract) {
+                    continue;
+                }
+                if (abstractM == null) {
+                    abstractM = method;
+                } else {
+                    abstractM = null;
+                    break;
+                }
+            }
+            if (abstractM == null) {
                 continue;
             }
-            val method = abstracts.get(0);
-            val type = Types.lambda().returnType(converter.convertType(method.returnType));
-            for (val param : method.params) {
-                type.param(param.name, converter.convertType(param.type));
+
+            val type = Types.lambda().returnType(converter.convertType(abstractM.returnType));
+            for (val param : abstractM.params) {
+                type.param(param.name, converter.convertType(param.type), false, param.varArgs);
             }
-            scriptDump.assignType(
-                recordedClass.original,
-                type.build().contextShield(BaseType.FormatType.RETURN)
-            );
+            scriptDump.assignType(recorded.original, type.build());
         }
     }
 }
