@@ -51,7 +51,7 @@ public final class ProbeBuiltinDocs extends ProbeJSPlugin {
         new EnumTypes(),
         new KubeWrappers(),
         new FunctionalInterfaces(),
-        new ClassWrapping(),
+        new TypeRedirecting(),
         //binding
         new Bindings(),
         new LoadClassFn(),
