@@ -9,10 +9,15 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 /**
  * @author ZZZank
  */
-@Mixin(BuiltinKubeJSForgePlugin.class)
+@Mixin(value = BuiltinKubeJSForgePlugin.class, remap = false)
 public abstract class KubeJSForgeEventRedirection {
 
-    @ModifyVariable(method = "onPlatformEvent", at = @At("HEAD"), index = 1, argsOnly = true, remap = false)
+    @ModifyVariable(
+        method = "onPlatformEvent(Ldev/latvian/kubejs/script/BindingsEvent;[Ljava/lang/Object;)Ljava/lang/Object;",
+        at = @At("HEAD"),
+        index = 1,
+        argsOnly = true
+    )
     private static Object[] pjs$forgeEventRedirecting(Object[] args) {
         if (args.length > 0 && args[0] instanceof NativeJavaClass clazz) {
             args[0] = clazz.getClassObject().getName();
