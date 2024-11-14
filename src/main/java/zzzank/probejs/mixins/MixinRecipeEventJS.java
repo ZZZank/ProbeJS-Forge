@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import zzzank.probejs.docs.events.RecipeEvents;
+import zzzank.probejs.docs.recipes.RecipeEvents;
 
 import java.util.Map;
 

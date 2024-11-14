@@ -1,4 +1,4 @@
-package zzzank.probejs.docs.events;
+package zzzank.probejs.docs.recipes;
 
 import dev.latvian.kubejs.recipe.RecipeEventJS;
 import dev.latvian.kubejs.recipe.RecipeFunction;
@@ -63,7 +63,7 @@ public class RecipeEvents extends ProbeJSPlugin {
 
         val reader = new RecipeEventReader(scriptDump.transpiler.typeConverter, getPredefinedRecipeDocs(scriptDump));
         reader.read(capturedRecipes);
-        val parsed = reader.result.build();
+        val parsed = reader.result.build().contextShield(BaseType.FormatType.RETURN);
 
         val documentFile = new TypeScriptFile(PATH_DOCUMENTED);
         documentFile.addCode(new TypeDecl(NAME_DOCUMENTED, parsed));
