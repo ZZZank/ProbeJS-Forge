@@ -49,6 +49,7 @@ public class KubeWrappers extends ProbeJSPlugin {
         scriptDump.assignType(Text.class, Types.type(Component.class).contextShield(BaseType.FormatType.RETURN));
 
         scriptDump.assignType(ItemStackJS.class, Types.type(Item.class));
+        scriptDump.assignType(ItemStackJS.class, Types.type(ItemStack.class));
         scriptDump.assignType(ItemStackJS.class, "ItemWithCount", Types.object()
             .member("item", Types.primitive("Special.Item"))
             .member("count", true, Primitives.INTEGER)
