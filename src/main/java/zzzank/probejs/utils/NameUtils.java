@@ -1,6 +1,7 @@
 package zzzank.probejs.utils;
 
 import lombok.val;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
@@ -54,6 +55,10 @@ public class NameUtils {
 
     public static String registryName(ResourceLocation location) {
         return rlToTitle(location, true);
+    }
+
+    public static String registryName(ResourceKey<?> key) {
+        return registryName(key.location());
     }
 
     public static String rlToTitle(ResourceLocation location, boolean ignoreVanillaNamespace) {
