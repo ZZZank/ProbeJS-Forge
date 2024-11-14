@@ -3,6 +3,8 @@ package zzzank.probejs.docs.recipes;
 import dev.latvian.kubejs.recipe.RecipeFunction;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
+import zzzank.probejs.ProbeConfig;
+import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
@@ -13,7 +15,7 @@ import java.util.Map;
 /**
  * @author ZZZank
  */
-public class RecipeEventReader {
+public final class RecipeEventReader {
     public final JSObjectType.Builder result = Types.object();
     private final TypeConverter converter;
     private final Map<ResourceLocation, JSLambdaType> predefined;
@@ -33,20 +35,33 @@ public class RecipeEventReader {
             val value = entry.getValue();
             if (value instanceof RecipeFunction rFn) {
                 var recipeFn = predefined.get(rFn.typeID);
+                val type = rFn.type;
                 if (recipeFn == null) {
-                    recipeFn = Types
-                        .lambda()
-                        .param("args", Types.ANY, false, true)
-                        .returnType(converter.convertType(rFn.type.factory.get().getClass()))
-                        .build();
+                    if (!type.isCustom()) {
+                        recipeFn = Types.lambda()
+                            .param("args", Types.ANY, false, true)
+                            .returnType(converter.convertType(rFn.type.factory.get().getClass()))
+                            .build();
+                    } else if (ProbeConfig.dumpCustomRecipeGenerator.get()) {
+                        recipeFn = Types.lambda()
+                            .param("recipeJson", Types.EMPTY_OBJECT)
+                            .returnType(converter.convertType(rFn.type.factory.get().getClass()))
+                            .build();
+                    }
                 }
-                builder.member(key, recipeFn);
+                if (recipeFn != null) {
+                    builder.member(key, recipeFn);
+                }
             } else if (value instanceof Map<?, ?> m) {
                 val sub = Types.object();
                 readImpl(sub, m);
                 builder.member(key, sub.build());
             } else {
-                throw new IllegalArgumentException();
+                ProbeJS.LOGGER.warn(
+                    "found unknown object in RecipeEvents#getRecipes(): '{}', type: '{}'",
+                    value,
+                    value == null ? null : value.getClass()
+                );
             }
         }
     }

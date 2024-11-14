@@ -68,4 +68,8 @@ public interface ProbeConfig {
         "apply no filter on class scanning process if true",
         "disabling this will restrict class scanner to only scan ProbeJS captured classes and forge event classes"
     ));
+    ConfigEntry<Boolean> dumpCustomRecipeGenerator = INSTANCE.addConfig(of("dumpCustomRecipeGenerator", false).comments(
+        "KubeJS will generate custom recipe creation method in `event.recipes`, these methods only accept one Json as its arg",
+        "enabling this will allow ProbeJS to dump syntax these JsonSerializer-based recipe creating functions"
+    ));
 }
