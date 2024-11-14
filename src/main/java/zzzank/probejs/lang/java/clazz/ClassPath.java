@@ -28,7 +28,7 @@ public final class ClassPath implements Comparable<ClassPath> {
 
     public final String[] parts;
 
-    public static ClassPath fromJava(@NotNull String className) {
+    public static ClassPath fromRaw(@NotNull String className) {
         return new ClassPath(SPLIT.split(className));
     }
 

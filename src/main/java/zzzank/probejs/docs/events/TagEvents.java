@@ -20,8 +20,8 @@ import java.util.*;
 public class TagEvents extends ProbeJSPlugin {
     public static final Set<String> POSTED = new HashSet<>();
 
-    public static final ClassPath TAG_EVENT = ClassPath.fromJava("zzzank.probejs.generated.TagEventProbe");
-    public static final ClassPath TAG_WRAPPER = ClassPath.fromJava("zzzank.probejs.generated.TagWrapperProbe");
+    public static final ClassPath TAG_EVENT = ClassPath.fromRaw("zzzank.probejs.generated.TagEventProbe");
+    public static final ClassPath TAG_WRAPPER = ClassPath.fromRaw("zzzank.probejs.generated.TagWrapperProbe");
 
     // Create TagEventProbe<T, I> and TagWrapperProbe<T, I>
     // Generate string overrides for all registry types
