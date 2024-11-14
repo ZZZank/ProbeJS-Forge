@@ -21,7 +21,14 @@ public class TSVariableType extends BaseType {
 
     @Override
     public ImportInfos getImportInfos() {
-        return extendsType == null ? ImportInfos.of() : extendsType.getImportInfos();
+        val imports = ImportInfos.of();
+        if (extendsType != null) {
+            imports.addAll(extendsType.getImportInfos());
+        }
+        if (defaultTo != null) {
+            imports.addAll(defaultTo.getImportInfos());
+        }
+        return imports;
     }
 
     @Override

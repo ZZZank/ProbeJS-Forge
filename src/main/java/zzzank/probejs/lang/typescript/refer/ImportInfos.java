@@ -24,7 +24,9 @@ public final class ImportInfos implements Iterable<ImportInfo> {
     }
 
     public static ImportInfos of(ImportInfo... initial) {
-        return of(Arrays.asList(initial));
+        return initial.length == 0
+            ? new ImportInfos()
+            : new ImportInfos().addAll(Arrays.asList(initial));
     }
 
     public static ImportInfos of(Collection<ImportInfo> infos) {
