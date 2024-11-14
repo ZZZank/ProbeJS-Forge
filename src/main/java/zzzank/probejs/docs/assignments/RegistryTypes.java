@@ -34,6 +34,9 @@ public class RegistryTypes extends ProbeJSPlugin {
     public static final String TAG_FIELD = "probejsInternal$$Tag";
     public static final String OF_TYPE_DECL = "T extends { %s: infer U } ? U : never";
 
+    public static final String SPECIAL_TAG_OF = SpecialTypes.dot("TagOf");
+    public static final String SPECIAL_LITERAL_OF = SpecialTypes.dot("LiteralOf");
+
     @Override
     public void assignType(ScriptDump scriptDump) {
         List<BaseType> registryNames = new ArrayList<>();
@@ -43,10 +46,10 @@ public class RegistryTypes extends ProbeJSPlugin {
 
         for (val info : RegistryInfos.infos.values()) {
             val key = info.resKey;
-            val typeName = NameUtils.registryName(key.location());
+            val typeName = NameUtils.registryName(key);
             scriptDump.assignType(
                 info.forgeRaw.getRegistrySuperType(),
-                Types.primitive(String.format("Special.%s", typeName))
+                Types.primitive(SpecialTypes.dot(typeName))
             );
             registryNames.add(Types.literal(key.location().toString()));
         }
@@ -54,24 +57,23 @@ public class RegistryTypes extends ProbeJSPlugin {
         // ResourceKey<T> to Special.LiteralOf<T>
         scriptDump.assignType(
             ResourceKey.class,
-            Types.parameterized(Types.primitive("Special.LiteralOf"), Types.generic("T"))
+            Types.parameterized(Types.primitive(SPECIAL_LITERAL_OF), Types.generic("T"))
         );
         //Registries (why?)
         scriptDump.assignType(Registry.class, Types.or(registryNames.toArray(new BaseType[0])));
-        assignRegistryType(scriptDump, ResourceKey.class, "Special.LiteralOf", "T");
+        assignRegistryType(scriptDump, ResourceKey.class, SPECIAL_LITERAL_OF, "T");
         //TagKey<T> to Special.TagOf<T>
 //        scriptDump.assignType(Tag.class, Types.parameterized(Types.primitive("Special.TagOf"), Types.generic("T")));
-        assignRegistryType(scriptDump, Tag.class, "Special.TagOf", "T");
+        assignRegistryType(scriptDump, Tag.class, SPECIAL_TAG_OF, "T");
 
     }
 
     private static void assignRegistryType(ScriptDump scriptDump, Class<?> type, String literalType, String symbol) {
         scriptDump.assignType(type, Types.parameterized(Types.primitive(literalType), Types.generic(symbol)));
-        scriptDump.assignType(type,
-            Types.contextShield(
-                Types.parameterized(Types.type(type), Types.generic(symbol)),
-                BaseType.FormatType.RETURN
-            )
+        scriptDump.assignType(
+            type,
+            Types.parameterized(Types.type(type), Types.generic(symbol))
+                .contextShield(BaseType.FormatType.RETURN)
         );
     }
 
@@ -80,7 +82,7 @@ public class RegistryTypes extends ProbeJSPlugin {
         if (ServerLifecycleHooks.getCurrentServer() == null) {
             return;
         }
-        val special = new Wrapped.Namespace("Special");
+        val special = new Wrapped.Namespace(SpecialTypes.NAMESPACE);
         val enabled = ProbeConfig.complete.get();
 
         for (val info : RegistryInfos.infos.values()) {
@@ -100,14 +102,14 @@ public class RegistryTypes extends ProbeJSPlugin {
     private static void createTypes(
         Wrapped.Namespace special,
         RegistryInfo info,
-        boolean enabled
+        boolean resolveAll
     ) {
         val key = info.resKey;
 
-        val types = enabled
+        val types = resolveAll
             ? Types.or(info.names.stream().map(ResourceLocation::toString).map(Types::literal).toArray(BaseType[]::new))
             : Types.STRING;
-        val typeName = NameUtils.registryName(key.location());
+        val typeName = NameUtils.registryName(key);
 
         val typeDecl = new TypeDecl(typeName, types);
         special.addCode(typeDecl);
@@ -122,10 +124,10 @@ public class RegistryTypes extends ProbeJSPlugin {
                 .map(Types::literal)
                 .toArray(BaseType[]::new);
 
-        BaseType tagTypes = enabled ? Types.or(tagNames) : Types.STRING;
-        String tagName = typeName + "Tag";
+        val tagTypes = resolveAll ? Types.or(tagNames) : Types.STRING;
+        val tagName = typeName + "Tag";
 
-        TypeDecl tagDecl = new TypeDecl(tagName, tagTypes);
+        val tagDecl = new TypeDecl(tagName, tagTypes);
         special.addCode(tagDecl);
     }
 
@@ -146,11 +148,15 @@ public class RegistryTypes extends ProbeJSPlugin {
 
     private static void makeClassModifications(Map<ClassPath, TypeScriptFile> globalClasses, ResourceKey<? extends Registry<?>> key, Class<?> baseClass) {
         val typeScriptFile = globalClasses.get(ClassPath.fromJava(baseClass));
-        if (typeScriptFile == null) return;
+        if (typeScriptFile == null) {
+            return;
+        }
         val classDecl = typeScriptFile.findCode(ClassDecl.class).orElse(null);
-        if (classDecl == null) return;
+        if (classDecl == null) {
+            return;
+        }
 
-        val typeName = NameUtils.registryName(key.location());
+        val typeName = NameUtils.registryName(key);
         val tagName = typeName + "Tag";
 
         val literalField = new FieldDecl(LITERAL_FIELD, Types.primitive(String.format("Special.%s", typeName)));

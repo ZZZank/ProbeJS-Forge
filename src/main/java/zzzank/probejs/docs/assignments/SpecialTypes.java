@@ -1,5 +1,7 @@
 package zzzank.probejs.docs.assignments;
 
+import lombok.val;
+import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.GlobalStates;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -11,12 +13,20 @@ import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SpecialTypes extends ProbeJSPlugin {
+    public static final String NAMESPACE = "Special";
+
+    @NotNull
+    public static String dot(@NotNull String name) {
+        return NAMESPACE + '.' + Objects.requireNonNull(name);
+    }
+
     @Override
     public void addGlobals(ScriptDump scriptDump) {
-        Wrapped.Namespace special = new Wrapped.Namespace("Special");
+        val special = new Wrapped.Namespace(NAMESPACE);
 
         // We define special types regardless of script type
         // because types might be sent to other scripts
@@ -40,8 +50,8 @@ public class SpecialTypes extends ProbeJSPlugin {
     }
 
     private static void defineLiteralTypes(Wrapped.Namespace special, String symbol, Collection<String> literals) {
-        BaseType[] types = literals.stream().map(Types::literal).toArray(BaseType[]::new);
-        TypeDecl declaration = new TypeDecl(symbol, Types.or(types));
+        val types = literals.stream().map(Types::literal).toArray(BaseType[]::new);
+        val declaration = new TypeDecl(symbol, Types.or(types));
         special.addCode(declaration);
     }
 
