@@ -8,6 +8,7 @@ import zzzank.probejs.lang.typescript.code.type.js.*;
 import zzzank.probejs.lang.typescript.code.type.utility.ContextShield;
 import zzzank.probejs.lang.typescript.code.type.utility.CustomType;
 import zzzank.probejs.lang.typescript.code.type.utility.ImportShield;
+import zzzank.probejs.lang.typescript.code.type.utility.WithFormatType;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
@@ -30,6 +31,7 @@ public interface Types {
     JSPrimitiveType OBJECT = new JSPrimitiveType("object");
     JSPrimitiveType NULL = new JSPrimitiveType("null");
     JSTupleType EMPTY_ARRAY = Types.tuple().build();
+    JSObjectType EMPTY_OBJECT = Types.object().build();
 
     /**
      * Returns a literal type of the input if it's something OK in TS,
@@ -186,5 +188,9 @@ public interface Types {
             );
         }
         return type;
+    }
+
+    static WithFormatType format(String format, BaseType... types) {
+        return new WithFormatType(format, types);
     }
 }
