@@ -1,52 +1,53 @@
 package zzzank.probejs.docs.recipes;
 
-import dev.latvian.kubejs.KubeJSPlugin;
-import dev.latvian.kubejs.recipe.RecipeEventJS;
 import dev.latvian.kubejs.recipe.RecipeFunction;
-import dev.latvian.kubejs.recipe.RecipeTypeJS;
-import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
-import dev.latvian.kubejs.util.KubeJSPlugins;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
+import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.lang.typescript.code.type.js.JSObjectType;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author ZZZank
  */
 public class RecipeEventReader {
-    public final JSObjectType.Builder builder = Types.object();
+    public final JSObjectType.Builder result = Types.object();
+    private final TypeConverter converter;
+    private final Map<ResourceLocation, JSLambdaType> predefined;
 
-    public static Map<ResourceLocation, RecipeTypeJS> readFromPlugins() {
-        val types = new HashMap<ResourceLocation, RecipeTypeJS>();
-        val event = new RegisterRecipeHandlersEvent(types);
-        KubeJSPlugins.forEachPlugin(kubeJSPlugin -> kubeJSPlugin.addRecipes(event));
-        return types;
+    public RecipeEventReader(TypeConverter converter, Map<ResourceLocation, JSLambdaType> predefined) {
+        this.converter = converter;
+        this.predefined = predefined;
     }
 
-    public void read(RecipeEventJS event) {
-        val recipes = event.getRecipes();
-        for (val entry : recipes.entrySet()) {
-            val key = entry.getKey();
-            val value = entry.getValue();
-            if (value instanceof Map<?,?> nested) {
-                scanNested(key, nested);
-            } else if (value instanceof RecipeFunction recipeFn) {
+    public void read(Map<String, Object> recipesMap) {
+        readImpl(result, recipesMap);
+    }
 
+    private void readImpl(JSObjectType.Builder builder, Map<?, ?> recipes) {
+        for (val entry : recipes.entrySet()) {
+            val key = entry.getKey().toString();
+            val value = entry.getValue();
+            if (value instanceof RecipeFunction rFn) {
+                var recipeFn = predefined.get(rFn.typeID);
+                if (recipeFn == null) {
+                    recipeFn = Types
+                        .lambda()
+                        .param("args", Types.ANY, false, true)
+                        .returnType(converter.convertType(rFn.type.factory.get().getClass()))
+                        .build();
+                }
+                builder.member(key, recipeFn);
+            } else if (value instanceof Map<?, ?> m) {
+                val sub = Types.object();
+                readImpl(sub, m);
+                builder.member(key, sub.build());
             } else {
-                //what?
+                throw new IllegalArgumentException();
             }
         }
-    }
-
-    private void scanNested(String parent, Map<?, ?> map) {
-
-    }
-
-    private void scanFn(String parent, RecipeFunction fn) {
-
     }
 }

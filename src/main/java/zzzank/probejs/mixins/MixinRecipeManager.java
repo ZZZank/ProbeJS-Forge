@@ -1,6 +1,7 @@
 package zzzank.probejs.mixins;
 
 import com.google.gson.JsonObject;
+import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -15,9 +16,15 @@ import java.util.Map;
 
 @Mixin(value = RecipeManager.class, priority = 900)
 public abstract class MixinRecipeManager {
+
     @Inject(method = "apply*", at = @At("HEAD"))
-    private void apply(Map<ResourceLocation, JsonObject> map, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
-        for (ResourceLocation resourceLocation : map.keySet()) {
+    private void apply(
+        Map<ResourceLocation, JsonObject> map,
+        ResourceManager resourceManager,
+        ProfilerFiller profiler,
+        CallbackInfo ci
+    ) {
+        for (val resourceLocation : map.keySet()) {
             if (!resourceLocation.getPath().startsWith("kjs_")) {
                 GlobalStates.RECIPE_IDS.add(resourceLocation.toString());
             }

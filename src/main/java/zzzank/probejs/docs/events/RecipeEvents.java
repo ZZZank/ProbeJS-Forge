@@ -1,6 +1,7 @@
 package zzzank.probejs.docs.events;
 
 import dev.latvian.kubejs.recipe.RecipeEventJS;
+import dev.latvian.kubejs.recipe.RecipeFunction;
 import dev.latvian.kubejs.script.ScriptType;
 import lombok.val;
 import net.minecraft.resources.ResourceLocation;
@@ -11,8 +12,7 @@ import zzzank.probejs.lang.transpiler.transformation.InjectBeans;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
-import zzzank.probejs.lang.typescript.code.ts.Statements;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.code.member.TypeDecl;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
@@ -23,9 +23,16 @@ import java.util.*;
 
 public class RecipeEvents extends ProbeJSPlugin {
 
+    private static Map<String, Object> capturedRecipes;
+
+    public static void captureRecipes(Map<String, Object> recipes) {
+        capturedRecipes = recipes;
+    }
+
     public static final Map<String, ResourceLocation> SHORTCUTS = new HashMap<>();
     public static final String PATH_BASE = "zzzank.probejs.generated.recipes";
-    public static final ClassPath DOCUMENTED = ClassPath.fromJava(PATH_BASE + ".DocumentedRecipes");
+    public static final String NAME_DOCUMENTED = "DocumentedRecipes";
+    public static final ClassPath PATH_DOCUMENTED = ClassPath.fromRaw(PATH_BASE + "." + NAME_DOCUMENTED);
 
     static {
         SHORTCUTS.put("shaped", new ResourceLocation("kubejs", "shaped"));
@@ -36,33 +43,6 @@ public class RecipeEvents extends ProbeJSPlugin {
         SHORTCUTS.put("campfireCooking", new ResourceLocation("minecraft", "campfire_cooking"));
         SHORTCUTS.put("stonecutting", new ResourceLocation("minecraft", "stonecutting"));
         SHORTCUTS.put("smithing", new ResourceLocation("minecraft", "smithing"));
-    }
-
-    private Map<String, Map<String, BaseType>> getGroupedRecipeTypes(ScriptDump scriptDump) {
-        val converter = scriptDump.transpiler.typeConverter;
-
-        val predefinedTypes = getPredefinedRecipeDocs(scriptDump);
-
-        val grouped = new HashMap<String, Map<String, BaseType>>();
-        val types = RecipeEventReader.readFromPlugins();
-        for (val entry : types.entrySet()) {
-            val resLocation = entry.getKey();
-            var recipeFn = predefinedTypes.get(resLocation);
-            if (recipeFn == null) {
-                val recipeTypeJS = entry.getValue();
-                recipeFn = Types
-                    .lambda()
-                    .param("args", Types.ANY, false, true)
-                    .returnType(converter.convertType(recipeTypeJS.factory.get().getClass()))
-                    .build();
-            }
-
-            grouped
-                .computeIfAbsent(resLocation.getNamespace(), k -> new HashMap<>())
-                .put(resLocation.getPath(), recipeFn);
-        }
-
-        return grouped;
     }
 
     private Map<ResourceLocation, JSLambdaType> getPredefinedRecipeDocs(ScriptDump scriptDump) {
@@ -80,23 +60,14 @@ public class RecipeEvents extends ProbeJSPlugin {
 
         //1.Generate recipe schema classes
         // Also generate the documented recipe class containing all stuffs from everywhere
-        val documentedRecipes = Statements.clazz(DOCUMENTED.getName());
 
-        val grouped = getGroupedRecipeTypes(scriptDump);
+        val reader = new RecipeEventReader(scriptDump.transpiler.typeConverter, getPredefinedRecipeDocs(scriptDump));
+        reader.read(capturedRecipes);
+        val parsed = reader.result.build();
 
-        for (val entry : grouped.entrySet()) {
-            val namespace = entry.getKey();
-            val group = entry.getValue();
-
-            val namespaced = Types.object();
-            group.forEach(namespaced::member);
-
-            documentedRecipes.field(namespace, namespaced.build());
-        }
-
-        TypeScriptFile documentFile = new TypeScriptFile(DOCUMENTED);
-        documentFile.addCode(documentedRecipes.build());
-        globalClasses.put(DOCUMENTED, documentFile);
+        val documentFile = new TypeScriptFile(PATH_DOCUMENTED);
+        documentFile.addCode(new TypeDecl(NAME_DOCUMENTED, parsed));
+        globalClasses.put(PATH_DOCUMENTED, documentFile);
 
         //2.Inject types into the RecipeEventJS
         val recipeEventFile = globalClasses.get(ClassPath.fromJava(RecipeEventJS.class));
@@ -107,31 +78,33 @@ public class RecipeEvents extends ProbeJSPlugin {
         }
         for (val m : recipeEvent.methods) {
             if (m.params.isEmpty() && m.name.equals("getRecipes")) {
-                m.returnType = Types.type(DOCUMENTED);
+                m.returnType = Types.type(PATH_DOCUMENTED);
                 break;
             }
         }
         for (val code : recipeEvent.bodyCode) {
             if (code instanceof InjectBeans.BeanDecl beanDecl && beanDecl.name.equals("recipes")) {
-                beanDecl.baseType = Types.type(DOCUMENTED);
+                beanDecl.baseType = Types.type(PATH_DOCUMENTED);
                 break;
             }
         }
-        recipeEventFile.declaration.addImport(ImportInfo.of(DOCUMENTED));
+        recipeEventFile.declaration.addImport(ImportInfo.ofOriginal(PATH_DOCUMENTED));
 
         //3.Make shortcuts valid recipe functions
         for (val field : recipeEvent.fields) {
-            if (!SHORTCUTS.containsKey(field.name)) {
+            val parts = SHORTCUTS.get(field.name);
+            if (parts == null) {
                 continue;
             }
 
-            val parts = SHORTCUTS.get(field.name);
-            val replace = grouped.get(parts.getNamespace()).get(parts.getPath());
-            if (replace == null) {
-                ProbeJS.LOGGER.error("predefined recipe type '%s' not found");
-                continue;
-            }
-            field.type = grouped.get(parts.getNamespace()).get(parts.getPath());
+            field.type = Types.primitive(
+                String.format(
+                    "%s[%s][%s]",
+                    NAME_DOCUMENTED,
+                    ProbeJS.GSON.toJson(parts.getNamespace()),
+                    ProbeJS.GSON.toJson(parts.getPath())
+                )
+            );
 
             for (val info : field.type.getImportInfos()) {
                 recipeEventFile.declaration.addImport(info);
@@ -141,17 +114,26 @@ public class RecipeEvents extends ProbeJSPlugin {
 
     @Override
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
-        if (scriptDump.scriptType != ScriptType.SERVER) {
+        if (scriptDump.scriptType == ScriptType.CLIENT) {
             return Collections.emptySet();
         }
 
-        val jClassses = new HashSet<Class<?>>();
-        val types = RecipeEventReader.readFromPlugins();
-        for (val recipeTypeJS : types.values()) {
-            jClassses.add(recipeTypeJS.getClass());
-        }
+        val jClasses = collectClasses(capturedRecipes);
         //make sure RecipeEventJS has TSFile generated, to prevent modifyClasses from failing
-        jClassses.add(RecipeEventJS.class);
-        return jClassses;
+        jClasses.add(RecipeEventJS.class);
+        return jClasses;
+    }
+
+    private static Set<Class<?>> collectClasses(Map<?, ?> recipes) {
+        val collected = new HashSet<Class<?>>();
+        for (val value : recipes.values()) {
+            if (value instanceof RecipeFunction rFn) {
+                collected.add(rFn.type.getClass());
+                collected.add(rFn.type.factory.get().getClass());
+            } else if (value instanceof Map<?, ?> m) {
+                collected.addAll(collectClasses(m));
+            }
+        }
+        return collected;
     }
 }
