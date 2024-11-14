@@ -5,11 +5,12 @@
   "mixins": [
     "AccessForgeRegistryManager",
     "AccessNativeJavaObject",
+    "MixinRecipeEventJS",
     "AccessTypedDynamicFunction",
     "MixinConsole",
+    "MixinEventJS",
     "MixinEventsJS",
     "MixinLootTable",
-    "MixinEventJS",
     "MixinRecipeManager",
     "MixinScriptManager",
     "integration.KubeJSForgeEventRedirection",
