@@ -1,12 +1,10 @@
 package zzzank.probejs.docs.bindings;
 
+import dev.latvian.kubejs.util.KubeJSPlugins;
 import dev.latvian.mods.rhino.BaseFunction;
-import dev.latvian.mods.rhino.NativeJavaClass;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
-import zzzank.probejs.features.kesseractjs.KessJSState;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.utils.GameUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +33,10 @@ public final class BindingReader {
         }
         val context = pack.context;
         var scope = pack.scope;
+        val dummy = new DummyBindingEvent(manager, context, scope, this);
+
+        KubeJSPlugins.forEachPlugin(p -> p.addBindings(dummy));
+        /*
         if (KessJSState.MOD) {
             scope = scope.getParentScope();
         }
@@ -55,5 +57,6 @@ public final class BindingReader {
                 constants.put(id, value);
             }
         }
+         */
     }
 }

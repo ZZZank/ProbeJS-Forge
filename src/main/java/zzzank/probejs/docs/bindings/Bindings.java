@@ -77,8 +77,7 @@ public class Bindings extends ProbeJSPlugin {
         }
 
         if (ProbeConfig.resolveGlobal.get()) {
-            val resolveGlobal = new ResolveGlobal();
-            resolveGlobal.addGlobals(scriptDump);
+            ResolveGlobal.addGlobals(scriptDump);
             val oldGlobal = exported.get(ResolveGlobal.NAME);
             if (oldGlobal != null) {
                 exported.put(ResolveGlobal.NAME, oldGlobal.and(ResolveGlobal.RESOLVED));
