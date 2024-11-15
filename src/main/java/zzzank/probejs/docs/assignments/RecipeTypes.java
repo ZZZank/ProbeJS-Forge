@@ -68,11 +68,6 @@ public class RecipeTypes implements ProbeJSPlugin {
     }
 
     @Override
-    public void addGlobals(ScriptDump scriptDump) {
-        super.addGlobals(scriptDump);
-    }
-
-    @Override
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
         return Collections.singleton(RecipeFilter.class);
     }
