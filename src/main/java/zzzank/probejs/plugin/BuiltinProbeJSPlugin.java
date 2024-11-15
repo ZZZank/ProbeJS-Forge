@@ -4,6 +4,7 @@ import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.util.ClassFilter;
+import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.events.ProbeEvents;
 import zzzank.probejs.events.SnippetGenerationEventJS;
 import zzzank.probejs.events.TypeAssignmentEventJS;
@@ -11,10 +12,12 @@ import zzzank.probejs.events.TypingModificationEventJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.snippet.SnippetDump;
 import zzzank.probejs.lang.transpiler.Transpiler;
+import zzzank.probejs.lang.transpiler.transformation.*;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class BuiltinProbeJSPlugin extends KubeJSPlugin implements ProbeJSPlugin {
 
@@ -68,6 +71,14 @@ public class BuiltinProbeJSPlugin extends KubeJSPlugin implements ProbeJSPlugin 
 
         transpiler.reject(Boolean.class);
         transpiler.reject(Boolean.TYPE);
+    }
+
+    @Override
+    public void registerClassTransformer(Consumer<@NotNull ClassTransformer> registration) {
+        registration.accept(new InjectAnnotation());
+        registration.accept(new InjectArray());
+        registration.accept(new InjectBeans());
+        registration.accept(new InjectSpecialType());
     }
 
     @Override

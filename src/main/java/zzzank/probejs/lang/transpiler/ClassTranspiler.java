@@ -20,12 +20,14 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
     private final Method method;
     private final Field field;
     private final Constructor constructor;
+    private final ClassTransformer transformer;
 
-    public ClassTranspiler(TypeConverter converter) {
+    public ClassTranspiler(TypeConverter converter, ClassTransformer transformer) {
         super(converter);
         this.method = new Method(converter);
         this.field = new Field(converter);
         this.constructor = new Constructor(converter);
+        this.transformer = transformer;
     }
 
     @Override
@@ -55,21 +57,23 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
 
         for (val fieldInfo : input.fields) {
             val fieldDecl = field.transpile(fieldInfo);
-            ClassTransformer.transformFields(fieldInfo, fieldDecl);
+            transformer.transformField(fieldInfo, fieldDecl);
             decl.fields.add(fieldDecl);
         }
 
         for (val methodInfo : input.methods) {
             val methodDecl = method.transpile(methodInfo);
-            ClassTransformer.transformMethods(input, methodInfo, methodDecl);
+            transformer.transformMethod(input, methodInfo, methodDecl);
             decl.methods.add(methodDecl);
         }
 
         for (val constructorInfo : input.constructors) {
             val constructorDecl = constructor.transpile(constructorInfo);
-            ClassTransformer.transformConstructors(constructorInfo, constructorDecl);
+            transformer.transformConstructor(constructorInfo, constructorDecl);
             decl.constructors.add(constructorDecl);
         }
+
+        transformer.transform(input, decl);
         return decl;
     }
 }

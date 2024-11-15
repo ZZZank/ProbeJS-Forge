@@ -2,6 +2,7 @@ package zzzank.probejs.lang.transpiler;
 
 import dev.latvian.kubejs.script.ScriptManager;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
@@ -36,15 +37,14 @@ public class Transpiler {
     }
 
     public Map<ClassPath, TypeScriptFile> dump(Collection<Clazz> clazzes) {
-        ClassTranspiler transpiler = new ClassTranspiler(typeConverter);
+        val transpiler = new ClassTranspiler(typeConverter, ClassTransformer.fromPlugin());
         Map<ClassPath, TypeScriptFile> result = new HashMap<>();
 
         for (Clazz clazz : clazzes) {
             if (rejectedClasses.contains(clazz.classPath) || clazz.hasAnnotation(HideFromJS.class)) {
                 continue;
             }
-            ClassDecl classDecl = transpiler.transpile(clazz);
-            ClassTransformer.transformClass(clazz, classDecl);
+            val classDecl = transpiler.transpile(clazz);
 
             if (!scriptManager.isClassAllowed(clazz.original.getName())) {
                 classDecl.addComment(
@@ -54,7 +54,7 @@ public class Transpiler {
                 );
             }
 
-            TypeScriptFile scriptFile = new TypeScriptFile(clazz.classPath);
+            val scriptFile = new TypeScriptFile(clazz.classPath);
             scriptFile.addCode(classDecl);
 
             result.put(clazz.classPath, scriptFile);

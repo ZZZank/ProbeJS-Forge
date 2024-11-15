@@ -2,12 +2,14 @@ package zzzank.probejs.plugin;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.schema.SchemaDump;
 import zzzank.probejs.lang.snippet.SnippetDump;
 import zzzank.probejs.lang.transpiler.Transpiler;
 import zzzank.probejs.lang.transpiler.TypeConverter;
+import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
@@ -15,6 +17,7 @@ import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * A plugin for ProbeJS that is able to alter how ProbeJS works.
@@ -94,5 +97,8 @@ public interface ProbeJSPlugin {
     }
 
     default void denyBindings(BindingFilter filter) {
+    }
+
+    default void registerClassTransformer(Consumer<@NotNull ClassTransformer> registration) {
     }
 }

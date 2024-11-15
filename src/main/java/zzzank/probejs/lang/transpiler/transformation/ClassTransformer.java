@@ -9,42 +9,23 @@ import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.ConstructorDecl;
 import zzzank.probejs.lang.typescript.code.member.FieldDecl;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
+import zzzank.probejs.plugin.ProbeJSPlugins;
+
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Accepts a Clazz and a transpiled TS file, modify the
  * file to respect some stuffs.
  */
 public interface ClassTransformer {
-    ClassTransformer[] CLASS_TRANSFORMERS = new ClassTransformer[]{
-            new InjectAnnotation(),
-            new InjectArray(),
-            new InjectBeans(),
-//            new InjectSelf(),
-            new InjectSpecialType(),
-    };
 
-    static void transformClass(Clazz clazz, ClassDecl classDecl) {
-        for (val classTransformer : CLASS_TRANSFORMERS) {
-            classTransformer.transform(clazz, classDecl);
-        }
-    }
-
-    static void transformMethods(Clazz clazz, MethodInfo methodInfo, MethodDecl methodDecl) {
-        for (val classTransformer : CLASS_TRANSFORMERS) {
-            classTransformer.transformMethod(clazz, methodInfo, methodDecl);
-        }
-    }
-
-    static void transformConstructors(ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
-        for (val classTransformer : CLASS_TRANSFORMERS) {
-            classTransformer.transformConstructor(constructorInfo, constructorDecl);
-        }
-    }
-
-    static void transformFields(FieldInfo fieldInfo, FieldDecl fieldDecl) {
-        for (val classTransformer : CLASS_TRANSFORMERS) {
-            classTransformer.transformField(fieldInfo, fieldDecl);
-        }
+    static ClassTransformer fromPlugin() {
+        val transformers = new ArrayList<ClassTransformer>();
+        Consumer<ClassTransformer> registration = t -> transformers.add(Objects.requireNonNull(t));
+        ProbeJSPlugins.forEachPlugin(p -> p.registerClassTransformer(registration));
+        return new TransformerSequence(transformers.toArray(new ClassTransformer[0]));
     }
 
     default void transform(Clazz clazz, ClassDecl classDecl) {
@@ -55,7 +36,6 @@ public interface ClassTransformer {
     }
 
     default void transformConstructor(ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
-
     }
 
     default void transformField(FieldInfo fieldInfo, FieldDecl fieldDecl) {
