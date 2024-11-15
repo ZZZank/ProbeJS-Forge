@@ -189,30 +189,43 @@ public class ScriptDump {
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.modifyClasses(this, globalClasses));
 
         total = globalClasses.size();
-        for (Map.Entry<ClassPath, TypeScriptFile> entry : globalClasses.entrySet()) {
+        for (val entry : globalClasses.entrySet()) {
             try {
-                ClassPath classPath = entry.getKey();
-                TypeScriptFile output = entry.getValue();
-                ClassDecl classDecl = output.findCode(ClassDecl.class).orElse(null);
-                if (classDecl == null) continue;
+                val classPath = entry.getKey();
+                val output = entry.getValue();
+                val classDecl = output.findCode(ClassDecl.class).orElse(null);
+                if (classDecl == null) {
+                    continue;
+                }
 
                 // Add all assignable types
                 // type ExportedType = ConvertibleTypes
                 // declare global {
                 //     type Type_ = ExportedType
                 // }
+                List<String> generics = classDecl.variableTypes.stream().map(v -> v.symbol).collect(Collectors.toList());
                 String symbol = classPath.getName() + "_";
                 String exportedSymbol = ImportType.TYPE.fmt(classPath.getName());
                 BaseType exportedType = Types.type(classPath);
                 BaseType thisType = Types.type(classPath);
-                List<String> generics = classDecl.variableTypes.stream().map(v -> v.symbol).collect(Collectors.toList());
 
                 if (!generics.isEmpty()) {
-                    String suffix = "<" + String.join(", ", generics) + ">";
+                    val suffix = "<" + String.join(", ", generics) + ">";
                     symbol = symbol + suffix;
                     exportedSymbol = exportedSymbol + suffix;
-                    thisType = Types.parameterized(thisType, generics.stream().map(Types::generic).toArray(BaseType[]::new));
-                    exportedType = Types.parameterized(exportedType, generics.stream().map(Types::generic).toArray(BaseType[]::new));
+                    thisType = Types.parameterized(
+                        thisType,
+                        generics.stream()
+                            .map(Types::generic)
+                            .toArray(BaseType[]::new)
+                    );
+                    exportedType = Types.parameterized(
+                        exportedType,
+                        generics
+                            .stream()
+                            .map(Types::generic)
+                            .toArray(BaseType[]::new)
+                    );
                 }
                 exportedType = Types.contextShield(exportedType, BaseType.FormatType.INPUT);
                 thisType = Types.contextShield(thisType, BaseType.FormatType.RETURN);
@@ -259,21 +272,23 @@ public class ScriptDump {
                     try {
                         return Files.newBufferedWriter(getPackageFolder().resolve(key + ".d.ts"));
                     } catch (IOException e) {
-                        ProbeJS.LOGGER.error(String.format("Failed to write %s.d.ts",key));
+                        ProbeJS.LOGGER.error("Failed to write {}.d.ts", key);
                         return null;
                     }
                 });
-                if (writer != null) output.writeAsModule(writer);
+                if (writer != null) {
+                    output.writeAsModule(writer);
+                }
                 dumped++;
             } catch (Throwable t) {
                 GameUtils.logThrowable(t);
             }
         }
 
-        try (var writer = Files.newBufferedWriter(getPackageFolder().resolve("index.d.ts"))) {
-            for (Map.Entry<String, BufferedWriter> entry : files.entrySet()) {
-                String key = entry.getKey();
-                BufferedWriter value = entry.getValue();
+        try (val writer = Files.newBufferedWriter(getPackageFolder().resolve("index.d.ts"))) {
+            for (val entry : files.entrySet()) {
+                val key = entry.getKey();
+                val value = entry.getValue();
                 writer.write(String.format("/// <reference path=%s />\n", ProbeJS.GSON.toJson(key + ".d.ts")));
                 value.close();
             }
@@ -299,7 +314,6 @@ public class ScriptDump {
                 writer.write(String.format("export * from %s\n", ProbeJS.GSON.toJson("./" + identifier)));
             }
         }
-
     }
 
     public void dumpJSConfig() throws IOException {

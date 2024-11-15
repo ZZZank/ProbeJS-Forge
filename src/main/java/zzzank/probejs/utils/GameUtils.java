@@ -66,7 +66,7 @@ public class GameUtils {
         val lines = new ArrayList<String>(1 + limit);
         lines.add(t.toString());
         for (int i = 0; i < limit; i++) {
-            lines.add("    " + traces[i].toString());
+            lines.add("    at " + traces[i].toString());
         }
         ProbeJS.LOGGER.error(String.join("\n", lines));
     }
