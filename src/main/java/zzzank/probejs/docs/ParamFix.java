@@ -17,7 +17,7 @@ import zzzank.probejs.utils.NameUtils;
 
 import java.util.Map;
 
-public class ParamFix extends ProbeJSPlugin {
+public class ParamFix implements ProbeJSPlugin {
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
         val helper = new Helper(scriptDump, globalClasses);

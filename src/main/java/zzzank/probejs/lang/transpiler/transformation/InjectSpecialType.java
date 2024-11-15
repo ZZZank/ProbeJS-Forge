@@ -13,8 +13,8 @@ import zzzank.probejs.lang.typescript.code.member.ConstructorDecl;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.code.type.TSClassType;
-import zzzank.probejs.lang.typescript.code.type.TSParamType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.utils.CollectUtils;
 

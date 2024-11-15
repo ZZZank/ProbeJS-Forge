@@ -15,7 +15,7 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 import java.util.Collections;
 import java.util.Set;
 
-public class RecipeTypes extends ProbeJSPlugin {
+public class RecipeTypes implements ProbeJSPlugin {
     @Override
     public void assignType(ScriptDump scriptDump) {
 

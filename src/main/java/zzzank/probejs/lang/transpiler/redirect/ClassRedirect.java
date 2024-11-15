@@ -6,8 +6,8 @@ import zzzank.probejs.lang.java.type.impl.ClassType;
 import zzzank.probejs.lang.java.type.impl.ParamType;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.code.type.TSParamType;
-import zzzank.probejs.lang.typescript.code.type.TSVariableType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 

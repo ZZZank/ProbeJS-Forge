@@ -14,7 +14,7 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 import java.util.Collections;
 import java.util.Set;
 
-public class ForgeEvents extends ProbeJSPlugin {
+public class ForgeEvents implements ProbeJSPlugin {
     @Override
     public void addGlobals(ScriptDump scriptDump) {
         if (scriptDump.scriptType != ScriptType.STARTUP) {

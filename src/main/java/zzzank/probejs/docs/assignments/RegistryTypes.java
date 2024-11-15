@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -18,7 +19,6 @@ import zzzank.probejs.lang.typescript.code.member.TypeDecl;
 import zzzank.probejs.lang.typescript.code.ts.Wrapped;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.utils.NameUtils;
 import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.utils.registry.RegistryInfo;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * Assign types to all the registry types
  */
-public class RegistryTypes extends ProbeJSPlugin {
+public class RegistryTypes implements ProbeJSPlugin {
     public static final String LITERAL_FIELD = "probejsInternal$$Literal";
     public static final String TAG_FIELD = "probejsInternal$$Tag";
     public static final String OF_TYPE_DECL = "T extends { %s: infer U } ? U : never";

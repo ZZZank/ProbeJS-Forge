@@ -5,10 +5,8 @@ import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.js.*;
-import zzzank.probejs.lang.typescript.code.type.utility.ContextShield;
-import zzzank.probejs.lang.typescript.code.type.utility.CustomType;
-import zzzank.probejs.lang.typescript.code.type.utility.ImportShield;
-import zzzank.probejs.lang.typescript.code.type.utility.WithFormatType;
+import zzzank.probejs.lang.typescript.code.type.ts.*;
+import zzzank.probejs.lang.typescript.code.type.utility.*;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 

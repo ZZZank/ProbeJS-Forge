@@ -13,7 +13,7 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Map;
 
-public class Primitives extends ProbeJSPlugin {
+public class Primitives implements ProbeJSPlugin {
     public static final JSPrimitiveType LONG = Types.primitive("long");
     public static final JSPrimitiveType INTEGER = Types.primitive("integer");
     public static final JSPrimitiveType SHORT = Types.primitive("short");

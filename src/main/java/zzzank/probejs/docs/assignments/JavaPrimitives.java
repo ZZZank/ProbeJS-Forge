@@ -30,7 +30,7 @@ import java.time.temporal.TemporalAmount;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class JavaPrimitives extends ProbeJSPlugin {
+public class JavaPrimitives implements ProbeJSPlugin {
 
     private static JSTupleType xyzOf(BaseType baseType) {
         return Types.tuple()

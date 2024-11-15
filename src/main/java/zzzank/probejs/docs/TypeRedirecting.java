@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * @author ZZZank
  */
-public class TypeRedirecting extends ProbeJSPlugin {
+public class TypeRedirecting implements ProbeJSPlugin {
 
     public static final Set<Class<?>> CLASS_CONVERTIBLES = new HashSet<>();
     public static final Map<Class<?>, BaseType> JS_OBJ = new IdentityHashMap<>();

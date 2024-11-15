@@ -24,7 +24,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
-public class WorldTypes extends ProbeJSPlugin {
+public class WorldTypes implements ProbeJSPlugin {
     @Override
     public void assignType(ScriptDump scriptDump) {
         scriptDump.assignType(BlockStatePredicate.class, Types.type(BlockStatePredicate.class).asArray());

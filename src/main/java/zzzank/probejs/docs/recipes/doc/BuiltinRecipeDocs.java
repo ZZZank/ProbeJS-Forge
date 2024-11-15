@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 /**
  * @author ZZZank
  */
-public class BuiltinRecipeDocs extends ProbeJSPlugin {
+public class BuiltinRecipeDocs implements ProbeJSPlugin {
 
     public static final List<Supplier<ProbeJSPlugin>> ALL = new ArrayList<>(Arrays.asList(
         ArsNouveau::new,

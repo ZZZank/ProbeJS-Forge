@@ -6,7 +6,7 @@ import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
-public class FunctionalInterfaces extends ProbeJSPlugin {
+public class FunctionalInterfaces implements ProbeJSPlugin {
 
     @Override
     public void assignType(ScriptDump scriptDump) {

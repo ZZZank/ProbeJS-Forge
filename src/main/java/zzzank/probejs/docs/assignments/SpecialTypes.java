@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SpecialTypes extends ProbeJSPlugin {
+public class SpecialTypes implements ProbeJSPlugin {
     public static final String NAMESPACE = "Special";
 
     @NotNull

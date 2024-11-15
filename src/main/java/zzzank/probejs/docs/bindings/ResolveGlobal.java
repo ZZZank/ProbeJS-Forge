@@ -34,4 +34,16 @@ class ResolveGlobal {
 
         scriptDump.addGlobal("resolved_global", clazzDecl.build());
     }
+
+    public static BaseType resolveType(int depth, Object value, TypeConverter converter) {
+        if (value == null) {
+            return Types.NULL;
+        }
+        val directType = converter.convertType(value.getClass());
+        if (depth < 1) {
+            return directType;
+        }
+        val resolved = ValueTypes.convert(value, converter, depth);
+        throw new AssertionError();
+    }
 }

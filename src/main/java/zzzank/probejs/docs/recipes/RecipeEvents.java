@@ -21,7 +21,7 @@ import zzzank.probejs.plugin.ProbeJSPlugins;
 
 import java.util.*;
 
-public class RecipeEvents extends ProbeJSPlugin {
+public class RecipeEvents implements ProbeJSPlugin {
 
     private static Map<String, Object> capturedRecipes;
 

@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author ZZZank
  */
-public abstract class RecipeDocProvider extends ProbeJSPlugin {
+public abstract class RecipeDocProvider implements ProbeJSPlugin {
 
     protected Map<ResourceLocation, JSLambdaType> defined = null;
 

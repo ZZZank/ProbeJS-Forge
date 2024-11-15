@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * Adds bindings to some stuffs...
  */
-public class Bindings extends ProbeJSPlugin {
+public class Bindings implements ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {

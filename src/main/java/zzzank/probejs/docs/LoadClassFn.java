@@ -16,7 +16,7 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 /**
  * @author ZZZank
  */
-public class LoadClassFn extends ProbeJSPlugin {
+public class LoadClassFn implements ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {

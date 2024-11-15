@@ -12,6 +12,9 @@ import zzzank.probejs.lang.java.type.impl.*;
 import zzzank.probejs.lang.transpiler.redirect.TypeRedirect;
 import zzzank.probejs.lang.typescript.code.type.*;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
 
 import java.lang.reflect.Type;
 import java.util.*;

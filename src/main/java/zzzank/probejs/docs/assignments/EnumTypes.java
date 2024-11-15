@@ -11,7 +11,7 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-public class EnumTypes extends ProbeJSPlugin {
+public class EnumTypes implements ProbeJSPlugin {
     // EnumTypeWrapper is not thread-safe
     private static final ReentrantLock LOCK = new ReentrantLock();
 

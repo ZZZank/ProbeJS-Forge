@@ -4,6 +4,8 @@ import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSOptionalType;
 import zzzank.probejs.lang.typescript.code.type.utility.ContextShield;
 import zzzank.probejs.lang.typescript.code.type.utility.ImportShield;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;

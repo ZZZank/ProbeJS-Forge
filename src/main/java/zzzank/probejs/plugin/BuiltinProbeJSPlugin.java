@@ -1,10 +1,9 @@
 package zzzank.probejs.plugin;
 
+import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.util.ClassFilter;
-import lombok.val;
-import zzzank.probejs.ProbeJS;
 import zzzank.probejs.events.ProbeEvents;
 import zzzank.probejs.events.SnippetGenerationEventJS;
 import zzzank.probejs.events.TypeAssignmentEventJS;
@@ -17,7 +16,7 @@ import zzzank.probejs.lang.typescript.TypeScriptFile;
 
 import java.util.Map;
 
-public class BuiltinProbeJSPlugin extends ProbeJSPlugin {
+public class BuiltinProbeJSPlugin extends KubeJSPlugin implements ProbeJSPlugin {
 
     @Override
     public void addBindings(BindingsEvent event) {

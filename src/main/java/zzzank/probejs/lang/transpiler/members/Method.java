@@ -4,7 +4,7 @@ import zzzank.probejs.lang.java.clazz.members.MethodInfo;
 import zzzank.probejs.lang.java.type.impl.VariableType;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
-import zzzank.probejs.lang.typescript.code.type.TSVariableType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,7 +17,7 @@ import zzzank.probejs.plugin.ProbeJSPlugins;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class KubeEvents extends ProbeJSPlugin {
+public class KubeEvents implements ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {

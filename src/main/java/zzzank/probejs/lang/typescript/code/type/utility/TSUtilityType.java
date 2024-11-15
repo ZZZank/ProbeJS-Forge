@@ -1,7 +1,7 @@
 package zzzank.probejs.lang.typescript.code.type.utility;
 
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.code.type.TSParamType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;

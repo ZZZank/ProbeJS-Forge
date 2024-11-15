@@ -3,7 +3,7 @@ package zzzank.probejs.lang.typescript.code.type.utility;
 import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
-import zzzank.probejs.lang.typescript.code.type.TSClassType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 import zzzank.probejs.lang.typescript.refer.ImportType;
@@ -14,8 +14,8 @@ import java.util.List;
 /**
  * @author ZZZank
  */
-public class TSStaticType extends TSClassType {
-    public TSStaticType(ClassPath classPath) {
+public class StaticType extends TSClassType {
+    public StaticType(ClassPath classPath) {
         super(classPath);
     }
 

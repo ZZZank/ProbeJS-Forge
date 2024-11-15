@@ -9,7 +9,7 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Arrays;
 
-public class Snippets extends ProbeJSPlugin {
+public class Snippets implements ProbeJSPlugin {
     @Override
     public void addVSCodeSnippets(SnippetDump dump) {
         dump.snippet("uuid")

@@ -22,7 +22,7 @@ import zzzank.probejs.plugin.ProbeJSPlugin;
 /**
  * @author ZZZank
  */
-public class KubeWrappers extends ProbeJSPlugin {
+public class KubeWrappers implements ProbeJSPlugin {
 
     @Override
     public void assignType(ScriptDump scriptDump) {

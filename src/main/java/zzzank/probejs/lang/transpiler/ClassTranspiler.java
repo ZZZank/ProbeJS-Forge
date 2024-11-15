@@ -9,7 +9,7 @@ import zzzank.probejs.lang.transpiler.members.Method;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.InterfaceDecl;
-import zzzank.probejs.lang.typescript.code.type.TSVariableType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
 import java.util.ArrayList;
@@ -35,23 +35,21 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
             variableTypes.add((TSVariableType) converter.convertType(variableType));
         }
         val superClass = input.superClass == null ? null : converter.convertType(input.superClass);
-        val decl = input.attribute.isInterface ?
-            new InterfaceDecl(
+        val interfaces = input.interfaces.stream()
+            .map(converter::convertType)
+            .filter(t -> t != Types.ANY)
+            .collect(Collectors.toList());
+        val decl = input.attribute.isInterface
+            ? new InterfaceDecl(
+            input.classPath.getName(),
+            superClass == Types.ANY ? null : superClass,
+            interfaces,
+            variableTypes
+        )
+            : new ClassDecl(
                 input.classPath.getName(),
                 superClass == Types.ANY ? null : superClass,
-                input.interfaces.stream()
-                    .map(converter::convertType)
-                    .filter(t -> t != Types.ANY)
-                    .collect(Collectors.toList()),
-                variableTypes
-            ) :
-            new ClassDecl(
-                input.classPath.getName(),
-                superClass == Types.ANY ? null : superClass,
-                input.interfaces.stream()
-                    .map(converter::convertType)
-                    .filter(t -> t != Types.ANY)
-                    .collect(Collectors.toList()),
+                interfaces,
                 variableTypes
             );
 

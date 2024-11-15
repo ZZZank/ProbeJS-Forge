@@ -30,7 +30,7 @@ import java.util.function.Consumer;
  * Delegate calls to a set of internal ProbeJSPlugin to separate different
  * features
  */
-public final class ProbeBuiltinDocs extends ProbeJSPlugin {
+public final class ProbeBuiltinDocs implements ProbeJSPlugin {
     private static final Lazy<ProbeBuiltinDocs> INSTANCE = Lazy.of(ProbeBuiltinDocs::new);
 
     public static ProbeBuiltinDocs get() {
