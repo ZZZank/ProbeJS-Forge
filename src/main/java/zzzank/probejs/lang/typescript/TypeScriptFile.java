@@ -41,14 +41,14 @@ public class TypeScriptFile {
         }
     }
 
-    public String format() {
+    public List<String> format() {
         List<String> formatted = new ArrayList<>();
 
         for (Code code : codeList) {
             formatted.addAll(code.format(declaration));
         }
 
-        return String.join("\n", formatted);
+        return formatted;
     }
 
     public void write(Path writeTo) throws IOException {
@@ -71,7 +71,10 @@ public class TypeScriptFile {
         }
 
         writer.write("\n");
-        writer.write(format());
+        for (val line : format()) {
+            writer.write(line);
+            writer.write('\n');
+        }
     }
 
     public void writeAsModule(BufferedWriter writer) throws IOException {
