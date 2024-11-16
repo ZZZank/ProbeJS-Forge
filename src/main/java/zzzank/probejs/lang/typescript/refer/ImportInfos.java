@@ -11,42 +11,44 @@ import java.util.stream.Stream;
 /**
  * @author ZZZank
  */
-public final class ImportInfos implements Iterable<ImportInfo> {
+public class ImportInfos implements Iterable<ImportInfo> {
 
-    private final Map<ClassPath, ImportInfo> raw;
+    protected final Map<ClassPath, ImportInfo> raw;
 
-    ImportInfos() {
-        this.raw = new HashMap<>();
+    protected ImportInfos(Map<ClassPath, ImportInfo> raw) {
+        this.raw = raw;
     }
 
-    public static ImportInfos of(ImportInfos other) {
-        return new ImportInfos().addAll(other);
+    public static ImportInfos of(ImportInfos toCopy) {
+        return new ImportInfos(new HashMap<>(toCopy.raw));
+    }
+
+    public static ImportInfos of() {
+        return EmptyImportInfos.INSTANCE;
+    }
+
+    public static ImportInfos of(ImportInfo info) {
+        return new SingletonImportInfos(info);
     }
 
     public static ImportInfos of(ImportInfo... initial) {
-        return initial.length == 0
-            ? new ImportInfos()
-            : new ImportInfos().addAll(Arrays.asList(initial));
+        return new ImportInfos(new HashMap<>()).addAll(Arrays.asList(initial));
     }
 
     public static ImportInfos of(Collection<ImportInfo> infos) {
-        return new ImportInfos().addAll(infos);
+        return new ImportInfos(new HashMap<>()).addAll(infos);
     }
 
     public static ImportInfos of(Stream<ImportInfo> infos) {
-        return new ImportInfos().addAll(infos);
+        return new ImportInfos(new HashMap<>()).addAll(infos);
     }
 
     public ImportInfos add(ImportInfo info) {
-        addImpl(info);
-        return this;
-    }
-
-    private void addImpl(ImportInfo info) {
         val old = raw.put(info.path, info);
         if (old != null) {
             info.mergeWith(old);
         }
+        return this;
     }
 
     public ImportInfos addAll(ImportInfos other) {
