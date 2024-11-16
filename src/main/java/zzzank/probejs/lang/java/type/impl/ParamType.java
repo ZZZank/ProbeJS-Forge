@@ -2,13 +2,12 @@ package zzzank.probejs.lang.java.type.impl;
 
 import zzzank.probejs.lang.java.type.TypeAdapter;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
+import zzzank.probejs.utils.CollectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ParamType extends TypeDescriptor {
@@ -18,13 +17,19 @@ public class ParamType extends TypeDescriptor {
     public ParamType(AnnotatedParameterizedType annotatedType) {
         super(annotatedType.getAnnotations());
         this.base = TypeAdapter.getTypeDescription(((ParameterizedType) annotatedType.getType()).getRawType(), false);
-        this.params = Arrays.stream(annotatedType.getAnnotatedActualTypeArguments()).map(t -> TypeAdapter.getTypeDescription(t, false)).collect(Collectors.toList());
+        this.params = CollectUtils.mapToList(
+            annotatedType.getAnnotatedActualTypeArguments(),
+            t -> TypeAdapter.getTypeDescription(t, false)
+        );
     }
 
     public ParamType(ParameterizedType parameterizedType) {
         super(new Annotation[]{});
         this.base = TypeAdapter.getTypeDescription(parameterizedType.getRawType(), false);
-        this.params = Arrays.stream(parameterizedType.getActualTypeArguments()).map(t -> TypeAdapter.getTypeDescription(t, false)).collect(Collectors.toList());
+        this.params = CollectUtils.mapToList(
+            parameterizedType.getActualTypeArguments(),
+            t -> TypeAdapter.getTypeDescription(t, false)
+        );
     }
 
     public ParamType(Annotation[] annotations, TypeDescriptor base, List<TypeDescriptor> params) {

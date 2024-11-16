@@ -10,6 +10,7 @@ import zzzank.probejs.lang.java.clazz.members.FieldInfo;
 import zzzank.probejs.lang.java.clazz.members.MethodInfo;
 import zzzank.probejs.lang.java.type.TypeAdapter;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
+import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.ReflectUtils;
 
 import java.lang.reflect.*;
@@ -61,9 +62,10 @@ public class Clazz extends TypeVariableHolder {
             ? null
             : TypeAdapter.getTypeDescription(clazz.getAnnotatedSuperclass());
 
-        this.interfaces = Arrays.stream(clazz.getAnnotatedInterfaces())
-            .map(TypeAdapter::getTypeDescription)
-            .collect(Collectors.toList());
+        this.interfaces = CollectUtils.mapToList(
+            clazz.getAnnotatedInterfaces(),
+            TypeAdapter::getTypeDescription
+        );
         this.attribute = new ClassAttribute(clazz);
     }
 

@@ -31,12 +31,26 @@ public interface CollectUtils {
         return l;
     }
 
+    static <I, O> List<O> mapToList(I[] collection, Function<I, O> mapper) {
+        Objects.requireNonNull(collection);
+        Objects.requireNonNull(mapper);
+        val l = new ArrayList<O>(collection.length);
+        for (I i : collection) {
+            l.add(mapper.apply(i));
+        }
+        return l;
+    }
+
     static int calcMapExpectedSize(int elementCount) {
         return calcMapExpectedSize(elementCount, 0.75F);
     }
 
     static int calcMapExpectedSize(int elementCount, float loadFactor) {
         return (int) Math.floor((elementCount / loadFactor) + 1);
+    }
+
+    static <K, V> HashMap<K, V> ofSizedMap(int expectedSize) {
+        return new HashMap<>(calcMapExpectedSize(expectedSize));
     }
 
     static <K, V> HashMap<K, V> ofMap(K k1, V v1) {
