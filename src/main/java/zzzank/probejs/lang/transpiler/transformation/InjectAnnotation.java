@@ -44,7 +44,7 @@ public class InjectAnnotation implements ClassTransformer {
     }
 
     @Override
-    public void transformField(FieldInfo fieldInfo, FieldDecl decl) {
+    public void transformField(Clazz clazz, FieldInfo fieldInfo, FieldDecl decl) {
         applyInfo(fieldInfo, decl);
         if (fieldInfo.hasAnnotation(Deprecated.class)) {
             decl.newline("@deprecated");
@@ -52,7 +52,7 @@ public class InjectAnnotation implements ClassTransformer {
     }
 
     @Override
-    public void transformConstructor(ConstructorInfo constructorInfo, ConstructorDecl decl) {
+    public void transformConstructor(Clazz clazz, ConstructorInfo constructorInfo, ConstructorDecl decl) {
         applyInfo(constructorInfo, decl);
         if (constructorInfo.hasAnnotation(Deprecated.class)) {
             decl.newline("@deprecated");

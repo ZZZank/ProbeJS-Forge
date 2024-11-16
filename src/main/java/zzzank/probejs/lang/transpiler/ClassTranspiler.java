@@ -31,49 +31,49 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
     }
 
     @Override
-    public ClassDecl transpile(Clazz input) {
-        val variableTypes = new ArrayList<TSVariableType>(input.variableTypes.size());
-        for (val variableType : input.variableTypes) {
+    public ClassDecl transpile(Clazz clazz) {
+        val variableTypes = new ArrayList<TSVariableType>(clazz.variableTypes.size());
+        for (val variableType : clazz.variableTypes) {
             variableTypes.add((TSVariableType) converter.convertType(variableType));
         }
-        val superClass = input.superClass == null ? null : converter.convertType(input.superClass);
-        val interfaces = input.interfaces.stream()
+        val superClass = clazz.superClass == null ? null : converter.convertType(clazz.superClass);
+        val interfaces = clazz.interfaces.stream()
             .map(converter::convertType)
             .filter(t -> t != Types.ANY)
             .collect(Collectors.toList());
-        val decl = input.attribute.isInterface
+        val decl = clazz.attribute.isInterface
             ? new InterfaceDecl(
-            input.classPath.getName(),
+            clazz.classPath.getName(),
             superClass == Types.ANY ? null : superClass,
             interfaces,
             variableTypes
         )
             : new ClassDecl(
-                input.classPath.getName(),
+                clazz.classPath.getName(),
                 superClass == Types.ANY ? null : superClass,
                 interfaces,
                 variableTypes
             );
 
-        for (val fieldInfo : input.fields) {
+        for (val fieldInfo : clazz.fields) {
             val fieldDecl = field.transpile(fieldInfo);
-            transformer.transformField(fieldInfo, fieldDecl);
+            transformer.transformField(clazz, fieldInfo, fieldDecl);
             decl.fields.add(fieldDecl);
         }
 
-        for (val methodInfo : input.methods) {
+        for (val methodInfo : clazz.methods) {
             val methodDecl = method.transpile(methodInfo);
-            transformer.transformMethod(input, methodInfo, methodDecl);
+            transformer.transformMethod(clazz, methodInfo, methodDecl);
             decl.methods.add(methodDecl);
         }
 
-        for (val constructorInfo : input.constructors) {
+        for (val constructorInfo : clazz.constructors) {
             val constructorDecl = constructor.transpile(constructorInfo);
-            transformer.transformConstructor(constructorInfo, constructorDecl);
+            transformer.transformConstructor(clazz, constructorInfo, constructorDecl);
             decl.constructors.add(constructorDecl);
         }
 
-        transformer.transform(input, decl);
+        transformer.transform(clazz, decl);
         return decl;
     }
 }

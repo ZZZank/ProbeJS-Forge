@@ -84,7 +84,7 @@ public class InjectSpecialType implements ClassTransformer {
     }
 
     @Override
-    public void transformConstructor(ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
+    public void transformConstructor(Clazz clazz, ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
         for (int i = 0; i < constructorDecl.params.size(); i++) {
             var param = constructorDecl.params.get(i);
             modifyWrapping(param);

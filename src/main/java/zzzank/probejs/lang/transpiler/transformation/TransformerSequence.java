@@ -26,16 +26,16 @@ public class TransformerSequence implements ClassTransformer {
     }
 
     @Override
-    public void transformConstructor(ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
+    public void transformConstructor(Clazz clazz, ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
         for (val transformer : transformers) {
-            transformer.transformConstructor(constructorInfo, constructorDecl);
+            transformer.transformConstructor(clazz, constructorInfo, constructorDecl);
         }
     }
 
     @Override
-    public void transformField(FieldInfo fieldInfo, FieldDecl fieldDecl) {
+    public void transformField(Clazz clazz, FieldInfo fieldInfo, FieldDecl fieldDecl) {
         for (val transformer : transformers) {
-            transformer.transformField(fieldInfo, fieldDecl);
+            transformer.transformField(clazz, fieldInfo, fieldDecl);
         }
     }
 

@@ -32,13 +32,11 @@ public interface ClassTransformer {
     }
 
     default void transformMethod(Clazz clazz, MethodInfo methodInfo, MethodDecl methodDecl) {
-
     }
 
-    default void transformConstructor(ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
+    default void transformConstructor(Clazz clazz, ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
     }
 
-    default void transformField(FieldInfo fieldInfo, FieldDecl fieldDecl) {
-
+    default void transformField(Clazz clazz, FieldInfo fieldInfo, FieldDecl fieldDecl) {
     }
 }

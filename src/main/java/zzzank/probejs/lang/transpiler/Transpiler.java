@@ -7,7 +7,6 @@ import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
-import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 
 import java.util.*;
@@ -40,7 +39,7 @@ public class Transpiler {
         val transpiler = new ClassTranspiler(typeConverter, ClassTransformer.fromPlugin());
         Map<ClassPath, TypeScriptFile> result = new HashMap<>();
 
-        for (Clazz clazz : clazzes) {
+        for (val clazz : clazzes) {
             if (rejectedClasses.contains(clazz.classPath) || clazz.hasAnnotation(HideFromJS.class)) {
                 continue;
             }
