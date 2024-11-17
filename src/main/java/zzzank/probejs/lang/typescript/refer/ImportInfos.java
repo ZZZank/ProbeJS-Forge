@@ -23,11 +23,11 @@ public class ImportInfos implements Iterable<ImportInfo> {
         return new ImportInfos(new HashMap<>(toCopy.raw));
     }
 
-    public static ImportInfos of() {
+    public static ImmutableImportInfos of() {
         return EmptyImportInfos.INSTANCE;
     }
 
-    public static ImportInfos of(ImportInfo info) {
+    public static ImmutableImportInfos of(ImportInfo info) {
         return new SingletonImportInfos(info);
     }
 

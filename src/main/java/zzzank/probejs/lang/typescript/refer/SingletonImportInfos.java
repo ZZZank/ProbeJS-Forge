@@ -20,12 +20,12 @@ public final class SingletonImportInfos extends ImmutableImportInfos {
 
     @Override
     public ImportInfos add(ImportInfo info) {
-        return ImportInfos.of(value());
+        return ImportInfos.of(value(), info);
     }
 
     @Override
     public ImportInfos addAll(Collection<ImportInfo> infos) {
-        return ImportInfos.of(infos);
+        return ImportInfos.of(infos).add(value());
     }
 
     @Override
