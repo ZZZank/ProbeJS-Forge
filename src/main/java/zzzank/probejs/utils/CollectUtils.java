@@ -46,7 +46,7 @@ public interface CollectUtils {
     }
 
     static int calcMapExpectedSize(int elementCount, float loadFactor) {
-        return (int) Math.floor((elementCount / loadFactor) + 1);
+        return (int) Math.ceil(elementCount / loadFactor);
     }
 
     static <K, V> HashMap<K, V> ofSizedMap(int expectedSize) {

@@ -4,7 +4,7 @@ import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.code.Code;
-import zzzank.probejs.utils.Mutable;
+import zzzank.probejs.utils.CollectUtils;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -21,17 +21,15 @@ public class ImportInfos implements Iterable<ImportInfo> {
     }
 
     public static ImportInfos of(@NotNull ImportInfos toCopy) {
-        return toCopy instanceof ImmutableImportInfos
-            ? toCopy
-            : new ImportInfos(new HashMap<>(toCopy.raw));
+        return new ImportInfos(new HashMap<>(toCopy.raw));
     }
 
-    public static ImmutableImportInfos of() {
-        return EmptyImportInfos.INSTANCE;
+    public static ImportInfos of() {
+        return new ImportInfos(new HashMap<>());
     }
 
-    public static ImmutableImportInfos of(@NotNull ImportInfo info) {
-        return new SingletonImportInfos(info);
+    public static ImportInfos of(@NotNull ImportInfo info) {
+        return new ImportInfos(CollectUtils.ofMap(info.path, info));
     }
 
     public static ImportInfos of(@NotNull ImportInfo... initial) {
@@ -39,7 +37,7 @@ public class ImportInfos implements Iterable<ImportInfo> {
     }
 
     public static ImportInfos of(@NotNull Collection<ImportInfo> infos) {
-        return new ImportInfos(new HashMap<>()).addAll(infos);
+        return new ImportInfos(CollectUtils.ofSizedMap(infos.size())).addAll(infos);
     }
 
     public static ImportInfos of(@NotNull Stream<ImportInfo> infos) {
@@ -59,17 +57,15 @@ public class ImportInfos implements Iterable<ImportInfo> {
     }
 
     public ImportInfos addAll(@NotNull Stream<ImportInfo> infos) {
-        val hold = Mutable.of(this);
-        infos.forEach(info -> hold.set(hold.get().add(info)));
+        infos.forEach(this::add);
         return this;
     }
 
     public ImportInfos addAll(@NotNull Collection<ImportInfo> infos) {
-        ImportInfos self = this;
         for (val info : infos) {
-            self = add(info);
+            add(info);
         }
-        return self;
+        return this;
     }
 
     public ImportInfos fromCode(Code code) {
