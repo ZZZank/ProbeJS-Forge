@@ -68,7 +68,7 @@ public class Declaration {
     public String getSymbol(ClassPath path, boolean input) {
         val reference = this.references.get(path);
         if (reference == null) {
-            throw new RuntimeException("Trying to get a symbol of a classpath that is not resolved yet!");
+            throw new RuntimeException(String.format("Trying to get a symbol of unresolved classpath: %s", path));
         }
         return input ? ImportType.TYPE.fmt(reference.deduped) : reference.deduped;
     }
