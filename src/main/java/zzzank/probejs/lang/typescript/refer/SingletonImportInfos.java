@@ -1,6 +1,7 @@
 package zzzank.probejs.lang.typescript.refer;
 
-import zzzank.probejs.utils.CollectUtils;
+import lombok.val;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -9,34 +10,37 @@ import java.util.stream.Stream;
 /**
  * @author ZZZank
  */
-public final class SingletonImportInfos extends ImmutableImportInfos {
+final class SingletonImportInfos extends ImmutableImportInfos {
     SingletonImportInfos(ImportInfo info) {
         super(Collections.singletonMap(info.path, info));
     }
 
     private ImportInfo value() {
-        return CollectUtils.anyIn(this.raw.values());
+        return this.raw.values().iterator().next();
     }
 
     @Override
-    public ImportInfos add(ImportInfo info) {
-        return ImportInfos.of(value(), info);
+    public ImportInfos add(@NotNull ImportInfo info) {
+        val value = this.value();
+        if (value.path.equals(info.path)) {
+            value.mergeWith(info);
+            return this;
+        }
+        return ImportInfos.of(value, info);
     }
 
     @Override
-    public ImportInfos addAll(Collection<ImportInfo> infos) {
+    public ImportInfos addAll(@NotNull Collection<ImportInfo> infos) {
         return ImportInfos.of(infos).add(value());
     }
 
     @Override
-    public ImportInfos addAll(Stream<ImportInfo> infos) {
-        return ImportInfos.of(Stream.concat(infos, Stream.of(value())));
+    public ImportInfos addAll(@NotNull Stream<ImportInfo> infos) {
+        return ImportInfos.of(infos).add(value());
     }
 
     @Override
-    public ImportInfos addAll(ImportInfos other) {
-        return other instanceof ImmutableImportInfos
-            ? ImportInfos.of(other).add(value())
-            : other.add(value());
+    public ImportInfos addAll(@NotNull ImportInfos other) {
+        return ImportInfos.of(other).add(value());
     }
 }

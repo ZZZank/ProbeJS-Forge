@@ -16,24 +16,19 @@ import java.util.Set;
 public class Declaration {
     private static final String UNIQUE_TEMPLATE = "%s$%d";
 
-    public final Map<ClassPath, Reference> references;
-    private final BiMap<ClassPath, String> dedupedSymbols;
+    public final Map<ClassPath, Reference> references = new HashMap<>();
+    private final BiMap<ClassPath, String> dedupedSymbols = HashBiMap.create();
 
-    private final Set<String> excludedName;
-
-    public Declaration() {
-        this.references = new HashMap<>();
-        this.excludedName = new HashSet<>();
-        this.dedupedSymbols = HashBiMap.create();
-    }
+    private final Set<String> excludedName = new HashSet<>();
 
     public void addImport(ImportInfo info) {
         // So we determine a unique original that is safe to use at startup
-        val name = resolveSymbol(info.path);
-        val old = references.get(info.path);
-        if (old != null) {
-            old.info.mergeWith(info);
+        val existed = references.get(info.path);
+        if (existed != null) {
+            existed.info.mergeWith(info);
+            return;
         }
+        val name = resolveSymbol(info.path);
         this.references.put(info.path, new Reference(info, name));
     }
 

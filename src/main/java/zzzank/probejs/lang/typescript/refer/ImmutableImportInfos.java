@@ -11,4 +11,9 @@ public abstract class ImmutableImportInfos extends ImportInfos {
     ImmutableImportInfos(Map<ClassPath, ImportInfo> raw) {
         super(raw);
     }
+
+    @Override
+    public Map<ClassPath, ImportInfo> getRaw() {
+        return this.raw;
+    }
 }
