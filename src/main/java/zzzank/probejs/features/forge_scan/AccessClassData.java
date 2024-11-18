@@ -47,7 +47,7 @@ public class AccessClassData {
     }
 
     //    @SneakyThrows
-    public Type pjs$clazz() {
+    public Type clazz() {
         try {
             return (Type) accessClazz.invoke(raw);
         } catch (Throwable e) {
@@ -55,7 +55,11 @@ public class AccessClassData {
         }
     }
 
-    public Type pjs$parent() {
+    public String className() {
+        return clazz().getClassName();
+    }
+
+    public Type parent() {
         try {
             return (Type) accessParent.invoke(raw);
         } catch (Throwable e) {
@@ -63,7 +67,12 @@ public class AccessClassData {
         }
     }
 
-    public Set<Type> pjs$interfaces() {
+    public String parentClassName() {
+        val p = parent();
+        return p == null ? null : p.getClassName();
+    }
+
+    public Set<Type> interfaces() {
         try {
             return (Set<Type>) accessInterfaces.invoke(raw);
         } catch (Throwable e) {
