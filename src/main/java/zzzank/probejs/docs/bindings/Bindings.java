@@ -18,9 +18,6 @@ import zzzank.probejs.plugin.ProbeJSPlugins;
 
 import java.util.*;
 
-/**
- * Adds bindings to some stuffs...
- */
 public class Bindings implements ProbeJSPlugin {
 
     @Override
@@ -32,8 +29,8 @@ public class Bindings implements ProbeJSPlugin {
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.denyBindings(filter));
 
         val converter = scriptDump.transpiler.typeConverter;
-        val exported = new HashMap<String, BaseType>();
-        val reexported = new HashMap<String, BaseType>(); // Namespaces
+        val exported = new TreeMap<String, BaseType>();
+        val reexported = new TreeMap<String, BaseType>(); // Namespaces
 
         for (val entry : reader.functions.entrySet()) {
             val name = entry.getKey();
@@ -46,7 +43,7 @@ public class Bindings implements ProbeJSPlugin {
                 val types = ((AccessTypedDynamicFunction) typed).types();
                 for (int i = 0; i < types.length; i++) {
                     val type = types[i];
-                    fn.param("arg" + i, type == null ? Types.ANY : Types.typeMaybeGeneric(type));
+                    fn.param("arg" + i, type == null ? Types.ANY : converter.convertType(type));
                 }
             } else {
                 fn.param("args", Types.ANY.asArray(), false, true);
