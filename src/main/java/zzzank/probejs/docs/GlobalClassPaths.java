@@ -20,6 +20,7 @@ public class GlobalClassPaths implements ProbeJSPlugin {
     public static final JSPrimitiveType CLASS_PATH = Types.primitive("ClassPath");
     public static final JSPrimitiveType JAVA_CLASS_PATH = Types.primitive("JavaClassPath");
     public static final JSPrimitiveType TS_CLASS_PATH = Types.primitive("TSClassPath");
+    public static final JSPrimitiveType GLOBAL_CLASSES = Types.primitive("GlobalClasses");
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {
@@ -41,7 +42,7 @@ public class GlobalClassPaths implements ProbeJSPlugin {
         scriptDump.addGlobal(
             "load_class",
             new TypeDecl(
-                "GlobalClasses",
+                GLOBAL_CLASSES.content,
                 paths.build()
                     .contextShield(BaseType.FormatType.RETURN)
                     .importShield(ImportInfos.of(ClassRegistry.REGISTRY.foundClasses.values()

@@ -42,9 +42,14 @@ public class ForgeEvents implements ProbeJSPlugin {
             .param(
                 "handler",
                 Types.lambda()
-                    .param("event", TSUtilityType.extract(
-                        TSUtilityType.instanceType(Types.generic(T)),
-                        Types.type(Event.class))
+                    .param(
+                        "event",
+                        TSUtilityType.instanceType(
+                            TSUtilityType.extract(
+                                Types.format("%s[T]", GlobalClassPaths.GLOBAL_CLASSES),
+                                Types.typeOf(Event.class)
+                            )
+                        )
                     )
                     .build()
             )
