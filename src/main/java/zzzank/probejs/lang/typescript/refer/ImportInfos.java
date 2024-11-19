@@ -69,7 +69,7 @@ public class ImportInfos implements Iterable<ImportInfo> {
     }
 
     public ImportInfos fromCode(Code code) {
-        return addAll(code != null ? code.getImportInfos() : ImportInfos.of());
+        return code == null ? this : addAll(code.getImportInfos());
     }
 
     public ImportInfos fromCodes(@NotNull Stream<? extends Code> codes) {

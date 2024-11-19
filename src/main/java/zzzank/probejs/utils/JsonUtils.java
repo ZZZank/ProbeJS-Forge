@@ -99,13 +99,13 @@ public class JsonUtils {
                     : primitive.isNumber() ? primitive.getAsNumber()
                         : null;
         } else if (jsonElement instanceof JsonArray array) {
-            List<Object> deserialized = new ArrayList<>();
-            for (JsonElement element : array) {
+            val deserialized = new ArrayList<>();
+            for (val element : array) {
                 deserialized.add(deserializeObject(element));
             }
             return deserialized;
         } else if (jsonElement instanceof JsonObject object) {
-            Map<String, Object> deserialized = new HashMap<>();
+            val deserialized = new HashMap<>();
             for (val entry : object.entrySet()) {
                 val s = entry.getKey();
                 deserialized.put(s, deserializeObject(object.get(s)));
@@ -136,9 +136,9 @@ public class JsonUtils {
     public static JsonElement mergeJsonRecursively(JsonElement first, JsonElement second) {
         if (first instanceof JsonObject firstObject && second instanceof JsonObject secondObject) {
             var result = deepCopy(firstObject);
-            for (Map.Entry<String, JsonElement> entry : secondObject.entrySet()) {
-                String key = entry.getKey();
-                JsonElement value = entry.getValue();
+            for (val entry : secondObject.entrySet()) {
+                val key = entry.getKey();
+                val value = entry.getValue();
                 if (result.has(key)) {
                     result.add(key, mergeJsonRecursively(result.get(key), value));
                 } else {
@@ -149,20 +149,20 @@ public class JsonUtils {
         }
 
         if (first instanceof JsonArray firstArray && second instanceof JsonArray secondArray) {
-            List<JsonElement> elements = new ArrayList<>();
+            val elements = new ArrayList<JsonElement>();
             for (val element : firstArray) {
                 elements.add(deepCopy(element));
             }
             for (val element : secondArray) {
-                int index;
-                if ((index = elements.indexOf(element)) != -1) {
-                    elements.set(index, mergeJsonRecursively(elements.get(index), element));
-                } else {
+                int index = elements.indexOf(element);
+                if (index == -1) {
                     elements.add(element);
+                } else {
+                    elements.set(index, mergeJsonRecursively(elements.get(index), element));
                 }
             }
-            JsonArray result = new JsonArray();
-            for (JsonElement element : elements) {
+            val result = new JsonArray();
+            for (val element : elements) {
                 result.add(element);
             }
             return result;

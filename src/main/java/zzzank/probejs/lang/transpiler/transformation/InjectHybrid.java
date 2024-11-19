@@ -3,15 +3,10 @@ package zzzank.probejs.lang.transpiler.transformation;
 import lombok.val;
 import org.apache.commons.lang3.mutable.MutableInt;
 import zzzank.probejs.lang.java.clazz.Clazz;
-import zzzank.probejs.lang.typescript.Declaration;
-import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.refer.ImportInfos;
-
-import java.util.Collections;
-import java.util.List;
+import zzzank.probejs.lang.typescript.code.type.Types;
 
 /**
  * Use hybrid to represent functional interfaces
@@ -39,20 +34,10 @@ public class InjectHybrid implements ClassTransformer {
         if (count.getValue() != 1 || hybrid == null) {
             return;
         }
-        classDecl.bodyCode.add(new Code() {
-            @Override
-            public ImportInfos getImportInfos() {
-                return ImportInfos.of();
-            }
-
-            @Override
-            public List<String> format(Declaration declaration) {
-                return Collections.singletonList(String.format(
-                    "%s: %s;",
-                    ParamDecl.formatParams(hybrid.params, declaration, BaseType.FormatType.RETURN),
-                    hybrid.returnType.line(declaration, BaseType.FormatType.INPUT)
-                ));
-            }
-        });
+        classDecl.bodyCode.add(Types.format(
+            "%s: %s;",
+            Types.custom((decl, formatType) -> ParamDecl.formatParams(hybrid.params, decl, BaseType.FormatType.RETURN)),
+            hybrid.returnType.contextShield(BaseType.FormatType.INPUT)
+        ));
     }
 }
