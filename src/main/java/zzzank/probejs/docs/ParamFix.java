@@ -38,10 +38,13 @@ public class ParamFix implements ProbeJSPlugin {
                     .member(
                         "type",
                         Types.primitive(
-                            SpecialTypes.dot(NameUtils.registryName(Registry.RECIPE_SERIALIZER_REGISTRY))
+                            SpecialTypes.dot(
+                                NameUtils.registryName(Registry.RECIPE_SERIALIZER_REGISTRY)
+                            )
                         )
                     )
                     .build()
+                    .comment("other recipe json elements are unknown to ProbeJS :(")
             );
         }
     }

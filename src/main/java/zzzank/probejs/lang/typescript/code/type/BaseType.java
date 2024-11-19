@@ -8,6 +8,7 @@ import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSOptionalType;
 import zzzank.probejs.lang.typescript.code.type.utility.ContextShield;
 import zzzank.probejs.lang.typescript.code.type.utility.ImportShield;
+import zzzank.probejs.lang.typescript.code.type.utility.WithFormatType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.ArrayList;
@@ -62,6 +63,10 @@ public abstract class BaseType extends Code {
         joined.addAll(selfTypes);
         joined.addAll(Arrays.asList(types));
         return new JSJoinedType.Intersection(joined);
+    }
+
+    public WithFormatType comment(String comment) {
+        return Types.withComment(this, comment);
     }
 
     public enum FormatType {

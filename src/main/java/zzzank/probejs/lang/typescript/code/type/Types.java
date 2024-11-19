@@ -191,4 +191,8 @@ public interface Types {
     static WithFormatType format(String format, BaseType... types) {
         return new WithFormatType(format, types);
     }
+
+    static WithFormatType withComment(BaseType type, String comment) {
+        return new WithFormatType("%s /* %s */", type, Types.primitive(comment));
+    }
 }
