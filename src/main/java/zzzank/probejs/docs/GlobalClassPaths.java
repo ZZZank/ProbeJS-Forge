@@ -50,7 +50,7 @@ public class GlobalClassPaths implements ProbeJSPlugin {
                         .map(ImportInfo::ofOriginal))
                     )
             ),
-            new TypeDecl(CLASS_PATH.content, Types.primitive("keyof GlobalClasses")),
+            new TypeDecl(CLASS_PATH.content, Types.STRING.and(Types.primitive("keyof GlobalClasses"))),
             new TypeDecl(JAVA_CLASS_PATH.content, TSUtilityType.exclude(CLASS_PATH, classPathTemplate)),
             new TypeDecl(TS_CLASS_PATH.content, TSUtilityType.extract(CLASS_PATH, classPathTemplate)),
             new TypeDecl("LoadClass<T>", Types.primitive("T extends ClassPath ? GlobalClasses[T] : never"))

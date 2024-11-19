@@ -46,12 +46,12 @@ public interface TSUtilityType {
         return Base.OMIT.of(type, keys);
     }
 
-    static TSParamType exclude(JSJoinedType.Union type, BaseType excluded) {
-        return Base.EXCLUDE.of(type, excluded);
+    static TSParamType exclude(BaseType type, BaseType excludeFilter) {
+        return Base.EXCLUDE.of(type, excludeFilter);
     }
 
-    static TSParamType extract(JSJoinedType.Union type, BaseType extractFilterUnion) {
-        return Base.EXTRACT.of(type, extractFilterUnion);
+    static TSParamType extract(BaseType type, BaseType extractFilter) {
+        return Base.EXTRACT.of(type, extractFilter);
     }
 
     static TSParamType nonNullable(BaseType type) {
