@@ -20,35 +20,6 @@ public class LoadClassFn implements ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {
-        val classTypeBase = Types.type(Class.class);
-        val paths = Types.object();
-        for (val clazz : ClassRegistry.REGISTRY.foundClasses.values()) {
-            val path = clazz.classPath;
-            val typeOf = Types.and(
-                Types.typeOf(clazz.classPath), //typeof A, and
-                Types.parameterized(classTypeBase, Types.type(path)) //Class<A>
-            );
-            //original
-            paths.member(clazz.original.getName(), typeOf);
-            //probejs style import
-            paths.member(path.getTSPath(), typeOf);
-        }
-        scriptDump.addGlobal(
-            "load_class",
-            new TypeDecl(
-                "GlobalClasses",
-                paths.build()
-                    .contextShield(BaseType.FormatType.RETURN)
-                    .importShield(ImportInfos.of(ClassRegistry.REGISTRY.foundClasses.values()
-                        .stream()
-                        .map(c -> c.classPath)
-                        .map(path -> ImportInfo.of(path, ImportType.ORIGINAL)))
-                    )
-            ),
-            new TypeDecl("ClassPath", Types.primitive("keyof GlobalClasses")),
-            new TypeDecl("LoadClass<T>", Types.primitive("T extends ClassPath ? GlobalClasses[T] : never"))
-        );
-
         val javaFn = Statements
             .func("java")
             .variable(Types.generic("T", Types.primitive("ClassPath")))

@@ -63,12 +63,13 @@ public final class ProbeBuiltinDocs implements ProbeJSPlugin {
 //      new       RegistryEvents(,
         new ForgeEvents(),
         //misc
+        new GlobalClassPaths(),
         new ParamFix(),
         new Snippets()
     );
 
-    private static void forEach(Consumer<ProbeJSPlugin> consumer) {
-        for (val builtinDoc : INSTANCE.get().BUILTIN_DOCS) {
+    private void forEach(Consumer<ProbeJSPlugin> consumer) {
+        for (val builtinDoc : BUILTIN_DOCS) {
             try {
                 consumer.accept(builtinDoc);
             } catch (Throwable t) {

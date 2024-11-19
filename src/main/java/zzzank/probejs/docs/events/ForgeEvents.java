@@ -4,6 +4,7 @@ package zzzank.probejs.docs.events;
 import dev.latvian.kubejs.script.ScriptType;
 import lombok.val;
 import net.minecraftforge.eventbus.api.Event;
+import zzzank.probejs.docs.GlobalClassPaths;
 import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
@@ -23,7 +24,7 @@ public class ForgeEvents implements ProbeJSPlugin {
 
         val T = "T";
 
-        scriptDump.addGlobal("forge_events", Statements
+        val classArgOnEvent = Statements
             .func("onForgeEvent")
             .variable(Types.generic(T, Types.typeOf(Event.class)))
             .param("target", Types.generic(T))
@@ -33,7 +34,23 @@ public class ForgeEvents implements ProbeJSPlugin {
                     .param("event", TSUtilityType.instanceType(Types.primitive(T)))
                     .build()
             )
-            .build());
+            .build();
+        val stringArgOnEvent = Statements
+            .func("onForgeEvent")
+            .variable(Types.generic(T, GlobalClassPaths.JAVA_CLASS_PATH))
+            .param("target", Types.generic(T))
+            .param(
+                "handler",
+                Types.lambda()
+                    .param("event", TSUtilityType.extract(
+                        TSUtilityType.instanceType(Types.generic(T)),
+                        Types.type(Event.class))
+                    )
+                    .build()
+            )
+            .build();
+
+        scriptDump.addGlobal("forge_events", classArgOnEvent, stringArgOnEvent);
     }
 
     @Override
