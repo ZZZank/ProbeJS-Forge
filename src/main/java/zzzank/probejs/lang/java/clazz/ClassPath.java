@@ -3,7 +3,6 @@ package zzzank.probejs.lang.java.clazz;
 import dev.latvian.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +18,6 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 @AllArgsConstructor
-@EqualsAndHashCode
 @ToString
 public final class ClassPath implements Comparable<ClassPath> {
 
@@ -126,5 +124,13 @@ public final class ClassPath implements Comparable<ClassPath> {
             }
         }
         return sizeCompare;
+    }
+
+    public boolean equals(final Object o) {
+        return o instanceof ClassPath other && Arrays.equals(this.parts, other.parts);
+    }
+
+    public int hashCode() {
+        return Arrays.hashCode(this.parts);
     }
 }
