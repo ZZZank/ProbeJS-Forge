@@ -77,6 +77,8 @@ public class ScriptDump {
         (clazz -> true)
     );
 
+    public static final String SIMPLE_PACKAGE = "simple_package_classes";
+
     public final ScriptType scriptType;
     public final ScriptManager manager;
     public final Path basePath;
@@ -262,13 +264,10 @@ public class ScriptDump {
                 output.addCode(convertibleType);
                 output.addCode(typeExport);
 
-                String fileKey;
-                if (classPath.parts.length > 1) {
-                    fileKey = classPath.parts[0] + "." + classPath.parts[1];
-                } else {
-                    fileKey = classPath.parts[0]; //todo: do we need this
-                }
-                BufferedWriter writer = files.computeIfAbsent(fileKey, key -> {
+                val fileKey = classPath.parts.length > 1
+                    ? classPath.parts[0] + "." + classPath.parts[1]
+                    : SIMPLE_PACKAGE; //todo: do we need this
+                val writer = files.computeIfAbsent(fileKey, key -> {
                     try {
                         return Files.newBufferedWriter(getPackageFolder().resolve(key + ".d.ts"));
                     } catch (IOException e) {
