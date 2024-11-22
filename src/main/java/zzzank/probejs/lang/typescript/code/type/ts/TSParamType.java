@@ -11,7 +11,7 @@ public class TSParamType extends BaseType {
     public BaseType baseType;
     public List<BaseType> params;
 
-    public TSParamType(BaseType baseType, List<BaseType> params) {
+    public TSParamType(BaseType baseType, List<? extends BaseType> params) {
         this.baseType = baseType;
         this.params = new ArrayList<>(params);
     }

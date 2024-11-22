@@ -4,6 +4,7 @@ import dev.latvian.mods.rhino.NativeArray;
 import dev.latvian.mods.rhino.ScriptableObject;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.transpiler.redirect.ClassRedirect;
+import zzzank.probejs.lang.transpiler.redirect.RhizoGenericRedirect;
 import zzzank.probejs.lang.transpiler.redirect.SimpleTypeRedirect;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
@@ -27,6 +28,7 @@ public class TypeRedirecting implements ProbeJSPlugin {
 
     @Override
     public void addPredefinedTypes(TypeConverter converter) {
+        converter.addTypeRedirect(new RhizoGenericRedirect());
         //class wrapper
         converter.addTypeRedirect(new ClassRedirect(CLASS_CONVERTIBLES));
         //js objects

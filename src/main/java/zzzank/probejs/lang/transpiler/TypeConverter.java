@@ -15,6 +15,7 @@ import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
+import zzzank.probejs.utils.CollectUtils;
 
 import java.lang.reflect.Type;
 import java.util.*;
@@ -60,28 +61,14 @@ public class TypeConverter {
         } else if (descriptor instanceof ArrayType arrayType) {
             return new TSArrayType(convertType(arrayType.component));
         } else if (descriptor instanceof ParamType paramType) {
-            if (RhizoState.GENERIC_ANNOTATION) {
-                val generics = paramType.getAnnotation(Generics.class);
-                if (generics != null) {
-                    val baseType = generics.base() == Object.class
-                        ? convertType(paramType.base)
-                        : new TSClassType(ClassPath.fromJava(generics.base()));
-                    val params = Arrays
-                        .stream(generics.value())
-                        .map(c -> (BaseType) new TSClassType(ClassPath.fromJava(c)))
-                        .collect(Collectors.toList());
-                    return new TSParamType(baseType, params);
-                }
-            }
-
-            BaseType base = convertType(paramType.base);
+            val base = convertType(paramType.base);
             if (base == Types.ANY) {
                 return Types.ANY;
             }
-            List<BaseType> params = paramType.params.stream().map(this::convertType).collect(Collectors.toList());
+            val params = CollectUtils.mapToList(paramType.params, this::convertType);
             return new TSParamType(base, params);
         } else if (descriptor instanceof VariableType variableType) {
-            List<TypeDescriptor> desc = variableType.descriptors;
+            val desc = variableType.descriptors;
             return switch (desc.size()) {
                 case 0 -> Types.generic(variableType.symbol);
                 case 1 -> Types.generic(variableType.symbol, convertType(desc.get(0)));
