@@ -18,7 +18,7 @@ public class AnnotationHolder {
     private final Annotation[] annotations;
 
     public boolean hasAnnotation(Class<? extends Annotation> annotation) {
-        return getAnnotations(annotation) != null;
+        return getAnnotation(annotation) != null;
     }
 
     @SuppressWarnings("unchecked")
