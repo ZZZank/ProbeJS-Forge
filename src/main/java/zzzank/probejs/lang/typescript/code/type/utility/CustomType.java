@@ -6,6 +6,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -22,7 +23,7 @@ public class CustomType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos(FormatType type) {
+    public ImportInfos getImportInfos(@Nonnull FormatType type) {
         return imports.apply(type);
     }
 

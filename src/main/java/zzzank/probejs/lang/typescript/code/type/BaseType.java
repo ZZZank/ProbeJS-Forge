@@ -11,6 +11,7 @@ import zzzank.probejs.lang.typescript.code.type.utility.ImportShield;
 import zzzank.probejs.lang.typescript.code.type.utility.WithFormatType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,10 +20,10 @@ import java.util.List;
 public abstract class BaseType extends Code {
     @Override
     public final ImportInfos getImportInfos() {
-        return getImportInfos(null);
+        return getImportInfos(FormatType.RETURN);
     }
 
-    public abstract ImportInfos getImportInfos(FormatType type);
+    public abstract ImportInfos getImportInfos(@Nonnull FormatType type);
 
     public final List<String> format(Declaration declaration) {
         return format(declaration, FormatType.RETURN);

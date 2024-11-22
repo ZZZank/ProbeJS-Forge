@@ -7,6 +7,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class TSVariableType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos(FormatType type) {
+    public ImportInfos getImportInfos(@Nonnull FormatType type) {
         val imports = ImportInfos.of();
         if (extendsType != null) {
             imports.addAll(extendsType.getImportInfos(type));

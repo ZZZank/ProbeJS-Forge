@@ -59,7 +59,7 @@ public class ClassDecl extends CommentableCode {
             .fromCodes(variableTypes)
             .fromCodes(bodyCode);
         if (superClass != null) {
-            infos.addAll(superClass.getImportInfos(null));
+            infos.addAll(superClass.getImportInfos());
         }
         return infos;
     }

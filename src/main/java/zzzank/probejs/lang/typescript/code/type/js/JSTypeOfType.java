@@ -7,6 +7,7 @@ import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.utility.StaticType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class JSTypeOfType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos(FormatType type) {
+    public ImportInfos getImportInfos(@Nonnull FormatType type) {
         return inner.getImportInfos(type);
     }
 

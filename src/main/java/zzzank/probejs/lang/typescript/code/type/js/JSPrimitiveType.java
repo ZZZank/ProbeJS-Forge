@@ -5,6 +5,7 @@ import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class JSPrimitiveType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos(FormatType type) {
+    public ImportInfos getImportInfos(@Nonnull FormatType type) {
         return ImportInfos.of();
     }
 

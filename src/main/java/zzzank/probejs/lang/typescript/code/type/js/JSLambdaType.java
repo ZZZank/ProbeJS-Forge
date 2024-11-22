@@ -8,6 +8,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -26,7 +27,7 @@ public class JSLambdaType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos(FormatType type) {
+    public ImportInfos getImportInfos(@Nonnull FormatType type) {
         val infos = ImportInfos.of(returnType.getImportInfos(type));
         for (val param : params) {
             infos.addAll(param.type.getImportInfos(type));

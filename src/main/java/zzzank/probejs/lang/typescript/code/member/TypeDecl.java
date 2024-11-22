@@ -21,7 +21,7 @@ public class TypeDecl extends CommentableCode {
 
     @Override
     public ImportInfos getImportInfos() {
-        return type.getImportInfos(null);
+        return type.getImportInfos();
     }
 
     @Override

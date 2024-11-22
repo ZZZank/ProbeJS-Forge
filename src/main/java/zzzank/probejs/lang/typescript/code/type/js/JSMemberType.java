@@ -1,30 +1,28 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
+import lombok.AllArgsConstructor;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 public abstract class JSMemberType extends BaseType {
     public final Collection<JSParam> members;
 
-
-    protected JSMemberType(Collection<JSParam> members) {
-        this.members = members;
-    }
-
     @Override
-    public ImportInfos getImportInfos(FormatType type) {
+    public ImportInfos getImportInfos(@Nonnull FormatType type) {
         return ImportInfos.of().fromCodes(members.stream().map(JSParam::type), type);
     }
 
     protected String formatMembers(Declaration declaration, FormatType type) {
         return members.stream()
-                .map(m -> m.format(declaration, type, this::getMemberName))
-                .collect(Collectors.joining(", "));
+            .map(m -> m.format(declaration, type, this::getMemberName))
+            .collect(Collectors.joining(", "));
     }
 
     protected abstract String getMemberName(String name);

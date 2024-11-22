@@ -8,6 +8,7 @@ import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 import zzzank.probejs.lang.typescript.refer.ImportType;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class StaticType extends TSClassType {
     }
 
     @Override
-    public ImportInfos getImportInfos(FormatType type) {
+    public ImportInfos getImportInfos(@Nonnull FormatType type) {
         return ImportInfos.of(ImportInfo.ofStatic(classPath));
     }
 
