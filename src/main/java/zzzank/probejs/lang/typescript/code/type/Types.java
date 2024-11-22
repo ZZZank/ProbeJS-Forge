@@ -13,8 +13,8 @@ import zzzank.probejs.lang.typescript.refer.ImportInfos;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public interface Types {
@@ -153,7 +153,10 @@ public interface Types {
         return new CustomType(formatter, imports);
     }
 
-    static BaseType custom(BiFunction<Declaration, BaseType.FormatType, String> formatter, Supplier<ImportInfos> imports) {
+    static CustomType custom(
+        BiFunction<Declaration, BaseType.FormatType, String> formatter,
+        Function<BaseType.FormatType, ImportInfos> imports
+    ) {
         return new CustomType(formatter, imports);
     }
 

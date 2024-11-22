@@ -15,8 +15,8 @@ public class TSArrayType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos() {
-        return component.getImportInfos();
+    public ImportInfos getImportInfos(FormatType type) {
+        return component.getImportInfos(type);
     }
 
     @Override

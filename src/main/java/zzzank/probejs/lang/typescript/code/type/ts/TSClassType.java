@@ -17,8 +17,8 @@ public class TSClassType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos() {
-        return ImportInfos.of(ImportInfo.of(classPath));
+    public ImportInfos getImportInfos(FormatType type) {
+        return ImportInfos.of(ImportInfo.of(classPath, type));
     }
 
     @Override

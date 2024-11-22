@@ -20,7 +20,7 @@ public class StaticType extends TSClassType {
     }
 
     @Override
-    public ImportInfos getImportInfos() {
+    public ImportInfos getImportInfos(FormatType type) {
         return ImportInfos.of(ImportInfo.ofStatic(classPath));
     }
 

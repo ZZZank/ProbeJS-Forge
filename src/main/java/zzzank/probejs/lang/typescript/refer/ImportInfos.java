@@ -4,6 +4,7 @@ import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.code.Code;
+import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.utils.CollectUtils;
 
 import java.util.*;
@@ -72,14 +73,30 @@ public class ImportInfos implements Iterable<ImportInfo> {
         return code == null ? this : addAll(code.getImportInfos());
     }
 
+    public ImportInfos fromCode(BaseType code, BaseType.FormatType type) {
+        return code == null ? this : addAll(code.getImportInfos(type));
+    }
+
     public ImportInfos fromCodes(@NotNull Stream<? extends Code> codes) {
         codes.forEach(this::fromCode);
+        return this;
+    }
+
+    public ImportInfos fromCodes(@NotNull Stream<? extends BaseType> codes, BaseType.FormatType type) {
+        codes.forEach(c -> this.fromCode(c, type));
         return this;
     }
 
     public ImportInfos fromCodes(@NotNull Collection<? extends Code> codes) {
         for (val code : codes) {
             fromCode(code);
+        }
+        return this;
+    }
+
+    public ImportInfos fromCodes(@NotNull Collection<? extends BaseType> codes, BaseType.FormatType type) {
+        for (val code : codes) {
+            fromCode(code, type);
         }
         return this;
     }

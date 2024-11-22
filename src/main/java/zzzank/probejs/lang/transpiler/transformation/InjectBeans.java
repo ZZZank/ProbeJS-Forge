@@ -74,7 +74,7 @@ public class InjectBeans implements ClassTransformer {
 
         @Override
         public ImportInfos getImportInfos() {
-            return baseType.getImportInfos();
+            return baseType.getImportInfos(BaseType.FormatType.RETURN);
         }
 
         @Override
@@ -82,7 +82,7 @@ public class InjectBeans implements ClassTransformer {
             return Collections.singletonList(String.format(
                 formattingString,
                 ProbeJS.GSON.toJson(name),
-                baseType.line(declaration)
+                baseType.line(declaration, BaseType.FormatType.RETURN)
             ));
         }
     }

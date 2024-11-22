@@ -39,9 +39,9 @@ public class MethodDecl extends CommentableCode {
 
     @Override
     public ImportInfos getImportInfos() {
-        return ImportInfos.of(returnType.getImportInfos())
-            .fromCodes(variableTypes)
-            .fromCodes(params.stream().map(p -> p.type));
+        return ImportInfos.of(returnType.getImportInfos(BaseType.FormatType.RETURN))
+            .fromCodes(variableTypes, BaseType.FormatType.VARIABLE)
+            .fromCodes(params.stream().map(p -> p.type), BaseType.FormatType.INPUT);
     }
 
     @Override

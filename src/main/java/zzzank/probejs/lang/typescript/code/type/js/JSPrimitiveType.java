@@ -18,7 +18,7 @@ public class JSPrimitiveType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos() {
+    public ImportInfos getImportInfos(FormatType type) {
         return ImportInfos.of();
     }
 

@@ -22,8 +22,8 @@ public class JSTypeOfType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos() {
-        return inner.getImportInfos();
+    public ImportInfos getImportInfos(FormatType type) {
+        return inner.getImportInfos(type);
     }
 
     @Override

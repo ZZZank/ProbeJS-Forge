@@ -26,10 +26,10 @@ public class JSLambdaType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos() {
-        val infos = ImportInfos.of(returnType.getImportInfos());
+    public ImportInfos getImportInfos(FormatType type) {
+        val infos = ImportInfos.of(returnType.getImportInfos(type));
         for (val param : params) {
-            infos.addAll(param.type.getImportInfos());
+            infos.addAll(param.type.getImportInfos(type));
         }
         return infos;
     }

@@ -17,8 +17,8 @@ public abstract class JSMemberType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos() {
-        return ImportInfos.of().fromCodes(members.stream().map(JSParam::type));
+    public ImportInfos getImportInfos(FormatType type) {
+        return ImportInfos.of().fromCodes(members.stream().map(JSParam::type), type);
     }
 
     protected String formatMembers(Declaration declaration, FormatType type) {

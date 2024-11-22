@@ -17,6 +17,13 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseType extends Code {
+    @Override
+    public final ImportInfos getImportInfos() {
+        return getImportInfos(null);
+    }
+
+    public abstract ImportInfos getImportInfos(FormatType type);
+
     public final List<String> format(Declaration declaration) {
         return format(declaration, FormatType.RETURN);
     }

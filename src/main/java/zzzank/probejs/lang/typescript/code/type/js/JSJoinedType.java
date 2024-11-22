@@ -16,10 +16,9 @@ public abstract class JSJoinedType extends BaseType {
         this.types = types;
     }
 
-
     @Override
-    public ImportInfos getImportInfos() {
-        return ImportInfos.of().fromCodes(types);
+    public ImportInfos getImportInfos(FormatType type) {
+        return ImportInfos.of().fromCodes(types, type);
     }
 
     @Override

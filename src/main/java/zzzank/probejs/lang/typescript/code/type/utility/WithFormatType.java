@@ -22,8 +22,8 @@ public class WithFormatType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos() {
-        return ImportInfos.of().fromCodes(Arrays.asList(types));
+    public ImportInfos getImportInfos(FormatType type) {
+        return ImportInfos.of().fromCodes(Arrays.asList(types), type);
     }
 
     @Override

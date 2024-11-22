@@ -17,8 +17,8 @@ public class TSParamType extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos() {
-        return ImportInfos.of(baseType.getImportInfos()).fromCodes(params);
+    public ImportInfos getImportInfos(FormatType type) {
+        return ImportInfos.of(baseType.getImportInfos(type)).fromCodes(params, type);
     }
 
     @Override

@@ -19,8 +19,8 @@ public class ImportShield<T extends BaseType> extends BaseType {
     }
 
     @Override
-    public ImportInfos getImportInfos() {
-        return imports == null ? inner.getImportInfos() : imports;
+    public ImportInfos getImportInfos(FormatType type) {
+        return imports != null ? imports : inner.getImportInfos(type);
     }
 
     @Override

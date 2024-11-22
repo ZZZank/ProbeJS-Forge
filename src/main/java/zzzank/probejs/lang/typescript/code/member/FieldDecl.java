@@ -31,7 +31,7 @@ public class FieldDecl extends CommentableCode {
 
     @Override
     public ImportInfos getImportInfos() {
-        return type.getImportInfos();
+        return type.getImportInfos(BaseType.FormatType.RETURN);
     }
 
     @Override

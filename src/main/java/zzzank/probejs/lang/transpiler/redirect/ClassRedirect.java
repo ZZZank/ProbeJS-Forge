@@ -14,6 +14,7 @@ import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * @author ZZZank
@@ -36,16 +37,14 @@ public class ClassRedirect implements TypeRedirect {
         if (param instanceof JSPrimitiveType || param instanceof TSVariableType) {
             return converted;
         }
+        val selector = (Function<BaseType.FormatType, BaseType>) formatType -> switch (formatType) {
+            case INPUT -> Types.or(converted, Types.parameterized(GlobalClasses.J_CLASS, param));
+            case VARIABLE -> converted;
+            case RETURN -> Types.and(converted, Types.typeOf(param));
+        };
         return Types.custom(
-            (declaration, formatType) -> {
-                val cond = switch (formatType) {
-                    case INPUT -> Types.or(converted, Types.parameterized(GlobalClasses.J_CLASS, param));
-                    case VARIABLE -> converted;
-                    case RETURN -> Types.and(converted, Types.typeOf(param));
-                };
-                return cond.line(declaration, formatType);
-            },
-            () -> converted.getImportInfos().add(ImportInfo.ofOriginal(GlobalClasses.J_CLASS.classPath))
+            (declaration, formatType) -> selector.apply(formatType).line(declaration, formatType),
+            (type) -> selector.apply(type).getImportInfos(type)
         );
     }
 

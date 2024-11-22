@@ -28,10 +28,10 @@ public class FunctionDeclaration extends CommentableCode {
     @Override
     public ImportInfos getImportInfos() {
         val infos = ImportInfos.of()
-            .addAll(returnType.getImportInfos())
-            .fromCodes(variableTypes);
+            .addAll(returnType.getImportInfos(BaseType.FormatType.RETURN))
+            .fromCodes(variableTypes, BaseType.FormatType.VARIABLE);
         for (val param : params) {
-            infos.addAll(param.type.getImportInfos());
+            infos.addAll(param.type.getImportInfos(BaseType.FormatType.INPUT));
         }
         return infos;
     }
