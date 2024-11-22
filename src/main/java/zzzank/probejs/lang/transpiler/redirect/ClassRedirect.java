@@ -1,6 +1,7 @@
 package zzzank.probejs.lang.transpiler.redirect;
 
 import lombok.val;
+import zzzank.probejs.docs.GlobalClasses;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
 import zzzank.probejs.lang.java.type.impl.ClassType;
 import zzzank.probejs.lang.java.type.impl.ParamType;
@@ -35,11 +36,14 @@ public class ClassRedirect implements TypeRedirect {
             return converted;
         }
         return Types.custom(
-            (declaration, formatType) -> (
-                formatType == BaseType.FormatType.RETURN
-                    ? Types.and(converted, Types.typeOf(param))
-                    : converted
-            ).line(declaration, formatType),
+            (declaration, formatType) -> {
+                val cond = switch (formatType) {
+                    case INPUT -> Types.or(converted, Types.parameterized(GlobalClasses.J_CLASS, param));
+                    case VARIABLE -> converted;
+                    case RETURN -> Types.and(converted, Types.typeOf(param));
+                };
+                return cond.line(declaration, formatType);
+            },
             converted::getImportInfos
         );
     }

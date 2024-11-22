@@ -63,7 +63,7 @@ public final class ProbeBuiltinDocs implements ProbeJSPlugin {
 //      new       RegistryEvents(,
         new ForgeEvents(),
         //misc
-        new GlobalClassPaths(),
+        new GlobalClasses(),
         new ParamFix(),
         new Snippets()
     );
