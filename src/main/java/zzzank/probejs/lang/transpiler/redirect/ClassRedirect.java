@@ -11,6 +11,7 @@ import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
+import zzzank.probejs.lang.typescript.refer.ImportInfo;
 
 import java.util.Set;
 
@@ -44,7 +45,7 @@ public class ClassRedirect implements TypeRedirect {
                 };
                 return cond.line(declaration, formatType);
             },
-            converted::getImportInfos
+            () -> converted.getImportInfos().add(ImportInfo.ofOriginal(GlobalClasses.J_CLASS.classPath))
         );
     }
 

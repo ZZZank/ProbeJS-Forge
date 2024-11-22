@@ -50,10 +50,13 @@ public class GlobalClasses implements ProbeJSPlugin {
                 GLOBAL_CLASSES.content,
                 paths.build()
                     .contextShield(BaseType.FormatType.RETURN)
-                    .importShield(ImportInfos.of(ClassRegistry.REGISTRY.foundClasses.values()
-                        .stream()
-                        .map(c -> c.classPath)
-                        .map(ImportInfo::ofOriginal))
+                    .importShield(
+                        ImportInfos.of(ClassRegistry.REGISTRY.foundClasses.values()
+                                .stream()
+                                .map(c -> c.classPath)
+                                .map(ImportInfo::ofOriginal)
+                            )
+                            .add(ImportInfo.ofOriginal(J_CLASS.classPath))
                     )
             ),
             new TypeDecl(CLASS_PATH.content, Types.STRING.and(Types.primitive("keyof GlobalClasses"))),
