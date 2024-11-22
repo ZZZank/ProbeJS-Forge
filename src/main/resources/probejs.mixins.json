@@ -4,7 +4,6 @@
   "package": "zzzank.probejs.mixins",
   "mixins": [
     "AccessForgeRegistryManager",
-    "AccessNativeJavaObject",
     "MixinRecipeEventJS",
     "AccessTypedDynamicFunction",
     "MixinConsole",

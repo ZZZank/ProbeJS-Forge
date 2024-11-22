@@ -41,7 +41,7 @@ public abstract class MixinScriptManager {
 
     @Inject(method = "loadJavaClass", at = @At("RETURN"))
     public void pjs$captureClass(Scriptable scope, Object[] args, CallbackInfoReturnable<NativeJavaClass> cir) {
-        var result = cir.getReturnValue();
+        val result = cir.getReturnValue();
         if (result == null) {
             return;
         }

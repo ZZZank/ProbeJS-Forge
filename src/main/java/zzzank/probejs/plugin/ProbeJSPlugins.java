@@ -2,13 +2,11 @@ package zzzank.probejs.plugin;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
+import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.GameUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -18,8 +16,10 @@ public class ProbeJSPlugins {
 
     private static final List<ProbeJSPlugin> ALL = new ArrayList<>();
 
-    public static void register(ProbeJSPlugin... plugins) {
-        ALL.addAll(Arrays.asList(plugins));
+    public static void register(@NotNull ProbeJSPlugin... plugins) {
+        for (val plugin : plugins) {
+            ALL.add(Objects.requireNonNull(plugin));
+        }
     }
 
     public static List<ProbeJSPlugin> getAll() {

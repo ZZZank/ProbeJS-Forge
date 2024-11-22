@@ -27,11 +27,10 @@ public class NameUtils {
         for (int i = 0; i < words.length; i++) {
             String word = words[i];
             if (!word.isEmpty()) {
-                if (i == 0) {
-                    result.append(Character.toLowerCase(word.charAt(0)));
-                } else {
-                    result.append(Character.toUpperCase(word.charAt(0)));
-                }
+                result.append(i == 0
+                    ? Character.toLowerCase(word.charAt(0))
+                    : Character.toUpperCase(word.charAt(0))
+                );
                 result.append(word.substring(1));
             }
         }
@@ -39,8 +38,7 @@ public class NameUtils {
     }
 
     public static String firstLower(String word) {
-        return Character.toLowerCase(word.charAt(0)) +
-                word.substring(1);
+        return Character.toLowerCase(word.charAt(0)) + word.substring(1);
     }
 
     public static String[] resourceLocationToPath(String resourceLocation) {

@@ -2,15 +2,9 @@ package zzzank.probejs.docs;
 
 import lombok.val;
 import zzzank.probejs.features.kubejs.BindingFilter;
-import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.lang.typescript.code.member.TypeDecl;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
-import zzzank.probejs.lang.typescript.refer.ImportInfos;
-import zzzank.probejs.lang.typescript.refer.ImportType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 /**

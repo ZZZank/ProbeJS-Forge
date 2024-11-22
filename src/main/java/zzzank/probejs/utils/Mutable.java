@@ -34,7 +34,6 @@ public class Mutable<T> implements Supplier<T>, Iterable<T> {
 
     /**
      * get the value this {@code Mutable} holds, and set it to null
-     * @return
      */
     public T getAndForget() {
         val tmp = this.value;

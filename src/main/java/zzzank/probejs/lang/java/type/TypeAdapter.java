@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.java.type;
 
+import lombok.val;
 import zzzank.probejs.lang.java.type.impl.*;
 
 import java.lang.annotation.Annotation;
@@ -80,7 +81,8 @@ public class TypeAdapter {
                     paramType.params.stream().map(t -> consolidateType(t, symbol, replacement)).collect(Collectors.toList())
             );
         } else if (in instanceof WildType wildType) {
-            return new WildType(wildType.bound.map(t -> consolidateType(t, symbol, replacement)));
+            val bound = wildType.bound;
+            return new WildType(bound == null ? null : consolidateType(bound, symbol, replacement));
         }
         return in;
     }
