@@ -1,26 +1,24 @@
 package zzzank.probejs.lang.java.base;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.val;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
+@AllArgsConstructor
 public class AnnotationHolder {
+    @Nonnull
     private final Annotation[] annotations;
 
-    public AnnotationHolder(Annotation[] annotations) {
-        this.annotations = annotations;
-    }
-
-    public Annotation[] getAnnotations() {
-        return annotations;
-    }
-
     public boolean hasAnnotation(Class<? extends Annotation> annotation) {
-        return Arrays.stream(annotations).anyMatch(annotation::isInstance);
+        return getAnnotations(annotation) != null;
     }
 
     @SuppressWarnings("unchecked")

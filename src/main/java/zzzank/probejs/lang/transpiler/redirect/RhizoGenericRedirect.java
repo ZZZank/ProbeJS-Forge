@@ -17,18 +17,18 @@ import zzzank.probejs.utils.CollectUtils;
  * @author ZZZank
  */
 public class RhizoGenericRedirect implements TypeRedirect {
+
     @Override
     public boolean test(TypeDescriptor typeDescriptor, TypeConverter converter) {
-        return RhizoState.GENERIC_ANNOTATION && typeDescriptor instanceof ParamType;
+        return RhizoState.GENERIC_ANNOTATION
+            && typeDescriptor instanceof ParamType
+            && typeDescriptor.hasAnnotation(Generics.class);
     }
 
     @Override
     public BaseType apply(TypeDescriptor typeDescriptor, TypeConverter converter) {
         val paramType = (ParamType) typeDescriptor;
         val annot = typeDescriptor.getAnnotation(Generics.class);
-        if (annot == null) {
-            return converter.convertTypeExcluding(typeDescriptor, this);
-        }
         val baseType = annot.base() == Object.class
             ? converter.convertType(paramType.base)
             : Types.type(annot.base());

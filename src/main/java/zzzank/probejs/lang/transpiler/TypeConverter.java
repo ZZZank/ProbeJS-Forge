@@ -1,11 +1,8 @@
 package zzzank.probejs.lang.transpiler;
 
 import dev.latvian.kubejs.script.ScriptManager;
-import dev.latvian.mods.rhino.annotations.typing.Generics;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
-import zzzank.probejs.features.rhizo.RhizoState;
-import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.type.TypeAdapter;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
 import zzzank.probejs.lang.java.type.impl.*;
