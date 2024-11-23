@@ -6,14 +6,19 @@ import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.features.kubejs.BindingFilter;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.schema.SchemaDump;
+import zzzank.probejs.lang.schema.SchemaElement;
 import zzzank.probejs.lang.snippet.SnippetDump;
 import zzzank.probejs.lang.transpiler.Transpiler;
 import zzzank.probejs.lang.transpiler.TypeConverter;
+import zzzank.probejs.lang.transpiler.redirect.TypeRedirect;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
+import zzzank.probejs.lang.typescript.code.Code;
+import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -30,12 +35,14 @@ public interface ProbeJSPlugin {
     /**
      * Used to add forcefully-converted types in order to prevent transient types
      * like boolean / string from showing up.
+     * @see TypeConverter#addTypeRedirect(TypeRedirect)
      */
     default void addPredefinedTypes(TypeConverter converter) {
     }
 
     /**
      * Used to prevent some types from showing up in the dump, e.g. primitives.
+     * @see Transpiler#reject(Class)
      */
     default void denyTypes(Transpiler transpiler) {
     }
@@ -55,6 +62,8 @@ public interface ProbeJSPlugin {
      * added code is either:
      * 1. a type
      * 2. a binding (though it's not very needed for most people)
+     * @see ScriptDump#addGlobal(String, Code...)
+     * @see ScriptDump#addGlobal(String, Collection, Code...)
      */
     default void addGlobals(ScriptDump scriptDump) {
     }
@@ -63,6 +72,10 @@ public interface ProbeJSPlugin {
      * Adds a convertible type to a classPath.
      * <br>
      * e.g. Item can be assigned with any item name string.
+     * @see ScriptDump#assignType(Class, BaseType)
+     * @see ScriptDump#assignType(ClassPath, BaseType)
+     * @see ScriptDump#assignType(Class, String, BaseType)
+     * @see ScriptDump#assignType(ClassPath, String, BaseType)
      */
     default void assignType(ScriptDump scriptDump) {
     }
@@ -82,9 +95,15 @@ public interface ProbeJSPlugin {
         return Collections.emptySet();
     }
 
+    /**
+     * @see SnippetDump#snippet(String)
+     */
     default void addVSCodeSnippets(SnippetDump dump) {
     }
 
+    /**
+     * @see SchemaDump#newSchema(String, SchemaElement)
+     */
     default void addJsonSchema(SchemaDump dump) {
     }
 
