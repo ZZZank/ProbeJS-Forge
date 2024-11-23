@@ -70,11 +70,6 @@ public final class ClassPath implements Comparable<ClassPath> {
         return TS_PATH_PREFIX + getConcatenated("/");
     }
 
-    @HideFromJS
-    public Class<?> forName() throws ClassNotFoundException {
-        return Class.forName(getJavaPath());
-    }
-
     @Nullable
     @HideFromJS
     public Clazz toClazz() {

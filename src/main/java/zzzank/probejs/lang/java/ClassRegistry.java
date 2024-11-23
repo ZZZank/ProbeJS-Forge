@@ -162,11 +162,10 @@ public class ClassRegistry {
                 }
                 val classPath = new ClassPath(parts);
                 try {
-                    val c= classPath.forName();
-                    if (ProbeConfig.publicClassOnly.get() && !Modifier.isPublic(c.getModifiers())) {
-                        continue;
+                    val c= Class.forName(classPath.getJavaPath());
+                    if (!ProbeConfig.publicClassOnly.get() || Modifier.isPublic(c.getModifiers())) {
+                        fromClass(c);
                     }
-                    fromClass(c);
                 } catch (Throwable ignored) {
                 }
                 lastPath = classPath;

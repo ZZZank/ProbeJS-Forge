@@ -28,6 +28,14 @@ public class ClassRedirect implements TypeRedirect {
     }
 
     @Override
+    public boolean test(TypeDescriptor typeDescriptor, TypeConverter converter) {
+        return typeDescriptor instanceof ParamType paramType
+            && paramType.params.size() == 1
+            && paramType.base instanceof ClassType base
+            && convertibles.contains(base.clazz);
+    }
+
+    @Override
     public BaseType apply(TypeDescriptor typeDescriptor, TypeConverter converter) {
         val converted = converter.convertTypeExcluding(typeDescriptor, this);
         if (!(converted instanceof TSParamType paramType)) {
@@ -37,22 +45,13 @@ public class ClassRedirect implements TypeRedirect {
         if (param instanceof JSPrimitiveType || param instanceof TSVariableType) {
             return converted;
         }
-        val selector = (Function<BaseType.FormatType, BaseType>) formatType -> switch (formatType) {
-            case INPUT -> Types.or(converted, Types.parameterized(GlobalClasses.J_CLASS, param));
-            case VARIABLE -> converted;
-            case RETURN -> Types.and(converted, Types.typeOf(param));
-        };
+        val selector = (Function<BaseType.FormatType, BaseType>)
+            formatType -> formatType == BaseType.FormatType.RETURN
+                ? Types.and(converted, Types.typeOf(param))
+                : converted;
         return Types.custom(
             (declaration, formatType) -> selector.apply(formatType).line(declaration, formatType),
             (type) -> selector.apply(type).getImportInfos(type)
         );
-    }
-
-    @Override
-    public boolean test(TypeDescriptor typeDescriptor, TypeConverter converter) {
-        return typeDescriptor instanceof ParamType paramType
-            && paramType.params.size() == 1
-            && paramType.base instanceof ClassType base
-            && convertibles.contains(base.clazz);
     }
 }
