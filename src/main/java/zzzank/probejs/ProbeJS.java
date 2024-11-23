@@ -32,8 +32,6 @@ public class ProbeJS {
     public ProbeJS() {
         EventBuses.registerModEventBus(ProbeJS.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
 
-        ProbeJSPlugins.register(new BuiltinProbeJSPlugin(), ProbeBuiltinDocs.get());
-
         ProbeConfig.refresh();
     }
 }

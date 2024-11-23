@@ -2,8 +2,12 @@ package zzzank.probejs.plugin;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnmodifiableView;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.docs.ProbeBuiltinDocs;
+import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.GameUtils;
 
 import java.util.*;
@@ -14,20 +18,24 @@ import java.util.function.Consumer;
  */
 public class ProbeJSPlugins {
 
-    private static final List<ProbeJSPlugin> ALL = new ArrayList<>();
+    private static final List<ProbeJSPlugin> ALL = CollectUtils.ofList(
+        new BuiltinProbeJSPlugin(),
+        ProbeBuiltinDocs.get()
+    );
 
-    public static void register(@NotNull ProbeJSPlugin... plugins) {
+    public static void register(@NotNull ProbeJSPlugin @NotNull ... plugins) {
         for (val plugin : plugins) {
             ALL.add(Objects.requireNonNull(plugin));
         }
     }
 
-    public static List<ProbeJSPlugin> getAll() {
+    @Contract(pure = true)
+    public static @NotNull @UnmodifiableView List<ProbeJSPlugin> getAll() {
         return Collections.unmodifiableList(ALL);
     }
 
     @HideFromJS
-    public static void forEachPlugin(Consumer<ProbeJSPlugin> action) {
+    public static void forEachPlugin(@NotNull Consumer<@NotNull ProbeJSPlugin> action) {
         for (val plugin : ALL) {
             try {
                 action.accept(plugin);
