@@ -70,14 +70,14 @@ public class GlobalClasses implements ProbeJSPlugin {
 
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
+        val classT = Types.parameterized(Types.type(Class.class), Types.generic("T"));
         val jClass = Statements.clazz(J_CLASS.classPath.getName())
             .abstractClass()
             .typeVariables("T")
             .field("prototype", Types.NULL)
-            .field("__javaObject__", Types.ANY)
-            .build();
+            .field("__javaObject__", classT.and(Types.primitive("this")));
         val file = new TypeScriptFile(J_CLASS.classPath);
-        file.addCode(jClass);
+        file.addCode(jClass.build());
         globalClasses.put(J_CLASS.classPath, file);
     }
 }
