@@ -14,7 +14,7 @@ public abstract class CommentableCode extends Code {
         List<String> formatted = new ArrayList<>();
         formatted.add("/**");
         for (String comment : comments) {
-            formatted.add(String.format(" * %s",comment));
+            formatted.add(String.format(" * %s", comment));
         }
         formatted.add(" */");
         return formatted;
@@ -23,7 +23,9 @@ public abstract class CommentableCode extends Code {
     public abstract List<String> formatRaw(Declaration declaration);
 
     public final List<String> format(Declaration declaration) {
-        if (comments.isEmpty()) return formatRaw(declaration);
+        if (comments.isEmpty()) {
+            return formatRaw(declaration);
+        }
         List<String> result = new ArrayList<>(formatComments());
         result.addAll(formatRaw(declaration));
         return result;

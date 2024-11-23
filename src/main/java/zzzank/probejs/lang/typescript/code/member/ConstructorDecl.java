@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.member;
 
+import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
@@ -21,8 +22,8 @@ public class ConstructorDecl extends CommentableCode {
     @Override
     public ImportInfos getImportInfos() {
         return ImportInfos.of()
-            .fromCodes(variableTypes)
-            .fromCodes(params.stream().map(p -> p.type));
+            .fromCodes(variableTypes, BaseType.FormatType.VARIABLE)
+            .fromCodes(params.stream().map(p -> p.type), BaseType.FormatType.INPUT);
     }
 
     @Override
@@ -30,14 +31,14 @@ public class ConstructorDecl extends CommentableCode {
         // Format head - constructor<T>
         String head = "constructor";
         if (!variableTypes.isEmpty()) {
-            String variables = variableTypes.stream()
-                    .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
-                    .collect(Collectors.joining(", "));
+            val variables = variableTypes.stream()
+                .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
+                .collect(Collectors.joining(", "));
             head = String.format("%s<%s>", head, variables);
         }
 
         // Format body - (a: type, ...)
-        String body = ParamDecl.formatParams(params, declaration);
+        val body = ParamDecl.formatParams(params, declaration);
 
         // Format tail - {/** content */}
         String tail = "";

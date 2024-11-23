@@ -21,13 +21,17 @@ public class TypeDecl extends CommentableCode {
 
     @Override
     public ImportInfos getImportInfos() {
-        return type.getImportInfos();
+        return type.getImportInfos(BaseType.FormatType.INPUT);
     }
 
     @Override
     public List<String> formatRaw(Declaration declaration) {
         return Collections.singletonList(
-            String.format("export type %s = %s;", symbol, type.line(declaration, BaseType.FormatType.INPUT))
+            String.format(
+                "export type %s = %s;",
+                symbol,
+                type.line(declaration, BaseType.FormatType.INPUT)
+            )
         );
     }
 }

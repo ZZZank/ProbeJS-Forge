@@ -7,7 +7,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -23,10 +23,7 @@ public class FieldDecl extends CommentableCode {
     }
 
     public VariableDeclaration asVariableDecl() {
-        return new VariableDeclaration(
-            this.name,
-            this.type
-        );
+        return new VariableDeclaration(this.name, this.type);
     }
 
     @Override
@@ -37,12 +34,17 @@ public class FieldDecl extends CommentableCode {
     @Override
     public List<String> formatRaw(Declaration declaration) {
         List<String> modifiers = new ArrayList<>();
-        if (isStatic) modifiers.add("static");
-        if (isFinal) modifiers.add("readonly");
+        if (isStatic) {
+            modifiers.add("static");
+        }
+        if (isFinal) {
+            modifiers.add("readonly");
+        }
 
-
-        return Arrays.asList(String.format("%s %s: %s",
-            String.join(" ", modifiers), ProbeJS.GSON.toJson(name), type.line(declaration, BaseType.FormatType.RETURN)
+        return Collections.singletonList(String.format("%s %s: %s",
+            String.join(" ", modifiers),
+            ProbeJS.GSON.toJson(name),
+            type.line(declaration, BaseType.FormatType.RETURN)
         ));
     }
 }

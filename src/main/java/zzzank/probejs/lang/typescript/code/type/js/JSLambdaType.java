@@ -28,11 +28,8 @@ public class JSLambdaType extends BaseType {
 
     @Override
     public ImportInfos getImportInfos(@Nonnull FormatType type) {
-        val infos = ImportInfos.of(returnType.getImportInfos(type));
-        for (val param : params) {
-            infos.addAll(param.type.getImportInfos(type));
-        }
-        return infos;
+        return ImportInfos.of(returnType.getImportInfos(type))
+            .fromCodes(params.stream().map(p -> p.type), paramFormatType(type));
     }
 
     public static FormatType paramFormatType(FormatType formatType) {
