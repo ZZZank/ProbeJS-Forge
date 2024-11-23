@@ -34,7 +34,7 @@ public class RhizoGenericRedirect implements TypeRedirect {
             : Types.type(annot.base());
         val params = CollectUtils.mapToList(
             annot.value(),
-            c -> new TSClassType(ClassPath.fromJava(c))
+            converter::convertType
         );
         return new TSParamType(baseType, params);
     }

@@ -30,12 +30,14 @@ public class GlobalClasses implements ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {
+        val converter = scriptDump.transpiler.typeConverter;
+
         val paths = Types.object();
         for (val clazz : ClassRegistry.REGISTRY.foundClasses.values()) {
             val path = clazz.classPath;
             val typeOf = Types.and(
                 Types.typeOf(clazz.classPath), //typeof A, and
-                Types.parameterized(J_CLASS, Types.type(path)) //JClass<A>
+                Types.parameterized(J_CLASS, converter.convertType(clazz.original)) //JClass<A>
             );
             //original
             paths.member(clazz.original.getName(), typeOf);
