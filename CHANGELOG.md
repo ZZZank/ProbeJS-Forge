@@ -1,3 +1,39 @@
+# ProbeJS Legacy 4.3.1 -> 4.4.0
+
+better `$Class<T>` and recipe doc
+
+### Event
+
+- onForgeEvent() that uses string as its first arg will now have typing supports again
+    - for example `onForgeEvent("net.minecraftforge.event.entity.ProjectileImpactEvent$Arrow", (event) => {}`
+- now almost all elements in `recipes` in RecipeEvent will now be resolved, `recipes.minecraftCampfireCooking` for example
+- by default some json-based recipe function is not dumped, since they're basically the same as `event.custom(...)`, a new config option is added that allows dumping them
+
+### Class
+
+- better `$Class` typing that prevents `typeof T` or `typeof any`
+- `$Class` will now be redirected to `JClass` for clearer type hint
+- primitive classes will not somehow be dumped now
+- Java wrapper classes like `java.lang.String` can now be dumped again
+- results of `java(...)` can now be used for generic matching that requires `$Class<T>`
+
+### Others
+
+- fixed registry names with same path and different namespace from conflicting
+- support for KesseractJS
+- ScriptableObject and NativeArray will be resolved to its JS type, for better `global` resolving
+- cleanup imports of `GlobalClasses`
+
+### Internal
+
+- several tweaks to improve typing generation performance
+- mixin targeting forge event bus is removed because we have class scanner, this improves forge event performance a bit
+- probejs plugin can only be registered in Java code now
+- make `ItemStackJS` assignable from `ItemStack`
+- classes with simple package name will be dumped to `simple_package_classes.d.ts`
+
+---
+
 # ProbeJS Legacy 4.3.0 -> 4.3.1
 
 fix recipe docs
