@@ -25,9 +25,8 @@ public class ProbeDumpingThread extends Thread {
         if (exists()) {
             throw new IllegalStateException("There's already a thread running");
         }
-        ProbeDumpingThread thread = new ProbeDumpingThread(messageSender);
-        INSTANCE = thread;
-        return thread;
+        INSTANCE = new ProbeDumpingThread(messageSender);
+        return INSTANCE;
     }
 
     private ProbeDumpingThread(final Consumer<Component> messageSender) {

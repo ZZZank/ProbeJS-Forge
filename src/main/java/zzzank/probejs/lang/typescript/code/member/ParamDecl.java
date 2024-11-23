@@ -25,10 +25,6 @@ public final class ParamDecl {
         this(name, type, false, false);
     }
 
-    public String format(int index, Declaration declaration) {
-        return format(index, declaration, BaseType.FormatType.INPUT);
-    }
-
     public String format(int index, Declaration declaration, BaseType.FormatType formatType) {
         return String.format(
             "%s%s%s: %s",
