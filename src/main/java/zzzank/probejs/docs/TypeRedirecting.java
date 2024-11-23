@@ -30,6 +30,7 @@ public class TypeRedirecting implements ProbeJSPlugin {
     public void addPredefinedTypes(TypeConverter converter) {
         converter.addTypeRedirect(new RhizoGenericRedirect());
         //class wrapper
+        converter.addTypeRedirect(new SimpleTypeRedirect(CLASS_CONVERTIBLES, (c) -> GlobalClasses.J_CLASS));
         converter.addTypeRedirect(new ClassRedirect(CLASS_CONVERTIBLES));
         //js objects
         converter.addTypeRedirect(new SimpleTypeRedirect(JS_OBJ.keySet(), (c) -> JS_OBJ.get(c.clazz)));
