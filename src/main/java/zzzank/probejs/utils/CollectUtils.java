@@ -17,7 +17,9 @@ public interface CollectUtils {
     @SafeVarargs
     static <T> List<T> ofList(T... elements) {
         val list = new ArrayList<T>(elements.length);
-        list.addAll(Arrays.asList(elements));
+        for (T element : elements) {
+            list.add(element);
+        }
         return list;
     }
 
@@ -104,7 +106,15 @@ public interface CollectUtils {
         return m;
     }
 
-    static <K, V> HashMap<K, V> ofMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
+    static <K, V> HashMap<K, V> ofMap(
+        K k1, V v1,
+        K k2, V v2,
+        K k3, V v3,
+        K k4, V v4,
+        K k5, V v5,
+        K k6, V v6,
+        K k7, V v7
+    ) {
         val m = new HashMap<K, V>(calcMapExpectedSize(7));
         m.put(k1, v1);
         m.put(k2, v2);
@@ -116,7 +126,16 @@ public interface CollectUtils {
         return m;
     }
 
-    static <K, V> HashMap<K, V> ofMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7, K k8, V v8) {
+    static <K, V> HashMap<K, V> ofMap(
+        K k1, V v1,
+        K k2, V v2,
+        K k3, V v3,
+        K k4, V v4,
+        K k5, V v5,
+        K k6, V v6,
+        K k7, V v7,
+        K k8, V v8
+    ) {
         val m = new HashMap<K, V>(calcMapExpectedSize(8));
         m.put(k1, v1);
         m.put(k2, v2);
