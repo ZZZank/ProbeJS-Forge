@@ -3,6 +3,7 @@ package zzzank.probejs.lang.java.type.impl;
 import zzzank.probejs.lang.java.type.TypeAdapter;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedWildcardType;
@@ -34,8 +35,8 @@ public class WildType extends TypeDescriptor {
         }
     }
 
-    public WildType(@Nullable TypeDescriptor bound) {
-        super(new Annotation[]{});
+    public WildType(@Nonnull Annotation[] annotations, @Nullable TypeDescriptor bound) {
+        super(annotations);
         this.bound = bound;
     }
 

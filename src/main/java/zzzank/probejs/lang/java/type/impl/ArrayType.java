@@ -23,8 +23,8 @@ public class ArrayType extends TypeDescriptor {
         this.component = TypeAdapter.getTypeDescription(arrayType.getGenericComponentType());
     }
 
-    public ArrayType(TypeDescriptor arrayType) {
-        super(new Annotation[]{});
+    public ArrayType(Annotation[] annotations, TypeDescriptor arrayType) {
+        super(annotations);
         this.component = arrayType;
     }
 
