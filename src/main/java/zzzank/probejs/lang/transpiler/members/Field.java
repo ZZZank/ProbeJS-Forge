@@ -1,6 +1,7 @@
 package zzzank.probejs.lang.transpiler.members;
 
 
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.members.FieldInfo;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.code.member.FieldDecl;
@@ -12,7 +13,7 @@ public class Field extends Converter<FieldInfo, FieldDecl> {
 
     @Override
     public FieldDecl transpile(FieldInfo input) {
-        FieldDecl decl = new FieldDecl(input.name, converter.convertType(input.type));
+        val decl = new FieldDecl(input.name, converter.convertType(input.type));
         decl.isFinal = input.attributes.isFinal;
         decl.isStatic = input.attributes.isStatic;
 

@@ -1,14 +1,13 @@
 package zzzank.probejs.lang.transpiler.members;
 
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
-import zzzank.probejs.lang.java.type.impl.VariableType;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.code.member.ConstructorDecl;
 import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
+import zzzank.probejs.utils.CollectUtils;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Constructor extends Converter<ConstructorInfo, ConstructorDecl> {
     private final Param param;
@@ -20,13 +19,13 @@ public class Constructor extends Converter<ConstructorInfo, ConstructorDecl> {
 
     @Override
     public ConstructorDecl transpile(ConstructorInfo input) {
-        List<TSVariableType> variableTypes = new ArrayList<>();
-        for (VariableType variableType : input.variableTypes) {
+        val variableTypes = new ArrayList<TSVariableType>();
+        for (val variableType : input.variableTypes) {
             variableTypes.add((TSVariableType) converter.convertType(variableType));
         }
         return new ConstructorDecl(
-                variableTypes,
-                input.params.stream().map(param::transpile).collect(Collectors.toList())
+            variableTypes,
+            CollectUtils.mapToList(input.params, param::transpile)
         );
     }
 }

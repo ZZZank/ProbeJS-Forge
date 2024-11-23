@@ -71,7 +71,7 @@ public class KubeEvents implements ProbeJSPlugin {
     }
 
     private static Set<String> getSkippedEvents(ScriptDump dump) {
-        Set<String> events = new HashSet<>();
+        val events = new HashSet<String>();
         ProbeJSPlugins.forEachPlugin(plugin -> events.addAll(plugin.disableEventDumps(dump)));
         return events;
     }

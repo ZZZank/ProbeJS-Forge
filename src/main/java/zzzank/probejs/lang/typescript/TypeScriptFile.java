@@ -17,17 +17,17 @@ import java.util.Optional;
 
 public class TypeScriptFile {
     public final Declaration declaration;
-    public final List<Code> codeList;
-    public final ClassPath classPath;
+    public final List<Code> codes;
+    public final ClassPath path;
 
     public TypeScriptFile(ClassPath self) {
         this.declaration = new Declaration();
-        this.codeList = new ArrayList<>();
+        this.codes = new ArrayList<>();
 
         if (self != null) {
             declaration.addImport(ImportInfo.of(self));
         }
-        this.classPath = self;
+        this.path = self;
     }
 
     public void excludeSymbol(String name) {
@@ -35,7 +35,7 @@ public class TypeScriptFile {
     }
 
     public void addCode(Code code) {
-        codeList.add(code);
+        codes.add(code);
         for (val info : code.getImportInfos()) {
             declaration.addImport(info);
         }
@@ -44,7 +44,7 @@ public class TypeScriptFile {
     public List<String> format() {
         List<String> formatted = new ArrayList<>();
 
-        for (Code code : codeList) {
+        for (Code code : codes) {
             formatted.addAll(code.format(declaration));
         }
 
@@ -60,7 +60,7 @@ public class TypeScriptFile {
     public void write(BufferedWriter writer) throws IOException {
         boolean written = false;
         for (Reference value : declaration.references.values()) {
-            if (value.info.path.equals(classPath)) {
+            if (value.info.path.equals(path)) {
                 continue;
             }
             writer.write(value.getImport() + "\n");
@@ -80,7 +80,7 @@ public class TypeScriptFile {
     public void writeAsModule(BufferedWriter writer) throws IOException {
         writer.write(String.format(
             "declare module %s {\n",
-            ProbeJS.GSON.toJson(classPath.getTSPath())
+            ProbeJS.GSON.toJson(path.getTSPath())
         ));
         this.write(writer);
         writer.write("}\n");
@@ -88,7 +88,7 @@ public class TypeScriptFile {
 
     @SuppressWarnings("unchecked")
     public <T extends Code> Optional<T> findCode(Class<T> type) {
-        for (Code code : codeList) {
+        for (Code code : codes) {
             if (type.isInstance(code)) {
                 return Optional.of((T) code);
             }

@@ -8,6 +8,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import zzzank.probejs.plugin.ProbeJSPlugin;
+import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -201,10 +202,10 @@ public class RegistryTypes implements ProbeJSPlugin {
                 continue;
             }
 
-            val entries = registry.keySet()
-                .stream()
-                .map(ResourceLocation::toString)
-                .collect(Collectors.toList());
+            val entries = CollectUtils.mapToList(
+                registry.keySet(),
+                ResourceLocation::toString
+            );
             if (entries.isEmpty()) {
                 continue;
             }
@@ -222,13 +223,10 @@ public class RegistryTypes implements ProbeJSPlugin {
 
             val tags = info.tagHelper == null
                 ? Collections.<String>emptyList()
-                : info.tagHelper
-                    .getAllTags()
-                    .getAvailableTags()
-                    .stream()
-                    .map(ResourceLocation::toString)
-                    .map("#"::concat)
-                    .collect(Collectors.toList());
+                : CollectUtils.mapToList(
+                    info.tagHelper.getAllTags().getAvailableTags(),
+                    rl -> "#".concat(rl.toString())
+                );
             if (tags.isEmpty()) {
                 continue;
             }
