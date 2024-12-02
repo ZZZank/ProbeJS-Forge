@@ -1,5 +1,6 @@
 package zzzank.probejs.docs;
 
+import dev.latvian.mods.rhino.BaseFunction;
 import dev.latvian.mods.rhino.NativeArray;
 import dev.latvian.mods.rhino.ScriptableObject;
 import zzzank.probejs.lang.transpiler.TypeConverter;
@@ -24,6 +25,10 @@ public class TypeRedirecting implements ProbeJSPlugin {
         CLASS_CONVERTIBLES.add(Class.class);
         JS_OBJ.put(ScriptableObject.class, Types.EMPTY_OBJECT);
         JS_OBJ.put(NativeArray.class, Types.ANY.asArray());
+        JS_OBJ.put(
+            BaseFunction.class,
+            Types.lambda().param("args", Types.ANY, false, true).returnType(Types.ANY).build()
+        );
     }
 
     @Override
