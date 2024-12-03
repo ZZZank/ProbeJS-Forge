@@ -1,16 +1,22 @@
 package zzzank.probejs.docs;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.AllArgsConstructor;
+import lombok.val;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.transpiler.redirect.SimpleTypeRedirect;
+import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.ScriptDump;
+import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.member.TypeDecl;
-import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
+import zzzank.probejs.lang.typescript.refer.ImportInfos;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class Primitives implements ProbeJSPlugin {
@@ -63,7 +69,7 @@ public class Primitives implements ProbeJSPlugin {
 
     @Override
     public void addGlobals(ScriptDump scriptDump) {
-        var numberBoth = Types.and(Types.NUMBER, TS_NUMBER);
+        val numberBoth = Types.and(Types.NUMBER, TS_NUMBER);
         scriptDump.addGlobal("primitives",
             //for number types, we can safely mark them as a primitive type instead of an interface
             //because the classes that represent them are `final`, so there's no need of taking inheritance into account
@@ -74,8 +80,24 @@ public class Primitives implements ProbeJSPlugin {
             new TypeDecl("double", numberBoth),
             new TypeDecl("float", numberBoth),
             //for CharSequence, we should NOT mark it as a primitive type, because of inheritance
-            Statements.clazz("character").interfaceClass().interfaces(TS_STRING).build(),
-            Statements.clazz("charseq").interfaceClass().interfaces(TS_STRING).build()
+            new JavaPrimitive("character", "String"),
+            new JavaPrimitive("charseq", "String")
         );
+    }
+
+    @AllArgsConstructor
+    static class JavaPrimitive extends Code {
+        private final String javaPrimitive;
+        private final String jsInterface;
+
+        @Override
+        public List<String> format(Declaration declaration) {
+            return Collections.singletonList(String.format("interface %s extends %s {}", javaPrimitive, jsInterface));
+        }
+
+        @Override
+        public ImportInfos getImportInfos() {
+            return ImportInfos.of();
+        }
     }
 }
