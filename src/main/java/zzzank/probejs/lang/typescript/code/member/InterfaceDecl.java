@@ -1,5 +1,7 @@
 package zzzank.probejs.lang.typescript.code.member;
 
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.val;
 import org.jetbrains.annotations.Nullable;
 import zzzank.probejs.lang.typescript.Declaration;
@@ -16,7 +18,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Setter
+@Accessors(chain = true)
 public class InterfaceDecl extends ClassDecl {
+
+    public boolean withStatic = true;
+    public boolean withNamespace = true;
 
     public InterfaceDecl(String name, @Nullable BaseType superClass, List<BaseType> interfaces, List<TSVariableType> variableTypes) {
         super(name, superClass, interfaces, variableTypes);
@@ -100,8 +107,12 @@ public class InterfaceDecl extends ClassDecl {
         formatted.addAll(tail);
 
         // Static methods and fields, adds it even if it's empty, so auto import can still discover it
-        formatted.addAll(createNamespace().format(declaration));
-        formatted.addAll(createStaticClass().format(declaration));
+        if (this.withNamespace) {
+            formatted.addAll(createNamespace().format(declaration));
+        }
+        if (this.withStatic) {
+            formatted.addAll(createStaticClass().format(declaration));
+        }
         return formatted;
     }
 }
