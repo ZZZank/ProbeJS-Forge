@@ -152,9 +152,13 @@ public class ProbeDump {
                         if (dumpThreads.stream().noneMatch(Thread::isAlive)) {
                             return;
                         }
-                        String dumpProgress = scriptDumps.stream()
-                            .filter(sd -> sd.total != 0)
-                            .map(sd -> String.format("%s/%s", sd.dumped, sd.total))
+                        val dumpProgress = scriptDumps.stream()
+                            .filter(sd -> sd.classesWriter.countAcceptedFiles() != 0)
+                            .map(sd -> String.format(
+                                "%s/%s",
+                                sd.classesWriter.countWrittenFiles(),
+                                sd.classesWriter.countAcceptedFiles()
+                            ))
                             .collect(Collectors.joining(", "));
                         report(translate("probejs.dump.report_progress").append(string(dumpProgress).blue()));
                     } catch (InterruptedException e) {

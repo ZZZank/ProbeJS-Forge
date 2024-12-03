@@ -3,7 +3,6 @@ package zzzank.probejs.lang.typescript;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import dev.latvian.kubejs.KubeJS;
 import dev.latvian.kubejs.KubeJSPaths;
 import dev.latvian.kubejs.script.ScriptManager;
@@ -15,6 +14,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.FileUtils;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.ProbePaths;
+import zzzank.probejs.api.output.PackagedWriter;
+import zzzank.probejs.api.output.PerFileWriter;
+import zzzank.probejs.api.output.TSFileWriter;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.transpiler.Transpiler;
@@ -38,7 +40,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * Controls a dump. A dump is made of a script type, and is responsible for
@@ -83,13 +84,14 @@ public class ScriptDump {
     public final ScriptManager manager;
     public final Path basePath;
     public final Path scriptPath;
-    public final Map<String, Pair<Collection<String>, Wrapped.Global>> globals;
+    public final Map<String, TypeScriptFile> globals = new HashMap<>();
     public final Transpiler transpiler;
     public final Set<Clazz> recordedClasses = new HashSet<>();
     private final Predicate<Clazz> accept;
     private final Multimap<ClassPath, TypeDecl> convertibles = ArrayListMultimap.create();
-    public int dumped = 0;
-    public int total = 0;
+
+    public final TSFileWriter classesWriter = new PackagedWriter(2, SIMPLE_PACKAGE);
+    public final TSFileWriter globalWriter = new PerFileWriter().setWithIndex(false).setWriteAsModule(false);
 
     public ScriptDump(ScriptManager manager, Path basePath, Path scriptPath, Predicate<Clazz> scriptPredicate) {
         this.scriptType = manager.type;
@@ -97,7 +99,6 @@ public class ScriptDump {
         this.basePath = basePath;
         this.scriptPath = scriptPath;
         this.transpiler = new Transpiler(manager);
-        this.globals = new HashMap<>();
         this.accept = scriptPredicate;
 
 //        val pack = CollectUtils.anyIn(manager.packs.values());
@@ -140,13 +141,21 @@ public class ScriptDump {
     }
 
     public void addGlobal(String identifier, Collection<String> excludedNames, Code... content) {
-        Wrapped.Global global = new Wrapped.Global();
-        for (Code code : content) {
+        val file = globals.computeIfAbsent(
+            identifier,
+            k -> new TypeScriptFile(ClassPath.fromRaw(k))
+        );
+
+        for (val excluded : excludedNames) {
+            file.excludeSymbol(excluded);
+        }
+
+        val global = new Wrapped.Global();
+        for (val code : content) {
             global.addCode(code);
         }
-        globals.put(identifier, new Pair<>(excludedNames, global));
+        file.addCode(global);
     }
-
 
     public Path ensurePath(String path) {
         return ensurePath(path, false);
@@ -181,8 +190,6 @@ public class ScriptDump {
     }
 
     public void dumpClasses() throws IOException {
-        dumped = 0;
-        total = 0;
         transpiler.init();
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.assignType(this));
 
@@ -190,7 +197,6 @@ public class ScriptDump {
         Map<ClassPath, TypeScriptFile> globalClasses = transpiler.dump(recordedClasses);
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.modifyClasses(this, globalClasses));
 
-        total = globalClasses.size();
         for (val entry : globalClasses.entrySet()) {
             try {
                 val classPath = entry.getKey();
@@ -205,7 +211,7 @@ public class ScriptDump {
                 // declare global {
                 //     type Type_ = ExportedType
                 // }
-                List<String> generics = classDecl.variableTypes.stream().map(v -> v.symbol).collect(Collectors.toList());
+                val generics = CollectUtils.mapToList(classDecl.variableTypes, v -> v.symbol);
                 String symbol = classPath.getName() + "_";
                 String exportedSymbol = ImportType.TYPE.fmt(classPath.getName());
                 BaseType exportedType = Types.type(classPath);
@@ -215,20 +221,13 @@ public class ScriptDump {
                     val suffix = "<" + String.join(", ", generics) + ">";
                     symbol = symbol + suffix;
                     exportedSymbol = exportedSymbol + suffix;
-                    thisType = Types.parameterized(
-                        thisType,
-                        generics.stream()
-                            .map(Types::generic)
-                            .toArray(BaseType[]::new)
-                    );
-                    exportedType = Types.parameterized(
-                        exportedType,
-                        generics
-                            .stream()
-                            .map(Types::generic)
-                            .toArray(BaseType[]::new)
-                    );
+                    val genericParams = generics.stream()
+                        .map(Types::generic)
+                        .toArray(BaseType[]::new);
+                    thisType = Types.parameterized(thisType, genericParams);
+                    exportedType = Types.parameterized(exportedType, genericParams);
                 }
+
                 exportedType = Types.contextShield(exportedType, BaseType.FormatType.INPUT);
                 thisType = Types.contextShield(thisType, BaseType.FormatType.RETURN);
 
@@ -243,9 +242,6 @@ public class ScriptDump {
                     }
                 }
 
-//                if (allTypes.isEmpty()) {
-//                    allTypes.add(thisType); // Don't add if there are wrapping, for better compatibility with duck typing
-//                }
                 allTypes.add(thisType);
 
                 val convertibleType = new TypeDecl(exportedSymbol, new JSJoinedType.Union(allTypes));
@@ -264,55 +260,32 @@ public class ScriptDump {
                 output.addCode(convertibleType);
                 output.addCode(typeExport);
 
-                val fileKey = classPath.parts.length > 1
-                    ? classPath.parts[0] + "." + classPath.parts[1]
-                    : SIMPLE_PACKAGE; //todo: do we need this
-                val writer = files.computeIfAbsent(fileKey, key -> {
-                    try {
-                        return Files.newBufferedWriter(getPackageFolder().resolve(key + ".d.ts"));
-                    } catch (IOException e) {
-                        ProbeJS.LOGGER.error("Failed to write {}.d.ts", key);
-                        return null;
-                    }
-                });
-                if (writer != null) {
-                    output.writeAsModule(writer);
-                }
-                dumped++;
+                classesWriter.accept(output);
             } catch (Throwable t) {
                 GameUtils.logThrowable(t);
             }
         }
 
-        try (val writer = Files.newBufferedWriter(getPackageFolder().resolve("index.d.ts"))) {
-            for (val entry : files.entrySet()) {
-                val key = entry.getKey();
-                val value = entry.getValue();
-                writer.write(String.format("/// <reference path=%s />\n", ProbeJS.GSON.toJson(key + ".d.ts")));
-                value.close();
-            }
+        try {
+            classesWriter.write(getPackageFolder());
+        } catch (IOException e) {
+            GameUtils.logThrowable(e);
         }
     }
 
     public void dumpGlobal() throws IOException {
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.addGlobals(this));
 
-        try (val writer = Files.newBufferedWriter(getGlobalFolder().resolve("index.d.ts"))) {
-            for (val entry : globals.entrySet()) {
-                val identifier = entry.getKey();
-                val pair = entry.getValue();
-                val global = pair.getSecond();
-                val excluded = pair.getFirst();
+        for (val file : globals.values()) {
+            globalWriter.accept(file);
+        }
 
-                TypeScriptFile globalFile = new TypeScriptFile(null);
-                for (String s : excluded) {
-                    globalFile.excludeSymbol(s);
-                }
-                globalFile.addCode(global);
-                globalFile.write(getGlobalFolder().resolve(identifier + ".d.ts"));
+        try (val writer = Files.newBufferedWriter(getGlobalFolder().resolve("index.d.ts"))) {
+            for (val identifier : globals.keySet()) {
                 writer.write(String.format("export * from %s\n", ProbeJS.GSON.toJson("./" + identifier)));
             }
         }
+        globalWriter.write(getGlobalFolder());
     }
 
     public void dumpJSConfig() throws IOException {
