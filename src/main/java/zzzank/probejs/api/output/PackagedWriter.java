@@ -18,6 +18,7 @@ public class PackagedWriter extends AbstractWriter {
     private final Map<String, List<TypeScriptFile>> packaged = new HashMap<>();
     public final int packageLengthLimit;
     public final String fallbackFileName;
+    private int accepted = 0;
 
     public PackagedWriter(int packageLengthMin, String fallbackFileName) {
         if (packageLengthMin <= 0) {
@@ -35,11 +36,18 @@ public class PackagedWriter extends AbstractWriter {
             : fallbackFileName;
         packaged.computeIfAbsent(fileName, k -> new ArrayList<>())
             .add(file);
+        accepted+=1;
     }
 
     @Override
-    protected void clearFiles() {
+    protected void clearAcceptedFiles() {
+        accepted = 0;
         packaged.clear();
+    }
+
+    @Override
+    public int countAcceptedFiles() {
+        return accepted;
     }
 
     @Override

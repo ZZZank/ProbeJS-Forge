@@ -29,8 +29,13 @@ public class SingleFileWriter extends AbstractWriter {
     }
 
     @Override
-    protected void clearFiles() {
+    protected void clearAcceptedFiles() {
         files.clear();
+    }
+
+    @Override
+    public int countAcceptedFiles() {
+        return files.size();
     }
 
     @Override

@@ -12,7 +12,6 @@ import java.nio.file.Path;
  */
 public abstract class AbstractWriter implements TSFileWriter {
     protected int written = 0;
-    protected int accepted = 0;
     public boolean writeAsModule = true;
     public boolean withIndex = true;
 
@@ -47,12 +46,11 @@ public abstract class AbstractWriter implements TSFileWriter {
             writeIndex(base);
         } finally {
             written = 0;
-            accepted = 0;
-            clearFiles();
+            clearAcceptedFiles();
         }
     }
 
-    protected abstract void clearFiles();
+    protected abstract void clearAcceptedFiles();
 
     protected abstract void writeClasses(Path base) throws IOException;
 
@@ -61,10 +59,5 @@ public abstract class AbstractWriter implements TSFileWriter {
     @Override
     public int countWrittenFiles() {
         return written;
-    }
-
-    @Override
-    public int countAcceptedFiles() {
-        return accepted;
     }
 }

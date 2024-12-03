@@ -24,12 +24,17 @@ public class PerFileWriter extends AbstractWriter {
     }
 
     private String filePathOf(ClassPath path) {
-        return path.getTSPath() + D_TS_SUFFIX;
+        return path.getJavaPath() + D_TS_SUFFIX;
     }
 
     @Override
-    protected void clearFiles() {
+    protected void clearAcceptedFiles() {
         files.clear();
+    }
+
+    @Override
+    public int countAcceptedFiles() {
+        return files.size();
     }
 
     @Override
