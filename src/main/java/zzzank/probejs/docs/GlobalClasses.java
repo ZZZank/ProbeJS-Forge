@@ -12,8 +12,6 @@ import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.utility.TSUtilityType;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
-import zzzank.probejs.lang.typescript.refer.ImportInfos;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
 import java.util.Map;
@@ -35,10 +33,7 @@ public class GlobalClasses implements ProbeJSPlugin {
         val paths = Types.object();
         for (val clazz : ClassRegistry.REGISTRY.foundClasses.values()) {
             val path = clazz.classPath;
-            val typeOf = Types.and(
-                Types.typeOf(clazz.classPath), //typeof A, and
-                Types.parameterized(J_CLASS, converter.convertType(clazz.original)) //JClass<A>
-            );
+            val typeOf = Types.typeOf(clazz.classPath);
             //original
             paths.member(clazz.original.getName(), typeOf);
             //probejs style import
@@ -50,21 +45,26 @@ public class GlobalClasses implements ProbeJSPlugin {
             "load_class",
             new TypeDecl(
                 GLOBAL_CLASSES.content,
-                paths.build()
-                    .contextShield(BaseType.FormatType.RETURN)
-                    .importShield(
-                        ImportInfos.of(ClassRegistry.REGISTRY.foundClasses.values()
-                                .stream()
-                                .map(c -> c.classPath)
-                                .map(ImportInfo::ofOriginal)
-                            )
-                            .add(ImportInfo.ofOriginal(J_CLASS.classPath))
-                    )
+                paths.build().contextShield(BaseType.FormatType.RETURN)
             ),
             new TypeDecl(CLASS_PATH.content, Types.STRING.and(Types.primitive("keyof GlobalClasses"))),
             new TypeDecl(JAVA_CLASS_PATH.content, TSUtilityType.exclude(CLASS_PATH, classPathTemplate)),
             new TypeDecl(TS_CLASS_PATH.content, TSUtilityType.extract(CLASS_PATH, classPathTemplate)),
-            new TypeDecl("LoadClass<T>", Types.primitive("T extends ClassPath ? GlobalClasses[T] : never"))
+            new TypeDecl("AttachJClass<T>",
+                Types.and(
+                    Types.generic("T"),
+                    Types.parameterized(J_CLASS, TSUtilityType.instanceType(Types.generic("T")))
+                )
+            ).setExport(false),
+            new TypeDecl(
+                "LoadClass<T>",
+                Types.format(
+                    "T extends %s ? %s : %s",
+                    CLASS_PATH,
+                    Types.format("AttachJClass<%s[T]>", GLOBAL_CLASSES),
+                    Types.NEVER
+                )
+            )
         );
     }
 
@@ -75,7 +75,7 @@ public class GlobalClasses implements ProbeJSPlugin {
             .abstractClass()
             .typeVariables("T")
             .field("prototype", Types.NULL)
-            .field("__javaObject__", classT.and(Types.primitive("this")));
+            .field("__javaObject__", classT);
         val file = new TypeScriptFile(J_CLASS.classPath);
         file.addCode(jClass.build());
         globalClasses.put(J_CLASS.classPath, file);
