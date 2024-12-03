@@ -1,7 +1,6 @@
 package zzzank.probejs.lang.typescript;
 
 import lombok.val;
-import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
@@ -75,15 +74,6 @@ public class TypeScriptFile {
             writer.write(line);
             writer.write('\n');
         }
-    }
-
-    public void writeAsModule(BufferedWriter writer) throws IOException {
-        writer.write(String.format(
-            "declare module %s {\n",
-            ProbeJS.GSON.toJson(path.getTSPath())
-        ));
-        this.write(writer);
-        writer.write("}\n");
     }
 
     @SuppressWarnings("unchecked")
