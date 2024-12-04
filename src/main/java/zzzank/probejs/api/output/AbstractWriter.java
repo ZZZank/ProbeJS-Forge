@@ -43,7 +43,9 @@ public abstract class AbstractWriter implements TSFileWriter {
     public final void write(Path base) throws IOException {
         try {
             writeClasses(base);
-            writeIndex(base);
+            if (withIndex) {
+                writeIndex(base);
+            }
         } finally {
             written = 0;
             clearAcceptedFiles();
