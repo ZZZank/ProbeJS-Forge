@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.type;
 
+import com.google.common.collect.ImmutableList;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
@@ -10,7 +11,9 @@ import zzzank.probejs.lang.typescript.code.type.utility.*;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -84,17 +87,20 @@ public interface Types {
         return new TSArrayType(base);
     }
 
-    static JSJoinedType.Intersection and(BaseType... types) {
-        return new JSJoinedType.Intersection(Arrays.asList(types));
+    static BaseType and(BaseType... types) {
+        return types.length == 0 ? NEVER : new JSJoinedType.Intersection(ImmutableList.copyOf(types));
     }
 
     static BaseType or(BaseType... types) {
-        if (types.length == 0) return NEVER;
-        return new JSJoinedType.Union(Arrays.asList(types));
+        return types.length == 0 ? NEVER : new JSJoinedType.Union(ImmutableList.copyOf(types));
     }
 
     static TSParamType parameterized(BaseType base, BaseType... params) {
         return new TSParamType(base, Arrays.asList(params));
+    }
+
+    static TSParamType parameterized(BaseType base, Collection<? extends BaseType> params) {
+        return new TSParamType(base, new ArrayList<>(params));
     }
 
     static TSVariableType generic(String symbol) {

@@ -6,16 +6,14 @@ import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSOptionalType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
 import zzzank.probejs.lang.typescript.code.type.utility.ContextShield;
 import zzzank.probejs.lang.typescript.code.type.utility.ImportShield;
 import zzzank.probejs.lang.typescript.code.type.utility.WithFormatType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public abstract class BaseType extends Code {
     @Override
@@ -51,6 +49,14 @@ public abstract class BaseType extends Code {
 
     public TSOptionalType optional() {
         return new TSOptionalType(this);
+    }
+
+    public TSParamType withParams(BaseType... params) {
+        return Types.parameterized(this, params);
+    }
+
+    public TSParamType withParams(Collection<? extends BaseType> params) {
+        return Types.parameterized(this, params);
     }
 
     public JSJoinedType.Union or(BaseType... types) {

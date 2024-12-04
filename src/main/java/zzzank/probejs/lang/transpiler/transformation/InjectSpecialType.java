@@ -34,13 +34,10 @@ public class InjectSpecialType implements ClassTransformer {
             && paramType.baseType instanceof TSClassType baseClass
             && NO_WRAPPING.contains(baseClass.classPath)
         ) {
-            param.type = new TSParamType(
-                paramType.baseType,
-                CollectUtils.mapToList(
-                    paramType.params,
-                    c -> c.contextShield(BaseType.FormatType.RETURN)
-                )
-            );
+            param.type = paramType.baseType.withParams(CollectUtils.mapToList(
+                paramType.params,
+                c -> c.contextShield(BaseType.FormatType.RETURN)
+            ));
         }
     }
 
@@ -68,18 +65,21 @@ public class InjectSpecialType implements ClassTransformer {
         if (info.type instanceof ParamType paramType &&
             paramType.base instanceof ClassType classType &&
             classType.clazz.isAnnotationPresent(FunctionalInterface.class) &&
-            param.type instanceof TSParamType tsParamType) {
-
-            val params = new ArrayList<>(tsParamType.params);
+            param.type instanceof TSParamType tsParamType
+        ) {
             val returnIndex = findReturnTypeIndex(classType.clazz);
-            for (int i = 0; i < params.size(); i++) {
-                val p = params.get(i);
-                params.set(i, Types.contextShield(p, returnIndex == i ?
-                    BaseType.FormatType.INPUT :
-                    BaseType.FormatType.RETURN));
+            if (returnIndex < 0) {
+                return;
             }
-
+            val params = new ArrayList<>(tsParamType.params);
+            params.set(returnIndex, params.get(returnIndex).contextShield(BaseType.FormatType.RETURN));
             param.type = new TSParamType(tsParamType.baseType, params);
+//            for (int i = 0; i < params.size(); i++) {
+//                val p = params.get(i);
+//                params.set(i, Types.contextShield(p, returnIndex == i ?
+//                    BaseType.FormatType.INPUT :
+//                    BaseType.FormatType.RETURN));
+//            }
         }
     }
 

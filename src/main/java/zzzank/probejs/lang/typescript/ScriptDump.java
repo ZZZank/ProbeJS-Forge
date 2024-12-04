@@ -193,84 +193,68 @@ public class ScriptDump {
         transpiler.init();
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.assignType(this));
 
-        Map<String, BufferedWriter> files = new HashMap<>();
-        Map<ClassPath, TypeScriptFile> globalClasses = transpiler.dump(recordedClasses);
+        val globalClasses = transpiler.dump(recordedClasses);
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.modifyClasses(this, globalClasses));
 
         for (val entry : globalClasses.entrySet()) {
-            try {
-                val classPath = entry.getKey();
-                val output = entry.getValue();
-                val classDecl = output.findCode(ClassDecl.class).orElse(null);
-                if (classDecl == null) {
-                    continue;
-                }
-
-                // Add all assignable types
-                // type ExportedType = ConvertibleTypes
-                // declare global {
-                //     type Type_ = ExportedType
-                // }
-                val generics = CollectUtils.mapToList(classDecl.variableTypes, v -> v.symbol);
-                String symbol = classPath.getName() + "_";
-                String exportedSymbol = ImportType.TYPE.fmt(classPath.getName());
-                BaseType exportedType = Types.type(classPath);
-                BaseType thisType = Types.type(classPath);
-
-                if (!generics.isEmpty()) {
-                    val suffix = "<" + String.join(", ", generics) + ">";
-                    symbol = symbol + suffix;
-                    exportedSymbol = exportedSymbol + suffix;
-                    val genericParams = generics.stream()
-                        .map(Types::generic)
-                        .toArray(BaseType[]::new);
-                    thisType = Types.parameterized(thisType, genericParams);
-                    exportedType = Types.parameterized(exportedType, genericParams);
-                }
-
-                exportedType = Types.contextShield(exportedType, BaseType.FormatType.INPUT);
-                thisType = Types.contextShield(thisType, BaseType.FormatType.RETURN);
-
-                List<BaseType> allTypes = new ArrayList<>();
-                List<TypeDecl> delegatedTypes = new ArrayList<>();
-                for (TypeDecl typeDecl : convertibles.get(classPath)) {
-                    if (typeDecl.symbol == null) {
-                        allTypes.add(typeDecl.type);
-                    } else {
-                        delegatedTypes.add(typeDecl);
-                        allTypes.add(Types.primitive(typeDecl.symbol));
-                    }
-                }
-
-                allTypes.add(thisType);
-
-                val convertibleType = new TypeDecl(exportedSymbol, new JSJoinedType.Union(allTypes));
-                val globalType = new TypeDecl(symbol, exportedType);
-                val typeExport = new Wrapped.Global();
-                typeExport.addCode(globalType);
-                convertibleType.addComment("""
-                    Class-specific type exported by ProbeJS, use global `{Type}_` types for convenience unless there's a naming conflict.
-                    """);
-                typeExport.addComment("""
-                    Global type exported for convenience, use class-specific types if there's a naming conflict.
-                    """);
-                for (TypeDecl delegatedType : delegatedTypes) {
-                    output.addCode(delegatedType);
-                }
-                output.addCode(convertibleType);
-                output.addCode(typeExport);
-
-                classesWriter.accept(output);
-            } catch (Throwable t) {
-                GameUtils.logThrowable(t);
+            val classPath = entry.getKey();
+            val output = entry.getValue();
+            val classDecl = output.findCode(ClassDecl.class).orElse(null);
+            if (classDecl == null) {
+                continue;
             }
+
+            // Add all assignable types
+            // type ExportedType = ConvertibleTypes
+            // declare global {
+            //     type Type_ = ExportedType
+            // }
+            val generics = CollectUtils.mapToList(classDecl.variableTypes, v -> v.symbol);
+            String symbol = classPath.getName() + "_";
+            String exportedSymbol = ImportType.TYPE.fmt(classPath.getName());
+            BaseType exportedType = Types.type(classPath);
+            BaseType thisType = Types.type(classPath);
+
+            if (!generics.isEmpty()) {
+                val suffix = "<" + String.join(", ", generics) + ">";
+                symbol = symbol + suffix;
+                exportedSymbol = exportedSymbol + suffix;
+                val genericParams = CollectUtils.mapToList(generics, Types::generic);
+                thisType = Types.parameterized(thisType, genericParams);
+                exportedType = Types.parameterized(exportedType, genericParams);
+            }
+
+            exportedType = Types.contextShield(exportedType, BaseType.FormatType.INPUT);
+            thisType = Types.contextShield(thisType, BaseType.FormatType.RETURN);
+
+            List<BaseType> allTypes = new ArrayList<>();
+            for (val typeDecl : convertibles.get(classPath)) {
+                if (typeDecl.symbol == null) {
+                    allTypes.add(typeDecl.type);
+                } else {
+                    output.addCode(typeDecl);
+                    allTypes.add(Types.primitive(typeDecl.symbol));
+                }
+            }
+
+            allTypes.add(thisType);
+
+            val typeConvertible = new TypeDecl(exportedSymbol, new JSJoinedType.Union(allTypes));
+            typeConvertible.addComment("""
+                Class-specific type exported by ProbeJS, use global `{Type}_` types for convenience unless there's a naming conflict.
+                """);
+            val typeGlobal = new Wrapped.Global();
+            typeGlobal.addCode(new TypeDecl(symbol, exportedType));
+            typeGlobal.addComment("""
+                Global type exported for convenience, use class-specific types if there's a naming conflict.
+                """);
+            output.addCode(typeConvertible);
+            output.addCode(typeGlobal);
+
+            classesWriter.accept(output);
         }
 
-        try {
-            classesWriter.write(getPackageFolder());
-        } catch (IOException e) {
-            GameUtils.logThrowable(e);
-        }
+        classesWriter.write(getPackageFolder());
     }
 
     public void dumpGlobal() throws IOException {
