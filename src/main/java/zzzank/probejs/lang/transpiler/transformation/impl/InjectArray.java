@@ -1,7 +1,8 @@
-package zzzank.probejs.lang.transpiler.transformation;
+package zzzank.probejs.lang.transpiler.transformation.impl;
 
 import lombok.val;
 import zzzank.probejs.lang.java.clazz.Clazz;
+import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;

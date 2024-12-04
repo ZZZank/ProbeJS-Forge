@@ -1,4 +1,4 @@
-package zzzank.probejs.lang.transpiler.transformation;
+package zzzank.probejs.lang.transpiler.transformation.impl;
 
 import dev.latvian.mods.rhino.annotations.typing.JSInfo;
 import lombok.val;
@@ -8,6 +8,7 @@ import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
 import zzzank.probejs.lang.java.clazz.members.FieldInfo;
 import zzzank.probejs.lang.java.clazz.members.MethodInfo;
+import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.code.member.*;
 
 import java.util.stream.Collectors;

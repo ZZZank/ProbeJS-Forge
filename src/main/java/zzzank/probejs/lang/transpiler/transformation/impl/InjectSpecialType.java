@@ -1,4 +1,4 @@
-package zzzank.probejs.lang.transpiler.transformation;
+package zzzank.probejs.lang.transpiler.transformation.impl;
 
 import lombok.val;
 import net.minecraft.resources.ResourceKey;
@@ -9,13 +9,13 @@ import zzzank.probejs.lang.java.clazz.members.MethodInfo;
 import zzzank.probejs.lang.java.clazz.members.ParamInfo;
 import zzzank.probejs.lang.java.type.impl.ClassType;
 import zzzank.probejs.lang.java.type.impl.ParamType;
+import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.code.member.ConstructorDecl;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
-import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.utils.CollectUtils;
 
 import java.lang.reflect.Modifier;

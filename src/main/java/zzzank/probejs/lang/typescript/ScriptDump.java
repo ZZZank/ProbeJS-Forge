@@ -98,7 +98,7 @@ public class ScriptDump {
         this.manager = manager;
         this.basePath = basePath;
         this.scriptPath = scriptPath;
-        this.transpiler = new Transpiler(manager);
+        this.transpiler = new Transpiler(this);
         this.accept = scriptPredicate;
 
 //        val pack = CollectUtils.anyIn(manager.packs.values());

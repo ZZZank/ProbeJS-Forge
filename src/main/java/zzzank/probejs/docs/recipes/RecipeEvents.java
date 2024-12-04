@@ -7,7 +7,7 @@ import lombok.val;
 import net.minecraft.resources.ResourceLocation;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
-import zzzank.probejs.lang.transpiler.transformation.InjectBeans;
+import zzzank.probejs.lang.transpiler.transformation.impl.InjectBeans;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;

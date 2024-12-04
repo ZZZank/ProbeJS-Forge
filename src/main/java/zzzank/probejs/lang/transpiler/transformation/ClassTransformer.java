@@ -5,15 +5,13 @@ import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
 import zzzank.probejs.lang.java.clazz.members.FieldInfo;
 import zzzank.probejs.lang.java.clazz.members.MethodInfo;
+import zzzank.probejs.lang.transpiler.Transpiler;
+import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.ConstructorDecl;
 import zzzank.probejs.lang.typescript.code.member.FieldDecl;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.plugin.ProbeJSPlugins;
-
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * Accepts a Clazz and a transpiled TS file, modify the
@@ -21,11 +19,10 @@ import java.util.function.Consumer;
  */
 public interface ClassTransformer {
 
-    static ClassTransformer fromPlugin() {
-        val transformers = new ArrayList<ClassTransformer>();
-        Consumer<ClassTransformer> registration = t -> transformers.add(Objects.requireNonNull(t));
-        ProbeJSPlugins.forEachPlugin(p -> p.registerClassTransformer(registration));
-        return new TransformerSequence(transformers.toArray(new ClassTransformer[0]));
+    static ClassTransformer fromPlugin(ScriptDump scriptDump, Transpiler transpiler) {
+        val registration = new ClassTransformerRegistration(scriptDump, transpiler);
+        ProbeJSPlugins.forEachPlugin(plugin -> plugin.registerClassTransformer(registration));
+        return new TransformerSequence(registration.getRegistered().toArray(new ClassTransformer[0]));
     }
 
     default void transform(Clazz clazz, ClassDecl classDecl) {

@@ -24,11 +24,6 @@ import java.util.stream.Collectors;
 public class TypeConverter {
 
     public final List<TypeRedirect> typeRedirects = new ArrayList<>();
-    public final ScriptManager scriptManager;
-
-    public TypeConverter(ScriptManager manager) {
-        this.scriptManager = manager;
-    }
 
     public void addTypeRedirect(TypeRedirect redirect) {
         typeRedirects.add(Objects.requireNonNull(redirect));
