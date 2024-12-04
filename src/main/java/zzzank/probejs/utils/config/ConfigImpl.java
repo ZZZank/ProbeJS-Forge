@@ -42,11 +42,11 @@ public class ConfigImpl {
         try (val reader = Files.newBufferedReader(path)) {
             val object = ProbeJS.GSON.fromJson(reader, JsonObject.class);
             for (val entry : object.entrySet()) {
-                val configEntry = serde.fromJson(entry.getKey(), entry.getValue().getAsJsonObject());
-                if (configEntry == null) {
+                val e = serde.fromJson(entry.getKey(), entry.getValue().getAsJsonObject());
+                if (e == null || this.get(e.namespace, e.name) == null) {
                     continue;
                 }
-                merge(configEntry);
+                merge(e);
             }
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Error happened when reading configs from file", e);
