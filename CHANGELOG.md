@@ -1,3 +1,18 @@
+# ProbeJS Legacy 4.4.0 -> 4.4.1
+
+fix config
+
+- fix config value set by user cannot be read by config
+- builtin plugins are now always registered before any other plugins
+- better function formatting in `global`
+- reorganized file writing, it's now probably faster by reusing writer
+- the values in `GLOBAL_CLASSES` are now again `typeof XXX` only, instead a new utility type `AttachJClass` is added to attach `JClass` to result of `java(...)`, this has no effect for users
+- primitive types `charseq` and `character` will not create redundant codes (namespace, static class) now
+- config parser for old config format is removed
+- config `fullScan` is replaced by `Class Scanner` allowing you to choose class scanner
+
+---
+
 # ProbeJS Legacy 4.3.1 -> 4.4.0
 
 better `$Class<T>` and recipe doc
