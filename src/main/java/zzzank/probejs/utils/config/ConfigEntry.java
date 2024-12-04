@@ -1,7 +1,6 @@
 package zzzank.probejs.utils.config;
 
 import com.google.common.collect.ImmutableList;
-import lombok.val;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,13 +14,15 @@ public class ConfigEntry<T> {
     public final String namespace;
     public final String name;
 
+    public final Class<?> expectedType;
     public final T defaultValue;
     private T value;
     public final ImmutableList<String> comments;
 
-    public ConfigEntry(ConfigImpl source, String name, T defaultValue, String namespace, List<String> comments) {
+    public ConfigEntry(ConfigImpl source, String namespace, String name, Class<?> expectedType, T defaultValue, List<String> comments) {
         this.source = Objects.requireNonNull(source);
         this.name = Objects.requireNonNull(name);
+        this.expectedType = Objects.requireNonNull(expectedType);
         this.defaultValue = Objects.requireNonNull(defaultValue);
         this.namespace = Objects.requireNonNull(namespace);
         this.comments = ImmutableList.copyOf(Objects.requireNonNull(comments));

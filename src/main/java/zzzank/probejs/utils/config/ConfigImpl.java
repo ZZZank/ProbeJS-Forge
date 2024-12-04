@@ -6,9 +6,11 @@ import com.google.gson.JsonObject;
 import dev.latvian.kubejs.util.UtilsJS;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.utils.CollectUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -26,6 +28,14 @@ public class ConfigImpl {
         this.serde = new ConfigEntrySerde(this);
         all = HashBasedTable.create();
         this.defaultNamespace = defaultNamespace;
+    }
+
+    public Map.Entry<String, String> ensureNamespace(String name) {
+        val i = name.indexOf('.');
+        if (i < 0) {
+            return CollectUtils.ofEntry(defaultNamespace, name);
+        }
+        return CollectUtils.ofEntry(name.substring(0, i), name.substring(i + 1));
     }
 
     public void readFromFile() {

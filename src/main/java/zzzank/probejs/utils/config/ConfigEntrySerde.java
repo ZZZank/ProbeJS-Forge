@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.GameUtils;
 import zzzank.probejs.utils.JsonUtils;
 
@@ -26,24 +27,31 @@ public class ConfigEntrySerde {
 
     public final ConfigImpl source;
 
-    public ConfigEntry<?> fromJson(String jsonName, JsonObject jsonObject) {
+    public ConfigEntry<?> fromJson(String jsonName, JsonObject o) {
         try {
-            val name$namespace = jsonName.lastIndexOf('.');
-            val name = name$namespace < 0 ? jsonName : jsonName.substring(name$namespace + 1);
-            val namespace = name$namespace < 0 ? source.defaultNamespace : jsonName.substring(0, name$namespace);
+            val namespaced = source.ensureNamespace(jsonName);
+            val namespace = namespaced.getKey();
+            val name = namespaced.getValue();
 
             val reference = source.get(namespace, name);
             Function<JsonElement, Object> deserializer = reference == null
                 ? JsonUtils::deserializeObject
-                : o -> ProbeJS.GSON.fromJson(o, reference.defaultValue.getClass());
+                : obj -> ProbeJS.GSON.fromJson(obj, reference.expectedType);
 
-            val defaultValue = deserializer.apply(jsonObject.get(DEFAULT_VALUE_KEY));
-            val value = jsonObject.has(VALUE_KEY)
-                ? deserializer.apply(jsonObject.get(VALUE_KEY))
+            val defaultValue = deserializer.apply(o.get(DEFAULT_VALUE_KEY));
+            val value = o.has(VALUE_KEY)
+                ? deserializer.apply(o.get(VALUE_KEY))
                 : defaultValue;
-            val comments = extractComments(jsonObject);
+            val comments = extractComments(o);
 
-            val entry = new ConfigEntry<>(source, name, defaultValue, namespace, comments);
+            val entry = new ConfigEntry<>(
+                source,
+                namespace,
+                name,
+                reference == null ? defaultValue.getClass() : reference.expectedType,
+                defaultValue,
+                comments
+            );
             entry.setNoSave(value);
             return entry;
         } catch (Exception e) {
@@ -85,6 +93,6 @@ public class ConfigEntrySerde {
             default -> object.add(COMMENTS_KEY, JsonUtils.parseObject(entry.comments));
         }
 
-        return new AbstractMap.SimpleImmutableEntry<>(entry.namespace + '.' + entry.name, object);
+        return CollectUtils.ofEntry(entry.namespace + '.' + entry.name, object);
     }
 }

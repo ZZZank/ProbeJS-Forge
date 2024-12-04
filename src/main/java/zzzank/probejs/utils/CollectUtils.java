@@ -17,10 +17,12 @@ public interface CollectUtils {
     @SafeVarargs
     static <T> List<T> ofList(T... elements) {
         val list = new ArrayList<T>(elements.length);
-        for (T element : elements) {
-            list.add(element);
-        }
+        Collections.addAll(list, elements);
         return list;
+    }
+
+    static <K, V>AbstractMap.SimpleImmutableEntry<K, V> ofEntry(K key, V value) {
+        return new AbstractMap.SimpleImmutableEntry<>(key, value);
     }
 
     static <I, O> List<O> mapToList(Collection<I> collection, Function<I, O> mapper) {

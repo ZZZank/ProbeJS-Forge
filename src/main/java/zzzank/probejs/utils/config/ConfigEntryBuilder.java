@@ -6,7 +6,6 @@ import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -20,11 +19,9 @@ public class ConfigEntryBuilder<T> {
     public final ConfigImpl root;
     @Nonnull
     public final String name;
-    @Nonnull
+    public Class<?> expectedType;
     public T defaultValue;
-    @Nullable
     public String namespace;
-    @Nullable
     public List<String> comments;
 
     public ConfigEntryBuilder(@NotNull ConfigImpl config, @NotNull String name) {
@@ -60,8 +57,16 @@ public class ConfigEntryBuilder<T> {
         if (comments == null) {
             comments = Collections.emptyList();
         }
+        if (expectedType == null) {
+            if (defaultValue instanceof Enum<?>) {
+                expectedType = ((Enum<?>) defaultValue).getDeclaringClass();
+            } else {
+                expectedType = defaultValue.getClass();
+            }
+        }
+        assert expectedType.isInstance(defaultValue);
         return this.root.merge(
-            new ConfigEntry<>(this.root, name, defaultValue, namespace, comments)
+            new ConfigEntry<>(this.root, namespace, name, expectedType, defaultValue, comments)
         );
     }
 }
