@@ -39,13 +39,14 @@ public class ConfigEntryBuilder<T> {
     }
 
     public ConfigEntryBuilder<T> comment(@Nonnull String comment) {
-        return comments(Objects.requireNonNull(comment.split("\n")));
-    }
-
-    public ConfigEntryBuilder<T> comments(String... comments) {
         if (this.comments == null) {
             this.comments = new ArrayList<>();
         }
+        comments.addAll(Arrays.asList(comment.split("\n")));
+        return this;
+    }
+
+    public ConfigEntryBuilder<T> comments(String... comments) {
         for (val comment : comments) {
             comment(comment);
         }
@@ -59,6 +60,8 @@ public class ConfigEntryBuilder<T> {
         if (comments == null) {
             comments = Collections.emptyList();
         }
-        return new ConfigEntry<>(this.root, name, defaultValue, namespace, comments);
+        return this.root.merge(
+            new ConfigEntry<>(this.root, name, defaultValue, namespace, comments)
+        );
     }
 }

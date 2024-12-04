@@ -4,16 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.mojang.datafixers.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.utils.GameUtils;
 import zzzank.probejs.utils.JsonUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -49,7 +47,7 @@ public class ConfigEntrySerde {
             entry.setNoSave(value);
             return entry;
         } catch (Exception e) {
-            ProbeJS.LOGGER.error(e);
+            GameUtils.logThrowable(e);
         }
         return null;
     }
@@ -75,14 +73,11 @@ public class ConfigEntrySerde {
         return JsonUtils.parseObject(value);
     }
 
-    public Pair<String, JsonObject> toJson(ConfigEntry<?> entry) {
+    public Map.Entry<String, JsonObject> toJson(ConfigEntry<?> entry) {
         val object = new JsonObject();
 
-        val name = entry.namespace + '.' + entry.name;
-
-        val value = valueToJson(entry, entry.getRaw());
-        object.add(VALUE_KEY, value);
-
+        object.add(DEFAULT_VALUE_KEY, valueToJson(entry, entry.defaultValue));
+        object.add(VALUE_KEY, valueToJson(entry, entry.getRaw()));
         switch (entry.comments.size()) {
             case 0 -> {
             }
@@ -90,9 +85,6 @@ public class ConfigEntrySerde {
             default -> object.add(COMMENTS_KEY, JsonUtils.parseObject(entry.comments));
         }
 
-        val defaultValue = valueToJson(entry, entry.defaultValue);
-        object.add(DEFAULT_VALUE_KEY, defaultValue);
-
-        return new Pair<>(name, object);
+        return new AbstractMap.SimpleImmutableEntry<>(entry.namespace + '.' + entry.name, object);
     }
 }

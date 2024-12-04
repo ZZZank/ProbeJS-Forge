@@ -12,10 +12,11 @@ import java.util.Objects;
 public class ConfigEntry<T> {
 
     public final ConfigImpl source;
+    public final String namespace;
     public final String name;
+
     public final T defaultValue;
     private T value;
-    public final String namespace;
     public final ImmutableList<String> comments;
 
     public ConfigEntry(ConfigImpl source, String name, T defaultValue, String namespace, List<String> comments) {

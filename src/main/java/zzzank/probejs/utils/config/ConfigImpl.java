@@ -31,7 +31,13 @@ public class ConfigImpl {
     public void readFromFile() {
         try (val reader = Files.newBufferedReader(path)) {
             val object = ProbeJS.GSON.fromJson(reader, JsonObject.class);
-            JsonConfigParser.select(object).parse(this, object);
+            for (val entry : object.entrySet()) {
+                val configEntry = serde.fromJson(entry.getKey(), entry.getValue().getAsJsonObject());
+                if (configEntry == null) {
+                    continue;
+                }
+                merge(configEntry);
+            }
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Error happened when reading configs from file", e);
         }
@@ -45,7 +51,7 @@ public class ConfigImpl {
                 .map(Table.Cell::getValue)
                 .filter(Objects::nonNull)
                 .map(serde::toJson)
-                .forEach(pair -> object.add(pair.getFirst(), pair.getSecond()));
+                .forEach(pair -> object.add(pair.getKey(), pair.getValue()));
             ProbeJS.GSON_WRITER.toJson(object, writer);
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Error happened when writing configs to file", e);
@@ -64,15 +70,15 @@ public class ConfigImpl {
         return new ConfigEntryBuilder<>(this, name);
     }
 
-    public ConfigEntry<?> merge(ConfigEntry<?> configEntry) {
-        Objects.requireNonNull(configEntry);
-        val old = all.get(configEntry.namespace, configEntry.name);
-        if (old != null) {
-            old.set(UtilsJS.cast(old.adaptValue(configEntry.get())));
-            return old;
+    public <T> ConfigEntry<T> merge(ConfigEntry<T> entry) {
+        Objects.requireNonNull(entry);
+        val old = all.get(entry.namespace, entry.name);
+        if (old != null && old.defaultValue.getClass().isInstance(entry.defaultValue)) {
+            old.setNoSave(UtilsJS.cast(entry.get()));
+            return (ConfigEntry<T>) old;
         } else {
-            all.put(configEntry.namespace, configEntry.name, configEntry);
-            return configEntry;
+            all.put(entry.namespace, entry.name, entry);
+            return entry;
         }
     }
 }
