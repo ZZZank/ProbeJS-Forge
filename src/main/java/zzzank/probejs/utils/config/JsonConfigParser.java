@@ -49,7 +49,13 @@ public interface JsonConfigParser {
             for (val entry : rawConfig.entrySet()) {
                 val key = entry.getKey().split("\\.", 2);
                 val value = JsonUtils.deserializeObject(entry.getValue());
-                val configEntry = ConfigEntryBuilder.of(value).setNamespace(key[0]).setName(key[1]).build(source);
+                if (value == null) {
+                    continue;
+                }
+                val configEntry = new ConfigEntryBuilder<>(source, key[1])
+                    .setDefaultValue(value)
+                    .setNamespace(key[0])
+                    .build();
                 source.merge(configEntry);
             }
         }

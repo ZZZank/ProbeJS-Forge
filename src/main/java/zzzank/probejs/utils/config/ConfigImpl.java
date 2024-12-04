@@ -60,10 +60,8 @@ public class ConfigImpl {
         return all.get(namespace, name);
     }
 
-    public <T> ConfigEntry<T> addConfig(ConfigEntryBuilder<T> builder) {
-        val configEntry = builder.build(this);
-        all.put(configEntry.namespace, configEntry.name, configEntry);
-        return configEntry;
+    public ConfigEntryBuilder<?> define(String name) {
+        return new ConfigEntryBuilder<>(this, name);
     }
 
     public ConfigEntry<?> merge(ConfigEntry<?> configEntry) {

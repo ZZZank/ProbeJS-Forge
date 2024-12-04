@@ -3,6 +3,7 @@ package zzzank.probejs.utils.config;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.val;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,21 +16,26 @@ import java.util.*;
 @Accessors(chain = true)
 public class ConfigEntryBuilder<T> {
 
+    @NotNull
+    public final ConfigImpl root;
+    @Nonnull
+    public final String name;
     @Nonnull
     public T defaultValue;
     @Nullable
     public String namespace;
-    @Nonnull
-    public String name;
     @Nullable
     public List<String> comments;
 
-    public static <T> ConfigEntryBuilder<T> of(T defaultValue) {
-        return new ConfigEntryBuilder<T>().setDefaultValue(Objects.requireNonNull(defaultValue));
+    public ConfigEntryBuilder(@NotNull ConfigImpl config, @NotNull String name) {
+        this.root = config;
+        this.name = name;
     }
 
-    public static <T> ConfigEntryBuilder<T> of(String name, T defaultValue) {
-        return of(defaultValue).setName(Objects.requireNonNull(name));
+    public <T_> ConfigEntryBuilder<T_> setDefaultValue(@Nonnull T_ defaultValue) {
+        val casted = (ConfigEntryBuilder<T_>) this;
+        casted.defaultValue = Objects.requireNonNull(defaultValue);
+        return casted;
     }
 
     public ConfigEntryBuilder<T> comment(@Nonnull String comment) {
@@ -41,18 +47,18 @@ public class ConfigEntryBuilder<T> {
             this.comments = new ArrayList<>();
         }
         for (val comment : comments) {
-            this.comments.add(Objects.requireNonNull(comment));
+            comment(comment);
         }
         return this;
     }
 
-    public ConfigEntry<T> build(ConfigImpl source) {
+    public ConfigEntry<T> build() {
         if (namespace == null) {
-            namespace = source.defaultNamespace;
+            namespace = this.root.defaultNamespace;
         }
         if (comments == null) {
             comments = Collections.emptyList();
         }
-        return new ConfigEntry<>(source, name, defaultValue, namespace, comments);
+        return new ConfigEntry<>(this.root, name, defaultValue, namespace, comments);
     }
 }
