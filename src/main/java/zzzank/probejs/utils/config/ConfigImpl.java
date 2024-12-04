@@ -76,7 +76,7 @@ public class ConfigImpl {
         return all.get(namespace, name);
     }
 
-    public ConfigEntryBuilder<?> define(String name) {
+    public ConfigEntryBuilder<Object> define(String name) {
         return new ConfigEntryBuilder<>(this, name);
     }
 

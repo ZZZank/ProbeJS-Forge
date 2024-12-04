@@ -19,7 +19,7 @@ public class ConfigEntryBuilder<T> {
     public final ConfigImpl root;
     @Nonnull
     public final String name;
-    public Class<?> expectedType;
+    public Class<T> expectedType;
     public T defaultValue;
     public String namespace;
     public List<String> comments;
@@ -29,10 +29,22 @@ public class ConfigEntryBuilder<T> {
         this.name = name;
     }
 
-    public <T_> ConfigEntryBuilder<T_> setDefaultValue(@Nonnull T_ defaultValue) {
+    public <T_> ConfigEntryBuilder<T_> setDefault(Class<T_> type, T_ value) {
         val casted = (ConfigEntryBuilder<T_>) this;
-        casted.defaultValue = Objects.requireNonNull(defaultValue);
+        casted.expectedType = Objects.requireNonNull(type);
+        casted.defaultValue = Objects.requireNonNull(value);
         return casted;
+    }
+
+    public <T_> ConfigEntryBuilder<T_> setDefault(@Nonnull T_ defaultValue) {
+        Objects.requireNonNull(defaultValue);
+        Class<?> type;
+        if (defaultValue instanceof Enum<?> e) {
+            type = e.getDeclaringClass();
+        } else {
+            type = defaultValue.getClass();
+        }
+        return setDefault((Class<T_>) type, defaultValue);
     }
 
     public ConfigEntryBuilder<T> comment(@Nonnull String comment) {
@@ -56,13 +68,6 @@ public class ConfigEntryBuilder<T> {
         }
         if (comments == null) {
             comments = Collections.emptyList();
-        }
-        if (expectedType == null) {
-            if (defaultValue instanceof Enum<?>) {
-                expectedType = ((Enum<?>) defaultValue).getDeclaringClass();
-            } else {
-                expectedType = defaultValue.getClass();
-            }
         }
         assert expectedType.isInstance(defaultValue);
         return this.root.merge(

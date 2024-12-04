@@ -18,7 +18,7 @@ public interface ProbeConfig {
     }
 
     ConfigEntry<Integer> configVersion = INSTANCE.define("configVersion")
-        .setDefaultValue(3)
+        .setDefault(3)
         .comment(String.format("""
             welcome to ProbeJS Legacy config file
             remember to use '/probejs refresh_config' to refresh your config after changing config values
@@ -31,58 +31,58 @@ public interface ProbeConfig {
         ))
         .build();
     ConfigEntry<Boolean> enabled = INSTANCE.define("enabled")
-        .setDefaultValue(true)
+        .setDefault(true)
         .comments("""
             enable or disable ProbeJS Legacy
             note that `require()` function in script are always available""")
         .build();
     ConfigEntry<Boolean> interactive = INSTANCE.define("interactive")
-        .setDefaultValue(false)
+        .setDefault(false)
         .comments("""
             use with ProbeJS VSCode Extension.
             Currently broken due to many breaking changes from KubeJS/ProbeJS from higher version""")
         .build();
     ConfigEntry<Integer> interactivePort = INSTANCE.define("interactivePort")
-        .setDefaultValue(7796)
+        .setDefault(7796)
         .comment("""
             use with ProbeJS VSCode Extension.
             Currently broken due to many breaking changes from KubeJS/ProbeJS from higher version""")
         .build();
     ConfigEntry<Long> modHash = INSTANCE.define("modHash")
-        .setDefaultValue(-1L)
+        .setDefault(-1L)
         .comment("""
             internal config, used for tracking mod update and modlist change""")
         .build();
     ConfigEntry<Long> registryHash = INSTANCE.define("registryHash")
-        .setDefaultValue(-1L)
+        .setDefault(-1L)
         .comment("""
             internal config, used for tracking registry change""")
         .build();
     ConfigEntry<Boolean> isolatedScopes = INSTANCE.define("isolatedScopes")
-        .setDefaultValue(false)
+        .setDefault(false)
         .comment("""
             isolate scripts from different script file with certain exposure,
             used for making scripts actual running situation more in line with your coding""")
         .build();
     ConfigEntry<Boolean> complete = INSTANCE.define("complete")
-        .setDefaultValue(true)
+        .setDefault(true)
         .comment("""
             attach all registry names of each registry type to related JS types, for better code completion
             disabling this can help with performance of your code editor
             snippets for registry names are always available, regardless of this option""")
         .build();
     ConfigEntry<Boolean> publicClassOnly = INSTANCE.define("publicClassOnly")
-        .setDefaultValue(false)
+        .setDefault(false)
         .comment("""
             prevent classes that are not public and not referenced from being scanned""")
         .build();
     ConfigEntry<Boolean> resolveGlobal = INSTANCE.define("resolveGlobal")
-        .setDefaultValue(true)
+        .setDefault(true)
         .comment("""
             resolve defined values in `global`""")
         .build();
     ConfigEntry<BuiltinScanners> classScanner = INSTANCE.define("Class Scanner")
-        .setDefaultValue(BuiltinScanners.EVENTS)
+        .setDefault(BuiltinScanners.EVENTS)
         .comment("""
             can be one of these:
             NONE -> no class scanner
@@ -90,7 +90,7 @@ public interface ProbeConfig {
             FULL -> scan all classes recorded by ForgeModLoader""")
         .build();
     ConfigEntry<Boolean> dumpCustomRecipeGenerator = INSTANCE.define("dumpCustomRecipeGenerator")
-        .setDefaultValue(false)
+        .setDefault(false)
         .comment("""
             KubeJS will generate custom recipe creation method in recipe event, these methods only accept one Json as its arg
             enabling this will allow ProbeJS to dump syntax these JsonSerializer-based recipe creating functions""")
