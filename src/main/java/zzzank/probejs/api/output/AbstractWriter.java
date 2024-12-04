@@ -37,6 +37,7 @@ public abstract class AbstractWriter implements TSFileWriter {
         } else {
             file.write(writer);
         }
+        written++;
     }
 
     @Override
