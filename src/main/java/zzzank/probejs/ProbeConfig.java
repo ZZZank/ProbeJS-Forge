@@ -1,5 +1,6 @@
 package zzzank.probejs;
 
+import zzzank.probejs.features.forge_scan.BuiltinScanners;
 import zzzank.probejs.utils.config.ConfigEntry;
 import zzzank.probejs.utils.config.ConfigEntrySerde;
 import zzzank.probejs.utils.config.ConfigImpl;
@@ -80,11 +81,13 @@ public interface ProbeConfig {
         .comment("""
             resolve defined values in `global`""")
         .build();
-    ConfigEntry<Boolean> fullScan = INSTANCE.define("fullScan")
-        .setDefaultValue(false)
+    ConfigEntry<BuiltinScanners> classScanner = INSTANCE.define("Class Scanner")
+        .setDefaultValue(BuiltinScanners.EVENTS)
         .comment("""
-            apply no filter on class scanning process if true
-            disabling this will restrict class scanner to only scan ProbeJS captured classes and forge event classes""")
+            can be one of these:
+            NONE -> no class scanner
+            EVENTS (default) -> scan all forge event subclasses
+            FULL -> scan all classes recorded by ForgeModLoader""")
         .build();
     ConfigEntry<Boolean> dumpCustomRecipeGenerator = INSTANCE.define("dumpCustomRecipeGenerator")
         .setDefaultValue(false)

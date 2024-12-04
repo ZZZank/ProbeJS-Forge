@@ -16,9 +16,7 @@ public class ForgeModScanner {
 
     public List<Class<?>> scanAll() {
         val allScanData = ModList.get().getAllScanData();
-        val scanner = ProbeConfig.fullScan.get()
-            ? BuiltinScanners.FULL
-            : BuiltinScanners.EVENTS;
+        val scanner = ProbeConfig.classScanner.get();
         return scanner.scan(
                 allScanData
                     .stream()
