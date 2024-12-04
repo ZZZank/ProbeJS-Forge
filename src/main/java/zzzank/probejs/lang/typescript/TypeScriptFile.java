@@ -58,6 +58,7 @@ public class TypeScriptFile {
 
     public void write(BufferedWriter writer) throws IOException {
         boolean written = false;
+
         for (Reference value : declaration.references.values()) {
             if (value.info.path.equals(path)) {
                 continue;

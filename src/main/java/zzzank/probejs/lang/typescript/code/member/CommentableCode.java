@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.member;
 
+import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 
@@ -13,8 +14,8 @@ public abstract class CommentableCode extends Code {
     public List<String> formatComments() {
         List<String> formatted = new ArrayList<>();
         formatted.add("/**");
-        for (String comment : comments) {
-            formatted.add(String.format(" * %s", comment));
+        for (val comment : comments) {
+            formatted.add(" * " + comment);
         }
         formatted.add(" */");
         return formatted;

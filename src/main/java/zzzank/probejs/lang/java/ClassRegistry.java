@@ -20,14 +20,6 @@ public class ClassRegistry {
 
     public Map<ClassPath, Clazz> foundClasses = new HashMap<>(256);
 
-    public void fromPackage(Collection<ClassPath> classPaths) {
-        for (val path : classPaths) {
-            if (!foundClasses.containsKey(path)) {
-                foundClasses.put(path, path.toClazz());
-            }
-        }
-    }
-
     public void fromClazz(Collection<Clazz> classes) {
         for (val c : classes) {
             if (!foundClasses.containsKey(c.classPath)) {

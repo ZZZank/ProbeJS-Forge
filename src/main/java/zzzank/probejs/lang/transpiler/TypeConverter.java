@@ -1,6 +1,5 @@
 package zzzank.probejs.lang.transpiler;
 
-import dev.latvian.kubejs.script.ScriptManager;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.lang.java.type.TypeAdapter;

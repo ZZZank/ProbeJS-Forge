@@ -26,7 +26,10 @@ public final class ClassPath implements Comparable<ClassPath> {
 
     public final String[] parts;
 
-    public static ClassPath fromRaw(@NotNull String className) {
+    public static @NotNull ClassPath fromRaw(String className) {
+        if (className == null || className.isEmpty()) {
+            throw new IllegalArgumentException("'className' is " + (className == null ? "null" : "empty"));
+        }
         return new ClassPath(SPLIT.split(className));
     }
 
