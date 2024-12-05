@@ -57,14 +57,14 @@ public class TypeAdapter {
             return new WildType(wildcardType);
         } else if (type instanceof Class<?> clazz) {
             TypeVariable<?>[] interfaces = clazz.getTypeParameters();
-            if (recursive && interfaces.length != 0) {
-                return new ParamType(
-                    new Annotation[]{},
-                    new ClassType(clazz),
-                    Collections.nCopies(interfaces.length, new ClassType(Object.class))
-                );
+            if (!recursive || interfaces.length == 0) {
+                return new ClassType(clazz);
             }
-            return new ClassType(clazz);
+            return new ParamType(
+                new Annotation[]{},
+                new ClassType(clazz),
+                Collections.nCopies(interfaces.length, new ClassType(Object.class))
+            );
         }
         throw new RuntimeException("Unknown type to be resolved");
     }

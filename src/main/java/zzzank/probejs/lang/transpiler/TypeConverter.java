@@ -65,7 +65,7 @@ public class TypeConverter {
                 case 1 -> Types.generic(variableType.symbol, convertType(desc.get(0)));
                 default -> Types.generic(
                     variableType.symbol,
-                    new JSJoinedType.Intersection(desc.stream().map(this::convertType).collect(Collectors.toList()))
+                    new JSJoinedType.Intersection(CollectUtils.mapToList(desc, this::convertType))
                 );
             };
         } else if (descriptor instanceof WildType wildType) {

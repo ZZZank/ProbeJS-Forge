@@ -65,4 +65,10 @@ public class GameUtils {
     public static void logThrowable(Throwable t) {
         logThrowable(t, -1);
     }
+
+    public static void asser(boolean condition, String message) {
+        if (!condition) {
+            throw new AssertionError(message);
+        }
+    }
 }

@@ -18,17 +18,13 @@ public class InjectAnnotation implements ClassTransformer {
     @Override
     public void transform(Clazz clazz, ClassDecl classDecl) {
         applyInfo(clazz, classDecl);
-        if (clazz.hasAnnotation(Deprecated.class)) {
-            classDecl.newline("@deprecated");
-        }
+        applyDeprecated(clazz, classDecl);
     }
 
     @Override
     public void transformMethod(Clazz clazz, MethodInfo methodInfo, MethodDecl decl) {
         applyInfo(methodInfo, decl);
-        if (methodInfo.hasAnnotation(Deprecated.class)) {
-            decl.newline("@deprecated");
-        }
+        applyDeprecated(methodInfo, decl);
 
         if (RhizoState.INFO_ANNOTATION) {
             val paramLines = methodInfo.params.stream()
@@ -47,15 +43,18 @@ public class InjectAnnotation implements ClassTransformer {
     @Override
     public void transformField(Clazz clazz, FieldInfo fieldInfo, FieldDecl decl) {
         applyInfo(fieldInfo, decl);
-        if (fieldInfo.hasAnnotation(Deprecated.class)) {
-            decl.newline("@deprecated");
-        }
+        applyDeprecated(fieldInfo, decl);
     }
 
     @Override
     public void transformConstructor(Clazz clazz, ConstructorInfo constructorInfo, ConstructorDecl decl) {
         applyInfo(constructorInfo, decl);
-        if (constructorInfo.hasAnnotation(Deprecated.class)) {
+        applyDeprecated(constructorInfo, decl);
+    }
+
+    public void applyDeprecated(AnnotationHolder info, CommentableCode decl) {
+        val anno = info.getAnnotation(Deprecated.class);
+        if (anno != null) {
             decl.newline("@deprecated");
         }
     }
@@ -64,8 +63,9 @@ public class InjectAnnotation implements ClassTransformer {
         if (!RhizoState.INFO_ANNOTATION) {
             return;
         }
-        for (JSInfo annotation : info.getAnnotations(JSInfo.class)) {
-            decl.addComment(annotation.value());
+        val infoAnnotation = info.getAnnotation(JSInfo.class);
+        if (infoAnnotation != null) {
+            decl.addComment(infoAnnotation.value());
         }
     }
 }

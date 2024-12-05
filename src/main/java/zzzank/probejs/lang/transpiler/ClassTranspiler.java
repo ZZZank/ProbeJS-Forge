@@ -36,24 +36,27 @@ public class ClassTranspiler extends Converter<Clazz, ClassDecl> {
         for (val variableType : clazz.variableTypes) {
             variableTypes.add((TSVariableType) converter.convertType(variableType));
         }
-        val superClass = clazz.superClass == null ? null : converter.convertType(clazz.superClass);
+        val superClass = clazz.superClass == null ? null : converter.convertTypeBuiltin(clazz.superClass);
         val interfaces = clazz.interfaces.stream()
             .map(converter::convertType)
             .filter(t -> t != Types.ANY)
             .collect(Collectors.toList());
-        val decl = clazz.attribute.isInterface
-            ? new InterfaceDecl(
-            clazz.classPath.getName(),
-            superClass == Types.ANY ? null : superClass,
-            interfaces,
-            variableTypes
-        )
-            : new ClassDecl(
+        ClassDecl decl;
+        if (clazz.attribute.isInterface) {
+            decl = new InterfaceDecl(
                 clazz.classPath.getName(),
                 superClass == Types.ANY ? null : superClass,
                 interfaces,
                 variableTypes
             );
+        } else {
+            decl = new ClassDecl(
+                clazz.classPath.getName(),
+                superClass == Types.ANY ? null : superClass,
+                interfaces,
+                variableTypes
+            );
+        }
 
         for (val fieldInfo : clazz.fields) {
             val fieldDecl = field.transpile(fieldInfo);

@@ -30,7 +30,6 @@ import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 import zzzank.probejs.lang.typescript.refer.ImportType;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 import zzzank.probejs.utils.CollectUtils;
-import zzzank.probejs.utils.GameUtils;
 import zzzank.probejs.utils.JsonUtils;
 
 import java.io.BufferedWriter;
@@ -190,9 +189,6 @@ public class ScriptDump {
     }
 
     public void dumpClasses() throws IOException {
-        transpiler.init();
-        ProbeJSPlugins.forEachPlugin(plugin -> plugin.assignType(this));
-
         val globalClasses = transpiler.dump(recordedClasses);
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.modifyClasses(this, globalClasses));
 
@@ -295,8 +291,8 @@ public class ScriptDump {
     }
 
     public void dump() throws IOException, ClassNotFoundException {
-//        getSource();
-//        getTest();
+        transpiler.init();
+        ProbeJSPlugins.forEachPlugin(plugin -> plugin.assignType(this));
 
         dumpClasses();
         dumpGlobal();
