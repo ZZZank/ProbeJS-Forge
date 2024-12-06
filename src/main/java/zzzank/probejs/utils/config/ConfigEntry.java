@@ -28,6 +28,9 @@ public class ConfigEntry<T> {
         this.comments = ImmutableList.copyOf(Objects.requireNonNull(comments));
     }
 
+    /**
+     * `null` will be redirected to default value
+     */
     public void set(T value) {
         setNoSave(value);
         source.save();

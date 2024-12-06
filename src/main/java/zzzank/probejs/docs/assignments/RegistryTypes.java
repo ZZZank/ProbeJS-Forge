@@ -191,7 +191,7 @@ public class RegistryTypes implements ProbeJSPlugin {
                 continue;
             }
 
-            for (val entry : registry.getEntries()) {
+            for (var entry : registry.getEntries()) { //don't use val, lombok is not smart enough to infer types here
                 val location = entry.getKey().location().toString();
                 if (filter.matcher(location).matches()) {
                     classes.add(entry.getValue().getClass());

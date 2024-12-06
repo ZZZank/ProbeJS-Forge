@@ -31,13 +31,13 @@ public class ConfigEntryBuilder<T> {
 
     public <T_> ConfigEntryBuilder<T_> setDefault(Class<T_> type, T_ value) {
         val casted = (ConfigEntryBuilder<T_>) this;
-        casted.expectedType = Objects.requireNonNull(type);
-        casted.defaultValue = Objects.requireNonNull(value);
+        casted.expectedType = Objects.requireNonNull(type, "config expected type must not be null");
+        casted.defaultValue = Objects.requireNonNull(value, "config default value must not be null");
         return casted;
     }
 
     public <T_> ConfigEntryBuilder<T_> setDefault(@Nonnull T_ defaultValue) {
-        Objects.requireNonNull(defaultValue);
+        Objects.requireNonNull(defaultValue, "config default value must not be null");
         Class<?> type;
         if (defaultValue instanceof Enum<?> e) {
             type = e.getDeclaringClass();
