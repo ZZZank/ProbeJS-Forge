@@ -1,6 +1,5 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
-import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
@@ -44,7 +43,7 @@ public class JSLambdaType extends BaseType {
     public List<String> format(Declaration declaration, FormatType formatType) {
         // (arg0: type, arg1: type...) => returnType
         return Collections.singletonList(String.format(
-            "%s => %s",
+            "(%s => %s)",
             //when formatType is INPUT, aka this lambda is a param itself, params of this lambda should be concrete
             ParamDecl.formatParams(
                 params,
