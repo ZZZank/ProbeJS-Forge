@@ -95,4 +95,10 @@ public interface ProbeConfig {
             KubeJS will generate custom recipe creation method in recipe event, these methods only accept one Json as its arg
             enabling this will allow ProbeJS to dump syntax these JsonSerializer-based recipe creating functions""")
         .build();
+    ConfigEntry<String> registryObjectFilter = INSTANCE.define("Registry Object Filter")
+        .setDefault("^minecraft:.+$")
+        .comment("""
+            a string regex used for filtering registry objects.
+            Registry objects whose id matches this pattern will always be dumped by ProbeJS Legacy""")
+        .build();
 }

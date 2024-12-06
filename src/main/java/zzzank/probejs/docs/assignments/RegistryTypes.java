@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import zzzank.probejs.ProbeJS;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.registry.RegistryInfos;
@@ -25,7 +26,7 @@ import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.utils.registry.RegistryInfo;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 /**
  * Assign types to all the registry types
@@ -170,23 +171,35 @@ public class RegistryTypes implements ProbeJSPlugin {
 
     @Override
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
-        Set<Class<?>> registryObjectClasses = new HashSet<>();
+        Set<Class<?>> classes = new HashSet<>();
         if (ServerLifecycleHooks.getCurrentServer() == null) {
-            return registryObjectClasses;
+            return classes;
+        }
+
+        Pattern filter;
+        try {
+            filter = Pattern.compile(ProbeConfig.registryObjectFilter.get());
+        } catch (Exception e) {
+            ProbeJS.LOGGER.error("error compiling registry regex filter, resetting regex", e);
+            ProbeConfig.registryObjectFilter.set(null);
+            filter = Pattern.compile(ProbeConfig.registryObjectFilter.defaultValue);
         }
 
         for (val info : RegistryInfos.infos.values()) {
-            val registry = info.raw;
+            val registry = info.forgeRaw;
             if (registry == null) {
                 continue;
             }
 
-            for (val o : registry) {
-                registryObjectClasses.add(o.getClass());
+            for (val entry : registry.getEntries()) {
+                val location = entry.getKey().location().toString();
+                if (filter.matcher(location).matches()) {
+                    classes.add(entry.getValue().getClass());
+                }
             }
-            registryObjectClasses.add(info.forgeRaw.getRegistrySuperType());
+            classes.add(registry.getRegistrySuperType());
         }
-        return registryObjectClasses;
+        return classes;
     }
 
     @Override
