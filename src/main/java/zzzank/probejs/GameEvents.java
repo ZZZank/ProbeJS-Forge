@@ -49,7 +49,7 @@ public class GameEvents {
             return;
         }
 
-        final Consumer<Component> sendMsg = msg -> player.sendMessage(msg, NIL_UUID);
+        val sendMsg = (Consumer<Component>) msg -> player.sendMessage(msg, NIL_UUID);
         RegistryInfos.refresh();
 
         if (ProbeConfig.modHash.get() == -1) {
@@ -96,13 +96,13 @@ public class GameEvents {
 
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
-        Predicate<CommandSourceStack> spOrOp = (source) -> source.hasPermission(2) || source.getServer().isSingleplayer();
-        Predicate<CommandSourceStack> pjsEnabled = (source) -> ProbeConfig.enabled.get();
-        BiConsumer<CommandContext<CommandSourceStack>, Component> sendMsg =
+        val spOrOp = (Predicate<CommandSourceStack>)
+            (source) -> source.hasPermission(2) || source.getServer().isSingleplayer();
+        val pjsEnabled = (Predicate<CommandSourceStack>) (source) -> ProbeConfig.enabled.get();
+        val sendMsg = (BiConsumer<CommandContext<CommandSourceStack>, Component>)
             (context, text) -> context.getSource().sendSuccess(text, true);
 
-        val dispatcher = event.getDispatcher();
-        dispatcher.register(
+        event.getDispatcher().register(
             Commands.literal("probejs")
                 .then(Commands.literal("dump")
                     .requires(pjsEnabled.and(spOrOp))

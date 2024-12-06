@@ -35,7 +35,7 @@ public class GameUtils {
                 return -1;
             }
 
-            RegistryInfos.infos.values()
+            RegistryInfos.ALL.values()
                 .stream()
                 .flatMap(registryInfo -> registryInfo.names.stream())
                 .map(ResourceLocation::toString)

@@ -46,7 +46,7 @@ public class RegistryTypes implements ProbeJSPlugin {
             return;
         }
 
-        for (val info : RegistryInfos.infos.values()) {
+        for (val info : RegistryInfos.ALL.values()) {
             val key = info.resKey;
             val typeName = NameUtils.registryName(key);
             scriptDump.assignType(
@@ -87,7 +87,7 @@ public class RegistryTypes implements ProbeJSPlugin {
         val special = new Wrapped.Namespace(SpecialTypes.NAMESPACE);
         val enabled = ProbeConfig.complete.get();
 
-        for (val info : RegistryInfos.infos.values()) {
+        for (val info : RegistryInfos.ALL.values()) {
             createTypes(special, info, enabled);
         }
 //        createTypes(special, new RegistryInfo(Registry.REGISTRY), enabled);
@@ -140,7 +140,7 @@ public class RegistryTypes implements ProbeJSPlugin {
         }
 
         // We inject literal and tag into registry types
-        for (val info : RegistryInfos.infos.values()) {
+        for (val info : RegistryInfos.ALL.values()) {
             val key = info.resKey;
             makeClassModifications(globalClasses, key, info.forgeRaw.getRegistrySuperType());
         }
@@ -185,7 +185,7 @@ public class RegistryTypes implements ProbeJSPlugin {
             filter = Pattern.compile(ProbeConfig.registryObjectFilter.defaultValue);
         }
 
-        for (val info : RegistryInfos.infos.values()) {
+        for (val info : RegistryInfos.ALL.values()) {
             val registry = info.forgeRaw;
             if (registry == null) {
                 continue;
@@ -208,7 +208,7 @@ public class RegistryTypes implements ProbeJSPlugin {
             return;
         }
 
-        for (val info : RegistryInfos.infos.values()) {
+        for (val info : RegistryInfos.ALL.values()) {
             val registry = info.raw;
             val key = info.resKey;
             if (registry == null) {
