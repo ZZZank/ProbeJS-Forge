@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import dev.latvian.kubejs.util.UtilsJS;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.utils.Asser;
 import zzzank.probejs.utils.CollectUtils;
 
 import java.nio.file.Files;
@@ -81,7 +82,7 @@ public class ConfigImpl {
     }
 
     public <T> ConfigEntry<T> merge(ConfigEntry<T> entry) {
-        Objects.requireNonNull(entry);
+        Asser.tNotNull(entry, "config entry to be merged");
         val old = all.get(entry.namespace, entry.name);
         if (old != null && old.defaultValue.getClass().isInstance(entry.defaultValue)) {
             old.setNoSave(UtilsJS.cast(entry.get()));

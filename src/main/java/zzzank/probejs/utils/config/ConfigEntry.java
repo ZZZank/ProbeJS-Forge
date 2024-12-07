@@ -1,6 +1,7 @@
 package zzzank.probejs.utils.config;
 
 import com.google.common.collect.ImmutableList;
+import zzzank.probejs.utils.Asser;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,12 +21,12 @@ public class ConfigEntry<T> {
     public final ImmutableList<String> comments;
 
     public ConfigEntry(ConfigImpl source, String namespace, String name, Class<?> expectedType, T defaultValue, List<String> comments) {
-        this.source = Objects.requireNonNull(source);
-        this.name = Objects.requireNonNull(name);
-        this.expectedType = Objects.requireNonNull(expectedType);
-        this.defaultValue = Objects.requireNonNull(defaultValue);
-        this.namespace = Objects.requireNonNull(namespace);
-        this.comments = ImmutableList.copyOf(Objects.requireNonNull(comments));
+        this.source = Asser.tNotNull(source, "source");
+        this.name = Asser.tNotNull(name, "name");
+        this.expectedType = Asser.tNotNull(expectedType, "expectedType");
+        this.defaultValue = Asser.tNotNull(defaultValue, "defaultValue");
+        this.namespace = Asser.tNotNull(namespace, "namespace");
+        this.comments = ImmutableList.copyOf(Asser.tNotNullAll(comments, "comments"));
     }
 
     /**

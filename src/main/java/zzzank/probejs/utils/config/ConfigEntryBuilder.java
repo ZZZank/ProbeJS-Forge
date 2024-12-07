@@ -4,6 +4,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
+import zzzank.probejs.utils.Asser;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -31,13 +32,14 @@ public class ConfigEntryBuilder<T> {
 
     public <T_> ConfigEntryBuilder<T_> setDefault(Class<T_> type, T_ value) {
         val casted = (ConfigEntryBuilder<T_>) this;
-        casted.expectedType = Objects.requireNonNull(type, "config expected type must not be null");
-        casted.defaultValue = Objects.requireNonNull(value, "config default value must not be null");
+        casted.expectedType = Asser.tNotNull(type, "config expected type");
+        casted.defaultValue = Asser.tNotNull(value, "config default value");
+        Asser.t(expectedType.isInstance(defaultValue), "config default value must match expected type");
         return casted;
     }
 
     public <T_> ConfigEntryBuilder<T_> setDefault(@Nonnull T_ defaultValue) {
-        Objects.requireNonNull(defaultValue, "config default value must not be null");
+        Asser.tNotNull(defaultValue, "config default value");
         Class<?> type;
         if (defaultValue instanceof Enum<?> e) {
             type = e.getDeclaringClass();
