@@ -36,7 +36,7 @@ import static net.minecraft.Util.NIL_UUID;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class GameEvents {
-    private static final int MOD_LIMIT = 300;
+    private static final int MOD_LIMIT = 200;
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void playerJoined(ClientPlayerNetworkEvent.LoggedInEvent event) {
@@ -66,10 +66,12 @@ public class GameEvents {
                     .append(TextWrapper.string("/probejs disable").click("command:/probejs disable").aqua())
                     .component()
             );
-            if (ModList.get().size() >= MOD_LIMIT && ProbeConfig.complete.get()) {
-                sendMsg.accept(
-                    TextWrapper.translate("probejs.performance", ModList.get().size()).component()
-                );
+            if (ModList.get().size() >= MOD_LIMIT) {
+                if (ProbeConfig.complete.get()) {
+                    sendMsg.accept(
+                        TextWrapper.translate("probejs.performance", ModList.get().size()).component()
+                    );
+                }
             }
         }
         sendMsg.accept(
@@ -79,7 +81,8 @@ public class GameEvents {
                     .underlined()
                     .click("https://kubejs.com/wiki/addons/third-party/probejs")
                     .hover("https://kubejs.com/wiki/addons/third-party/probejs"))
-                .component());
+                .component()
+        );
 
         if (ProbeConfig.interactive.get() && GlobalStates.SERVER == null) {
             try {
