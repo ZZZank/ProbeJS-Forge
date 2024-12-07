@@ -1,3 +1,19 @@
+# ProbeJS Legacy 4.4.1 -> 4.4.2
+
+registry objects filter
+
+- Registry Object Filter
+    - a string regex used for filtering registry objects.
+      Registry objects whose id matches this pattern will always be dumped by ProbeJS Legacy
+    - by default it's set to only dump minecraft registry objects for performance
+    - but noted that registry object classes might already be cached by our class cache file,
+      you might need to delete `.probe/classes.txt` to actually see its effects
+- added brackets to JSLambdaType to prevent TS syntax error
+- mod performance threshold is decreased from 300 to 200
+- add config path hint in some messages
+
+---
+
 # ProbeJS Legacy 4.4.0 -> 4.4.1
 
 fix config
