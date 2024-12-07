@@ -55,7 +55,7 @@ public class PackagedWriter extends AbstractWriter {
         for (val entry : packaged.entrySet()) {
             val fileName = entry.getKey();
             val files = entry.getValue();
-            val filePath = base.resolve(fileName + D_TS_SUFFIX);
+            val filePath = base.resolve(fileName + suffix);
             if (Files.notExists(filePath)) {
                 Files.createFile(filePath);
             }
@@ -70,9 +70,9 @@ public class PackagedWriter extends AbstractWriter {
 
     @Override
     protected void writeIndex(Path base) throws IOException {
-        try (val writer = Files.newBufferedWriter(base.resolve(INDEX_FILE_NAME))) {
+        try (val writer = Files.newBufferedWriter(base.resolve(INDEX_FILE_NAME + suffix))) {
             for (val key : packaged.keySet()) {
-                val refPath = key + D_TS_SUFFIX;
+                val refPath = key + suffix;
                 writer.write(String.format("/// <reference path=%s />\n", ProbeJS.GSON.toJson(refPath)));
             }
         }

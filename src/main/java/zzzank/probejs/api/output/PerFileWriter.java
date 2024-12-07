@@ -24,7 +24,7 @@ public class PerFileWriter extends AbstractWriter {
     }
 
     private String filePathOf(ClassPath path) {
-        return path.getJavaPath() + D_TS_SUFFIX;
+        return path.getJavaPath() + suffix;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PerFileWriter extends AbstractWriter {
 
     @Override
     protected void writeIndex(Path base) throws IOException {
-        try (val writer = Files.newBufferedWriter(base.resolve(INDEX_FILE_NAME))) {
+        try (val writer = Files.newBufferedWriter(base.resolve(INDEX_FILE_NAME + suffix))) {
             for (val file : files) {
                 writer.write(String.format(
                     "/// <reference path=%s />\n",

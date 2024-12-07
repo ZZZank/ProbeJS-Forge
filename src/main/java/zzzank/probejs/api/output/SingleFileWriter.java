@@ -40,7 +40,7 @@ public class SingleFileWriter extends AbstractWriter {
 
     @Override
     protected void writeClasses(Path base) throws IOException {
-        val filePath = base.resolve(this.fileName + D_TS_SUFFIX);
+        val filePath = base.resolve(this.fileName + suffix);
         if (Files.notExists(filePath)) {
             Files.createFile(filePath);
         }
@@ -54,8 +54,8 @@ public class SingleFileWriter extends AbstractWriter {
 
     @Override
     protected void writeIndex(Path base) throws IOException {
-        try (val writer = Files.newBufferedWriter(base.resolve(INDEX_FILE_NAME))) {
-            writer.write(String.format("/// <reference path=%s />\n", ProbeJS.GSON.toJson(fileName + D_TS_SUFFIX)));
+        try (val writer = Files.newBufferedWriter(base.resolve(INDEX_FILE_NAME + suffix))) {
+            writer.write(String.format("/// <reference path=%s />\n", ProbeJS.GSON.toJson(fileName + suffix)));
         }
     }
 }

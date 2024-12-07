@@ -6,6 +6,7 @@ import zzzank.probejs.lang.typescript.TypeScriptFile;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * @author ZZZank
@@ -14,6 +15,13 @@ public abstract class AbstractWriter implements TSFileWriter {
     protected int written = 0;
     public boolean writeAsModule = true;
     public boolean withIndex = true;
+    public String suffix = D_TS_SUFFIX;
+
+    @Override
+    public TSFileWriter setSuffix(String suffix) {
+        this.suffix = Objects.requireNonNull(suffix);
+        return this;
+    }
 
     @Override
     public TSFileWriter setWithIndex(boolean withIndex) {

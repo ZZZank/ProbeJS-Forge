@@ -11,6 +11,8 @@ import java.nio.file.Path;
  */
 public interface TSFileWriter {
 
+    TSFileWriter setSuffix(String suffix);
+
     TSFileWriter setWithIndex(boolean withIndex);
 
     TSFileWriter setWriteAsModule(boolean writeAsModule);
@@ -23,7 +25,9 @@ public interface TSFileWriter {
 
     int countWrittenFiles();
 
-    String D_TS_SUFFIX = ".d.ts";
+    String TS_SUFFIX = ".ts";
 
-    String INDEX_FILE_NAME = "index" + D_TS_SUFFIX;
+    String D_TS_SUFFIX = ".d" + TS_SUFFIX;
+
+    String INDEX_FILE_NAME = "index";
 }
