@@ -6,6 +6,7 @@ import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
+import zzzank.probejs.lang.java.clazz.MemberCollector;
 import zzzank.probejs.utils.ReflectUtils;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class ClassRegistry {
     public static final ClassRegistry REGISTRY = new ClassRegistry();
 
     public Map<ClassPath, Clazz> foundClasses = new HashMap<>(256);
+    public final MemberCollector collector = new MemberCollector();
 
     public void fromClazz(Collection<Clazz> classes) {
         for (val c : classes) {
@@ -43,7 +45,7 @@ public class ClassRegistry {
         }
         try {
             if (!foundClasses.containsKey(ClassPath.fromJava(c))) {
-                val clazz = new Clazz(c);
+                val clazz = new Clazz(c, collector);
                 foundClasses.put(clazz.classPath, clazz);
             }
         } catch (Throwable ignored) {
@@ -90,7 +92,7 @@ public class ClassRegistry {
         return classes;
     }
 
-    public void discoverClasses() {
+    public void walkClass() {
         Set<Clazz> currentClasses = new HashSet<>(foundClasses.values());
 
         int lastClassCount = 0;
@@ -110,7 +112,7 @@ public class ClassRegistry {
                 }
                 try {
 //                    Class.forName(c.getName());
-                    val clazz = new Clazz(c);
+                    val clazz = new Clazz(c, collector);
                     foundClasses.put(clazz.classPath, clazz);
                     currentClasses.add(clazz);
                 } catch (Throwable ignored) {
@@ -131,7 +133,7 @@ public class ClassRegistry {
         try (val writer = Files.newBufferedWriter(path)) {
             for (val classPath : classPaths) {
                 val commonPartsCount = classPath.getCommonPartsCount(lastPath);
-                val copy = Arrays.copyOf(classPath.parts, classPath.parts.length);
+                val copy = Arrays.copyOf(classPath.parts, classPath.partsCount());
                 Arrays.fill(copy, 0, commonPartsCount, "");
                 writer.write(String.join(".", copy));
                 writer.write('\n');
@@ -147,7 +149,7 @@ public class ClassRegistry {
                 val parts = className.split("\\.");
                 for (int i = 0; i < parts.length; i++) {
                     if (parts[i].isEmpty()) {
-                        parts[i] = lastPath.parts[i];
+                        parts[i] = lastPath.getPart(i);
                     } else {
                         break;
                     }
