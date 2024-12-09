@@ -1,7 +1,7 @@
 package zzzank.probejs.lang.snippet;
 
 import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonWriter;
+import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 
@@ -15,10 +15,10 @@ import java.util.List;
  * Controls the generation of snippets.
  */
 public class SnippetDump {
-    public List<Snippet> snippets = new ArrayList<>();
+    public final List<Snippet> snippets = new ArrayList<>();
 
     public Snippet snippet(String name) {
-        Snippet snippet = new Snippet(name);
+        val snippet = new Snippet(name);
         snippets.add(snippet);
         return snippet;
     }
@@ -27,18 +27,18 @@ public class SnippetDump {
         ProbeJSPlugins.forEachPlugin(plugin -> plugin.addVSCodeSnippets(this));
     }
 
-
     public void writeTo(Path path) throws IOException {
-        try (var writer = Files.newBufferedWriter(path)) {
-            JsonWriter jsonWriter = ProbeJS.GSON_WRITER.newJsonWriter(writer);
+        try (val writer = Files.newBufferedWriter(path)) {
+            val jsonWriter = ProbeJS.GSON_WRITER.newJsonWriter(writer);
             jsonWriter.setIndent("    ");
 
-            JsonObject compiled = new JsonObject();
-
-            for (Snippet snippet : snippets) {
+            val compiled = new JsonObject();
+            for (val snippet : snippets) {
                 compiled.add(snippet.name, snippet.compile());
             }
             ProbeJS.GSON_WRITER.toJson(compiled, JsonObject.class, jsonWriter);
+        } finally {
+            snippets.clear();
         }
     }
 }
