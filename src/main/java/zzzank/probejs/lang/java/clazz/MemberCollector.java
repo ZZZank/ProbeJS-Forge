@@ -30,6 +30,7 @@ public class MemberCollector {
             .peek(m -> names.add(RemapperBridge.remapMethod(from, m)))
             .filter(MemberCollector::notHideFromJS)
             .filter(m -> !m.isSynthetic() && !hasIdenticalParentMethod(m, from))
+            .sorted(Comparator.comparing(Method::getName))
             .map(method -> new MethodInfo(
                 from,
                 method,
