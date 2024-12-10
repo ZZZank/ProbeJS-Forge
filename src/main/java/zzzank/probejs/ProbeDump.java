@@ -120,7 +120,7 @@ public class ProbeDump {
             ClassRegistry.REGISTRY.fromClasses(scriptDump.retrieveClasses());
         }
 
-        ClassRegistry.REGISTRY.discoverClasses();
+        ClassRegistry.REGISTRY.walkClass();
         ClassRegistry.REGISTRY.writeTo(CLASS_CACHE);
         report(translate("probejs.dump.class_discovered", ClassRegistry.REGISTRY.foundClasses.keySet().size()));
 
