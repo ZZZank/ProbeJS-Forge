@@ -2,8 +2,10 @@ package zzzank.probejs.lang.typescript.code.member;
 
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.typescript.Declaration;
+import zzzank.probejs.lang.typescript.code.CommentableCode;
 import zzzank.probejs.lang.typescript.code.ts.FunctionDeclaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
@@ -70,5 +72,38 @@ public class MethodDecl extends CommentableCode {
         }
 
         return Collections.singletonList(String.format("%s%s%s", head, body, tail));
+    }
+
+    public static class Builder extends ConstructorDecl.Builder {
+        public final String name;
+        public BaseType returnType = Types.VOID;
+        public boolean isAbstract = false;
+        public boolean isStatic = false;
+
+        public Builder(String name) {
+            this.name = name;
+        }
+
+        public Builder returnType(BaseType type) {
+            this.returnType = type;
+            return this;
+        }
+
+        public Builder abstractMethod() {
+            this.isAbstract = true;
+            return this;
+        }
+
+        public Builder staticMethod() {
+            this.isStatic = true;
+            return this;
+        }
+
+        public MethodDecl buildAsMethod() {
+            var decl = new MethodDecl(name, variableTypes, params, returnType);
+            decl.isAbstract = isAbstract;
+            decl.isStatic = isStatic;
+            return decl;
+        }
     }
 }

@@ -2,7 +2,7 @@ package zzzank.probejs.lang.typescript.code.ts;
 
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
-import zzzank.probejs.lang.typescript.code.member.CommentableCode;
+import zzzank.probejs.lang.typescript.code.CommentableCode;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.*;

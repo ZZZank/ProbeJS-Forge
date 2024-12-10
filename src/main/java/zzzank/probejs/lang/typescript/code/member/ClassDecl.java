@@ -4,8 +4,7 @@ import lombok.val;
 import org.jetbrains.annotations.Nullable;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
-import zzzank.probejs.lang.typescript.code.member.clazz.ConstructorBuilder;
-import zzzank.probejs.lang.typescript.code.member.clazz.MethodBuilder;
+import zzzank.probejs.lang.typescript.code.CommentableCode;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
@@ -189,15 +188,15 @@ public class ClassDecl extends CommentableCode {
             return this;
         }
 
-        public Builder method(String name, Consumer<MethodBuilder> method) {
-            MethodBuilder builder = new MethodBuilder(name);
+        public Builder method(String name, Consumer<MethodDecl.Builder> method) {
+            MethodDecl.Builder builder = new MethodDecl.Builder(name);
             method.accept(builder);
             methods.add(builder.buildAsMethod());
             return this;
         }
 
-        public Builder ctor(Consumer<ConstructorBuilder> constructor) {
-            ConstructorBuilder builder = new ConstructorBuilder();
+        public Builder ctor(Consumer<ConstructorDecl.Builder> constructor) {
+            ConstructorDecl.Builder builder = new ConstructorDecl.Builder();
             constructor.accept(builder);
             constructors.add(builder.buildAsConstructor());
             return this;

@@ -1,8 +1,7 @@
-package zzzank.probejs.lang.typescript.code.member;
+package zzzank.probejs.lang.typescript.code;
 
 import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
-import zzzank.probejs.lang.typescript.code.Code;
 
 import java.util.ArrayList;
 import java.util.Arrays;
