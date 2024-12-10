@@ -59,7 +59,8 @@ public class GlobalStates {
         ((AccessTextureAtlas) Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS))
             .texturesByName()
             .keySet()
-            .stream().map(ResourceLocation::toString)
+            .stream()
+            .map(ResourceLocation::toString)
             .collect(Collectors.toSet());
 
     public static final Supplier<Set<String>> MODS = () ->

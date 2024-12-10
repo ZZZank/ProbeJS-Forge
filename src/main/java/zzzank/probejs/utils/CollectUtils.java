@@ -5,6 +5,7 @@ import lombok.val;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
 /**
@@ -33,6 +34,15 @@ public interface CollectUtils {
             l.add(mapper.apply(i));
         }
         return l;
+    }
+
+    static <I, O> O[] mapToArray(I[] input, Function<I, O> mapper, IntFunction<O[]> generator) {
+        val len = input.length;
+        val got = generator.apply(len);
+        for (int i = 0; i < len; i++) {
+            got[i] = mapper.apply(input[i]);
+        }
+        return got;
     }
 
     static <I, O> List<O> mapToList(I[] collection, Function<I, O> mapper) {
