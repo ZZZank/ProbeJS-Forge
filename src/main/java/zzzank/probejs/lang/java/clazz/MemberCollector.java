@@ -17,33 +17,39 @@ import java.util.stream.Stream;
  */
 public class MemberCollector {
 
-    private final Set<String> names = new HashSet<>();
+    private Set<String> names = new HashSet<>();
+    private Class<?> clazz;
 
-    public Stream<? extends ConstructorInfo> constructors(Class<?> from) {
-        return Arrays.stream(ReflectUtils.constructorsSafe(from))
+    public void accept(Class<?> clazz) {
+        this.clazz = clazz;
+        this.names = new HashSet<>();
+    }
+
+    public Stream<? extends ConstructorInfo> constructors() {
+        return Arrays.stream(ReflectUtils.constructorsSafe(clazz))
             .filter(MemberCollector::notHideFromJS)
             .map(ConstructorInfo::new);
     }
 
-    public Stream<? extends MethodInfo> methods(Class<?> from) {
-        return Arrays.stream(ReflectUtils.methodsSafe(from))
-            .peek(m -> names.add(RemapperBridge.remapMethod(from, m)))
+    public Stream<? extends MethodInfo> methods() {
+        return Arrays.stream(ReflectUtils.methodsSafe(clazz))
+            .peek(m -> names.add(RemapperBridge.remapMethod(clazz, m)))
             .filter(MemberCollector::notHideFromJS)
-            .filter(m -> !m.isSynthetic() && !hasIdenticalParentMethod(m, from))
+            .filter(m -> !m.isSynthetic() && !hasIdenticalParentMethod(m, clazz))
             .sorted(Comparator.comparing(Method::getName))
             .map(method -> new MethodInfo(
-                from,
+                clazz,
                 method,
-                getGenericTypeReplacement(from, method)
+                getGenericTypeReplacement(clazz, method)
             ));
     }
 
-    public Stream<? extends FieldInfo> fields(Class<?> from) {
-        return Arrays.stream(ReflectUtils.fieldsSafe(from))
+    public Stream<? extends FieldInfo> fields() {
+        return Arrays.stream(ReflectUtils.fieldsSafe(clazz))
             .filter(MemberCollector::notHideFromJS)
-            .filter(f -> !names.contains(RemapperBridge.remapField(from, f)))
-            .sorted(Comparator.comparing(Field::getName))
-            .map(f -> new FieldInfo(from, f));
+            .filter(f -> !names.contains(RemapperBridge.remapField(clazz, f)))
+            .map(f -> new FieldInfo(clazz, f))
+            .sorted(Comparator.comparing(f -> f.name));
     }
 
     public static boolean notHideFromJS(AnnotatedElement element) {
