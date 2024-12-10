@@ -2,7 +2,7 @@ package zzzank.probejs.lang.java.clazz;
 
 import dev.latvian.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
@@ -14,33 +14,36 @@ import zzzank.probejs.utils.CollectUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @ToString
 public final class ClassPath implements Comparable<ClassPath> {
 
     public static final String TS_PATH_PREFIX = "packages/";
     public static final Pattern SPLIT = Pattern.compile("\\.");
 
-    public final String[] parts;
+    private final String[] parts;
+    private List<String> wrapped = null;
 
-    public static @NotNull ClassPath fromRaw(String className) {
+    public static @NotNull ClassPath fromRaw(final String className) {
         if (className == null || className.isEmpty()) {
             throw new IllegalArgumentException("'className' is " + (className == null ? "null" : "empty"));
         }
         return new ClassPath(SPLIT.split(className));
     }
 
-    public static ClassPath fromJava(@NotNull Class<?> clazz) {
+    public static ClassPath fromJava(final @NotNull Class<?> clazz) {
         val name = RemapperBridge.remapClass(Objects.requireNonNull(clazz));
         val parts = SPLIT.split(name);
         parts[parts.length - 1] = "$" + parts[parts.length - 1];
         return new ClassPath(parts);
     }
 
-    public static ClassPath fromTS(@NotNull String typeScriptPath) {
+    public static ClassPath fromTS(final @NotNull String typeScriptPath) {
         if (!typeScriptPath.startsWith(TS_PATH_PREFIX)) {
             throw new IllegalArgumentException(String.format("path '%s' is not ProbeJS TS path", typeScriptPath));
         }
@@ -48,11 +51,19 @@ public final class ClassPath implements Comparable<ClassPath> {
         return new ClassPath(names);
     }
 
+    public String getPart(final int index) {
+        return parts[index];
+    }
+
+    public List<String> getParts() {
+        return wrapped == null ? (wrapped = Collections.unmodifiableList(Arrays.asList(this.parts))) : wrapped;
+    }
+
     public String getName() {
         return parts[parts.length - 1];
     }
 
-    public String getConcatenated(String sep) {
+    public String getConcatenated(final String sep) {
         return String.join(sep, parts);
     }
 
@@ -79,19 +90,19 @@ public final class ClassPath implements Comparable<ClassPath> {
         return ClassRegistry.REGISTRY.foundClasses.get(this);
     }
 
-    public String[] getPackage() {
-        return Arrays.copyOf(this.parts, parts.length - 1);
+    public List<String> getPackage() {
+        return getParts().subList(0, this.parts.length - 1);
     }
 
-    public String getConcatenatedPackage(String sep) {
+    public String getConcatenatedPackage(final String sep) {
         return String.join(sep, getPackage());
     }
 
-    public Path getDirPath(Path base) {
+    public Path getDirPath(final Path base) {
         return base.resolve(getConcatenatedPackage("/"));
     }
 
-    public Path makePath(Path base) {
+    public Path makePath(final Path base) {
         Path full = getDirPath(base);
         if (Files.notExists(full)) {
             UtilsJS.tryIO(() -> Files.createDirectories(full));
@@ -100,7 +111,7 @@ public final class ClassPath implements Comparable<ClassPath> {
     }
 
     @Override
-    public int compareTo(@NotNull ClassPath another) {
+    public int compareTo(final @NotNull ClassPath another) {
         val sizeThis = parts.length;
         val sizeOther = another.parts.length;
         val sizeCompare = Integer.min(sizeOther, sizeThis);
@@ -112,7 +123,7 @@ public final class ClassPath implements Comparable<ClassPath> {
         return parts[common].compareTo(another.parts[common]);
     }
 
-    public int getCommonPartsCount(@NotNull ClassPath another) {
+    public int getCommonPartsCount(final @NotNull ClassPath another) {
         val sizeThis = parts.length;
         val sizeOther = another.parts.length;
         val sizeCompare = Integer.min(sizeOther, sizeThis);

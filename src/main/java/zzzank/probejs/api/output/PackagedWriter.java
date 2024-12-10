@@ -20,23 +20,23 @@ public class PackagedWriter extends AbstractWriter {
     public final String fallbackFileName;
     private int accepted = 0;
 
-    public PackagedWriter(int packageLengthMin, String fallbackFileName) {
-        if (packageLengthMin <= 0) {
-            throw new IllegalArgumentException("'packageLengthMin' must be a positive number");
+    public PackagedWriter(int minPackageLayers, String fallbackFileName) {
+        if (minPackageLayers <= 0) {
+            throw new IllegalArgumentException("'minPackageLayers' must be a positive number");
         }
-        this.packageLengthLimit = packageLengthMin;
+        this.packageLengthLimit = minPackageLayers;
         this.fallbackFileName = fallbackFileName;
     }
 
     @Override
     public void accept(@NotNull TypeScriptFile file) {
         val cPath = file.path;
-        val fileName = cPath.parts.length > packageLengthLimit
-            ? String.join(".", Arrays.asList(cPath.parts).subList(0, packageLengthLimit))
+        val fileName = cPath.getParts().size() > packageLengthLimit
+            ? String.join(".", cPath.getParts().subList(0, packageLengthLimit))
             : fallbackFileName;
         packaged.computeIfAbsent(fileName, k -> new ArrayList<>())
             .add(file);
-        accepted+=1;
+        accepted += 1;
     }
 
     @Override

@@ -133,8 +133,8 @@ public class ClassRegistry {
         try (val writer = Files.newBufferedWriter(path)) {
             for (val classPath : classPaths) {
                 val commonPartsCount = classPath.getCommonPartsCount(lastPath);
-                val copy = Arrays.copyOf(classPath.parts, classPath.partsCount());
-                Arrays.fill(copy, 0, commonPartsCount, "");
+                val copy = new ArrayList<>(classPath.getParts());
+                Collections.fill(copy.subList(0, commonPartsCount), "");
                 writer.write(String.join(".", copy));
                 writer.write('\n');
                 lastPath = classPath;
