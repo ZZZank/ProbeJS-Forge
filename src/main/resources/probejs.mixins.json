@@ -20,7 +20,6 @@
   },
   "minVersion": "0.8",
   "client": [
-    "AccessLanguageManager",
     "AccessTextureAtlas",
     "AccessTextureManager"
   ]
