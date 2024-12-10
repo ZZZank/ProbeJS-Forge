@@ -41,6 +41,7 @@ public class MemberCollector {
         return Arrays.stream(ReflectUtils.fieldsSafe(from))
             .filter(MemberCollector::notHideFromJS)
             .filter(f -> !names.contains(RemapperBridge.remapField(from, f)))
+            .sorted(Comparator.comparing(Field::getName))
             .map(f -> new FieldInfo(from, f));
     }
 
