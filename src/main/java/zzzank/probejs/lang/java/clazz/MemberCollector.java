@@ -6,6 +6,7 @@ import zzzank.probejs.features.rhizo.RemapperBridge;
 import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
 import zzzank.probejs.lang.java.clazz.members.FieldInfo;
 import zzzank.probejs.lang.java.clazz.members.MethodInfo;
+import zzzank.probejs.utils.ReflectUtils;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -18,31 +19,33 @@ public class MemberCollector {
 
     private final Set<String> names = new HashSet<>();
 
-    public Stream<? extends ConstructorInfo> constructors(Class<?> from, Constructor<?>[] constructors) {
-        return Arrays.stream(constructors)
-            .filter(ctor -> !ctor.isAnnotationPresent(HideFromJS.class))
+    public Stream<? extends ConstructorInfo> constructors(Class<?> from) {
+        return Arrays.stream(ReflectUtils.constructorsSafe(from))
+            .filter(MemberCollector::notHideFromJS)
             .map(ConstructorInfo::new);
     }
 
-    public Stream<? extends MethodInfo> methods(Class<?> from, Method[] methods) {
-        return Arrays.stream(methods)
+    public Stream<? extends MethodInfo> methods(Class<?> from) {
+        return Arrays.stream(ReflectUtils.methodsSafe(from))
             .peek(m -> names.add(RemapperBridge.remapMethod(from, m)))
-            .filter(m -> !m.isSynthetic()
-                && !m.isAnnotationPresent(HideFromJS.class)
-                && !hasIdenticalParentMethod(m, from)
-            )
+            .filter(MemberCollector::notHideFromJS)
+            .filter(m -> !m.isSynthetic() && !hasIdenticalParentMethod(m, from))
             .map(method -> new MethodInfo(
                 from,
                 method,
-                getGenericTypeReplacementForParentInterfaceMethods(from, method)
+                getGenericTypeReplacement(from, method)
             ));
     }
 
-    public Stream<? extends FieldInfo> fields(Class<?> from, Field[] fields) {
-        return Arrays.stream(fields)
-            .filter(f -> !names.contains(RemapperBridge.remapField(from, f))
-                && !f.isAnnotationPresent(HideFromJS.class))
+    public Stream<? extends FieldInfo> fields(Class<?> from) {
+        return Arrays.stream(ReflectUtils.fieldsSafe(from))
+            .filter(MemberCollector::notHideFromJS)
+            .filter(f -> !names.contains(RemapperBridge.remapField(from, f)))
             .map(f -> new FieldInfo(from, f));
+    }
+
+    public static boolean notHideFromJS(AnnotatedElement element) {
+        return !element.isAnnotationPresent(HideFromJS.class);
     }
 
     /**
@@ -68,7 +71,7 @@ public class MemberCollector {
     /**
      * getGenericTypeReplacementForParentInterfaceMethodsJustBecauseJavaDoNotKnowToReplaceThemWithGenericArgumentsOfThisClass
      */
-    static Map<TypeVariable<?>, Type> getGenericTypeReplacementForParentInterfaceMethods(
+    static Map<TypeVariable<?>, Type> getGenericTypeReplacement(
         Class<?> thisClass,
         Method thatMethod
     ) {
@@ -86,7 +89,7 @@ public class MemberCollector {
         if (superInterface == null) {
             return Collections.emptyMap();
         }
-        val parentType = getGenericTypeReplacementForParentInterfaceMethods(superInterface, thatMethod);
+        val parentType = getGenericTypeReplacement(superInterface, thatMethod);
         val parentReplacement = getInterfaceRemap(thisClass, superInterface);
 
         for (val entry : parentType.entrySet()) {

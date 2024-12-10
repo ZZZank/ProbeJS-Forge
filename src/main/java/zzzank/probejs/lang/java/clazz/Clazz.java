@@ -33,15 +33,9 @@ public class Clazz extends TypeVariableHolder {
 
         this.original = clazz;
         this.classPath = ClassPath.fromJava(original);
-        this.constructors = collector
-            .constructors(clazz, ReflectUtils.constructorsSafe(original))
-            .collect(Collectors.toList());
-        this.methods = collector
-            .methods(clazz, ReflectUtils.methodsSafe(original))
-            .collect(Collectors.toList());
-        this.fields = collector
-            .fields(clazz, ReflectUtils.fieldsSafe(original))
-            .collect(Collectors.toList());
+        this.constructors = collector.constructors(clazz).collect(Collectors.toList());
+        this.methods = collector.methods(clazz).collect(Collectors.toList());
+        this.fields = collector.fields(clazz).collect(Collectors.toList());
 
         this.superClass = clazz.getSuperclass() == Object.class
             ? null
