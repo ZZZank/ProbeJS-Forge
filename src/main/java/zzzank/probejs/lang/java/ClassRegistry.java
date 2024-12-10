@@ -20,7 +20,7 @@ public class ClassRegistry {
     public static final ClassRegistry REGISTRY = new ClassRegistry();
 
     public Map<ClassPath, Clazz> foundClasses = new HashMap<>(256);
-    public final MemberCollector collector = new MemberCollector();
+    public final MemberCollector collector = new ClazzMemberCollector();
 
     public void fromClazz(Collection<Clazz> classes) {
         for (val c : classes) {

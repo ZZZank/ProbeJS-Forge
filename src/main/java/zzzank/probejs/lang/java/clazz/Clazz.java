@@ -9,7 +9,6 @@ import zzzank.probejs.lang.java.clazz.members.MethodInfo;
 import zzzank.probejs.lang.java.type.TypeAdapter;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
 import zzzank.probejs.utils.CollectUtils;
-import zzzank.probejs.utils.ReflectUtils;
 
 import java.lang.reflect.*;
 import java.util.*;
