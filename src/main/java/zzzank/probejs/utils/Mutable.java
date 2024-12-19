@@ -16,13 +16,9 @@ import java.util.stream.Stream;
  * @author ZZZank
  */
 @AllArgsConstructor
-public class Mutable<T> implements Supplier<T>, Iterable<T> {
+public final class Mutable<T> implements Supplier<T>, Iterable<T> {
     public static <T> Mutable<T> of(T value) {
         return new Mutable<>(value);
-    }
-
-    public static <T> Mutable<T> ofNull() {
-        return new Mutable<>(null);
     }
 
     private T value;
@@ -109,7 +105,7 @@ public class Mutable<T> implements Supplier<T>, Iterable<T> {
     public <U> Mutable<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
         if (isNull()) {
-            return ofNull();
+            return new Mutable<>(null);
         }
         return Mutable.of(mapper.apply(value));
     }

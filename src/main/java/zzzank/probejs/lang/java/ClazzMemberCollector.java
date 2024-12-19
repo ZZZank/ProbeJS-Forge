@@ -88,14 +88,15 @@ public class ClazzMemberCollector implements MemberCollector {
         Class<?> thisClass,
         Method thatMethod
     ) {
-        Class<?> targetClass = thatMethod.getDeclaringClass();
+        val targetClass = thatMethod.getDeclaringClass();
+        val interfaces = thisClass.getInterfaces();
 
         Map<TypeVariable<?>, Type> replacement = new HashMap<>();
-        if (Arrays.asList(thisClass.getInterfaces()).contains(targetClass)) {
+        if (Arrays.asList(interfaces).contains(targetClass)) {
             return getInterfaceRemap(thisClass, targetClass);
         }
         val superInterface = Arrays
-            .stream(thisClass.getInterfaces())
+            .stream(interfaces)
             .filter(targetClass::isAssignableFrom)
             .findFirst()
             .orElse(null);

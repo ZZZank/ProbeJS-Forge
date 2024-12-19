@@ -182,7 +182,7 @@ public class RegistryTypes implements ProbeJSPlugin {
         } catch (Exception e) {
             ProbeJS.LOGGER.error("error compiling registry regex filter, resetting regex", e);
             ProbeConfig.registryObjectFilter.set(null);
-            filter = Pattern.compile(ProbeConfig.registryObjectFilter.defaultValue);
+            filter = Pattern.compile(ProbeConfig.registryObjectFilter.get());
         }
 
         for (val info : RegistryInfos.ALL.values()) {

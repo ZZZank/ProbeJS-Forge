@@ -19,7 +19,6 @@ import java.util.Map;
 /**
  * @author ZZZank
  */
-
 @Getter
 @Accessors(fluent = true)
 @ToString

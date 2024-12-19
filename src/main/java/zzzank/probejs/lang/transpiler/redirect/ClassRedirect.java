@@ -45,10 +45,9 @@ public class ClassRedirect implements TypeRedirect {
         if (param instanceof JSPrimitiveType || param instanceof TSVariableType) {
             return converted;
         }
+        val andTypeOf = Types.and(converted, Types.typeOf(param));
         val selector = (Function<BaseType.FormatType, BaseType>)
-            formatType -> formatType == BaseType.FormatType.RETURN
-                ? Types.and(converted, Types.typeOf(param))
-                : converted;
+            formatType -> formatType == BaseType.FormatType.RETURN ? andTypeOf : converted;
         return Types.custom(
             (declaration, formatType) -> selector.apply(formatType).line(declaration, formatType),
             (type) -> selector.apply(type).getImportInfos(type)
