@@ -63,27 +63,27 @@ public class InjectBeans implements ClassTransformer {
     }
 
     public static class BeanDecl extends Code {
-        public String formattingString;
+        public String format;
         public String name;
-        public BaseType baseType;
+        public BaseType type;
 
-        BeanDecl(String formattingString, String name, BaseType baseType) {
-            this.formattingString = formattingString;
+        BeanDecl(String format, String name, BaseType type) {
+            this.format = format;
             this.name = name;
-            this.baseType = baseType;
+            this.type = type;
         }
 
         @Override
         public ImportInfos getImportInfos() {
-            return baseType.getImportInfos(BaseType.FormatType.RETURN);
+            return type.getImportInfos(BaseType.FormatType.RETURN);
         }
 
         @Override
         public List<String> format(Declaration declaration) {
             return Collections.singletonList(String.format(
-                formattingString,
+                format,
                 ProbeJS.GSON.toJson(name),
-                baseType.line(declaration, BaseType.FormatType.RETURN)
+                type.line(declaration, BaseType.FormatType.RETURN)
             ));
         }
     }

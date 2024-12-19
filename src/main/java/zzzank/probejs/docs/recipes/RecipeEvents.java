@@ -84,7 +84,7 @@ public class RecipeEvents implements ProbeJSPlugin {
         }
         for (val code : recipeEvent.bodyCode) {
             if (code instanceof InjectBeans.BeanDecl beanDecl && beanDecl.name.equals("recipes")) {
-                beanDecl.baseType = DOCUMENTED;
+                beanDecl.type = DOCUMENTED;
                 break;
             }
         }
