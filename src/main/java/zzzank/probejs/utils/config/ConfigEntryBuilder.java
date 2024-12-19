@@ -82,8 +82,8 @@ public class ConfigEntryBuilder<T> {
             comments = Collections.emptyList();
         }
         assert expectedType.isInstance(binding.getDefault());
-        return this.root.merge(
-            new ConfigEntry<>(this.root, namespace, name, expectedType, defaultValue, comments)
+        return this.root.register(
+            new ConfigEntry<>(this.root, namespace, name, expectedType, binding, comments)
         );
     }
 }

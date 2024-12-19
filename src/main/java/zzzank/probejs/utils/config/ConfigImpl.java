@@ -2,6 +2,7 @@ package zzzank.probejs.utils.config;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.kubejs.util.UtilsJS;
 import lombok.val;
@@ -43,15 +44,33 @@ public class ConfigImpl {
         try (val reader = Files.newBufferedReader(path)) {
             val object = ProbeJS.GSON.fromJson(reader, JsonObject.class);
             for (val entry : object.entrySet()) {
-                val e = serde.fromJson(entry.getKey(), entry.getValue().getAsJsonObject());
-                if (e == null || this.get(e.namespace, e.name) == null) {
-                    continue;
+                try {
+                    readSingle(this, entry);
+                } catch (Exception e) {
+                    ProbeJS.LOGGER.error("Error when reading config entry: {}", entry.getKey(), e);
                 }
-                merge(e);
             }
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Error happened when reading configs from file", e);
         }
+    }
+
+    private static void readSingle(ConfigImpl source, Map.Entry<String, JsonElement> entry) {
+        val namespaced = source.ensureNamespace(entry.getKey());
+        val namespace = namespaced.getKey();
+        val name = namespaced.getValue();
+
+        val reference = (ConfigEntry<Object>) source.get(namespace, name);
+        if (reference == null) {
+            return;
+        }
+
+        val valueToSet = ProbeJS.GSON.fromJson(
+            entry.getValue().getAsJsonObject().get(ConfigEntrySerde.VALUE_KEY),
+            reference.expectedType
+        );
+
+        reference.setNoSave(valueToSet);
     }
 
     public void save() {
@@ -77,14 +96,28 @@ public class ConfigImpl {
         return all.get(namespace, name);
     }
 
-    public ConfigEntryBuilder<Object> define(String name) {
+    public ConfigEntryBuilder<Void> define(String name) {
         return new ConfigEntryBuilder<>(this, name);
+    }
+
+    public <T> ConfigEntry<T> register(ConfigEntry<T> entry) {
+        Asser.tNotNull(entry, "config entry");
+        Asser.t(
+            all.get(entry.namespace, entry.name) == null,
+            "a config entry with same namespace and name already exists"
+        );
+        Asser.t(
+            entry.source == this,
+            "config source in config entry not matching config source that accepts this entry"
+        );
+        all.put(entry.namespace, entry.name, entry);
+        return entry;
     }
 
     public <T> ConfigEntry<T> merge(ConfigEntry<T> entry) {
         Asser.tNotNull(entry, "config entry to be merged");
         val old = all.get(entry.namespace, entry.name);
-        if (old != null && old.defaultValue.getClass().isInstance(entry.defaultValue)) {
+        if (old != null && old.getDefault().getClass().isInstance(entry.getDefault())) {
             old.setNoSave(UtilsJS.cast(entry.get()));
             return (ConfigEntry<T>) old;
         } else {
