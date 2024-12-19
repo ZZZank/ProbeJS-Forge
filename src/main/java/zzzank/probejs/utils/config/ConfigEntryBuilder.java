@@ -49,17 +49,12 @@ public class ConfigEntryBuilder<T> {
         return setDefault((Class<T_>) type, defaultValue);
     }
 
-    public ConfigEntryBuilder<T> comment(@Nonnull String comment) {
+    public ConfigEntryBuilder<T> comment(String... comments) {
         if (this.comments == null) {
             this.comments = new ArrayList<>();
         }
-        comments.addAll(Arrays.asList(comment.split("\n")));
-        return this;
-    }
-
-    public ConfigEntryBuilder<T> comments(String... comments) {
         for (val comment : comments) {
-            comment(comment);
+            this.comments.addAll(Arrays.asList(comment.split("\n")));
         }
         return this;
     }

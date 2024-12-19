@@ -32,13 +32,13 @@ public interface ProbeConfig {
         .build();
     ConfigEntry<Boolean> enabled = INSTANCE.define("enabled")
         .setDefault(true)
-        .comments("""
+        .comment("""
             enable or disable ProbeJS Legacy
             note that `require()` function in script are always available""")
         .build();
     ConfigEntry<Boolean> interactive = INSTANCE.define("interactive")
         .setDefault(false)
-        .comments("""
+        .comment("""
             use with ProbeJS VSCode Extension.
             Currently broken due to many breaking changes from KubeJS/ProbeJS from higher version""")
         .build();
