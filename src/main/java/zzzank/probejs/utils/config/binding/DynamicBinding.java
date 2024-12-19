@@ -1,0 +1,32 @@
+package zzzank.probejs.utils.config.binding;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+/**
+ * @author ZZZank
+ */
+public class DynamicBinding<T> extends BindingBase<T> {
+    @NotNull
+    private final Supplier<T> getter;
+    @NotNull
+    private final Consumer<T> setter;
+
+    public DynamicBinding(@NotNull T defaultValue, @NotNull String name, @NotNull Supplier<T> getter, @NotNull Consumer<T> setter) {
+        super(defaultValue, name);
+        this.getter = getter;
+        this.setter = setter;
+    }
+
+    @Override
+    public T get() {
+        return getter.get();
+    }
+
+    @Override
+    protected void setImpl(T value) {
+        setter.accept(value);
+    }
+}
