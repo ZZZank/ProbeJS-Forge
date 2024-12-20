@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import zzzank.probejs.lang.transpiler.TypeConverter;
-import zzzank.probejs.lang.transpiler.redirect.SimpleTypeRedirect;
+import zzzank.probejs.lang.transpiler.redirect.SimpleClassRedirect;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.Code;
@@ -64,7 +64,7 @@ public class Primitives implements ProbeJSPlugin {
 
     @Override
     public void addPredefinedTypes(TypeConverter converter) {
-        converter.addTypeRedirect(new SimpleTypeRedirect(MAPPING.keySet(), (type) -> MAPPING.get(type.clazz)));
+        converter.addTypeRedirect(new SimpleClassRedirect(MAPPING.keySet(), (type) -> MAPPING.get(type.clazz)));
     }
 
     @Override

@@ -6,26 +6,23 @@ import zzzank.probejs.lang.java.type.impl.ClassType;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 /**
- * only redirects {@link ClassType}
- *
  * @author ZZZank
  */
-public class SimpleTypeRedirect implements TypeRedirect {
+public final class InheritableClassRedirect implements TypeRedirect {
 
-    public final ImmutableSet<Class<?>> targets;
-    public final Function<ClassType, BaseType> mapper;
+    private final Set<Class<?>> targets;
+    private final Function<ClassType, BaseType> mapper;
 
-    public SimpleTypeRedirect(Class<?> target, Function<ClassType, BaseType> mapper) {
-        targets = ImmutableSet.of(target);
+    public InheritableClassRedirect(Class<?> target, Function<ClassType, BaseType> mapper) {
+        targets = Collections.singleton(target);
         this.mapper = Objects.requireNonNull(mapper);
     }
 
-    public SimpleTypeRedirect(Collection<Class<?>> targets, Function<ClassType, BaseType> mapper) {
+    public InheritableClassRedirect(Collection<Class<?>> targets, Function<ClassType, BaseType> mapper) {
         this.targets = ImmutableSet.copyOf(targets);
         this.mapper = mapper;
     }
@@ -37,6 +34,15 @@ public class SimpleTypeRedirect implements TypeRedirect {
 
     @Override
     public boolean test(TypeDescriptor typeDescriptor, TypeConverter converter) {
-        return typeDescriptor instanceof ClassType classType && targets.contains(classType.clazz);
+        if (typeDescriptor instanceof ClassType classType) {
+            Class<?> c = classType.clazz;
+            while (c != null) {
+                if (targets.contains(c)) {
+                    return true;
+                }
+                c = c.getSuperclass();
+            }
+        }
+        return false;
     }
 }
