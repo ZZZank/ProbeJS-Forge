@@ -53,7 +53,7 @@ public class GameEvents {
         RegistryInfos.refresh();
 
         if (ProbeConfig.modHash.get() == -1) {
-            sendMsg.accept(ProbeText.translatable("probejs.hello").color(ChatFormatting.GOLD));
+            sendMsg.accept(ProbeText.pjs("hello").color(ChatFormatting.GOLD));
         }
         if (ProbeConfig.registryHash.get() != GameUtils.registryHash()) {
             if (!ProbeDumpingThread.exists()) {
@@ -63,32 +63,33 @@ public class GameEvents {
 
             sendMsg.accept(
                 ProbeText
-                    .translatable("probejs.enabled_warning")
+                    .pjs("enabled_warning")
                     .append(ProbeText.literal("/probejs disable")
-                        .click(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/probejs disable"))
+                        .click(ClickEvent.Action.SUGGEST_COMMAND, "/probejs disable")
                         .color(ChatFormatting.AQUA))
             );
             if (ModList.get().size() >= MOD_LIMIT) {
                 if (ProbeConfig.complete.get()) {
                     sendMsg.accept(
-                        ProbeText.translatable("probejs.performance", ModList.get().size())
+                        ProbeText.pjs("performance", ModList.get().size())
                     );
                 }
             }
         }
         sendMsg.accept(
-            ProbeText.translatable("probejs.wiki")
+            ProbeText.pjs("wiki")
                 .append(ProbeText.literal("Wiki Page")
                     .color(ChatFormatting.AQUA)
                     .underlined(true)
-                    .click(new ClickEvent(
+                    .click(
                         ClickEvent.Action.OPEN_URL,
                         "https://kubejs.com/wiki/addons/third-party/probejs"
-                    ))
-                    .hover(new HoverEvent(
+                    )
+                    .hover(
                         HoverEvent.Action.SHOW_TEXT,
                         new TextComponent("https://kubejs.com/wiki/addons/third-party/probejs")
-                    )))
+                    )
+                )
         );
 
         if (ProbeConfig.interactive.get() && GlobalStates.SERVER == null) {
@@ -99,7 +100,7 @@ public class GameEvents {
                 throw new RuntimeException(e);
             }
             sendMsg.accept(
-                ProbeText.translatable("probejs.interactive", ProbeConfig.interactivePort.get())
+                ProbeText.pjs("interactive", ProbeConfig.interactivePort.get())
             );
         }
     }
@@ -120,7 +121,7 @@ public class GameEvents {
                         if (ProbeDumpingThread.exists()) {
                             sendMsg.accept(
                                 context,
-                                ProbeText.translatable("probejs.already_running").color(ChatFormatting.RED)
+                                ProbeText.pjs("already_running").color(ChatFormatting.RED)
                             );
                             return Command.SINGLE_SUCCESS;
                         }
@@ -135,7 +136,7 @@ public class GameEvents {
                         ProbeConfig.enabled.set(false);
                         sendMsg.accept(
                             context,
-                            ProbeText.translatable("probejs.bye_bye").color(ChatFormatting.GOLD)
+                            ProbeText.pjs("bye_bye").color(ChatFormatting.GOLD)
                         );
                         return Command.SINGLE_SUCCESS;
                     })
@@ -146,7 +147,7 @@ public class GameEvents {
                         ProbeConfig.enabled.set(true);
                         sendMsg.accept(
                             context,
-                            ProbeText.translatable("probejs.hello_again").color(ChatFormatting.AQUA)
+                            ProbeText.pjs("hello_again").color(ChatFormatting.AQUA)
                         );
                         return Command.SINGLE_SUCCESS;
                     })
@@ -155,7 +156,7 @@ public class GameEvents {
                     .requires(pjsEnabled.and(spOrOp))
                     .executes(context -> {
                         ProbeConfig.refresh();
-                        sendMsg.accept(context, ProbeText.translatable("probejs.config_refreshed"));
+                        sendMsg.accept(context, ProbeText.pjs("config_refreshed"));
                         return Command.SINGLE_SUCCESS;
                     })
                 )
@@ -166,8 +167,7 @@ public class GameEvents {
                         ProbeConfig.isolatedScopes.set(flag);
                         sendMsg.accept(
                             context,
-                            ProbeText.translatable(flag ? "probejs.isolation" : "probejs.no_isolation")
-                                .color(ChatFormatting.AQUA)
+                            ProbeText.pjs(flag ? "isolation" : "no_isolation").color(ChatFormatting.AQUA)
                         );
                         return Command.SINGLE_SUCCESS;
                     })
@@ -175,7 +175,7 @@ public class GameEvents {
                 .then(Commands.literal("lint")
                     .requires(pjsEnabled.and(spOrOp))
                     .executes(context -> {
-                        Linter.defaultLint(msg -> sendMsg.accept(context, Text.of(msg).component()));
+                        Linter.defaultLint(msg -> sendMsg.accept(context, msg));
                         return Command.SINGLE_SUCCESS;
                     })
                 )
@@ -186,7 +186,7 @@ public class GameEvents {
                         ProbeConfig.complete.set(flag);
                         sendMsg.accept(
                             context,
-                            ProbeText.translatable(flag ? "probejs.complete" : "probejs.no_complete")
+                            ProbeText.pjs(flag ? "complete" : "no_complete")
                         );
                         return Command.SINGLE_SUCCESS;
                     })

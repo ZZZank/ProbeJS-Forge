@@ -64,8 +64,16 @@ public final class ProbeText implements MutableComponent {
         return setStyle(getStyle().withClickEvent(clickEvent));
     }
 
+    public ProbeText click(ClickEvent.Action action, String str) {
+        return click(new ClickEvent(action, str));
+    }
+
     public ProbeText hover(HoverEvent hoverEvent) {
         return setStyle(getStyle().withHoverEvent(hoverEvent));
+    }
+
+    public <T> ProbeText hover(HoverEvent.Action<T> action, T object) {
+        return hover(new HoverEvent(action, object));
     }
 
     public ProbeText font(ResourceLocation fontId) {
