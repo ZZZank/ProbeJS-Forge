@@ -4,10 +4,7 @@ import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.util.ClassFilter;
-import zzzank.probejs.events.ProbeEvents;
-import zzzank.probejs.events.SnippetGenerationEventJS;
-import zzzank.probejs.events.TypeAssignmentEventJS;
-import zzzank.probejs.events.TypingModificationEventJS;
+import zzzank.probejs.events.*;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.snippet.SnippetDump;
 import zzzank.probejs.lang.transpiler.Transpiler;
@@ -31,6 +28,11 @@ public class BuiltinProbeJSPlugin extends KubeJSPlugin implements ProbeJSPlugin 
         filter.deny("org.jetbrains.java.decompiler");
         filter.deny("com.github.javaparser");
         filter.deny("org.java_websocket");
+    }
+
+    @Override
+    public void addGlobals(ScriptDump scriptDump) {
+        new AddGlobalEventJS(scriptDump).post(ScriptType.CLIENT, ProbeEvents.ADD_GLOBAL);
     }
 
     @Override
