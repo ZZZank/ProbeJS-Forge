@@ -39,6 +39,6 @@ public class TypeRedirecting implements ProbeJSPlugin {
         converter.addTypeRedirect(new SimpleClassRedirect(CLASS_CONVERTIBLES, (c) -> GlobalClasses.J_CLASS));
         converter.addTypeRedirect(new ClassRedirect(CLASS_CONVERTIBLES));
         //js objects
-        converter.addTypeRedirect(new InheritableClassRedirect(JS_OBJ.keySet(), (c) -> JS_OBJ.get(c.clazz)));
+        converter.addTypeRedirect(new InheritableClassRedirect(JS_OBJ.keySet(), JS_OBJ::get));
     }
 }
