@@ -1,6 +1,6 @@
 package zzzank.probejs.docs.assignments;
 
-import dev.latvian.mods.rhino.util.wrap.EnumTypeWrapper;
+import dev.latvian.mods.rhino.native_java.type.info.EnumTypeInfo;
 import lombok.val;
 import zzzank.probejs.features.rhizo.RhizoState;
 import zzzank.probejs.lang.java.clazz.Clazz;
@@ -9,6 +9,9 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class EnumTypes implements ProbeJSPlugin {
@@ -17,7 +20,7 @@ public class EnumTypes implements ProbeJSPlugin {
 
     @Override
     public void assignType(ScriptDump scriptDump) {
-        if (!RhizoState.ENUM_TYPE_WRAPPER) {
+        if (!RhizoState.ENUM_TYPE_WRAPPER && !RhizoState.ENUM_TYPE_INFO) {
             return;
         }
         LOCK.lock();
@@ -26,10 +29,10 @@ public class EnumTypes implements ProbeJSPlugin {
                 continue;
             }
             try {
-                val typeWrapper = EnumTypeWrapper.get(recordedClass.original);
-                val types = typeWrapper.nameValues
-                    .keySet()
-                    .stream()
+                val types = Arrays.stream(recordedClass.original.getEnumConstants())
+                    .map(EnumTypes::getEnumName)
+                    .filter(Objects::nonNull)
+                    .map(s -> s.toLowerCase(Locale.ROOT))
                     .map(Types::literal)
                     .toArray(BaseType[]::new);
                 scriptDump.assignType(recordedClass.classPath, Types.or(types));
@@ -37,5 +40,15 @@ public class EnumTypes implements ProbeJSPlugin {
             }
         }
         LOCK.unlock();
+    }
+
+    private static String getEnumName(Object o) {
+        if (RhizoState.ENUM_TYPE_INFO) {
+            return EnumTypeInfo.getName(o);
+        }
+        if (o instanceof Enum<?> e) {
+            return e.name();
+        }
+        return null;
     }
 }
