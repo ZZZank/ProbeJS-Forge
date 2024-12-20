@@ -1,5 +1,6 @@
 package zzzank.probejs.events;
 
+import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
@@ -16,8 +17,13 @@ public class TypingModificationEventJS extends ScriptEventJS {
         this.files = files;
     }
 
-    public void modify(Class<?> clazz, Consumer<TypeScriptFile> file) {
-        TypeScriptFile ts = files.get(ClassPath.fromJava(clazz));
-        if (ts != null) file.accept(ts);
+    public void modify(Class<?> clazz, Consumer<TypeScriptFile> modifier) {
+        val path = ClassPath.fromJava(clazz);
+        val ts = files.get(path);
+        if (ts == null) {
+            scriptDump.scriptType.console.errorf("TS file with path '%s' not found, skipping", path);
+            return;
+        }
+        modifier.accept(ts);
     }
 }
