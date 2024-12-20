@@ -1,6 +1,7 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
@@ -8,7 +9,8 @@ import zzzank.probejs.lang.typescript.refer.ImportInfos;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.StringJoiner;
+import java.util.function.UnaryOperator;
 
 @AllArgsConstructor
 public abstract class JSMemberType extends BaseType {
@@ -19,10 +21,12 @@ public abstract class JSMemberType extends BaseType {
         return ImportInfos.of().fromCodes(members.stream().map(JSParam::type), type);
     }
 
-    protected String formatMembers(Declaration declaration, FormatType type) {
-        return members.stream()
-            .map(m -> m.format(declaration, type, this::getMemberName))
-            .collect(Collectors.joining(", "));
+    protected StringJoiner formatMembers(StringJoiner joiner, Declaration declaration, FormatType type) {
+        val nameProcessor = (UnaryOperator<String>) this::getMemberName;
+        for (val member : members) {
+            joiner.add(member.format(declaration, type, nameProcessor));
+        }
+        return joiner;
     }
 
     protected abstract String getMemberName(String name);

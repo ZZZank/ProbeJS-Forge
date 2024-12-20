@@ -29,7 +29,7 @@ public class TSParamType extends BaseType {
                 "%s<%s>",
                 baseType.line(declaration, input),
                 params.stream()
-                    .map(type -> String.format("(%s)", type.line(declaration, input)))
+                    .map(type -> type.line(declaration, input))
                     .collect(Collectors.joining(", "))
             )
         );

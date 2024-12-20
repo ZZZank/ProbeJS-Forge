@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
+import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
@@ -23,12 +24,10 @@ public abstract class JSJoinedType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(
-            types.stream()
-                .map(type -> String.format("(%s)", type.line(declaration, input)))
-                .collect(Collectors.joining(delimiter))
-        );
+    public List<String> format(Declaration declaration, FormatType formatType) {
+        val joiner = new StringJoiner(delimiter, "(", ")");
+        types.forEach(t -> joiner.add(t.line(declaration, formatType)));
+        return Collections.singletonList(joiner.toString());
     }
 
     public static class Union extends JSJoinedType {

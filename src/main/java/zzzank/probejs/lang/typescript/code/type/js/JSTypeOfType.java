@@ -29,6 +29,6 @@ public class JSTypeOfType extends BaseType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(String.format("typeof %s", inner.line(declaration, FormatType.RETURN)));
+        return Collections.singletonList(String.format("(typeof %s)", inner.line(declaration, FormatType.RETURN)));
     }
 }

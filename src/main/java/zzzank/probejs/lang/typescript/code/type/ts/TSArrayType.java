@@ -22,6 +22,6 @@ public class TSArrayType extends BaseType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(String.format("(%s)[]",component.line(declaration, input)));
+        return Collections.singletonList("(" + component.line(declaration, input) + ")[]");
     }
 }

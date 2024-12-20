@@ -6,9 +6,9 @@ import zzzank.probejs.utils.NameUtils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class JSTupleType extends JSMemberType {
-
 
     public JSTupleType(Collection<JSParam> members) {
         super(members);
@@ -16,7 +16,9 @@ public class JSTupleType extends JSMemberType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(String.format("[%s]", formatMembers(declaration, input)));
+        return Collections.singletonList(
+            formatMembers(new StringJoiner(", ", "[", "]"), declaration, input).toString()
+        );
     }
 
     @Override

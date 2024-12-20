@@ -7,6 +7,7 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class JSObjectType extends JSMemberType {
 
@@ -21,7 +22,9 @@ public class JSObjectType extends JSMemberType {
 
     @Override
     public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(String.format("{%s}", String.join(", ", formatMembers(declaration, input))));
+        return Collections.singletonList(
+            formatMembers(new StringJoiner(", ", "{", "}"), declaration, input).toString()
+        );
     }
 
     public static class Builder extends JSMemberType.Builder<Builder, JSObjectType> {
