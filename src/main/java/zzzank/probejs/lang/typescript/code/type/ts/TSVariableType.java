@@ -8,8 +8,6 @@ import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 
 public class TSVariableType extends BaseType {
     public final String symbol;
@@ -35,7 +33,7 @@ public class TSVariableType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType formatType) {
+    public String line(Declaration declaration, FormatType formatType) {
         val builder = new StringBuilder();
         //name
         builder.append(symbol);
@@ -47,6 +45,6 @@ public class TSVariableType extends BaseType {
                 builder.append(" = ").append(defaultTo.format(declaration, FormatType.RETURN));
             }
         }
-        return Collections.singletonList(builder.toString());
+        return builder.toString();
     }
 }

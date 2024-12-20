@@ -4,8 +4,6 @@ import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.utils.NameUtils;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.StringJoiner;
 
 public class JSTupleType extends JSMemberType {
@@ -15,10 +13,8 @@ public class JSTupleType extends JSMemberType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(
-            formatMembers(new StringJoiner(", ", "[", "]"), declaration, input).toString()
-        );
+    public String line(Declaration declaration, FormatType formatType) {
+        return formatMembers(new StringJoiner(", ", "[", "]"), declaration, formatType).toString();
     }
 
     @Override

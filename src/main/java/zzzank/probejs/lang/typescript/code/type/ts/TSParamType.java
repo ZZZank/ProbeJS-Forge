@@ -5,7 +5,8 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class TSParamType extends BaseType {
@@ -23,15 +24,13 @@ public class TSParamType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(
-            String.format(
-                "%s<%s>",
-                baseType.line(declaration, input),
-                params.stream()
-                    .map(type -> type.line(declaration, input))
-                    .collect(Collectors.joining(", "))
-            )
+    public String line(Declaration declaration, FormatType formatType) {
+        return String.format(
+            "%s<%s>",
+            baseType.line(declaration, formatType),
+            params.stream()
+                .map(type -> type.line(declaration, formatType))
+                .collect(Collectors.joining(", "))
         );
     }
 }

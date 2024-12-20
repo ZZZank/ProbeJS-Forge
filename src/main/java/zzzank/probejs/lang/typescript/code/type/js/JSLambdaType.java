@@ -8,7 +8,9 @@ import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * {@code (a: A$$Type, b: B$$Type) => C} if format type is {@link zzzank.probejs.lang.typescript.code.type.BaseType.FormatType#RETURN}
@@ -40,9 +42,9 @@ public class JSLambdaType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType formatType) {
+    public String line(Declaration declaration, FormatType formatType) {
         // (arg0: type, arg1: type...) => returnType
-        return Collections.singletonList(String.format(
+        return String.format(
             "(%s => %s)",
             //when formatType is INPUT, aka this lambda is a param itself, params of this lambda should be concrete
             ParamDecl.formatParams(
@@ -51,7 +53,7 @@ public class JSLambdaType extends BaseType {
                 paramFormatType(formatType)
             ),
             returnType.line(declaration, formatType)
-        ));
+        );
     }
 
     public String formatWithName(String name, Declaration declaration, FormatType formatType) {

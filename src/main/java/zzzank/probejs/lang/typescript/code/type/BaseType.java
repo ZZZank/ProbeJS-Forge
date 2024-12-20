@@ -27,11 +27,11 @@ public abstract class BaseType extends Code {
         return format(declaration, FormatType.RETURN);
     }
 
-    public abstract List<String> format(Declaration declaration, FormatType input);
-
-    public String line(Declaration declaration, FormatType input) {
-        return format(declaration, input).get(0);
+    public List<String> format(Declaration declaration, FormatType formatType) {
+        return Collections.singletonList(line(declaration, formatType));
     }
+
+    public abstract String line(Declaration declaration, FormatType formatType);
 
     // Stuffs for convenience
 

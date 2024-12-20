@@ -7,8 +7,6 @@ import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 
 public class TSClassType extends BaseType {
     public ClassPath classPath;
@@ -23,7 +21,7 @@ public class TSClassType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(declaration.getSymbol(classPath, input == FormatType.INPUT));
+    public String line(Declaration declaration, FormatType formatType) {
+        return declaration.getSymbol(classPath, formatType == FormatType.INPUT);
     }
 }

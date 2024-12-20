@@ -5,8 +5,6 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 
 public class TSArrayType extends BaseType {
     public BaseType component;
@@ -21,7 +19,7 @@ public class TSArrayType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList("(" + component.line(declaration, input) + ")[]");
+    public String line(Declaration declaration, FormatType formatType) {
+        return "(" + component.line(declaration, formatType) + ")[]";
     }
 }

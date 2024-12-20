@@ -9,8 +9,6 @@ import zzzank.probejs.lang.typescript.refer.ImportInfos;
 import zzzank.probejs.lang.typescript.refer.ImportType;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author ZZZank
@@ -26,8 +24,8 @@ public class StaticType extends TSClassType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
+    public String line(Declaration declaration, FormatType formatType) {
         val name = declaration.getSymbol(classPath);
-        return Collections.singletonList(ImportType.STATIC.fmt(name));
+        return ImportType.STATIC.fmt(name);
     }
 }

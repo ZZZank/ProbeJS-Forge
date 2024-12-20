@@ -8,8 +8,6 @@ import zzzank.probejs.lang.typescript.code.type.utility.StaticType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 
 public class JSTypeOfType extends BaseType {
 
@@ -28,7 +26,7 @@ public class JSTypeOfType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(String.format("(typeof %s)", inner.line(declaration, FormatType.RETURN)));
+    public String line(Declaration declaration, FormatType formatType) {
+        return String.format("(typeof %s)", inner.line(declaration, FormatType.RETURN));
     }
 }

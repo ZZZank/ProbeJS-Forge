@@ -6,8 +6,8 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.StringJoiner;
 
 public abstract class JSJoinedType extends BaseType {
     public final String delimiter;
@@ -24,10 +24,10 @@ public abstract class JSJoinedType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType formatType) {
+    public String line(Declaration declaration, FormatType formatType) {
         val joiner = new StringJoiner(delimiter, "(", ")");
         types.forEach(t -> joiner.add(t.line(declaration, formatType)));
-        return Collections.singletonList(joiner.toString());
+        return joiner.toString();
     }
 
     public static class Union extends JSJoinedType {

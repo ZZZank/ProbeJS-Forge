@@ -6,8 +6,6 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = false)
 public class JSPrimitiveType extends BaseType {
@@ -24,7 +22,7 @@ public class JSPrimitiveType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(content);
+    public String line(Declaration declaration, FormatType formatType) {
+        return content;
     }
 }

@@ -5,8 +5,6 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 
 public class TSOptionalType extends BaseType {
     public BaseType component;
@@ -16,8 +14,8 @@ public class TSOptionalType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(String.format("(%s)?", component.line(declaration, input)));
+    public String line(Declaration declaration, FormatType formatType) {
+        return String.format("(%s)?", component.line(declaration, formatType));
     }
 
     @Override

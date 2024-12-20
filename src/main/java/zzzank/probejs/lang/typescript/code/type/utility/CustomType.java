@@ -7,8 +7,6 @@ import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -28,7 +26,7 @@ public class CustomType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return Collections.singletonList(formatter.apply(declaration, input));
+    public String line(Declaration declaration, FormatType formatType) {
+        return formatter.apply(declaration, formatType);
     }
 }

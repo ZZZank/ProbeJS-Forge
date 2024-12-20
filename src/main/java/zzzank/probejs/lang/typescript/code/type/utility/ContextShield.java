@@ -5,7 +5,6 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class ContextShield<T extends BaseType> extends BaseType {
     public final T inner;
@@ -22,7 +21,7 @@ public class ContextShield<T extends BaseType> extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType input) {
-        return inner.format(declaration, formatType);
+    public String line(Declaration declaration, FormatType formatType) {
+        return inner.line(declaration, this.formatType);
     }
 }

@@ -7,8 +7,6 @@ import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author ZZZank
@@ -28,11 +26,11 @@ public class WithFormatType extends BaseType {
     }
 
     @Override
-    public List<String> format(Declaration declaration, FormatType formatType) {
+    public String line(Declaration declaration, FormatType formatType) {
         val additions = new Object[types.length];
         for (int i = 0; i < types.length; i++) {
             additions[i] = types[i].line(declaration, formatType);
         }
-        return Collections.singletonList(String.format(format, additions));
+        return String.format(format, additions);
     }
 }
