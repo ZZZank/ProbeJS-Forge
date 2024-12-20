@@ -3,7 +3,6 @@ package zzzank.probejs;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import dev.latvian.kubejs.KubeJS;
-import dev.latvian.kubejs.text.Text;
 import lombok.val;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
