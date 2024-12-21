@@ -27,7 +27,7 @@ public final class ImportInfo {
     }
 
     public ImportInfo addType(@NotNull ImportType type) {
-        imports |= (byte) (1 << type.ordinal());
+        imports |= (byte) (1 << type.ordinal);
         return this;
     }
 
