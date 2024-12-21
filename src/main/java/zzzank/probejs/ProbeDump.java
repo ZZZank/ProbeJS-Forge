@@ -1,7 +1,6 @@
 package zzzank.probejs;
 
 import com.google.gson.JsonObject;
-import dev.latvian.kubejs.text.Text;
 import lombok.val;
 import net.minecraft.network.chat.Component;
 import zzzank.probejs.features.forge_scan.ForgeModScanner;
@@ -10,10 +9,7 @@ import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.schema.SchemaDump;
 import zzzank.probejs.lang.snippet.SnippetDump;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.utils.CollectUtils;
-import zzzank.probejs.utils.FileUtils;
-import zzzank.probejs.utils.GameUtils;
-import zzzank.probejs.utils.JsonUtils;
+import zzzank.probejs.utils.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,9 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import static dev.latvian.kubejs.bindings.TextWrapper.string;
-import static dev.latvian.kubejs.bindings.TextWrapper.translate;
 
 public class ProbeDump {
     public static final Path SNIPPET_PATH = ProbePaths.WORKSPACE_SETTINGS.resolve("probe.code-snippets");
@@ -55,10 +48,10 @@ public class ProbeDump {
         // So we have all classes without needing to decompile
         ClassRegistry.REGISTRY.fromClasses(new ForgeModScanner().scanAll());
 
-        report(translate("probejs.dump.cleaning"));
+        report(ProbeText.pjs("dump.cleaning"));
         for (ScriptDump scriptDump : scriptDumps) {
             scriptDump.removeClasses();
-            report(translate("probejs.removed_script", scriptDump.manager.type.toString()));
+            report(ProbeText.pjs("removed_script", scriptDump.manager.type.toString()));
         }
 
 //        SchemaDownloader downloader = new SchemaDownloader();
@@ -80,13 +73,13 @@ public class ProbeDump {
         progressReport.accept(component);
     }
 
-    private void report(Text text) {
-        report(text.component());
+    private void report(ProbeText text) {
+        report(text.unwrap());
     }
 
     public void trigger(Consumer<Component> p) throws IOException {
         progressReport = p;
-        report(translate("probejs.dump.start").green());
+        report(ProbeText.pjs("dump.start").green());
 
         // Create the snippets
         snippetDump.fromDocs();
@@ -98,13 +91,13 @@ public class ProbeDump {
         writeVSCodeConfig();
         appendGitIgnore();
 
-        report(translate("probejs.dump.snippets_generated"));
+        report(ProbeText.pjs("dump.snippets_generated"));
 
         EventJSInfos.loadFrom(EVENT_CACHE);
         EventJSInfos.writeTo(EVENT_CACHE);
 
         if (GameUtils.modHash() != ProbeConfig.modHash.get()) {
-            report(translate("probejs.dump.mod_changed").aqua());
+            report(ProbeText.pjs("dump.mod_changed").aqua());
             onModChange();
             ProbeConfig.modHash.set(GameUtils.modHash());
         }
@@ -122,7 +115,7 @@ public class ProbeDump {
 
         ClassRegistry.REGISTRY.walkClass();
         ClassRegistry.REGISTRY.writeTo(CLASS_CACHE);
-        report(translate("probejs.dump.class_discovered", ClassRegistry.REGISTRY.foundClasses.keySet().size()));
+        report(ProbeText.pjs("dump.class_discovered", ClassRegistry.REGISTRY.foundClasses.keySet().size()));
 
         // Spawn a thread for each dump
         List<Thread> dumpThreads = new ArrayList<>();
@@ -132,9 +125,9 @@ public class ProbeDump {
                     scriptDump.acceptClasses(ClassRegistry.REGISTRY.getFoundClasses());
                     try {
                         scriptDump.dump();
-                        report(translate("probejs.dump.dump_finished", scriptDump.manager.type.toString()).green());
+                        report(ProbeText.pjs("dump.dump_finished", scriptDump.manager.type.toString()).green());
                     } catch (Throwable e) {
-                        report(translate("probejs.dump.dump_error", scriptDump.manager.type.toString()).red());
+                        report(ProbeText.pjs("dump.dump_error", scriptDump.manager.type.toString()).red());
                         throw new RuntimeException(e);
                     }
                 },
@@ -160,7 +153,7 @@ public class ProbeDump {
                                 sd.classesWriter.countAcceptedFiles()
                             ))
                             .collect(Collectors.joining(", "));
-                        report(translate("probejs.dump.report_progress").append(string(dumpProgress).blue()));
+                        report(ProbeText.pjs("dump.report_progress").append(ProbeText.literal(dumpProgress).blue()));
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }

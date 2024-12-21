@@ -276,7 +276,9 @@ public class ScriptDump {
                     "target", "ES2015",
                     "lib", CollectUtils.ofList("ES5", "ES2015"),
                     "rootDir", ".",
-                    "typeRoots", CollectUtils.ofList(String.format("../../.probe/%s/probe-types", basePath.getFileName())),
+                    "typeRoots", CollectUtils.ofList(
+                        String.format("../../.probe/%s/probe-types", basePath.getFileName())
+                    ),
                     "baseUrl", String.format("../../.probe/%s/probe-types", basePath.getFileName()),
                     "skipLibCheck", true
                 ),

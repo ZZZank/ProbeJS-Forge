@@ -1,12 +1,12 @@
 package zzzank.probejs.lang.linter;
 
 import dev.latvian.kubejs.KubeJSPaths;
-import dev.latvian.kubejs.bindings.TextWrapper;
 import net.minecraft.network.chat.Component;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.linter.rules.NoNamespacePollution;
 import zzzank.probejs.lang.linter.rules.RespectPriority;
 import zzzank.probejs.lang.linter.rules.Rule;
+import zzzank.probejs.utils.ProbeText;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -100,7 +100,7 @@ public class Linter {
                 report.accept(warning);
             }
             if (warnings.isEmpty())
-                report.accept(TextWrapper.translate("probejs.lint_passed").green().component());
+                report.accept(ProbeText.pjs("lint_passed").green().unwrap());
         } catch (Throwable e) {
             ProbeJS.LOGGER.error(e.getMessage());
         }

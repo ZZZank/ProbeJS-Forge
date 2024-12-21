@@ -52,7 +52,7 @@ public class GameEvents {
         RegistryInfos.refresh();
 
         if (ProbeConfig.modHash.get() == -1) {
-            sendMsg.accept(ProbeText.pjs("hello").color(ChatFormatting.GOLD));
+            sendMsg.accept(ProbeText.pjs("hello").gold());
         }
         if (ProbeConfig.registryHash.get() != GameUtils.registryHash()) {
             if (!ProbeDumpingThread.exists()) {
@@ -65,7 +65,7 @@ public class GameEvents {
                     .pjs("enabled_warning")
                     .append(ProbeText.literal("/probejs disable")
                         .click(ClickEvent.Action.SUGGEST_COMMAND, "/probejs disable")
-                        .color(ChatFormatting.AQUA)
+                        .aqua()
                     )
             );
             if (ModList.get().size() >= MOD_LIMIT) {
@@ -79,7 +79,7 @@ public class GameEvents {
         sendMsg.accept(
             ProbeText.pjs("wiki")
                 .append(ProbeText.literal("Wiki Page")
-                    .color(ChatFormatting.AQUA)
+                    .aqua()
                     .underlined(true)
                     .click(
                         ClickEvent.Action.OPEN_URL,
@@ -124,7 +124,7 @@ public class GameEvents {
                         if (ProbeDumpingThread.exists()) {
                             sendMsg.accept(
                                 context,
-                                ProbeText.pjs("already_running").color(ChatFormatting.RED)
+                                ProbeText.pjs("already_running").red()
                             );
                             return Command.SINGLE_SUCCESS;
                         }
@@ -139,7 +139,7 @@ public class GameEvents {
                         ProbeConfig.enabled.set(false);
                         sendMsg.accept(
                             context,
-                            ProbeText.pjs("bye_bye").color(ChatFormatting.GOLD)
+                            ProbeText.pjs("bye_bye").gold()
                         );
                         return Command.SINGLE_SUCCESS;
                     })
@@ -150,7 +150,7 @@ public class GameEvents {
                         ProbeConfig.enabled.set(true);
                         sendMsg.accept(
                             context,
-                            ProbeText.pjs("hello_again").color(ChatFormatting.AQUA)
+                            ProbeText.pjs("hello_again").aqua()
                         );
                         return Command.SINGLE_SUCCESS;
                     })
@@ -170,7 +170,7 @@ public class GameEvents {
                         ProbeConfig.isolatedScopes.set(flag);
                         sendMsg.accept(
                             context,
-                            ProbeText.pjs(flag ? "isolation" : "no_isolation").color(ChatFormatting.AQUA)
+                            ProbeText.pjs(flag ? "isolation" : "no_isolation").aqua()
                         );
                         return Command.SINGLE_SUCCESS;
                     })

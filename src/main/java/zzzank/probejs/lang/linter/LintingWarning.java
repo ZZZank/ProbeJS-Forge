@@ -2,11 +2,11 @@ package zzzank.probejs.lang.linter;
 
 import com.github.bsideup.jabel.Desugar;
 import com.google.gson.JsonElement;
-import dev.latvian.kubejs.bindings.TextWrapper;
 import dev.latvian.mods.rhino.mod.util.color.Color;
 import dev.latvian.mods.rhino.mod.wrapper.ColorWrapper;
 import net.minecraft.network.chat.Component;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.utils.ProbeText;
 
 import java.nio.file.Path;
 
@@ -27,12 +27,12 @@ public record LintingWarning(Path file, Level level, int line, int column, Strin
     public Component defaultFormatting(Path relativeBase) {
         Path stripped = relativeBase.getParent().relativize(file);
 
-        return TextWrapper.string("[")
-            .append(TextWrapper.string(level().name()).color(level().color))
-            .append(TextWrapper.string("] "))
-            .append(TextWrapper.string(stripped.toString()))
-            .append(TextWrapper.string(String.format(":%d:%d: %s", line, column, message)))
-            .component();
+        return ProbeText.literal("[")
+            .append(ProbeText.literal(level().name()).color(level().color.createTextColorKJS()))
+            .append(ProbeText.literal("] "))
+            .append(ProbeText.literal(stripped.toString()))
+            .append(ProbeText.literal(String.format(":%d:%d: %s", line, column, message)))
+            .unwrap();
     }
 
     public JsonElement asPayload() {

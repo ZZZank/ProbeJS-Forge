@@ -44,6 +44,10 @@ public final class ProbeText {
         return this;
     }
 
+    public ProbeText append(String literal) {
+        return append(new TextComponent(literal));
+    }
+
     public ProbeText append(ProbeText component) {
         return append(component.raw);
     }
@@ -98,6 +102,70 @@ public final class ProbeText {
 
     public ProbeText obfuscated(Boolean obfuscated) {
         return setStyle(getStyle().setObfuscated(obfuscated));
+    }
+
+    public ProbeText black() {
+        return this.color(ChatFormatting.BLACK);
+    }
+
+    public ProbeText darkBlue() {
+        return this.color(ChatFormatting.DARK_BLUE);
+    }
+
+    public ProbeText darkGreen() {
+        return this.color(ChatFormatting.DARK_GREEN);
+    }
+
+    public ProbeText darkAqua() {
+        return this.color(ChatFormatting.DARK_AQUA);
+    }
+
+    public ProbeText darkRed() {
+        return this.color(ChatFormatting.DARK_RED);
+    }
+
+    public ProbeText darkPurple() {
+        return this.color(ChatFormatting.DARK_PURPLE);
+    }
+
+    public ProbeText gold() {
+        return this.color(ChatFormatting.GOLD);
+    }
+
+    public ProbeText gray() {
+        return this.color(ChatFormatting.GRAY);
+    }
+
+    public ProbeText darkGray() {
+        return this.color(ChatFormatting.DARK_GRAY);
+    }
+
+    public ProbeText blue() {
+        return this.color(ChatFormatting.BLUE);
+    }
+
+    public ProbeText green() {
+        return this.color(ChatFormatting.GREEN);
+    }
+
+    public ProbeText aqua() {
+        return this.color(ChatFormatting.AQUA);
+    }
+
+    public ProbeText red() {
+        return this.color(ChatFormatting.RED);
+    }
+
+    public ProbeText lightPurple() {
+        return this.color(ChatFormatting.LIGHT_PURPLE);
+    }
+
+    public ProbeText yellow() {
+        return this.color(ChatFormatting.YELLOW);
+    }
+
+    public ProbeText white() {
+        return this.color(ChatFormatting.WHITE);
     }
 
     public MutableComponent unwrap() {

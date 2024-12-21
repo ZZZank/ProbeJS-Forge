@@ -1,8 +1,9 @@
 package zzzank.probejs;
 
-import dev.latvian.kubejs.bindings.TextWrapper;
 import lombok.val;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import zzzank.probejs.utils.ProbeText;
 import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.features.rhizo.RhizoState;
 import zzzank.probejs.utils.GameUtils;
@@ -37,19 +38,19 @@ public class ProbeDumpingThread extends Thread {
     @Override
     public void run() {
         if (!RhizoState.MOD.get()) {
-            messageSender.accept(TextWrapper.translate("probejs.rhizo_missing").red().component());
-            messageSender.accept(TextWrapper
-                .translate("probejs.download_rhizo_help")
-                .append(TextWrapper.string("CurseForge")
+            messageSender.accept(ProbeText.pjs("rhizo_missing").red().unwrap());
+            messageSender.accept(ProbeText
+                .pjs("download_rhizo_help")
+                .append(ProbeText.literal("CurseForge")
                     .aqua()
-                    .underlined()
-                    .click("https://www.curseforge.com/minecraft/mc-mods/rhizo/files"))
+                    .underlined(true)
+                    .click(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/rhizo/files"))
                 .append(" / ")
-                .append(TextWrapper.string("Github")
+                .append(ProbeText.literal("Github")
                     .aqua()
-                    .underlined()
-                    .click("https://github.com/ZZZank/Rhizo/releases/latest"))
-                .component()
+                    .underlined(true)
+                    .click(ClickEvent.Action.OPEN_URL, "https://github.com/ZZZank/Rhizo/releases/latest"))
+                .unwrap()
             );
         }
 
@@ -59,7 +60,7 @@ public class ProbeDumpingThread extends Thread {
         try {
             probeDump.trigger(messageSender);
         } catch (Throwable e) {
-            messageSender.accept(TextWrapper.translate("probejs.error").red().component());
+            messageSender.accept(ProbeText.pjs("error").red().unwrap());
             GameUtils.logThrowable(e);
         }
     }
