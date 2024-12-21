@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * @author ZZZank
  */
-public final class ProbeText implements MutableComponent {
+public final class ProbeText {
 
     public static ProbeText of(@NotNull MutableComponent raw) {
         return new ProbeText(Objects.requireNonNull(raw));
@@ -36,13 +36,11 @@ public final class ProbeText implements MutableComponent {
         this.raw = raw;
     }
 
-    @Override
     public ProbeText setStyle(Style style) {
         raw = raw.setStyle(style);
         return this;
     }
 
-    @Override
     public ProbeText append(Component component) {
         this.raw = raw.append(component);
         return this;
@@ -108,33 +106,7 @@ public final class ProbeText implements MutableComponent {
         return raw;
     }
 
-    @Override
     public Style getStyle() {
         return raw.getStyle();
-    }
-
-    @Override
-    public String getContents() {
-        return raw.getContents();
-    }
-
-    @Override
-    public List<Component> getSiblings() {
-        return raw.getSiblings();
-    }
-
-    @Override
-    public MutableComponent plainCopy() {
-        return raw.plainCopy();
-    }
-
-    @Override
-    public ProbeText copy() {
-        return of(raw.copy());
-    }
-
-    @Override
-    public FormattedCharSequence getVisualOrderText() {
-        return raw.getVisualOrderText();
     }
 }

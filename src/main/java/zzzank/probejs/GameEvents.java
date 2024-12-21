@@ -48,7 +48,7 @@ public class GameEvents {
             return;
         }
 
-        val sendMsg = (Consumer<Component>) msg -> player.sendMessage(msg, NIL_UUID);
+        val sendMsg = (Consumer<ProbeText>) msg -> player.sendMessage(msg.unwrap(), NIL_UUID);
         RegistryInfos.refresh();
 
         if (ProbeConfig.modHash.get() == -1) {
@@ -56,7 +56,7 @@ public class GameEvents {
         }
         if (ProbeConfig.registryHash.get() != GameUtils.registryHash()) {
             if (!ProbeDumpingThread.exists()) {
-                ProbeDumpingThread.create(sendMsg).start();
+                ProbeDumpingThread.create(msg1 -> player.sendMessage(msg1, NIL_UUID)).start();
             }
         } else {
 
@@ -65,7 +65,8 @@ public class GameEvents {
                     .pjs("enabled_warning")
                     .append(ProbeText.literal("/probejs disable")
                         .click(ClickEvent.Action.SUGGEST_COMMAND, "/probejs disable")
-                        .color(ChatFormatting.AQUA))
+                        .color(ChatFormatting.AQUA)
+                    )
             );
             if (ModList.get().size() >= MOD_LIMIT) {
                 if (ProbeConfig.complete.get()) {
@@ -109,7 +110,9 @@ public class GameEvents {
         val spOrOp = (Predicate<CommandSourceStack>)
             (source) -> source.hasPermission(2) || source.getServer().isSingleplayer();
         val pjsEnabled = (Predicate<CommandSourceStack>) (source) -> ProbeConfig.enabled.get();
-        val sendMsg = (BiConsumer<CommandContext<CommandSourceStack>, Component>)
+        val sendMsg = (BiConsumer<CommandContext<CommandSourceStack>, ProbeText>)
+            (context, text) -> context.getSource().sendSuccess(text.unwrap(), true);
+        val sendMsgRaw = (BiConsumer<CommandContext<CommandSourceStack>, Component>)
             (context, text) -> context.getSource().sendSuccess(text, true);
 
         event.getDispatcher().register(
@@ -125,7 +128,7 @@ public class GameEvents {
                             return Command.SINGLE_SUCCESS;
                         }
                         KubeJS.PROXY.reloadClientInternal();
-                        ProbeDumpingThread.create(msg -> sendMsg.accept(context, msg)).start();
+                        ProbeDumpingThread.create(msg -> sendMsgRaw.accept(context, msg)).start();
                         return Command.SINGLE_SUCCESS;
                     })
                 )
@@ -174,7 +177,7 @@ public class GameEvents {
                 .then(Commands.literal("lint")
                     .requires(pjsEnabled.and(spOrOp))
                     .executes(context -> {
-                        Linter.defaultLint(msg -> sendMsg.accept(context, msg));
+                        Linter.defaultLint(msg -> sendMsgRaw.accept(context, msg));
                         return Command.SINGLE_SUCCESS;
                     })
                 )
