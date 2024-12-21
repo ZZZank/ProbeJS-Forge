@@ -1,7 +1,5 @@
 package zzzank.probejs.lang.typescript;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
@@ -17,19 +15,20 @@ public class Declaration {
     private static final String UNIQUE_TEMPLATE = "%s$%d";
 
     public final Map<ClassPath, Reference> references = new HashMap<>();
-    private final BiMap<ClassPath, String> dedupedSymbols = HashBiMap.create();
-
+    private final Set<String> usedNames = new HashSet<>();
     private final Set<String> excludedName = new HashSet<>();
 
     public void addImport(ImportInfo info) {
-        // So we determine a unique original that is safe to use at startup
         val existed = references.get(info.path);
+        //already resolved
         if (existed != null) {
             existed.info.mergeWith(info);
             return;
         }
-        val name = resolveSymbol(info.path);
-        this.references.put(info.path, new Reference(info, name));
+        // So we determine a unique original that is safe to use at startup
+        val uniqueName = computeSymbol(info.path);
+        usedNames.add(uniqueName);
+        this.references.put(info.path, new Reference(info, uniqueName));
     }
 
     public void exclude(String name) {
@@ -37,18 +36,13 @@ public class Declaration {
     }
 
     public boolean containsSymbol(String name) {
-        return excludedName.contains(name) || dedupedSymbols.containsValue(name);
+        return excludedName.contains(name) || usedNames.contains(name);
     }
 
-    public String resolveSymbol(ClassPath path) {
-        //already resolved
-        var deduped = dedupedSymbols.get(path);
-        if (deduped != null) {
-            return deduped;
-        }
-        //try original, then try template
+    private String computeSymbol(ClassPath path) {
         val original = path.getName();
-        deduped = original;
+        //try original, then try template
+        var deduped = original;
         int counter = 0;
         while (containsSymbol(deduped)) {
             deduped = String.format(UNIQUE_TEMPLATE, original, counter++);
