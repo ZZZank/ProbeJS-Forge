@@ -29,7 +29,7 @@ public class InterfaceDecl extends ClassDecl {
         super(name, superClass, interfaces, variableTypes);
     }
 
-    public ClassDecl createStaticClass() {
+    public ClassDecl createStaticClass(List<MethodDecl> staticMethods) {
         val classDecl = new ClassDecl(
             ImportType.STATIC.fmt(this.name),
             null,
@@ -37,23 +37,20 @@ public class InterfaceDecl extends ClassDecl {
             this.variableTypes
         );
         //methods will at the original interface
-        //classDecl.methods.addAll(methods);
+        classDecl.methods.addAll(staticMethods);
         classDecl.fields.addAll(fields);
-
         return classDecl;
     }
 
-    public Wrapped.Namespace createNamespace() {
+    public Wrapped.Namespace createNamespace(List<MethodDecl> staticMethods) {
         val namespace = new Wrapped.Namespace(this.name);
         for (val field : fields) {
             // if (!field.isStatic) throw new RuntimeException("Why an interface can have a non-static field?");
             // Because ProbeJS can add non-static fields to it... And it's legal in TypeScript.
             namespace.addCode(field.asVariableDecl());
         }
-        for (val method : methods) {
-            if (method.isStatic) {
-                namespace.addCode(method.asFunctionDecl());
-            }
+        for (val method : staticMethods) {
+            namespace.addCode(method.asFunctionDecl());
         }
         // Adds a marker in it to prevent VSCode from not recognizing the namespace to import
         if (namespace.isEmpty()) {
@@ -64,19 +61,20 @@ public class InterfaceDecl extends ClassDecl {
 
     @Override
     public List<String> formatRaw(Declaration declaration) {
-        for (MethodDecl method : methods) {
+        for (val method : methods) {
             method.isInterface = true;
         }
+
         // Format head - export interface name<T> extends ... {
         String head = String.format("export interface %s", name);
         if (!variableTypes.isEmpty()) {
-            String variables = variableTypes.stream()
+            val variables = variableTypes.stream()
                 .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
-                .collect(Collectors.joining(", "));
-            head = String.format("%s<%s>", head, variables);
+                .collect(Collectors.joining(", ", "<", ">"));
+            head = head + variables;
         }
         if (!interfaces.isEmpty()) {
-            String formatted = interfaces.stream()
+            val formatted = interfaces.stream()
                 .map(type -> type.line(declaration))
                 .collect(Collectors.joining(", "));
             head = String.format("%s extends %s", head, formatted);
@@ -86,12 +84,15 @@ public class InterfaceDecl extends ClassDecl {
         // Format body - fields, constructors, methods
         List<String> body = new ArrayList<>();
 
-        body.add("");
-        for (MethodDecl method : methods) {
-            //include static methods for StaticClass creation
-            body.addAll(method.format(declaration));
+        val staticMethods = new ArrayList<MethodDecl>();
+        for (val method : methods) {
+            if (method.isStatic) {
+                staticMethods.add(method);
+            } else {
+                body.addAll(method.format(declaration));
+            }
         }
-        //but, includes no field
+        //but, includes no field, because all fields in an interface is static
 
         // tail - }
         List<String> tail = new ArrayList<>();
@@ -108,10 +109,10 @@ public class InterfaceDecl extends ClassDecl {
 
         // Static methods and fields, adds it even if it's empty, so auto import can still discover it
         if (this.withNamespace) {
-            formatted.addAll(createNamespace().format(declaration));
+            formatted.addAll(createNamespace(staticMethods).format(declaration));
         }
         if (this.withStatic) {
-            formatted.addAll(createStaticClass().format(declaration));
+            formatted.addAll(createStaticClass(staticMethods).format(declaration));
         }
         return formatted;
     }
