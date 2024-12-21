@@ -109,7 +109,8 @@ public class GameEvents {
     public static void registerCommand(RegisterCommandsEvent event) {
         val spOrOp = (Predicate<CommandSourceStack>)
             (source) -> source.hasPermission(2) || source.getServer().isSingleplayer();
-        val pjsEnabled = (Predicate<CommandSourceStack>) (source) -> ProbeConfig.enabled.get();
+        val pjsEnabled = (Predicate<CommandSourceStack>)
+            (source) -> ProbeConfig.enabled.get();
         val sendMsg = (BiConsumer<CommandContext<CommandSourceStack>, ProbeText>)
             (context, text) -> context.getSource().sendSuccess(text.unwrap(), true);
         val sendMsgRaw = (BiConsumer<CommandContext<CommandSourceStack>, Component>)

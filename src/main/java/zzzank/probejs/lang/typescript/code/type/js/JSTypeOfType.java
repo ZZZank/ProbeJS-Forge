@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
+import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
@@ -15,9 +16,14 @@ public class JSTypeOfType extends BaseType {
 
     public JSTypeOfType(BaseType inner) {
         Clazz c;
-        this.inner = inner instanceof TSClassType cType && (c = cType.classPath.toClazz()) != null && c.attribute.isInterface
-            ? new StaticType(cType.classPath)
-            : inner;
+        if (inner instanceof TSClassType cType
+            && (c = cType.classPath.toClazz(ClassRegistry.REGISTRY)) != null
+            && c.attribute.isInterface
+        ) {
+            this.inner = new StaticType(cType.classPath);
+        } else {
+            this.inner = inner;
+        }
     }
 
     @Override

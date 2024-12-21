@@ -1,7 +1,5 @@
 package zzzank.probejs.utils.config;
 
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.utils.Asser;
@@ -16,16 +14,13 @@ import java.util.*;
 /**
  * @author ZZZank
  */
-@Setter
-@Accessors(chain = true)
 public class ConfigEntryBuilder<T> {
 
     @NotNull
     public final ConfigImpl root;
     @Nonnull
     public final String name;
-    public Class<T> expectedType;
-    public T defaultValue;
+    protected Class<T> expectedType;
     public String namespace;
     public List<String> comments;
     public ConfigBinding<T> binding;
@@ -74,6 +69,16 @@ public class ConfigEntryBuilder<T> {
         return this;
     }
 
+    public ConfigEntryBuilder<T> setComments(List<String> comments) {
+        this.comments = Objects.requireNonNull(comments);
+        return this;
+    }
+
+    public ConfigEntryBuilder<T> setNamespace(String namespace) {
+        this.namespace = Objects.requireNonNull(namespace);
+        return this;
+    }
+
     public ConfigEntry<T> build() {
         if (namespace == null) {
             namespace = this.root.defaultNamespace;
@@ -81,7 +86,6 @@ public class ConfigEntryBuilder<T> {
         if (comments == null) {
             comments = Collections.emptyList();
         }
-        assert expectedType.isInstance(binding.getDefault());
         return this.root.register(
             new ConfigEntry<>(this.root, namespace, name, expectedType, binding, comments)
         );

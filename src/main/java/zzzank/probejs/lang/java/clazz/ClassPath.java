@@ -86,8 +86,8 @@ public final class ClassPath implements Comparable<ClassPath> {
 
     @Nullable
     @HideFromJS
-    public Clazz toClazz() {
-        return ClassRegistry.REGISTRY.foundClasses.get(this);
+    public Clazz toClazz(ClassRegistry registry) {
+        return registry.foundClasses.get(this);
     }
 
     public List<String> getPackage() {

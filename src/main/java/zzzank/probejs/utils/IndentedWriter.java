@@ -13,31 +13,31 @@ public class IndentedWriter extends Writer {
 
     /**
      * create a {@link IndentedWriter} that uses 4 spaces as indentation
-     * @param writerToBeWrapped writer to be wrapped
+     * @param writer writer to be wrapped
      */
-    public static IndentedWriter space(Writer writerToBeWrapped) {
-        return new IndentedWriter(writerToBeWrapped, 4, ' ');
+    public static IndentedWriter space(Writer writer) {
+        return new IndentedWriter(writer, 4, ' ');
     }
 
     /**
      * create a {@link IndentedWriter} that uses 1 tab as indentation
-     * @param writerToBeWrapped writer to be wrapped
+     * @param writer writer to be wrapped
      */
-    public static IndentedWriter tab(Writer writerToBeWrapped) {
-        return new IndentedWriter(writerToBeWrapped, 1, '\t');
+    public static IndentedWriter tab(Writer writer) {
+        return new IndentedWriter(writer, 1, '\t');
     }
 
     /**
      * create a IndentedWriter with a writer to be wrapped and an indent step which will be used by {@link #pushIndent()}
      * and {@link #popIndent()}
      *
-     * @param writerToBeWrapped writer to be wrapped
+     * @param writer writer to be wrapped
      * @param indentStep how much the length of indentation should be increased/decreased, will only be used by
      * {@link #pushIndent()} and {@link #popIndent()}
      * @param indentChar the char used as the elements of indentation
      */
-    public static IndentedWriter create(Writer writerToBeWrapped, int indentStep, char indentChar) {
-        return new IndentedWriter(writerToBeWrapped, indentStep, indentChar);
+    public static IndentedWriter create(Writer writer, int indentStep, char indentChar) {
+        return new IndentedWriter(writer, indentStep, indentChar);
     }
 
     private int indent = 0;
@@ -95,7 +95,7 @@ public class IndentedWriter extends Writer {
 
     @Override
     public void close() throws IOException {
-        if (!buffer.isEmpty()) {
+        if (buffer.length() != 0) {
             writeBuffer();
         }
         inner.close();
