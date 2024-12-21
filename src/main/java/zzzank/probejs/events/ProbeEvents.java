@@ -1,7 +1,7 @@
 package zzzank.probejs.events;
 
 public interface ProbeEvents {
-    String _PREFIX = "probejs.";
+    String _PREFIX = "probe.";
 
     String ASSIGN_TYPE = _PREFIX + "assign_type";
     String MODIFY_DOC = _PREFIX + "modify_doc";
