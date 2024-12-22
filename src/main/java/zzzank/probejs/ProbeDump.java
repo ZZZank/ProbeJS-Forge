@@ -107,23 +107,24 @@ public class ProbeDump {
         report(ProbeText.pjs("dump.class_discovered", ClassRegistry.REGISTRY.foundClasses.keySet().size()));
 
         // Spawn a thread for each dump
-        List<Thread> dumpThreads = new ArrayList<>();
-        for (ScriptDump scriptDump : scriptDumps) {
-            Thread t = new Thread(
+        val threads = CollectUtils.mapToList(
+            scriptDumps,
+            (dump) -> new Thread(
                 () -> {
-                    scriptDump.acceptClasses(ClassRegistry.REGISTRY.getFoundClasses());
+                    dump.acceptClasses(ClassRegistry.REGISTRY.getFoundClasses());
                     try {
-                        scriptDump.dump();
-                        report(ProbeText.pjs("dump.dump_finished", scriptDump.manager.type.toString()).green());
+                        dump.dump();
+                        report(ProbeText.pjs("dump.dump_finished", dump.manager.type.name).green());
                     } catch (Throwable e) {
-                        report(ProbeText.pjs("dump.dump_error", scriptDump.manager.type.toString()).red());
+                        report(ProbeText.pjs("dump.dump_error", dump.manager.type.name).red());
                         throw new RuntimeException(e);
                     }
                 },
-                String.format("ProbeDumpingThread-%s", scriptDump.manager.type.name)
-            );
-            dumpThreads.add(t);
-            t.start();
+                String.format("ProbeDumpingThread-%s", dump.manager.type.name)
+            )
+        );
+        for (val thread : threads) {
+            thread.start();
         }
 
         Thread reportingThread = new Thread(
@@ -131,7 +132,7 @@ public class ProbeDump {
                 while (true) {
                     try {
                         Thread.sleep(3000);
-                        if (dumpThreads.stream().noneMatch(Thread::isAlive)) {
+                        if (threads.stream().noneMatch(Thread::isAlive)) {
                             return;
                         }
                         val dumpProgress = scriptDumps.stream()
