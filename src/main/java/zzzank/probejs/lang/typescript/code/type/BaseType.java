@@ -33,6 +33,9 @@ public abstract class BaseType extends Code {
 
     public abstract String line(Declaration declaration, FormatType formatType);
 
+    public String line(Declaration declaration) {
+        return line(declaration, FormatType.RETURN);
+    }
     // Stuffs for convenience
 
     public TSArrayType asArray() {
