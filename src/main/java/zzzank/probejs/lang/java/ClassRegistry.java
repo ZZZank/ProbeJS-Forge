@@ -19,7 +19,7 @@ import java.util.*;
 public class ClassRegistry {
     public static final ClassRegistry REGISTRY = new ClassRegistry();
 
-    public Map<ClassPath, Clazz> foundClasses = new HashMap<>(256);
+    public final Map<ClassPath, Clazz> foundClasses = new HashMap<>(256);
     public final MemberCollector collector = new ClazzMemberCollector();
 
     public void fromClazz(Collection<Clazz> classes) {
@@ -111,7 +111,6 @@ public class ClassRegistry {
                     continue;
                 }
                 try {
-//                    Class.forName(c.getName());
                     val clazz = new Clazz(c, collector);
                     foundClasses.put(clazz.classPath, clazz);
                     currentClasses.add(clazz);

@@ -56,7 +56,10 @@ public final class ClassPath implements Comparable<ClassPath> {
     }
 
     public List<String> getParts() {
-        return wrapped == null ? (wrapped = Collections.unmodifiableList(Arrays.asList(this.parts))) : wrapped;
+        if (wrapped == null) {
+            wrapped = Collections.unmodifiableList(Arrays.asList(this.parts));
+        }
+        return wrapped;
     }
 
     public String getName() {

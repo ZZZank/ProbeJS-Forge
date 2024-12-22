@@ -11,7 +11,7 @@ import java.nio.file.Path;
  */
 public interface TSFileWriter {
 
-    TSFileWriter setSuffix(String suffix);
+    TSFileWriter setFileSuffix(String suffix);
 
     TSFileWriter setWithIndex(boolean withIndex);
 

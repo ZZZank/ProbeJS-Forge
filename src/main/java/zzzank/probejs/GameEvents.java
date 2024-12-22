@@ -4,7 +4,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import dev.latvian.kubejs.KubeJS;
 import lombok.val;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.*;
@@ -56,7 +55,7 @@ public class GameEvents {
         }
         if (ProbeConfig.registryHash.get() != GameUtils.registryHash()) {
             if (!ProbeDumpingThread.exists()) {
-                ProbeDumpingThread.create(msg1 -> player.sendMessage(msg1, NIL_UUID)).start();
+                ProbeDumpingThread.create(sendMsg).start();
             }
         } else {
 
@@ -87,7 +86,7 @@ public class GameEvents {
                     )
                     .hover(
                         HoverEvent.Action.SHOW_TEXT,
-                        new TextComponent("https://kubejs.com/wiki/addons/third-party/probejs")
+                        ProbeText.literal("https://kubejs.com/wiki/addons/third-party/probejs").unwrap()
                     )
                 )
         );
@@ -113,8 +112,6 @@ public class GameEvents {
             (source) -> ProbeConfig.enabled.get();
         val sendMsg = (BiConsumer<CommandContext<CommandSourceStack>, ProbeText>)
             (context, text) -> context.getSource().sendSuccess(text.unwrap(), true);
-        val sendMsgRaw = (BiConsumer<CommandContext<CommandSourceStack>, Component>)
-            (context, text) -> context.getSource().sendSuccess(text, true);
 
         event.getDispatcher().register(
             Commands.literal("probejs")
@@ -129,7 +126,7 @@ public class GameEvents {
                             return Command.SINGLE_SUCCESS;
                         }
                         KubeJS.PROXY.reloadClientInternal();
-                        ProbeDumpingThread.create(msg -> sendMsgRaw.accept(context, msg)).start();
+                        ProbeDumpingThread.create(msg -> sendMsg.accept(context, msg)).start();
                         return Command.SINGLE_SUCCESS;
                     })
                 )
@@ -178,7 +175,7 @@ public class GameEvents {
                 .then(Commands.literal("lint")
                     .requires(pjsEnabled.and(spOrOp))
                     .executes(context -> {
-                        Linter.defaultLint(msg -> sendMsgRaw.accept(context, msg));
+                        Linter.defaultLint(msg -> sendMsg.accept(context, msg));
                         return Command.SINGLE_SUCCESS;
                     })
                 )

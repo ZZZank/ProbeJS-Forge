@@ -18,7 +18,7 @@ public abstract class AbstractWriter implements TSFileWriter {
     public String suffix = D_TS_SUFFIX;
 
     @Override
-    public TSFileWriter setSuffix(String suffix) {
+    public TSFileWriter setFileSuffix(String suffix) {
         this.suffix = Objects.requireNonNull(suffix);
         return this;
     }

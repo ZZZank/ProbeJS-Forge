@@ -2,7 +2,7 @@ package zzzank.probejs;
 
 import com.google.gson.JsonObject;
 import lombok.val;
-import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.features.forge_scan.ForgeModScanner;
 import zzzank.probejs.features.kubejs.EventJSInfos;
 import zzzank.probejs.lang.java.ClassRegistry;
@@ -18,6 +18,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -29,18 +30,14 @@ public class ProbeDump {
     final SchemaDump schemaDump = new SchemaDump();
     final SnippetDump snippetDump = new SnippetDump();
     final Collection<ScriptDump> scriptDumps = new ArrayList<>();
-    private Consumer<Component> progressReport;
+    public final Consumer<ProbeText> messageSender;
 
-    public void addScript(ScriptDump dump) {
-        if (dump != null) {
-            scriptDumps.add(dump);
-        }
+    public ProbeDump(Consumer<ProbeText> messageSender) {
+        this.messageSender = messageSender;
     }
 
-    public void defaultScripts() {
-        addScript(ScriptDump.CLIENT_DUMP.get());
-        addScript(ScriptDump.SERVER_DUMP.get());
-        addScript(ScriptDump.STARTUP_DUMP.get());
+    public void addScript(@NotNull ScriptDump dump) {
+        scriptDumps.add(Objects.requireNonNull(dump));
     }
 
     private void onModChange() throws IOException {
@@ -66,19 +63,11 @@ public class ProbeDump {
 
     }
 
-    private void report(Component component) {
-        if (progressReport == null) {
-            return;
-        }
-        progressReport.accept(component);
-    }
-
     private void report(ProbeText text) {
-        report(text.unwrap());
+        messageSender.accept(text);
     }
 
-    public void trigger(Consumer<Component> p) throws IOException {
-        progressReport = p;
+    public void trigger() throws IOException {
         report(ProbeText.pjs("dump.start").green());
 
         // Create the snippets
