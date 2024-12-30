@@ -21,6 +21,7 @@ public class ConfigEntry<T> {
 
     public final ConfigSerde<T> serde;
     public final ConfigBinding<T> binding;
+
     public final ImmutableList<String> comments;
 
     public ConfigEntry(

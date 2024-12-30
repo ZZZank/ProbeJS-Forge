@@ -43,7 +43,7 @@ public class TypeScriptFile {
     public List<String> format() {
         List<String> formatted = new ArrayList<>();
 
-        for (Code code : codes) {
+        for (val code : codes) {
             formatted.addAll(code.format(declaration));
         }
 
@@ -51,7 +51,7 @@ public class TypeScriptFile {
     }
 
     public void write(Path writeTo) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(writeTo)) {
+        try (val writer = Files.newBufferedWriter(writeTo)) {
             this.write(writer);
         }
     }
@@ -59,7 +59,7 @@ public class TypeScriptFile {
     public void write(BufferedWriter writer) throws IOException {
         boolean written = false;
 
-        for (Reference value : declaration.references.values()) {
+        for (val value : declaration.references.values()) {
             if (value.info.path.equals(path)) {
                 continue;
             }

@@ -10,9 +10,9 @@ import java.util.function.Supplier;
  */
 public class DynamicBinding<T> extends BindingBase<T> {
     @NotNull
-    private final Supplier<T> getter;
+    public final Supplier<T> getter;
     @NotNull
-    private final Consumer<T> setter;
+    public final Consumer<T> setter;
 
     public DynamicBinding(@NotNull T defaultValue, @NotNull String name, @NotNull Supplier<T> getter, @NotNull Consumer<T> setter) {
         super(defaultValue, name);

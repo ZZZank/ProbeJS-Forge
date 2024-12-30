@@ -3,7 +3,6 @@ package zzzank.probejs.lang.typescript.refer;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.lang.java.clazz.ClassPath;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
 
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -15,7 +14,7 @@ import java.util.stream.Stream;
 public final class ImportInfo {
 
     public final ClassPath path;
-    public byte imports;
+    public int imports;
 
     private ImportInfo(ClassPath path, ImportType type, ImportType... rest) {
         this.path = path;
@@ -27,7 +26,7 @@ public final class ImportInfo {
     }
 
     public ImportInfo addType(@NotNull ImportType type) {
-        imports |= (byte) (1 << type.ordinal);
+        imports |= 1 << type.ordinal;
         return this;
     }
 
@@ -38,14 +37,6 @@ public final class ImportInfo {
 
     public static ImportInfo of(ClassPath path, ImportType type, ImportType... rest) {
         return new ImportInfo(Objects.requireNonNull(path), type, rest);
-    }
-
-    public static ImportInfo of(ClassPath path, BaseType.FormatType type) {
-        return switch (type) {
-            case RETURN -> ImportInfo.ofOriginal(path);
-            case INPUT -> ImportInfo.ofType(path);
-            default -> ImportInfo.of(path);
-        };
     }
 
     public static ImportInfo of(ClassPath path) {

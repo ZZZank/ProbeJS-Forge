@@ -17,7 +17,11 @@ public class TSClassType extends BaseType {
 
     @Override
     public ImportInfos getImportInfos(@Nonnull FormatType type) {
-        return ImportInfos.of(ImportInfo.of(classPath, type));
+        return ImportInfos.of(switch (type) {
+            case RETURN -> ImportInfo.ofOriginal(classPath);
+            case INPUT -> ImportInfo.ofType(classPath);
+            default -> ImportInfo.of(classPath);
+        });
     }
 
     @Override

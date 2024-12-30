@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
  * @author ZZZank
  */
 public class GsonBasedSerde<T> implements ConfigSerde<T> {
-    private final Gson gson;
-    private final Class<T> expectedType;
+    protected final Gson gson;
+    protected final Class<T> expectedType;
 
     public GsonBasedSerde(Gson gson, Class<T> expectedType) {
         this.gson = gson;

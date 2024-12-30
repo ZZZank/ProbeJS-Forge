@@ -39,11 +39,7 @@ public class GameEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void playerJoined(ClientPlayerNetworkEvent.LoggedInEvent event) {
         val player = event.getPlayer();
-        if (player == null) {
-            return;
-        }
-
-        if (!ProbeConfig.enabled.get()) {
+        if (player == null || !ProbeConfig.enabled.get()) {
             return;
         }
 

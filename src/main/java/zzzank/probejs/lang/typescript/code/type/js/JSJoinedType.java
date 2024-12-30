@@ -26,7 +26,9 @@ public abstract class JSJoinedType extends BaseType {
     @Override
     public String line(Declaration declaration, FormatType formatType) {
         val joiner = new StringJoiner(delimiter, "(", ")");
-        types.forEach(t -> joiner.add(t.line(declaration, formatType)));
+        for (val t : types) {
+            joiner.add(t.line(declaration, formatType));
+        }
         return joiner.toString();
     }
 
