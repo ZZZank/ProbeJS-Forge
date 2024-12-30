@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.Asser;
 import zzzank.probejs.utils.config.binding.ConfigBinding;
+import zzzank.probejs.utils.config.serde.ConfigSerde;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class ConfigEntry<T> {
     public final String namespace;
     public final String name;
 
-    public final Class<?> expectedType;
+    public final ConfigSerde<T> serde;
     public final ConfigBinding<T> binding;
     public final ImmutableList<String> comments;
 
@@ -26,13 +27,13 @@ public class ConfigEntry<T> {
         ConfigImpl source,
         String namespace,
         String name,
-        Class<?> expectedType,
+        ConfigSerde<T> serde,
         ConfigBinding<T> binding,
         List<String> comments
     ) {
         this.source = Asser.tNotNull(source, "source");
         this.name = Asser.tNotNull(name, "name");
-        this.expectedType = Asser.tNotNull(expectedType, "expectedType");
+        this.serde = Asser.tNotNull(serde, "serde");
         this.binding = Asser.tNotNull(binding, "defaultValue");
         this.namespace = Asser.tNotNull(namespace, "namespace");
         this.comments = ImmutableList.copyOf(Asser.tNotNullAll(comments, "comments"));
@@ -46,7 +47,12 @@ public class ConfigEntry<T> {
         source.save();
     }
 
-    void setNoSave(T value) {
+    public void reset() {
+        binding.reset();
+        source.save();
+    }
+
+    public void setNoSave(T value) {
         val report = binding.set(value);
         if (report.hasError()) {
             ProbeJS.LOGGER.error(report.asException());

@@ -171,20 +171,13 @@ public class RegistryTypes implements ProbeJSPlugin {
 
     @Override
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
-        Set<Class<?>> classes = new HashSet<>();
         if (ServerLifecycleHooks.getCurrentServer() == null) {
-            return classes;
+            return Collections.emptySet();
         }
 
-        Pattern filter;
-        try {
-            filter = Pattern.compile(ProbeConfig.registryObjectFilter.get());
-        } catch (Exception e) {
-            ProbeJS.LOGGER.error("error compiling registry regex filter, resetting regex", e);
-            ProbeConfig.registryObjectFilter.set(null);
-            filter = Pattern.compile(ProbeConfig.registryObjectFilter.get());
-        }
+        val filter = ProbeConfig.registryObjectFilter.get();
 
+        val classes = new HashSet<Class<?>>();
         for (val info : RegistryInfos.ALL.values()) {
             val registry = info.forgeRaw;
             if (registry == null) {
@@ -223,9 +216,9 @@ public class RegistryTypes implements ProbeJSPlugin {
                 continue;
             }
 
-            val registryName = key.location().getNamespace().equals("minecraft") ?
-                key.location().getPath() :
-                key.location().toString();
+            val registryName = "minecraft".equals(key.location().getNamespace())
+                ? key.location().getPath()
+                : key.location().toString();
 
             val registrySnippet = dump.snippet("probejs$$" + key.location());
             registrySnippet.prefix(String.format("@%s", registryName))

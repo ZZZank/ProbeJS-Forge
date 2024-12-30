@@ -2,8 +2,11 @@ package zzzank.probejs;
 
 import zzzank.probejs.features.forge_scan.BuiltinScanners;
 import zzzank.probejs.utils.config.ConfigEntry;
-import zzzank.probejs.utils.config.ConfigEntrySerde;
 import zzzank.probejs.utils.config.ConfigImpl;
+import zzzank.probejs.utils.config.serde.ConfigImplSerde;
+import zzzank.probejs.utils.config.serde.PatternSerde;
+
+import java.util.regex.Pattern;
 
 /**
  * @author ZZZank
@@ -26,8 +29,8 @@ public interface ProbeConfig {
             
             comments and default values are provided, but not modifiable, changes to them will not be kept
             for changing certain config value, change sub-entry whose key is '%s'""",
-            ConfigEntrySerde.COMMENTS_KEY, ConfigEntrySerde.VALUE_KEY, ConfigEntrySerde.DEFAULT_VALUE_KEY,
-            ConfigEntrySerde.VALUE_KEY
+            ConfigImplSerde.COMMENTS_KEY, ConfigImplSerde.VALUE_KEY, ConfigImplSerde.DEFAULT_VALUE_KEY,
+            ConfigImplSerde.VALUE_KEY
         ))
         .build();
     ConfigEntry<Boolean> enabled = INSTANCE.define("enabled")
@@ -95,10 +98,11 @@ public interface ProbeConfig {
             KubeJS will generate custom recipe creation method in recipe event, these methods only accept one Json as its arg
             enabling this will allow ProbeJS to dump syntax these JsonSerializer-based recipe creating functions""")
         .build();
-    ConfigEntry<String> registryObjectFilter = INSTANCE.define("Registry Object Filter")
-        .setDefault("^minecraft:.+$")
+    ConfigEntry<Pattern> registryObjectFilter = INSTANCE.define("Registry Object Filter")
+        .setDefault(Pattern.compile("^minecraft:.+$"))
         .comment("""
             a string regex used for filtering registry objects.
             Registry objects whose id matches this pattern will always be dumped by ProbeJS Legacy""")
+        .setSerde(new PatternSerde())
         .build();
 }

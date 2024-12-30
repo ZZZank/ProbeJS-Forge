@@ -2,18 +2,19 @@ package zzzank.probejs.utils.config;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.kubejs.util.UtilsJS;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.Asser;
 import zzzank.probejs.utils.CollectUtils;
+import zzzank.probejs.utils.config.serde.ConfigImplSerde;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author ZZZank
@@ -21,13 +22,13 @@ import java.util.Objects;
 public class ConfigImpl {
 
     public final String defaultNamespace;
-    public final ConfigEntrySerde serde;
+    public final ConfigImplSerde serde;
     private final Table<String, String, ConfigEntry<?>> all;
     public final Path path;
 
     public ConfigImpl(Path path, String defaultNamespace) {
         this.path = path;
-        this.serde = new ConfigEntrySerde(this);
+        this.serde = new ConfigImplSerde(this);
         all = HashBasedTable.create();
         this.defaultNamespace = defaultNamespace;
     }
@@ -43,46 +44,15 @@ public class ConfigImpl {
     public void readFromFile() {
         try (val reader = Files.newBufferedReader(path)) {
             val object = ProbeJS.GSON.fromJson(reader, JsonObject.class);
-            for (val entry : object.entrySet()) {
-                try {
-                    readSingle(this, entry);
-                } catch (Exception e) {
-                    ProbeJS.LOGGER.error("Error when reading config entry: {}", entry.getKey(), e);
-                }
-            }
+            serde.fromJson(object);
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Error happened when reading configs from file", e);
         }
     }
 
-    private static void readSingle(ConfigImpl source, Map.Entry<String, JsonElement> entry) {
-        val namespaced = source.ensureNamespace(entry.getKey());
-        val namespace = namespaced.getKey();
-        val name = namespaced.getValue();
-
-        val reference = (ConfigEntry<Object>) source.get(namespace, name);
-        if (reference == null) {
-            return;
-        }
-
-        val valueToSet = ProbeJS.GSON.fromJson(
-            entry.getValue().getAsJsonObject().get(ConfigEntrySerde.VALUE_KEY),
-            reference.expectedType
-        );
-
-        reference.setNoSave(valueToSet);
-    }
-
     public void save() {
         try (val writer = Files.newBufferedWriter(path)) {
-            val object = new JsonObject();
-            all.cellSet()
-                .stream()
-                .map(Table.Cell::getValue)
-                .filter(Objects::nonNull)
-                .map(serde::toJson)
-                .forEach(pair -> object.add(pair.getKey(), pair.getValue()));
-            ProbeJS.GSON_WRITER.toJson(object, writer);
+            ProbeJS.GSON_WRITER.toJson(serde.toJson(this), writer);
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Error happened when writing configs to file", e);
         }
@@ -124,5 +94,9 @@ public class ConfigImpl {
             all.put(entry.namespace, entry.name, entry);
             return entry;
         }
+    }
+
+    public Collection<ConfigEntry<?>> entries() {
+        return Collections.unmodifiableCollection(all.values());
     }
 }
