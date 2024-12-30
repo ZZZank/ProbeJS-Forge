@@ -43,6 +43,7 @@ public class ParamFix implements ProbeJSPlugin {
                             )
                         )
                     )
+                    .literalMember("[x in string]", Types.ANY)
                     .build()
                     .comment("other recipe json elements are unknown to ProbeJS :(")
             );

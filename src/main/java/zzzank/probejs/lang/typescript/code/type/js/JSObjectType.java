@@ -24,11 +24,6 @@ public class JSObjectType extends JSMemberType {
     }
 
     public static class Builder extends JSMemberType.Builder<Builder, JSObjectType> {
-        public JSObjectType.Builder indexParam(BaseType type) {
-            this.members.add(new JSParam.ObjIndex(type));
-            return this;
-        }
-
         public JSObjectType build() {
             return new JSObjectType(members);
         }

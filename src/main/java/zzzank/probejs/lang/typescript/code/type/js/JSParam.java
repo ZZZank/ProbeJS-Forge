@@ -27,26 +27,14 @@ public class JSParam {
         );
     }
 
-    /**
-     * {@code [x in string]: {type}}
-     */
-    public static class ObjIndex extends JSParam {
-
-        public ObjIndex(BaseType type) {
-            super("[x in string]", false, type);
+    public static class Literal extends JSParam {
+        public Literal(String name, boolean optional, BaseType type) {
+            super(name, optional, type);
         }
 
         @Override
-        public String format(
-            Declaration declaration,
-            BaseType.FormatType formatType,
-            Function<String, String> nameProcessor
-        ) {
-            return format(declaration, formatType);
-        }
-
-        public String format(Declaration declaration, BaseType.FormatType formatType) {
-            return super.format(declaration, formatType, Function.identity());
+        public String format(Declaration declaration, BaseType.FormatType type, Function<String, String> ignored) {
+            return super.format(declaration, type, Function.identity());
         }
     }
 }

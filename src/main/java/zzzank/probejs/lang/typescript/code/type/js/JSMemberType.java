@@ -48,6 +48,14 @@ public abstract class JSMemberType extends BaseType {
             return member(new JSParam(name, optional, type));
         }
 
+        public T literalMember(String name, boolean optional, BaseType type) {
+            return member(new JSParam.Literal(name, optional, type));
+        }
+
+        public T literalMember(String name, BaseType type) {
+            return literalMember(name, false, type);
+        }
+
         public abstract O build();
     }
 }
