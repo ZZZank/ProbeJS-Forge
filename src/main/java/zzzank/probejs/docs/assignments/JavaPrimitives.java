@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import dev.latvian.kubejs.BuiltinKubeJSPlugin;
 import dev.latvian.kubejs.world.BlockContainerJS;
 import dev.latvian.mods.rhino.util.unit.Unit;
 import net.minecraft.core.BlockPos;
@@ -50,15 +51,19 @@ public class JavaPrimitives implements ProbeJSPlugin {
     @Override
     public void assignType(ScriptDump scriptDump) {
         scriptDump.assignType(List.class, Types.generic("E").asArray());
-        scriptDump.assignType(Map.class, Types.primitive("{[key: string]: V}"));
+        scriptDump.assignType(
+            Map.class,
+            Types.object().literalMember("[key: string]", Types.generic("V")).build()
+        );
+        BuiltinKubeJSPlugin f;
         scriptDump.assignType(Iterable.class, Types.generic("T").asArray());
         scriptDump.assignType(Collection.class, Types.generic("E").asArray());
         scriptDump.assignType(Set.class, Types.generic("E").asArray());
         scriptDump.assignType(UUID.class, Types.STRING);
-        scriptDump.assignType(Path.class, Types.STRING);
-        scriptDump.assignType(File.class, Types.type(Path.class));
-        scriptDump.assignType(TemporalAmount.class, Types.STRING);
-        scriptDump.assignType(TemporalAmount.class, Types.NUMBER);
+//        scriptDump.assignType(Path.class, Types.STRING);
+//        scriptDump.assignType(File.class, Types.type(Path.class));
+//        scriptDump.assignType(TemporalAmount.class, Types.STRING);
+//        scriptDump.assignType(TemporalAmount.class, Types.NUMBER);
 
         scriptDump.assignType(JsonObject.class, Types.OBJECT);
         scriptDump.assignType(JsonArray.class, Types.ANY.asArray());
