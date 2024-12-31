@@ -11,11 +11,11 @@ import zzzank.probejs.lang.typescript.code.type.Types;
 import java.util.*;
 
 /**
- * Inject [Symbol.iterator](): IterableIterator<T>; for Iterable.
- * <br>
- * Inject [index: number]: T; for List<T>.
- * <br>
- * Inject [index: string | number]: V; for Map<K, V>.
+ * Inject {@code [Symbol.iterator](): IterableIterator<T>;} for {@link Iterable}{@code <T>}.
+ * <p>
+ * Inject {@code [index: number]: T;} for {@link List}{@code <T>}.
+ * <p>
+ * Inject {@code [index: string | number]: V;} for {@link Map}{@code <K, V>}.
  */
 public class InjectArray implements ClassTransformer {
 

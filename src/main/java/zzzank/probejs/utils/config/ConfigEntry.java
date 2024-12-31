@@ -60,6 +60,7 @@ public class ConfigEntry<T> {
         }
     }
 
+    @NotNull
     public T get() {
         return binding.get();
     }

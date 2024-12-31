@@ -22,7 +22,7 @@ public interface CollectUtils {
         return list;
     }
 
-    static <K, V>AbstractMap.SimpleImmutableEntry<K, V> ofEntry(K key, V value) {
+    static <K, V> AbstractMap.SimpleImmutableEntry<K, V> ofEntry(K key, V value) {
         return new AbstractMap.SimpleImmutableEntry<>(key, value);
     }
 
@@ -172,7 +172,7 @@ public interface CollectUtils {
     }
 
     static <T> Iterator<T> enumToItr(Enumeration<T> enumeration) {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return enumeration.hasMoreElements();

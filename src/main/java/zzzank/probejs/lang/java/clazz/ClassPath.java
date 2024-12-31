@@ -27,7 +27,6 @@ public final class ClassPath implements Comparable<ClassPath> {
     public static final Pattern SPLIT = Pattern.compile("\\.");
 
     private final String[] parts;
-    private List<String> wrapped = null;
 
     public static @NotNull ClassPath fromRaw(final String className) {
         if (className == null || className.isEmpty()) {
@@ -56,10 +55,7 @@ public final class ClassPath implements Comparable<ClassPath> {
     }
 
     public List<String> getParts() {
-        if (wrapped == null) {
-            wrapped = Collections.unmodifiableList(Arrays.asList(this.parts));
-        }
-        return wrapped;
+        return Collections.unmodifiableList(Arrays.asList(this.parts));
     }
 
     public String getName() {

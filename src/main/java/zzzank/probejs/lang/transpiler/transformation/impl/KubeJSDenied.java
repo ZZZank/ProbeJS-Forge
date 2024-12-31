@@ -1,7 +1,6 @@
 package zzzank.probejs.lang.transpiler.transformation.impl;
 
 import dev.latvian.kubejs.script.ScriptManager;
-import lombok.AllArgsConstructor;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
@@ -9,9 +8,12 @@ import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 /**
  * @author ZZZank
  */
-@AllArgsConstructor
 public class KubeJSDenied implements ClassTransformer {
     private final ScriptManager manager;
+
+    public KubeJSDenied(ScriptManager manager) {
+        this.manager = manager;
+    }
 
     @Override
     public void transform(Clazz clazz, ClassDecl classDecl) {

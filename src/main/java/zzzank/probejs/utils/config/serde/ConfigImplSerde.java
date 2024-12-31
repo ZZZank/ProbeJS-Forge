@@ -35,10 +35,10 @@ public class ConfigImplSerde implements ConfigSerde<ConfigImpl> {
 
             o.add(DEFAULT_VALUE_KEY, entry.serde.toJson(UtilsJS.cast(entry.getDefault())));
             o.add(VALUE_KEY, entry.serde.toJson(UtilsJS.cast(entry.get())));
-            if (entry.comments.size() == 1) {
-                o.add(COMMENTS_KEY, new JsonPrimitive(entry.comments.get(0)));
-            } else if (!entry.comments.isEmpty()) {
-                o.add(COMMENTS_KEY, JsonUtils.parseObject(entry.comments));
+            switch (entry.comments.size()) {
+                case 0 -> {}
+                case 1 -> o.add(COMMENTS_KEY, new JsonPrimitive(entry.comments.get(0)));
+                default -> o.add(COMMENTS_KEY, JsonUtils.parseObject(entry.comments));
             }
 
             object.add(entry.namespace + '.' + entry.name, o);
