@@ -42,6 +42,9 @@ public class ConfigImpl {
     }
 
     public void readFromFile() {
+        if (!Files.exists(path)) {
+            return;
+        }
         try (val reader = Files.newBufferedReader(path)) {
             val object = ProbeJS.GSON.fromJson(reader, JsonObject.class);
             serde.fromJson(object);
