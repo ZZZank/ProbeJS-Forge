@@ -34,16 +34,17 @@ public class TSVariableType extends BaseType {
 
     @Override
     public String line(Declaration declaration, FormatType formatType) {
+        if (formatType != FormatType.VARIABLE) {
+            return symbol;
+        }
         val builder = new StringBuilder();
         //name
         builder.append(symbol);
-        if (formatType == FormatType.VARIABLE) {
-            if (extendsType != null) {
-                builder.append(" extends ").append(extendsType.line(declaration, FormatType.RETURN));
-            }
-            if (defaultTo != null) {
-                builder.append(" = ").append(defaultTo.format(declaration, FormatType.RETURN));
-            }
+        if (extendsType != null) {
+            builder.append(" extends ").append(extendsType.line(declaration, FormatType.RETURN));
+        }
+        if (defaultTo != null) {
+            builder.append(" = ").append(defaultTo.format(declaration, FormatType.RETURN));
         }
         return builder.toString();
     }
