@@ -30,7 +30,7 @@ public class ConfigEntryBuilder<T> {
     public ConfigBinding<T> binding;
     public ConfigSerde<T> serde;
 
-    public ConfigEntryBuilder(@NotNull ConfigImpl config, @NotNull String name) {
+    protected ConfigEntryBuilder(@NotNull ConfigImpl config, @NotNull String name) {
         this.root = config;
         this.name = name;
     }

@@ -35,10 +35,17 @@ public class ConfigImpl {
 
     public Map.Entry<String, String> ensureNamespace(String name) {
         val i = name.indexOf('.');
-        if (i < 0) {
-            return CollectUtils.ofEntry(defaultNamespace, name);
-        }
-        return CollectUtils.ofEntry(name.substring(0, i), name.substring(i + 1));
+        return i < 0
+            ? CollectUtils.ofEntry(defaultNamespace, name)
+            : CollectUtils.ofEntry(name.substring(0, i), name.substring(i + 1));
+    }
+
+    /**
+     * @return {@code name} if namespace is the same as default, {@code namespace + '.' + name} otherwise
+     * @see #defaultNamespace
+     */
+    public String stripNamespace(String namespace, String name) {
+        return this.defaultNamespace.equals(namespace) ? name : namespace + '.' + name;
     }
 
     public void readFromFile() {
