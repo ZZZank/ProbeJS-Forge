@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.Asser;
 import zzzank.probejs.utils.config.binding.ConfigBinding;
+import zzzank.probejs.utils.config.error.ConfigReport;
 import zzzank.probejs.utils.config.serde.ConfigSerde;
 
 import java.util.List;
@@ -43,21 +44,24 @@ public class ConfigEntry<T> {
     /**
      * `null` will be redirected to default value
      */
-    public void set(T value) {
-        setNoSave(value);
+    public ConfigReport set(T value) {
+        val report = setNoSave(value);
         source.save();
+        return report;
     }
 
-    public void reset() {
-        binding.reset();
+    public ConfigReport reset() {
+        val report = binding.reset();
         source.save();
+        return report;
     }
 
-    public void setNoSave(T value) {
+    public ConfigReport setNoSave(T value) {
         val report = binding.set(value);
         if (report.hasError()) {
             ProbeJS.LOGGER.error(report.asException());
         }
+        return report;
     }
 
     @NotNull
