@@ -8,7 +8,7 @@ import zzzank.probejs.events.*;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.snippet.SnippetDump;
 import zzzank.probejs.lang.transpiler.Transpiler;
-import zzzank.probejs.lang.transpiler.transformation.*;
+import zzzank.probejs.lang.transpiler.transformation.ClassTransformerRegistration;
 import zzzank.probejs.lang.transpiler.transformation.impl.*;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;

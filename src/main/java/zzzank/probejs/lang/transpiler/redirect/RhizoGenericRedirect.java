@@ -8,7 +8,6 @@ import zzzank.probejs.lang.java.type.impl.ParamType;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
 import zzzank.probejs.utils.CollectUtils;
 
 /**
@@ -31,6 +30,6 @@ public class RhizoGenericRedirect implements TypeRedirect {
             ? converter.convertType(paramType.base)
             : Types.type(annot.base());
         val params = CollectUtils.mapToList(annot.value(), converter::convertType);
-        return new TSParamType(baseType, params);
+        return Types.parameterized(baseType, params);
     }
 }

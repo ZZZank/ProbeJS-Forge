@@ -2,7 +2,6 @@ package zzzank.probejs.lang.typescript.code.type.js;
 
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.typescript.Declaration;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
 
 import java.util.Collection;
 import java.util.StringJoiner;

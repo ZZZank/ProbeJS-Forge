@@ -26,7 +26,6 @@ import zzzank.probejs.lang.typescript.code.member.TypeDecl;
 import zzzank.probejs.lang.typescript.code.ts.Wrapped;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 import zzzank.probejs.lang.typescript.refer.ImportType;
 import zzzank.probejs.plugin.ProbeJSPlugins;
 import zzzank.probejs.utils.CollectUtils;
@@ -235,7 +234,7 @@ public class ScriptDump {
 
             allTypes.add(thisType);
 
-            val typeConvertible = new TypeDecl(exportedSymbol, new JSJoinedType.Union(allTypes));
+            val typeConvertible = new TypeDecl(exportedSymbol, Types.and(allTypes));
             typeConvertible.addComment("""
                 Class-specific type exported by ProbeJS, use global `{Type}_` types for convenience unless there's a naming conflict.
                 """);

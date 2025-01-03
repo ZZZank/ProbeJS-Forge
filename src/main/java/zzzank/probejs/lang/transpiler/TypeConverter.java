@@ -6,16 +6,14 @@ import zzzank.probejs.lang.java.type.TypeAdapter;
 import zzzank.probejs.lang.java.type.TypeDescriptor;
 import zzzank.probejs.lang.java.type.impl.*;
 import zzzank.probejs.lang.transpiler.redirect.TypeRedirect;
-import zzzank.probejs.lang.typescript.code.type.*;
-import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
+import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.utils.CollectUtils;
 
 import java.lang.reflect.Type;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Adapts a TypeDescriptor into a BaseType
@@ -48,9 +46,9 @@ public class TypeConverter {
 
     public @NotNull BaseType convertTypeBuiltin(TypeDescriptor descriptor) {
         if (descriptor instanceof ClassType classType) {
-            return new TSClassType(classType.classPath);
+            return Types.type(classType.classPath);
         } else if (descriptor instanceof ArrayType arrayType) {
-            return new TSArrayType(convertType(arrayType.component));
+            return convertType(arrayType.component).asArray();
         } else if (descriptor instanceof ParamType paramType) {
             val base = convertType(paramType.base);
             if (base == Types.ANY) {
@@ -65,7 +63,7 @@ public class TypeConverter {
                 case 1 -> Types.generic(variableType.symbol, convertType(desc.get(0)));
                 default -> Types.generic(
                     variableType.symbol,
-                    new JSJoinedType.Intersection(CollectUtils.mapToList(desc, this::convertType))
+                    Types.and(CollectUtils.mapToList(desc, this::convertType))
                 );
             };
         } else if (descriptor instanceof WildType wildType) {

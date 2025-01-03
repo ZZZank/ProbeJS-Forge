@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.type.js;
 
+import lombok.AllArgsConstructor;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
@@ -18,14 +19,10 @@ import java.util.List;
  * {@code (a: A, b: B) => C$$Type} if format type is {@link zzzank.probejs.lang.typescript.code.type.BaseType.FormatType#INPUT}
  * @author ZZZank
  */
+@AllArgsConstructor
 public class JSLambdaType extends BaseType {
     public final List<ParamDecl> params;
     public final BaseType returnType;
-
-    public JSLambdaType(List<ParamDecl> params, BaseType returnType) {
-        this.params = params;
-        this.returnType = returnType;
-    }
 
     @Override
     public ImportInfos getImportInfos(@Nonnull FormatType type) {

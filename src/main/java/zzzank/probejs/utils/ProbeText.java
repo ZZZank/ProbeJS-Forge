@@ -30,7 +30,7 @@ public final class ProbeText {
 
     private MutableComponent raw;
 
-    public ProbeText(MutableComponent raw) {
+    private ProbeText(MutableComponent raw) {
         this.raw = raw;
     }
 

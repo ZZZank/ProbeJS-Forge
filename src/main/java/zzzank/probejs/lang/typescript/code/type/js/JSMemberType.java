@@ -31,31 +31,31 @@ public abstract class JSMemberType extends BaseType {
 
     protected abstract String getMemberName(String name);
 
-    public static abstract class Builder<T extends Builder<T, O>, O extends BaseType> {
+    public static abstract class Builder<SELF extends Builder<SELF, OUT>, OUT extends BaseType> {
         public final Collection<JSParam> members = new ArrayList<>(3);
 
-        public T member(String name, BaseType type) {
+        public SELF member(String name, BaseType type) {
             return member(name, false, type);
         }
 
         @SuppressWarnings("unchecked")
-        public T member(JSParam param) {
+        public SELF member(JSParam param) {
             members.add(param);
-            return (T) this;
+            return (SELF) this;
         }
 
-        public T member(String name, boolean optional, BaseType type) {
+        public SELF member(String name, boolean optional, BaseType type) {
             return member(new JSParam(name, optional, type));
         }
 
-        public T literalMember(String name, boolean optional, BaseType type) {
+        public SELF literalMember(String name, boolean optional, BaseType type) {
             return member(new JSParam.Literal(name, optional, type));
         }
 
-        public T literalMember(String name, BaseType type) {
+        public SELF literalMember(String name, BaseType type) {
             return literalMember(name, false, type);
         }
 
-        public abstract O build();
+        public abstract OUT build();
     }
 }

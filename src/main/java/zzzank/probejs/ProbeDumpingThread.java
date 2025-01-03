@@ -2,11 +2,11 @@ package zzzank.probejs;
 
 import lombok.val;
 import net.minecraft.network.chat.ClickEvent;
+import zzzank.probejs.features.rhizo.RhizoState;
 import zzzank.probejs.lang.typescript.ScriptDump;
+import zzzank.probejs.utils.GameUtils;
 import zzzank.probejs.utils.ProbeText;
 import zzzank.probejs.utils.registry.RegistryInfos;
-import zzzank.probejs.features.rhizo.RhizoState;
-import zzzank.probejs.utils.GameUtils;
 
 import java.util.function.Consumer;
 
@@ -63,7 +63,7 @@ public class ProbeDumpingThread extends Thread {
             probeDump.trigger();
         } catch (Throwable e) {
             messageSender.accept(ProbeText.pjs("error").red());
-            messageSender.accept(ProbeText.literal(e.getLocalizedMessage()));
+            messageSender.accept(ProbeText.literal(e.getLocalizedMessage()).red());
             GameUtils.logThrowable(e);
         }
     }

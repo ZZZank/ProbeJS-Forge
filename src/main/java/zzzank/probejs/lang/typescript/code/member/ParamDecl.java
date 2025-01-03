@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.member;
 
+import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.utils.NameUtils;
@@ -42,7 +43,7 @@ public final class ParamDecl {
     public static String formatParams(List<ParamDecl> params, Declaration declaration, BaseType.FormatType formatType) {
         List<String> formattedParams = new ArrayList<>(params.size());
         for (int i = 0; i < params.size(); i++) {
-            ParamDecl param = params.get(i);
+            val param = params.get(i);
             formattedParams.add(param.format(i, declaration, formatType));
         }
         return String.format("(%s)", String.join(", ", formattedParams));

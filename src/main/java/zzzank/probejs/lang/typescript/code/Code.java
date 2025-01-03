@@ -9,5 +9,4 @@ public abstract class Code {
     public abstract ImportInfos getImportInfos();
 
     public abstract List<String> format(Declaration declaration);
-
 }

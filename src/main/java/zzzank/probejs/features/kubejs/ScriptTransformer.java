@@ -5,10 +5,10 @@ import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.Parser;
 import dev.latvian.mods.rhino.ast.*;
 import lombok.val;
+import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.utils.GameUtils;
 import zzzank.probejs.utils.NameUtils;
-import zzzank.probejs.ProbeConfig;
 
 import java.util.*;
 import java.util.function.Supplier;

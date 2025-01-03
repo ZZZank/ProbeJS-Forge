@@ -6,9 +6,8 @@ import zzzank.probejs.docs.recipes.RecipeDocProvider;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.code.type.Types;
 
-
-import static zzzank.probejs.docs.recipes.RecipeDocUtil.STACK;
 import static zzzank.probejs.docs.recipes.RecipeDocUtil.INGR_N;
+import static zzzank.probejs.docs.recipes.RecipeDocUtil.STACK;
 
 /**
  * @author ZZZank

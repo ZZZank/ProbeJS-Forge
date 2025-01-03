@@ -16,8 +16,6 @@ import zzzank.probejs.features.rhizo.RemapperBridge;
 import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 
-import java.util.Collections;
-
 @Mixin(value = {ScriptManager.class}, remap = false)
 public abstract class MixinScriptManager {
 

@@ -5,10 +5,11 @@ import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Inject {@code [Symbol.iterator](): IterableIterator<T>;} for {@link Iterable}{@code <T>}.

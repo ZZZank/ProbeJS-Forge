@@ -40,19 +40,19 @@ public abstract class BaseType extends Code {
     // Stuffs for convenience
 
     public TSArrayType asArray() {
-        return new TSArrayType(this);
+        return Types.array(this);
     }
 
     public ContextShield<BaseType> contextShield(FormatType formatType) {
-        return new ContextShield<>(this, formatType);
+        return Types.contextShield(this, formatType);
     }
 
     public ImportShield<BaseType> importShield(ImportInfos imports) {
-        return new ImportShield<>(this, imports);
+        return Types.importShield(this, imports);
     }
 
     public TSOptionalType optional() {
-        return new TSOptionalType(this);
+        return Types.optional(this);
     }
 
     public TSParamType withParams(BaseType... params) {
@@ -74,7 +74,7 @@ public abstract class BaseType extends Code {
         val joined = new ArrayList<BaseType>(selfTypes.size() + types.length);
         joined.addAll(selfTypes);
         joined.addAll(Arrays.asList(types));
-        return new JSJoinedType.Union(joined);
+        return (JSJoinedType.Union) Types.or(joined);
     }
 
     public JSJoinedType.Intersection and(BaseType... types) {
@@ -84,7 +84,7 @@ public abstract class BaseType extends Code {
         val joined = new ArrayList<BaseType>(selfTypes.size() + types.length);
         joined.addAll(selfTypes);
         joined.addAll(Arrays.asList(types));
-        return new JSJoinedType.Intersection(joined);
+        return (JSJoinedType.Intersection) Types.and(joined);
     }
 
     public WithFormatType comment(String comment) {

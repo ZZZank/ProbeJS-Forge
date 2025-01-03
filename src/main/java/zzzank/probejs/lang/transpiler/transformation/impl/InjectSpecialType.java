@@ -14,13 +14,17 @@ import zzzank.probejs.lang.typescript.code.member.ConstructorDecl;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
+import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
 import zzzank.probejs.utils.CollectUtils;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.TypeVariable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class InjectSpecialType implements ClassTransformer {
     public static final Set<ClassPath> NO_WRAPPING = new HashSet<>();
@@ -73,7 +77,7 @@ public class InjectSpecialType implements ClassTransformer {
             }
             val params = new ArrayList<>(tsParamType.params);
             params.set(returnIndex, params.get(returnIndex).contextShield(BaseType.FormatType.RETURN));
-            param.type = new TSParamType(tsParamType.baseType, params);
+            param.type = Types.parameterized(tsParamType.baseType, params);
 //            for (int i = 0; i < params.size(); i++) {
 //                val p = params.get(i);
 //                params.set(i, Types.contextShield(p, returnIndex == i ?

@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.type.ts;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
@@ -10,12 +11,9 @@ import zzzank.probejs.lang.typescript.refer.ImportType;
 
 import javax.annotation.Nonnull;
 
+@AllArgsConstructor
 public class TSClassType extends BaseType {
     public ClassPath classPath;
-
-    public TSClassType(ClassPath classPath) {
-        this.classPath = classPath;
-    }
 
     @Override
     public ImportInfos getImportInfos(@Nonnull FormatType type) {

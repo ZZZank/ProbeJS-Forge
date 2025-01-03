@@ -24,8 +24,6 @@ import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSTupleType;
 import zzzank.probejs.plugin.ProbeJSPlugin;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.time.temporal.TemporalAmount;
 import java.util.*;

@@ -2,8 +2,6 @@ package zzzank.probejs.utils;
 
 import lombok.val;
 
-import java.util.Collection;
-
 /**
  * @author ZZZank
  */

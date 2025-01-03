@@ -9,11 +9,11 @@ import dev.latvian.kubejs.recipe.minecraft.ShapelessRecipeJS;
 import lombok.val;
 import zzzank.probejs.docs.Primitives;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 import zzzank.probejs.lang.typescript.code.type.js.JSObjectType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 
 /**
  * @author ZZZank

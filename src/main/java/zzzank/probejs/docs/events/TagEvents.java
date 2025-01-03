@@ -4,8 +4,6 @@ import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.server.TagEventJS;
 import lombok.val;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import zzzank.probejs.plugin.ProbeJSPlugin;
-import zzzank.probejs.utils.registry.RegistryInfos;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
@@ -13,7 +11,9 @@ import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.ts.Statements;
 import zzzank.probejs.lang.typescript.code.ts.Wrapped;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.plugin.ProbeJSPlugin;
 import zzzank.probejs.utils.NameUtils;
+import zzzank.probejs.utils.registry.RegistryInfos;
 
 import java.util.*;
 

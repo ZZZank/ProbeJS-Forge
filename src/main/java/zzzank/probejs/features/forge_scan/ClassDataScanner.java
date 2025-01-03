@@ -2,7 +2,7 @@ package zzzank.probejs.features.forge_scan;
 
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
-import java.util.*;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 /**

@@ -1,5 +1,7 @@
 package zzzank.probejs.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
@@ -9,22 +11,22 @@ import java.util.Arrays;
  * {@link #pushIndent()} and {@link #popIndent()}
  * @author ZZZank
  */
-public class IndentedWriter extends Writer {
+public class IndentedWriter<T extends Writer> extends Writer {
 
     /**
      * create a {@link IndentedWriter} that uses 4 spaces as indentation
      * @param writer writer to be wrapped
      */
-    public static IndentedWriter space(Writer writer) {
-        return new IndentedWriter(writer, 4, ' ');
+    public static <T extends Writer> IndentedWriter<T> space(T writer) {
+        return new IndentedWriter<>(writer, 4, ' ');
     }
 
     /**
      * create a {@link IndentedWriter} that uses 1 tab as indentation
      * @param writer writer to be wrapped
      */
-    public static IndentedWriter tab(Writer writer) {
-        return new IndentedWriter(writer, 1, '\t');
+    public static <T extends Writer> IndentedWriter<T> tab(T writer) {
+        return new IndentedWriter<>(writer, 1, '\t');
     }
 
     /**
@@ -36,20 +38,20 @@ public class IndentedWriter extends Writer {
      * {@link #pushIndent()} and {@link #popIndent()}
      * @param indentChar the char used as the elements of indentation
      */
-    public static IndentedWriter create(Writer writer, int indentStep, char indentChar) {
-        return new IndentedWriter(writer, indentStep, indentChar);
+    public static <T extends Writer> IndentedWriter<T> create(T writer, int indentStep, char indentChar) {
+        return new IndentedWriter<>(writer, indentStep, indentChar);
     }
 
     private int indent = 0;
     private char[] indentChars = new char[0];
     private StringBuffer buffer = new StringBuffer();
     private final Scope scope = new Scope();
-    private final Writer inner;
+    public final T out;
     public final int indentStep;
     public final char indentChar;
 
-    private IndentedWriter(Writer inner, int indentStep, char indentChar) {
-        this.inner = inner;
+    private IndentedWriter(T out, int indentStep, char indentChar) {
+        this.out = out;
         this.indentStep = indentStep;
         this.indentChar = indentChar;
     }
@@ -64,7 +66,7 @@ public class IndentedWriter extends Writer {
     }
 
     @Override
-    public void write(char[] chars, int off, int len) throws IOException {
+    public void write(char @NotNull [] chars, int off, int len) throws IOException {
         int last = off;
         int begin;
         final int end = off + len;
@@ -82,15 +84,20 @@ public class IndentedWriter extends Writer {
         }
     }
 
+    public void line(@NotNull String str) throws IOException {
+        write(str);
+        write('\n');
+    }
+
     private void writeBuffer() throws IOException {
-        inner.write(indentChars);
-        inner.write(buffer.toString());
+        out.write(indentChars);
+        out.write(buffer.toString());
         buffer = new StringBuffer();
     }
 
     @Override
     public void flush() throws IOException {
-        inner.flush();
+        out.flush();
     }
 
     @Override
@@ -98,7 +105,7 @@ public class IndentedWriter extends Writer {
         if (buffer.length() != 0) {
             writeBuffer();
         }
-        inner.close();
+        out.close();
     }
 
     private static int findNextLineBreak(final char[] chars, final int begin, final int end) {

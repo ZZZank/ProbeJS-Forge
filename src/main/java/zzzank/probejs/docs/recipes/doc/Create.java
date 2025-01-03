@@ -8,11 +8,11 @@ import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.ScriptDump;
 import zzzank.probejs.lang.typescript.TypeScriptFile;
 import zzzank.probejs.lang.typescript.code.member.TypeDecl;
-import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSJoinedType;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 
 import java.util.Map;
 

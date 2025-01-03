@@ -9,8 +9,8 @@ import zzzank.probejs.lang.transpiler.members.Method;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.code.member.ClassDecl;
 import zzzank.probejs.lang.typescript.code.member.InterfaceDecl;
-import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
 import zzzank.probejs.lang.typescript.code.type.Types;
+import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;

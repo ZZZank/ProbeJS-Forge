@@ -5,7 +5,8 @@ import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.CommentableCode;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Wrapped extends CommentableCode {
     public final List<Code> codes = new ArrayList<>();

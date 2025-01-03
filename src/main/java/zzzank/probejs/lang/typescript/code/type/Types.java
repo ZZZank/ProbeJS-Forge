@@ -1,8 +1,9 @@
 package zzzank.probejs.lang.typescript.code.type;
 
-import com.google.common.collect.ImmutableList;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.val;
 import zzzank.probejs.ProbeJS;
+import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.js.*;
@@ -11,26 +12,26 @@ import zzzank.probejs.lang.typescript.code.type.utility.*;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public interface Types {
-    JSPrimitiveType ANY = new JSPrimitiveType("any");
-    JSPrimitiveType BOOLEAN = new JSPrimitiveType("boolean");
-    JSPrimitiveType NUMBER = new JSPrimitiveType("number");
-    JSPrimitiveType STRING = new JSPrimitiveType("string");
-    JSPrimitiveType NEVER = new JSPrimitiveType("never");
-    JSPrimitiveType UNKNOWN = new JSPrimitiveType("unknown");
-    JSPrimitiveType VOID = new JSPrimitiveType("void");
-    JSPrimitiveType THIS = new JSPrimitiveType("this");
-    JSPrimitiveType OBJECT = new JSPrimitiveType("object");
-    JSPrimitiveType NULL = new JSPrimitiveType("null");
+    JSPrimitiveType ANY = primitive("any");
+    JSPrimitiveType BOOLEAN = primitive("boolean");
+    JSPrimitiveType NUMBER = primitive("number");
+    JSPrimitiveType STRING = primitive("string");
+    JSPrimitiveType NEVER = primitive("never");
+    JSPrimitiveType UNKNOWN = primitive("unknown");
+    JSPrimitiveType VOID = primitive("void");
+    JSPrimitiveType THIS = primitive("this");
+    JSPrimitiveType OBJECT = primitive("object");
+    JSPrimitiveType NULL = primitive("null");
     JSTupleType EMPTY_ARRAY = Types.tuple().build();
     JSObjectType EMPTY_OBJECT = Types.object().build();
 
@@ -47,28 +48,28 @@ public interface Types {
             || content instanceof Number
             || content instanceof Boolean
             || content instanceof Character
-            ? new JSPrimitiveType(ProbeJS.GSON.toJson(content))
+            ? primitive(ProbeJS.GSON.toJson(content))
             : ANY;
     }
 
     @HideFromJS
     static JSPrimitiveType literal(String content) {
-        return new JSPrimitiveType(ProbeJS.GSON.toJson(content));
+        return primitive(ProbeJS.GSON.toJson(content));
     }
 
     @HideFromJS
     static JSPrimitiveType literal(Number content) {
-        return new JSPrimitiveType(ProbeJS.GSON.toJson(content));
+        return primitive(ProbeJS.GSON.toJson(content));
     }
 
     @HideFromJS
     static JSPrimitiveType literal(Boolean content) {
-        return new JSPrimitiveType(ProbeJS.GSON.toJson(content));
+        return primitive(ProbeJS.GSON.toJson(content));
     }
 
     @HideFromJS
     static JSPrimitiveType literal(Character content) {
-        return new JSPrimitiveType(ProbeJS.GSON.toJson(content));
+        return primitive(ProbeJS.GSON.toJson(content));
     }
 
     /**
@@ -88,11 +89,19 @@ public interface Types {
     }
 
     static BaseType and(BaseType... types) {
-        return types.length == 0 ? NEVER : new JSJoinedType.Intersection(ImmutableList.copyOf(types));
+        return and(Arrays.asList(types));
+    }
+
+    static BaseType and(Collection<? extends BaseType> types) {
+        return types.isEmpty() ? NEVER : new JSJoinedType.Intersection(types);
     }
 
     static BaseType or(BaseType... types) {
-        return types.length == 0 ? NEVER : new JSJoinedType.Union(ImmutableList.copyOf(types));
+        return or(Arrays.asList(types));
+    }
+
+    static BaseType or(Collection<? extends BaseType> types) {
+        return types.isEmpty() ? NEVER : new JSJoinedType.Union(types);
     }
 
     static JSJoinedType join(CharSequence delimiter, BaseType... types) {
@@ -107,12 +116,17 @@ public interface Types {
         return join(delimiter, prefix, suffix, Arrays.asList(types));
     }
 
-    static JSJoinedType join(CharSequence delimiter, CharSequence prefix, CharSequence suffix, Collection<? extends BaseType> types) {
+    static JSJoinedType join(
+        CharSequence delimiter,
+        CharSequence prefix,
+        CharSequence suffix,
+        Collection<? extends BaseType> types
+    ) {
         return new JSJoinedType.Custom(types, delimiter, prefix, suffix);
     }
 
     static TSParamType parameterized(BaseType base, BaseType... params) {
-        return new TSParamType(base, Arrays.asList(params));
+        return parameterized(base, Arrays.asList(params));
     }
 
     static TSParamType parameterized(BaseType base, Collection<? extends BaseType> params) {
@@ -132,10 +146,15 @@ public interface Types {
     }
 
     static BaseType typeMaybeGeneric(Class<?> clazz) {
-        if (clazz.getTypeParameters().length == 0) return type(clazz);
+        val typeParameters = clazz.getTypeParameters();
+        if (typeParameters.length == 0) {
+            return type(clazz);
+        }
 
-        var params = Collections.nCopies(clazz.getTypeParameters().length, ANY).toArray(new BaseType[0]);
-        return parameterized(type(clazz), params);
+        return parameterized(
+            type(clazz),
+            Collections.nCopies(typeParameters.length, ANY).toArray(new BaseType[0])
+        );
     }
 
     /**
@@ -156,10 +175,17 @@ public interface Types {
     }
 
     static JSTypeOfType typeOf(ClassPath classPath) {
-        return typeOf(new TSClassType(classPath));
+        return typeOf(type(classPath));
     }
 
     static JSTypeOfType typeOf(BaseType classType) {
+        if (classType instanceof TSClassType cType
+            && Optional.ofNullable(cType.classPath.toClazz(ClassRegistry.REGISTRY))
+            .map(c -> c.attribute.isInterface)
+            .orElse(false)
+        ) {
+            classType = staticType(cType.classPath);
+        }
         return new JSTypeOfType(classType);
     }
 
@@ -167,12 +193,11 @@ public interface Types {
         return new ContextShield<>(type, formatType);
     }
 
-    static <T extends BaseType> ImportShield<T> importShield(T type, ImportInfos imports) {
-        return new ImportShield<>(type, imports);
-    }
-
-    static BaseType custom(BiFunction<Declaration, BaseType.FormatType, String> formatter, ImportInfo... imports) {
-        return new CustomType(formatter, imports);
+    static CustomType custom(
+        BiFunction<Declaration, BaseType.FormatType, String> formatter,
+        ImportInfo... imports
+    ) {
+        return custom(formatter, t -> ImportInfos.of(imports));
     }
 
     static CustomType custom(
@@ -180,6 +205,14 @@ public interface Types {
         Function<BaseType.FormatType, ImportInfos> imports
     ) {
         return new CustomType(formatter, imports);
+    }
+
+    static <T extends BaseType> ImportShield<T> importShield(T type, ImportInfos imports) {
+        return new ImportShield<>(type, imports);
+    }
+
+    static StaticType staticType(ClassPath path) {
+        return new StaticType(path);
     }
 
     static JSLambdaType.Builder lambda() {
@@ -196,14 +229,14 @@ public interface Types {
 
     static BaseType filter(BaseType type, Predicate<BaseType> typePredicate) {
         if (type instanceof JSJoinedType.Union union) {
-            return new JSJoinedType.Union(
+            return Types.or(
                 union.types.stream()
                     .filter(t -> !typePredicate.test(t))
                     .map(t -> filter(t, typePredicate))
                     .collect(Collectors.toList())
             );
         } else if (type instanceof JSJoinedType.Intersection intersection) {
-            return new JSJoinedType.Intersection(
+            return Types.and(
                 intersection.types.stream()
                     .filter(t -> !typePredicate.test(t))
                     .map(t -> filter(t, typePredicate))
@@ -218,6 +251,6 @@ public interface Types {
     }
 
     static WithFormatType withComment(BaseType type, String comment) {
-        return new WithFormatType("%s /* %s */", type, Types.primitive(comment));
+        return format("%s /* %s */", type, Types.primitive(comment));
     }
 }

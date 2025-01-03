@@ -10,7 +10,9 @@ import zzzank.probejs.docs.ProbeBuiltinDocs;
 import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.GameUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**

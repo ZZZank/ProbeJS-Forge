@@ -8,8 +8,8 @@ import zzzank.probejs.utils.config.binding.ConfigBinding;
 import zzzank.probejs.utils.config.binding.DefaultBinding;
 import zzzank.probejs.utils.config.binding.RangedBinding;
 import zzzank.probejs.utils.config.binding.ReadOnlyBinding;
-import zzzank.probejs.utils.config.serde.DefaultSerde;
 import zzzank.probejs.utils.config.serde.ConfigSerde;
+import zzzank.probejs.utils.config.serde.DefaultSerde;
 import zzzank.probejs.utils.config.serde.EnumSerde;
 
 import javax.annotation.Nonnull;

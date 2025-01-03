@@ -3,8 +3,8 @@ package zzzank.probejs.lang.linter.rules;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
-import zzzank.probejs.lang.linter.LintingWarning;
 import zzzank.probejs.ProbeConfig;
+import zzzank.probejs.lang.linter.LintingWarning;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
