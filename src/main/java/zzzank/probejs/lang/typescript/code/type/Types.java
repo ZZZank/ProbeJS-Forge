@@ -95,6 +95,22 @@ public interface Types {
         return types.length == 0 ? NEVER : new JSJoinedType.Union(ImmutableList.copyOf(types));
     }
 
+    static JSJoinedType join(CharSequence delimiter, BaseType... types) {
+        return join(delimiter, Arrays.asList(types));
+    }
+
+    static JSJoinedType join(CharSequence delimiter, Collection<? extends BaseType> types) {
+        return join(delimiter, "", "", types);
+    }
+
+    static JSJoinedType join(CharSequence delimiter, CharSequence prefix, CharSequence suffix, BaseType... types) {
+        return join(delimiter, prefix, suffix, Arrays.asList(types));
+    }
+
+    static JSJoinedType join(CharSequence delimiter, CharSequence prefix, CharSequence suffix, Collection<? extends BaseType> types) {
+        return new JSJoinedType.Custom(types, delimiter, prefix, suffix);
+    }
+
     static TSParamType parameterized(BaseType base, BaseType... params) {
         return new TSParamType(base, Arrays.asList(params));
     }

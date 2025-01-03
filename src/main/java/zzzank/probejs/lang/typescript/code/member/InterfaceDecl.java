@@ -68,18 +68,13 @@ public class InterfaceDecl extends ClassDecl {
         // Format head - export interface name<T> extends ... {
         String head = String.format("export interface %s", name);
         if (!variableTypes.isEmpty()) {
-            val variables = variableTypes.stream()
-                .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
-                .collect(Collectors.joining(", ", "<", ">"));
-            head = head + variables;
+            head += Types.join(", ", "<", ">", variableTypes)
+                .line(declaration, BaseType.FormatType.VARIABLE);
         }
         if (!interfaces.isEmpty()) {
-            val formatted = interfaces.stream()
-                .map(type -> type.line(declaration))
-                .collect(Collectors.joining(", "));
-            head = String.format("%s extends %s", head, formatted);
+            head += " extends " + Types.join(", ", interfaces).line(declaration);
         }
-        head = String.format("%s {", head);
+        head += " {";
 
         // Format body - fields, constructors, methods
         List<String> body = new ArrayList<>();
@@ -96,7 +91,7 @@ public class InterfaceDecl extends ClassDecl {
 
         // tail - }
         List<String> tail = new ArrayList<>();
-        for (Code code : bodyCode) {
+        for (val code : bodyCode) {
             tail.addAll(code.format(declaration));
         }
         tail.add("}\n");

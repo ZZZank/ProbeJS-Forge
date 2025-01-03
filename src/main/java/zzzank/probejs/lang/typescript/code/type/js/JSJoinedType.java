@@ -6,16 +6,16 @@ import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.StringJoiner;
 
 public abstract class JSJoinedType extends BaseType {
-    public final String delimiter;
-    public final List<BaseType> types;
+    public final List<? extends BaseType> types;
 
-    protected JSJoinedType(String delimiter, List<BaseType> types) {
-        this.delimiter = String.format(" %s ", delimiter);
-        this.types = types;
+    protected JSJoinedType(Collection<? extends BaseType> types) {
+        this.types = new ArrayList<>(types);
     }
 
     @Override
@@ -23,9 +23,11 @@ public abstract class JSJoinedType extends BaseType {
         return ImportInfos.of().fromCodes(types, type);
     }
 
+    public abstract StringJoiner createJoiner();
+
     @Override
     public String line(Declaration declaration, FormatType formatType) {
-        val joiner = new StringJoiner(delimiter, "(", ")");
+        val joiner = createJoiner();
         for (val t : types) {
             joiner.add(t.line(declaration, formatType));
         }
@@ -33,15 +35,47 @@ public abstract class JSJoinedType extends BaseType {
     }
 
     public static class Union extends JSJoinedType {
-        public Union(List<BaseType> types) {
-            super("|", types);
+        public Union(Collection<? extends BaseType> types) {
+            super(types);
+        }
+
+        @Override
+        public StringJoiner createJoiner() {
+            return new StringJoiner(" | ", "(", ")");
         }
     }
 
     public static class Intersection extends JSJoinedType {
+        public Intersection(Collection<? extends BaseType> types) {
+            super(types);
+        }
 
-        public Intersection(List<BaseType> types) {
-            super("&", types);
+        @Override
+        public StringJoiner createJoiner() {
+            return new StringJoiner(" & ", "(", ")");
+        }
+    }
+
+    public static class Custom extends JSJoinedType {
+        private final CharSequence delimiter;
+        private final CharSequence prefix;
+        private final CharSequence suffix;
+
+        public Custom(
+            Collection<? extends BaseType> types,
+            CharSequence delimiter,
+            CharSequence prefix,
+            CharSequence suffix
+        ) {
+            super(types);
+            this.delimiter = delimiter;
+            this.prefix = prefix;
+            this.suffix = suffix;
+        }
+
+        @Override
+        public StringJoiner createJoiner() {
+            return new StringJoiner(delimiter, prefix, suffix);
         }
     }
 }

@@ -66,31 +66,25 @@ public class ClassDecl extends CommentableCode {
     @Override
     public List<String> formatRaw(Declaration declaration) {
         // Format head - export abstract (class / interface) name<T> extends ... implements ... {
-        List<String> modifiers = new ArrayList<>();
+        val modifiers = new ArrayList<String>();
         modifiers.add("export");
         if (isAbstract) {
             modifiers.add("abstract");
         }
         modifiers.add("class");
 
-        String head = String.format("%s %s", String.join(" ", modifiers), name);
+        String head = String.join(" ", modifiers) + " " + name;
         if (!variableTypes.isEmpty()) {
-            String variables = variableTypes.stream()
-                .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
-                .collect(Collectors.joining(", "));
-            head = String.format("%s<%s>", head, variables);
+            head += Types.join(", ", "<", ">", variableTypes)
+                .line(declaration, BaseType.FormatType.VARIABLE);
         }
-
         if (superClass != null) {
-            head = String.format("%s extends %s", head, superClass.line(declaration));
+            head += " extends " + superClass.line(declaration);
         }
-        if (interfaces.size() != 0) {
-            String formatted = interfaces.stream()
-                .map(type -> type.line(declaration))
-                .collect(Collectors.joining(", "));
-            head = String.format("%s implements %s", head, formatted);
+        if (!interfaces.isEmpty()) {
+            head += " implements " + Types.join(", ", interfaces).line(declaration);
         }
-        head = String.format("%s {", head);
+        head += " {";
 
         // Format body - fields, constructors, methods
         List<String> body = new ArrayList<>();
@@ -98,18 +92,24 @@ public class ClassDecl extends CommentableCode {
         for (val field : fields) {
             body.addAll(field.format(declaration));
         }
-        body.add("");
+        if (!fields.isEmpty()) {
+            body.add("");
+        }
+
         for (val constructor : constructors) {
             body.addAll(constructor.format(declaration));
         }
-        body.add("");
+        if (!constructors.isEmpty()) {
+            body.add("");
+        }
+
         for (val method : methods) {
             body.addAll(method.format(declaration));
         }
 
         // tail - custom code, }
         List<String> tail = new ArrayList<>();
-        for (Code code : bodyCode) {
+        for (val code : bodyCode) {
             tail.addAll(code.format(declaration));
         }
         tail.add("}");
