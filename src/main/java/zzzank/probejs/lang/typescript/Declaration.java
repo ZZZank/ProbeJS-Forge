@@ -3,7 +3,6 @@ package zzzank.probejs.lang.typescript;
 import lombok.val;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.typescript.refer.ImportInfo;
-import zzzank.probejs.lang.typescript.refer.ImportType;
 import zzzank.probejs.lang.typescript.refer.Reference;
 
 import java.util.HashMap;
@@ -12,11 +11,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class Declaration {
-    private static final String UNIQUE_TEMPLATE = "%s$%d";
+    public static final String UNIQUE_TEMPLATE = "%s$%d";
 
     public final Map<ClassPath, Reference> references = new HashMap<>();
-    private final Set<String> usedNames = new HashSet<>();
-    private final Set<String> excludedName = new HashSet<>();
+    public final Set<String> usedNames = new HashSet<>();
+    public final Set<String> excludedNames = new HashSet<>();
 
     public void addImport(ImportInfo info) {
         val existed = references.get(info.path);
@@ -32,11 +31,11 @@ public class Declaration {
     }
 
     public void exclude(String name) {
-        excludedName.add(name);
+        excludedNames.add(name);
     }
 
     public boolean containsSymbol(String name) {
-        return excludedName.contains(name) || usedNames.contains(name);
+        return excludedNames.contains(name) || usedNames.contains(name);
     }
 
     private String computeSymbol(ClassPath path) {
@@ -51,14 +50,10 @@ public class Declaration {
     }
 
     public String getSymbol(ClassPath path) {
-        return getSymbol(path, false);
-    }
-
-    public String getSymbol(ClassPath path, boolean input) {
         val reference = this.references.get(path);
         if (reference == null) {
             throw new RuntimeException(String.format("Trying to get a symbol of unresolved classpath: %s", path));
         }
-        return input ? ImportType.TYPE.fmt(reference.deduped) : reference.deduped;
+        return reference.deduped;
     }
 }
