@@ -1,4 +1,4 @@
-package zzzank.probejs.utils.config.error;
+package zzzank.probejs.utils.config.report;
 
 /**
  * @author ZZZank

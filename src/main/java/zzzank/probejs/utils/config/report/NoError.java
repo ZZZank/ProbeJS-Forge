@@ -1,4 +1,4 @@
-package zzzank.probejs.utils.config.error;
+package zzzank.probejs.utils.config.report;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class NoError implements ConfigReport {
     public static final NoError INSTANCE = new NoError();
+    public static final Exception EXCEPTION = new Exception("there's no report");
 
     @Override
     public boolean hasError() {
@@ -17,11 +18,11 @@ public final class NoError implements ConfigReport {
 
     @Override
     public Exception asException() {
-        return NO_ERROR_IN_FACT;
+        return EXCEPTION;
     }
 
     @Override
     public String message() {
-        return NO_ERROR_IN_FACT.getMessage();
+        return EXCEPTION.getMessage();
     }
 }

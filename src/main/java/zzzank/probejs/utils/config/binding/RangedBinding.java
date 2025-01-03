@@ -3,9 +3,9 @@ package zzzank.probejs.utils.config.binding;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.utils.Asser;
-import zzzank.probejs.utils.config.error.ConfigReport;
-import zzzank.probejs.utils.config.error.NoError;
-import zzzank.probejs.utils.config.error.OutOfRangeError;
+import zzzank.probejs.utils.config.report.ConfigReport;
+import zzzank.probejs.utils.config.report.NoError;
+import zzzank.probejs.utils.config.report.OutOfRangeError;
 
 /**
  * @author ZZZank

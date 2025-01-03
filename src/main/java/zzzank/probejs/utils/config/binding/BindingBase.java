@@ -2,9 +2,9 @@ package zzzank.probejs.utils.config.binding;
 
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
-import zzzank.probejs.utils.config.error.ConfigReport;
-import zzzank.probejs.utils.config.error.NoError;
-import zzzank.probejs.utils.config.error.WrappedException;
+import zzzank.probejs.utils.config.report.ConfigReport;
+import zzzank.probejs.utils.config.report.NoError;
+import zzzank.probejs.utils.config.report.WrappedException;
 
 /**
  * @author ZZZank
@@ -35,7 +35,7 @@ public abstract class BindingBase<T> implements ConfigBinding<T> {
         try {
             setImpl(value);
         } catch (Exception e) {
-            setImpl(defaultValue);
+            reset();
             return new WrappedException(e);
         }
         return NoError.INSTANCE;

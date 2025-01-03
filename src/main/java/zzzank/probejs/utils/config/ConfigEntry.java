@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.Asser;
 import zzzank.probejs.utils.config.binding.ConfigBinding;
-import zzzank.probejs.utils.config.error.ConfigReport;
+import zzzank.probejs.utils.config.report.ConfigReport;
 import zzzank.probejs.utils.config.serde.ConfigSerde;
 
 import java.util.List;
