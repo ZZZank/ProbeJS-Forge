@@ -59,7 +59,7 @@ public class RegistryTypes implements ProbeJSPlugin {
         // ResourceKey<T> to Special.LiteralOf<T>
         scriptDump.assignType(
             ResourceKey.class,
-            Types.parameterized(Types.primitive(SPECIAL_LITERAL_OF), Types.generic("T"))
+            Types.primitive(SPECIAL_LITERAL_OF).withParams("T")
         );
         //Registries (why?)
         scriptDump.assignType(Registry.class, Types.or(registryNames.toArray(new BaseType[0])));
@@ -71,10 +71,10 @@ public class RegistryTypes implements ProbeJSPlugin {
     }
 
     private static void assignRegistryType(ScriptDump scriptDump, Class<?> type, String literalType, String symbol) {
-        scriptDump.assignType(type, Types.parameterized(Types.primitive(literalType), Types.generic(symbol)));
+        scriptDump.assignType(type, Types.primitive(literalType).withParams(symbol));
         scriptDump.assignType(
             type,
-            Types.parameterized(Types.type(type), Types.generic(symbol))
+            Types.type(type).withParams(Types.generic(symbol))
                 .contextShield(BaseType.FormatType.RETURN)
         );
     }

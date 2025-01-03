@@ -6,6 +6,7 @@ import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,7 @@ public class TSParamType extends BaseType {
     public final BaseType baseType;
     public final List<BaseType> params;
 
-    public TSParamType(BaseType baseType, List<? extends BaseType> params) {
+    public TSParamType(BaseType baseType, Collection<? extends BaseType> params) {
         this.baseType = baseType;
         this.params = new ArrayList<>(params);
     }

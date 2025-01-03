@@ -18,10 +18,7 @@ public class LoadClassFn implements ProbeJSPlugin {
             .func("java")
             .variable(Types.generic("T", Types.primitive("ClassPath")))
             .param("classPath", Types.generic("T"))
-            .returnType(Types.parameterized(
-                Types.primitive("LoadClass"),
-                Types.generic("T")
-            ))
+            .returnType(Types.primitive("LoadClass").withParams("T"))
             .build();
 
         val requireFn = Statements

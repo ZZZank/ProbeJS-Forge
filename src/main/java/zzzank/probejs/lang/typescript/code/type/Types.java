@@ -100,7 +100,7 @@ public interface Types {
     }
 
     static TSParamType parameterized(BaseType base, Collection<? extends BaseType> params) {
-        return new TSParamType(base, new ArrayList<>(params));
+        return new TSParamType(base, params);
     }
 
     static TSVariableType generic(String symbol) {

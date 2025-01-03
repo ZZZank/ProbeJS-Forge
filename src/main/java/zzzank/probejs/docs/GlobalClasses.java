@@ -53,15 +53,15 @@ public class GlobalClasses implements ProbeJSPlugin {
             new TypeDecl("AttachJClass<T>",
                 Types.and(
                     Types.generic("T"),
-                    Types.parameterized(J_CLASS, TSUtilityType.instanceType(Types.generic("T")))
+                    J_CLASS.withParams(TSUtilityType.instanceType(Types.generic("T")))
                 )
             ).setExport(false),
             new TypeDecl(
                 "LoadClass<T>",
                 Types.format(
-                    "T extends %s ? %s : %s",
+                    "T extends %s ? AttachJClass<%s[T]> : %s",
                     CLASS_PATH,
-                    Types.format("AttachJClass<%s[T]>", GLOBAL_CLASSES),
+                    GLOBAL_CLASSES,
                     Types.NEVER
                 )
             )
@@ -70,7 +70,7 @@ public class GlobalClasses implements ProbeJSPlugin {
 
     @Override
     public void modifyClasses(ScriptDump scriptDump, Map<ClassPath, TypeScriptFile> globalClasses) {
-        val classT = Types.parameterized(Types.type(Class.class), Types.generic("T"));
+        val classT = Types.type(Class.class).withParams("T");
         val jClass = Statements.clazz(J_CLASS.classPath.getName())
             .abstractClass()
             .typeVariables("T")

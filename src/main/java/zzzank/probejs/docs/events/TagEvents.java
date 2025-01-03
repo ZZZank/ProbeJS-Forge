@@ -64,10 +64,7 @@ public class TagEvents implements ProbeJSPlugin {
             val declaration = Statements.func("tags")
                 .param("extra", Types.literal(extraName))
                 .param("handler", Types.lambda()
-                    .param("event", Types.parameterized(
-                        eventType,
-                        Types.primitive(tagName), Types.primitive(typeName)
-                    ))
+                    .param("event", eventType.withParams(tagName, typeName))
                     .build()
                 )
                 .build();
@@ -92,12 +89,12 @@ public class TagEvents implements ProbeJSPlugin {
             .superClass(Types.type(TagEventJS.class))
             .typeVariables("T", "I")
             .method("add", builder -> builder
-                .returnType(Types.parameterized(wrapperType, genericT, genericI))
+                .returnType(wrapperType.withParams(genericT, genericI))
                 .param("tag", genericT)
                 .param("filters", genericI.asArray(), false, true)
             )
             .method("remove", builder -> builder
-                .returnType(Types.parameterized(wrapperType, genericT, genericI))
+                .returnType(wrapperType.withParams(genericT, genericI))
                 .param("tag", genericT)
                 .param("filters", genericI.asArray(), false, true)
             )

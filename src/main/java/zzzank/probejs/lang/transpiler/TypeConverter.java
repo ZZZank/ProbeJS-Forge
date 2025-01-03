@@ -57,7 +57,7 @@ public class TypeConverter {
                 return Types.ANY;
             }
             val params = CollectUtils.mapToList(paramType.params, this::convertType);
-            return new TSParamType(base, params);
+            return Types.parameterized(base, params);
         } else if (descriptor instanceof VariableType variableType) {
             val desc = variableType.descriptors;
             return switch (desc.size()) {

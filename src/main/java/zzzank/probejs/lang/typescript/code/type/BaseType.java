@@ -11,6 +11,7 @@ import zzzank.probejs.lang.typescript.code.type.utility.ContextShield;
 import zzzank.probejs.lang.typescript.code.type.utility.ImportShield;
 import zzzank.probejs.lang.typescript.code.type.utility.WithFormatType;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
+import zzzank.probejs.utils.CollectUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -56,6 +57,10 @@ public abstract class BaseType extends Code {
 
     public TSParamType withParams(BaseType... params) {
         return Types.parameterized(this, params);
+    }
+
+    public TSParamType withParams(String... params) {
+        return Types.parameterized(this, CollectUtils.mapToList(params, Types::primitive));
     }
 
     public TSParamType withParams(Collection<? extends BaseType> params) {
