@@ -53,25 +53,12 @@ public class JSLambdaType extends BaseType {
         );
     }
 
-    public String formatWithName(String name, Declaration declaration, FormatType formatType) {
-        return String.format(
-            "%s%s: %s",
-            name,
-            ParamDecl.formatParams(
-                params,
-                declaration,
-                paramFormatType(formatType)
-            ),
-            returnType.line(declaration, formatType)
-        );
-    }
-
     public MethodDecl asMethod(String methodName) {
         return new MethodDecl(methodName, Collections.emptyList(), params, returnType);
     }
 
     @SuppressWarnings("unchecked")
-    public static class Builder<SELF extends Builder<SELF>> {
+    public static class BuilderBase<SELF extends BuilderBase<SELF>> {
         public final List<ParamDecl> params = new ArrayList<>();
         public BaseType returnType = Types.VOID;
 

@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.member;
 
+import lombok.ToString;
 import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
@@ -8,7 +9,9 @@ import zzzank.probejs.utils.NameUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+@ToString
 public final class ParamDecl {
     public String name;
     public BaseType type;
@@ -73,14 +76,4 @@ public final class ParamDecl {
     public int hashCode() {
         return Objects.hash(name, type, varArg, optional);
     }
-
-    @Override
-    public String toString() {
-        return "ParamDecl[" +
-                "name=" + name + ", " +
-                "type=" + type + ", " +
-                "varArg=" + varArg + ", " +
-                "optional=" + optional + ']';
-    }
-
 }
