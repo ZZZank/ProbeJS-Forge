@@ -1,7 +1,6 @@
 package zzzank.probejs.lang.typescript.code.type;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
-import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.lang.java.clazz.ClassPath;
@@ -146,7 +145,7 @@ public interface Types {
     }
 
     static BaseType typeMaybeGeneric(Class<?> clazz) {
-        val typeParameters = clazz.getTypeParameters();
+        var typeParameters = clazz.getTypeParameters();
         if (typeParameters.length == 0) {
             return type(clazz);
         }
@@ -231,15 +230,15 @@ public interface Types {
         if (type instanceof JSJoinedType.Union union) {
             return Types.or(
                 union.types.stream()
-                    .filter(t -> !typePredicate.test(t))
-                    .map(t -> filter(t, typePredicate))
+                    .filter((t) -> !typePredicate.test(t))
+                    .map((t) -> filter(t, typePredicate))
                     .collect(Collectors.toList())
             );
         } else if (type instanceof JSJoinedType.Intersection intersection) {
             return Types.and(
                 intersection.types.stream()
-                    .filter(t -> !typePredicate.test(t))
-                    .map(t -> filter(t, typePredicate))
+                    .filter((t) -> !typePredicate.test(t))
+                    .map((t) -> filter(t, typePredicate))
                     .collect(Collectors.toList())
             );
         }

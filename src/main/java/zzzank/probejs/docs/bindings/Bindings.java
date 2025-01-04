@@ -42,7 +42,7 @@ public class Bindings implements ProbeJSPlugin {
             if (entry.getValue() instanceof TypedDynamicFunction typed) {
                 val types = ((AccessTypedDynamicFunction) typed).types();
                 for (int i = 0; i < types.length; i++) {
-                    val type = types[i];
+                    var type = types[i];
                     fn.param("arg" + i, type == null ? Types.ANY : converter.convertType(type));
                 }
             } else {
