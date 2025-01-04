@@ -18,6 +18,6 @@ public class TSArrayType extends BaseType {
 
     @Override
     public String line(Declaration declaration, FormatType formatType) {
-        return "(" + component.line(declaration, formatType) + ")[]";
+        return component.line(declaration, formatType) + "[]";
     }
 }

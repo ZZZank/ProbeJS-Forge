@@ -13,7 +13,7 @@ public class TSOptionalType extends BaseType {
 
     @Override
     public String line(Declaration declaration, FormatType formatType) {
-        return String.format("(%s)?", component.line(declaration, formatType));
+        return component.line(declaration, formatType) + "?";
     }
 
     @Override
