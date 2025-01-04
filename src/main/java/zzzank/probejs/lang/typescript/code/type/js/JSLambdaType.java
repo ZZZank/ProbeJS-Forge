@@ -97,4 +97,7 @@ public class JSLambdaType extends BaseType {
             return new JSLambdaType(params, returnType);
         }
     }
+
+    public static class Builder extends BuilderBase<Builder> {
+    }
 }

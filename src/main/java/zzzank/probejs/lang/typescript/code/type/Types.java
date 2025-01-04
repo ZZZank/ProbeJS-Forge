@@ -215,8 +215,8 @@ public interface Types {
         return new StaticType(path);
     }
 
-    static JSLambdaType.Builder<?> lambda() {
-        return new JSLambdaType.Builder<>();
+    static JSLambdaType.Builder lambda() {
+        return new JSLambdaType.Builder();
     }
 
     static JSObjectType.Builder object() {
