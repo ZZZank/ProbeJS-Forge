@@ -26,14 +26,24 @@ public final class ParamDecl {
         this(name, type, false, false);
     }
 
-    public String format(int index, Declaration declaration, BaseType.FormatType formatType) {
-        return String.format(
-            "%s%s%s: %s",
-            varArg ? "..." : "",
-            NameUtils.isNameSafe(name) ? name : String.format("arg%d", index),
-            optional ? "?" : "",
-            type.line(declaration, formatType)
-        );
+    public String format(Declaration declaration, BaseType.FormatType formatType) {
+        val builder = new StringBuilder();
+        if (varArg) {
+            builder.append("...");
+        }
+        builder.append(getArgName());
+        if (optional) {
+            builder.append("?");
+        }
+        return builder.append(": ").append(type.line(declaration, formatType)).toString();
+    }
+
+    private String getArgName() {
+        var out = name;
+        while (!NameUtils.isNameSafe(out)) {
+            out = out + "_";
+        }
+        return out;
     }
 
     public static String formatParams(List<ParamDecl> params, Declaration declaration) {
@@ -41,12 +51,11 @@ public final class ParamDecl {
     }
 
     public static String formatParams(List<ParamDecl> params, Declaration declaration, BaseType.FormatType formatType) {
-        List<String> formattedParams = new ArrayList<>(params.size());
-        for (int i = 0; i < params.size(); i++) {
-            val param = params.get(i);
-            formattedParams.add(param.format(i, declaration, formatType));
+        val formatted = new ArrayList<String>(params.size());
+        for (val param : params) {
+            formatted.add(param.format(declaration, formatType));
         }
-        return String.format("(%s)", String.join(", ", formattedParams));
+        return formatted.stream().collect(Collectors.joining(", ", "(", ")"));
     }
 
     @Override
