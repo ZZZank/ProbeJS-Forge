@@ -70,26 +70,27 @@ public class JSLambdaType extends BaseType {
         return new MethodDecl(methodName, Collections.emptyList(), params, returnType);
     }
 
-    public static class Builder {
+    @SuppressWarnings("unchecked")
+    public static class Builder<SELF extends Builder<SELF>> {
         public final List<ParamDecl> params = new ArrayList<>();
         public BaseType returnType = Types.VOID;
 
-        public Builder returnType(BaseType type) {
+        public SELF returnType(BaseType type) {
             this.returnType = type;
-            return this;
+            return (SELF) this;
         }
 
-        public Builder param(String symbol, BaseType type) {
+        public SELF param(String symbol, BaseType type) {
             return param(symbol, type, false);
         }
 
-        public Builder param(String symbol, BaseType type, boolean isOptional) {
+        public SELF param(String symbol, BaseType type, boolean isOptional) {
             return param(symbol, type, isOptional, false);
         }
 
-        public Builder param(String symbol, BaseType type, boolean isOptional, boolean isVarArg) {
+        public SELF param(String symbol, BaseType type, boolean isOptional, boolean isVarArg) {
             params.add(new ParamDecl(symbol, type, isVarArg, isOptional));
-            return this;
+            return (SELF) this;
         }
 
         public JSLambdaType build() {
