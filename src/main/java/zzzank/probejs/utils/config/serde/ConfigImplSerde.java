@@ -24,9 +24,9 @@ public class ConfigImplSerde {
         this.source = attached;
     }
 
-    public @NotNull JsonElement toJson(@NotNull ConfigImpl value) {
+    public @NotNull JsonElement toJson() {
         val object = new JsonObject();
-        for (val entry : value.entries()) {
+        for (val entry : source.entries()) {
             val o = new JsonObject();
 
             o.add(DEFAULT_VALUE_KEY, entry.serde.toJson(UtilsJS.cast(entry.getDefault())));

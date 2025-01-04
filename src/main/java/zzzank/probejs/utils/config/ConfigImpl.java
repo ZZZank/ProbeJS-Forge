@@ -62,7 +62,7 @@ public class ConfigImpl {
 
     public void save() {
         try (val writer = Files.newBufferedWriter(path)) {
-            ProbeJS.GSON_WRITER.toJson(serde.toJson(this), writer);
+            ProbeJS.GSON_WRITER.toJson(serde.toJson(), writer);
         } catch (Exception e) {
             ProbeJS.LOGGER.error("Error happened when writing configs to file", e);
         }
@@ -77,7 +77,11 @@ public class ConfigImpl {
     }
 
     public ConfigEntryBuilder<Void> define(String name) {
-        return new ConfigEntryBuilder<>(this, name);
+        return define(defaultNamespace, name);
+    }
+
+    public ConfigEntryBuilder<Void> define(String namespace, String name) {
+        return new ConfigEntryBuilder<>(this, namespace, name);
     }
 
     public <T> ConfigEntry<T> register(ConfigEntry<T> entry) {

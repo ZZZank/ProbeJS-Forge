@@ -12,7 +12,6 @@ import zzzank.probejs.utils.config.serde.ConfigSerde;
 import zzzank.probejs.utils.config.serde.DefaultSerde;
 import zzzank.probejs.utils.config.serde.EnumSerde;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -22,17 +21,19 @@ public class ConfigEntryBuilder<T> {
 
     @NotNull
     public final ConfigImpl root;
-    @Nonnull
-    public final String name;
-    protected Class<T> expectedType;
+    @NotNull
+    public String name;
+    @NotNull
     public String namespace;
+    protected Class<T> expectedType;
     public List<String> comments;
     public ConfigBinding<T> binding;
     public ConfigSerde<T> serde;
 
-    protected ConfigEntryBuilder(@NotNull ConfigImpl config, @NotNull String name) {
+    protected ConfigEntryBuilder(@NotNull ConfigImpl config, @NotNull String namespace, @NotNull String name) {
         this.root = config;
         this.name = name;
+        this.namespace = namespace;
     }
 
     @SuppressWarnings("unchecked")
@@ -44,22 +45,32 @@ public class ConfigEntryBuilder<T> {
         return casted;
     }
 
+    public ConfigEntryBuilder<T> setName(@NotNull String name) {
+        this.name = Asser.tNotNull(name, "config entry name");
+        return this;
+    }
+
+    public ConfigEntryBuilder<T> setNamespace(@NotNull String namespace) {
+        this.namespace = Asser.tNotNull(namespace, "config entry namespace");
+        return this;
+    }
+
     private <T_> ConfigEntryBuilder<T_> setDefault(ConfigBinding<T_> binding) {
         return setDefault(binding.clazzFromDefaultValue(), binding);
     }
 
-    public <T_> ConfigEntryBuilder<T_> setDefault(@Nonnull T_ defaultValue) {
+    public <T_> ConfigEntryBuilder<T_> setDefault(@NotNull T_ defaultValue) {
         return setDefault(new DefaultBinding<>(defaultValue, name));
     }
 
-    public <T_> ConfigEntryBuilder<T_> readOnly(@Nonnull T_ defaultValue) {
+    public <T_> ConfigEntryBuilder<T_> readOnly(@NotNull T_ defaultValue) {
         return setDefault(new ReadOnlyBinding<>(defaultValue, name));
     }
 
     public <T_ extends Comparable<T_>> ConfigEntryBuilder<T_> setDefault(
-        @Nonnull T_ defaultValue,
-        @Nonnull T_ min,
-        @Nonnull T_ max
+        @NotNull T_ defaultValue,
+        @NotNull T_ min,
+        @NotNull T_ max
     ) {
         return setDefault(new RangedBinding<>(defaultValue, name, min, max));
     }
@@ -84,15 +95,7 @@ public class ConfigEntryBuilder<T> {
         return this;
     }
 
-    public ConfigEntryBuilder<T> setNamespace(String namespace) {
-        this.namespace = Objects.requireNonNull(namespace);
-        return this;
-    }
-
     public ConfigEntry<T> build() {
-        if (namespace == null) {
-            namespace = this.root.defaultNamespace;
-        }
         if (comments == null) {
             comments = Collections.emptyList();
         }
