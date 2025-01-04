@@ -6,7 +6,7 @@ import zzzank.probejs.lang.typescript.code.type.js.JSLambdaType;
 /**
  * @author ZZZank
  */
-public class RecipeLambdaBuilder extends JSLambdaType.Builder<RecipeLambdaBuilder> {
+public class RecipeLambdaBuilder extends JSLambdaType.BuilderBase<RecipeLambdaBuilder> {
 
     public RecipeLambdaBuilder input(BaseType type) {
         return param("input", type);

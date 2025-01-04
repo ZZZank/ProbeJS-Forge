@@ -49,18 +49,18 @@ public interface RecipeDocUtil {
             .build();
     }
 
-    static JSLambdaType.Builder basicShapelessRecipe() {
+    static RecipeLambdaBuilder basicShapelessRecipe() {
         return basicShapelessRecipe(Types.type(ShapelessRecipeJS.class));
     }
 
-    static JSLambdaType.Builder basicShapelessRecipe(BaseType returnType) {
+    static RecipeLambdaBuilder basicShapelessRecipe(BaseType returnType) {
         return RecipeDocProvider.recipeFn()
             .output(STACK)
             .inputs(INGR_N)
             .returnType(returnType);
     }
 
-    static JSLambdaType.Builder basicCookingRecipe(BaseType returnType) {
+    static RecipeLambdaBuilder basicCookingRecipe(BaseType returnType) {
         return RecipeDocProvider
             .recipeFn()
             .output(STACK)
@@ -68,7 +68,7 @@ public interface RecipeDocUtil {
             .returnType(returnType);
     }
 
-    static JSLambdaType.Builder basicCookingRecipe() {
+    static RecipeLambdaBuilder basicCookingRecipe() {
         return basicCookingRecipe(Types.type(CookingRecipeJS.class));
     }
 

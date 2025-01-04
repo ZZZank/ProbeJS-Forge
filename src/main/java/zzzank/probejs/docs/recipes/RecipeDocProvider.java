@@ -16,7 +16,7 @@ import java.util.Map;
  * <p>
  * {@link RecipeDocProvider#addDocs(ScriptDump)} is where docs are actually added, you can use {@link RecipeDocProvider#recipeFn()}
  * to get a bare-bone for your recipe doc, and specify types of params/return, then call {@link JSLambdaType.Builder#build()}
- * and {@link RecipeDocProvider#add(String, JSLambdaType)} to actually add this doc, {@link RecipeDocProvider#add(String, JSLambdaType.Builder)}
+ * and {@link RecipeDocProvider#add(String, JSLambdaType)} to actually add this doc, {@link RecipeDocProvider#add(String, JSLambdaType.BuilderBase)}
  * also works
  * <p>
  * {@link RecipeDocProvider#shouldEnable()} is optional, used for determining if this recipe doc should be applied, you
@@ -51,7 +51,7 @@ public abstract class RecipeDocProvider implements ProbeJSPlugin {
         defined.put(new ResourceLocation(namespace(), name), doc);
     }
 
-    public void add(String name, JSLambdaType.Builder doc) {
+    public void add(String name, JSLambdaType.BuilderBase<?> doc) {
         defined.put(new ResourceLocation(namespace(), name), doc.build());
     }
 
