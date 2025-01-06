@@ -29,19 +29,22 @@ public final class ParamDecl {
         this(name, type, false, false);
     }
 
-    public String format(Declaration declaration, BaseType.FormatType formatType) {
+    public String format(int i, Declaration declaration, BaseType.FormatType formatType) {
         val builder = new StringBuilder();
         if (varArg) {
             builder.append("...");
         }
-        builder.append(getArgName());
+        builder.append(getArgName(i));
         if (optional) {
             builder.append("?");
         }
         return builder.append(": ").append(type.line(declaration, formatType)).toString();
     }
 
-    private String getArgName() {
+    private String getArgName(int i) {
+        if (!NameUtils.isTSIdentifier(name)) {
+            return "arg" + i;
+        }
         var out = name;
         while (!NameUtils.isNameSafe(out)) {
             out = out + "_";
@@ -55,8 +58,9 @@ public final class ParamDecl {
 
     public static String formatParams(List<ParamDecl> params, Declaration declaration, BaseType.FormatType formatType) {
         val formatted = new ArrayList<String>(params.size());
-        for (val param : params) {
-            formatted.add(param.format(declaration, formatType));
+        for (int i = 0; i < params.size(); i++) {
+            var param = params.get(i);
+            formatted.add(param.format(i, declaration, formatType));
         }
         return formatted.stream().collect(Collectors.joining(", ", "(", ")"));
     }
