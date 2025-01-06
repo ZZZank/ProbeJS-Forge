@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.member;
 
+import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.CommentableCode;
@@ -34,17 +35,17 @@ public class FieldDecl extends CommentableCode {
 
     @Override
     public List<String> formatRaw(Declaration declaration) {
-        List<String> modifiers = new ArrayList<>();
+        val head = new ArrayList<String>();
         if (isStatic) {
-            modifiers.add("static");
+            head.add("static");
         }
         if (isFinal) {
-            modifiers.add("readonly");
+            head.add("readonly");
         }
+        head.add(ProbeJS.GSON.toJson(name));
 
-        return Collections.singletonList(String.format("%s %s: %s",
-            String.join(" ", modifiers),
-            ProbeJS.GSON.toJson(name),
+        return Collections.singletonList(String.format("%s: %s",
+            String.join(" ", head),
             type.line(declaration, BaseType.FormatType.RETURN)
         ));
     }

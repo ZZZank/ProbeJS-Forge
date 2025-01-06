@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.member;
 
+import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.CommentableCode;
@@ -51,21 +52,23 @@ public class MethodDecl extends CommentableCode {
     @Override
     public List<String> formatRaw(Declaration declaration) {
         // Format head - public static "name"<T, U extends A>
-        List<String> modifiers = new ArrayList<>();
-        if (!isInterface) modifiers.add("public");
-        if (isStatic) modifiers.add("static");
+        val parts = new ArrayList<String>();
+        if (!isInterface) {
+            parts.add("public");
+        }
+        if (isStatic) {
+            parts.add("static");
+        }
+        parts.add(ProbeJS.GSON.toJson(name));
 
-        String head = String.join(" ", modifiers);
-        head = String.format("%s %s", head, ProbeJS.GSON.toJson(name));
+        var head = String.join(" ", parts);
         if (!variableTypes.isEmpty()) {
-            String variables = variableTypes.stream()
-                .map(type -> type.line(declaration, BaseType.FormatType.VARIABLE))
-                .collect(Collectors.joining(", "));
-            head = String.format("%s<%s>", head, variables);
+            head += Types.join(", ", "<", ">", variableTypes)
+                .line(declaration, BaseType.FormatType.VARIABLE);
         }
 
         // Format body - (a: type, ...)
-        String body = ParamDecl.formatParams(params, declaration);
+        val body = ParamDecl.formatParams(params, declaration);
 
         // Format tail - : returnType {/** content */}
         String tail = String.format(": %s", returnType.line(declaration, BaseType.FormatType.RETURN));
@@ -73,7 +76,7 @@ public class MethodDecl extends CommentableCode {
             tail = String.format("%s {/** %s */}", tail, content);
         }
 
-        return Collections.singletonList(String.format("%s%s%s", head, body, tail));
+        return Collections.singletonList(head + body + tail);
     }
 
     public static class Builder extends ConstructorDecl.Builder {
