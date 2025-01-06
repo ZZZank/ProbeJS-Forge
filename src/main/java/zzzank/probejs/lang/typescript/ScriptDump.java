@@ -204,19 +204,17 @@ public class ScriptDump {
             // declare global {
             //     type Type_ = ExportedType
             // }
-            val generics = CollectUtils.mapToList(classDecl.variableTypes, v -> v.symbol);
             String symbol = classPath.getName() + "_";
             String exportedSymbol = ImportType.TYPE.fmt(classPath.getName());
             BaseType exportedType = Types.type(classPath);
             BaseType thisType = Types.type(classPath);
 
-            if (!generics.isEmpty()) {
-                val suffix = "<" + String.join(", ", generics) + ">";
+            if (!classDecl.variableTypes.isEmpty()) {
+                val suffix = Types.join(", ", "<", ">", classDecl.variableTypes);
                 symbol = symbol + suffix;
                 exportedSymbol = exportedSymbol + suffix;
-                val genericParams = CollectUtils.mapToList(generics, Types::generic);
-                thisType = Types.parameterized(thisType, genericParams);
-                exportedType = Types.parameterized(exportedType, genericParams);
+                thisType = Types.parameterized(thisType, classDecl.variableTypes);
+                exportedType = Types.parameterized(exportedType, classDecl.variableTypes);
             }
 
             exportedType = Types.contextShield(exportedType, BaseType.FormatType.INPUT);
@@ -224,25 +222,23 @@ public class ScriptDump {
 
             List<BaseType> allTypes = new ArrayList<>();
             for (val typeDecl : convertibles.get(classPath)) {
-                if (typeDecl.symbol == null) {
-                    allTypes.add(typeDecl.type);
-                } else {
+                if (typeDecl.symbol != null) {
                     output.addCode(typeDecl);
                     allTypes.add(Types.primitive(typeDecl.symbol));
+                } else {
+                    allTypes.add(typeDecl.type);
                 }
             }
 
             allTypes.add(thisType);
 
-            val typeConvertible = new TypeDecl(exportedSymbol, Types.and(allTypes));
+            val typeConvertible = new TypeDecl(exportedSymbol, Types.or(allTypes));
             typeConvertible.addComment("""
-                Class-specific type exported by ProbeJS, use global `{Type}_` types for convenience unless there's a naming conflict.
-                """);
+                Class-specific type exported by ProbeJS, use global `{Type}_` types for convenience unless there's a naming conflict.""");
             val typeGlobal = new Wrapped.Global();
             typeGlobal.addCode(new TypeDecl(symbol, exportedType));
             typeGlobal.addComment("""
-                Global type exported for convenience, use class-specific types if there's a naming conflict.
-                """);
+                Global type exported for convenience, use class-specific types if there's a naming conflict.""");
             output.addCode(typeConvertible);
             output.addCode(typeGlobal);
 
