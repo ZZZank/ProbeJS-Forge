@@ -1,6 +1,7 @@
 package zzzank.probejs.docs.bindings;
 
 import dev.latvian.kubejs.BuiltinKubeJSPlugin;
+import dev.latvian.mods.rhino.Undefined;
 import lombok.val;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
@@ -38,12 +39,11 @@ class ResolveGlobal {
     public static BaseType resolveType(int depth, Object value, TypeConverter converter) {
         if (value == null) {
             return Types.NULL;
+        } else if (value instanceof Undefined) {
+            return Types.UNDEFINED;
+        } else if (depth < 1) {
+            return converter.convertType(value.getClass());
         }
-        val directType = converter.convertType(value.getClass());
-        if (depth < 1) {
-            return directType;
-        }
-        val resolved = ValueTypes.convert(value, converter, depth);
-        throw new AssertionError();
+        return ValueTypes.convert(value, converter, depth);
     }
 }

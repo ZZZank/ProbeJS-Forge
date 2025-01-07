@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 public class ValueTypes {
 
     private static final Map<Class<?>, ValueTypeConverter> FORMATTERS =
-        new IdentityHashMap<>();
+        new LinkedHashMap<>();
     private static final Set<Class<?>> PRIMITIVES = new HashSet<>();
 
     static {
@@ -41,10 +41,12 @@ public class ValueTypes {
         //shortcut
         FORMATTERS.put(NativeArray.class, ValueTypes::convertList);
         FORMATTERS.put(NativeObject.class, ValueTypes::convertScriptableObject);
+        FORMATTERS.put(NativeFunction.class, ValueTypes::formatFunction);
         //general
         FORMATTERS.put(Map.class, ValueTypes::convertMap);
         FORMATTERS.put(List.class, ValueTypes::convertList);
         FORMATTERS.put(BaseFunction.class, ValueTypes::formatFunction);
+        FORMATTERS.put(ArrowFunction.class, ValueTypes::formatFunction);
         FORMATTERS.put(Scriptable.class, ValueTypes::convertScriptableObject);
     }
 
@@ -97,16 +99,14 @@ public class ValueTypes {
         if (!(obj instanceof List<?> list) || limitConsumed(limit)) {
             return null;
         }
-        val formatGen = new StringJoiner(", ", "[", "]");
 
         val nextLimit = consumeLimit(limit);
         val converted = new BaseType[list.size()];
         for (int i = 0; i < list.size(); i++) {
             converted[i] = convertOrDefault(list.get(i), converter, nextLimit);
-            formatGen.add("%s");
         }
 
-        return Types.format(formatGen.toString(), converted);
+        return Types.join(", ", "[", "]", converted);
     }
 
     public static BaseType convertScriptableObject(Object obj, TypeConverter converter, int limit) {
