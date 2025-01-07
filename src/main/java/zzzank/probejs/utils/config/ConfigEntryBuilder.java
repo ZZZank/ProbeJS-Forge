@@ -4,6 +4,7 @@ import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.Asser;
+import zzzank.probejs.utils.Cast;
 import zzzank.probejs.utils.config.binding.ConfigBinding;
 import zzzank.probejs.utils.config.binding.DefaultBinding;
 import zzzank.probejs.utils.config.binding.RangedBinding;
@@ -36,15 +37,6 @@ public class ConfigEntryBuilder<T> {
         this.namespace = namespace;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T_> ConfigEntryBuilder<T_> setDefault(Class<T_> type, ConfigBinding<T_> binding) {
-        Asser.t(type.isInstance(binding.getDefault()), "config default value must match expected type");
-        val casted = (ConfigEntryBuilder<T_>) this;
-        casted.expectedType = Asser.tNotNull(type, "config expected type");
-        casted.binding = Asser.tNotNull(binding, "config binding");
-        return casted;
-    }
-
     public ConfigEntryBuilder<T> setName(@NotNull String name) {
         this.name = Asser.tNotNull(name, "config entry name");
         return this;
@@ -53,6 +45,14 @@ public class ConfigEntryBuilder<T> {
     public ConfigEntryBuilder<T> setNamespace(@NotNull String namespace) {
         this.namespace = Asser.tNotNull(namespace, "config entry namespace");
         return this;
+    }
+
+    public <T_> ConfigEntryBuilder<T_> setDefault(Class<T_> type, ConfigBinding<T_> binding) {
+        Asser.t(type.isInstance(binding.getDefault()), "config default value must match expected type");
+        val casted = Cast.<ConfigEntryBuilder<T_>>to(this);
+        casted.expectedType = Asser.tNotNull(type, "config expected type");
+        casted.binding = Asser.tNotNull(binding, "config binding");
+        return casted;
     }
 
     private <T_> ConfigEntryBuilder<T_> setDefault(ConfigBinding<T_> binding) {

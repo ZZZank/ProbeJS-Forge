@@ -3,10 +3,10 @@ package zzzank.probejs.utils.config;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
-import dev.latvian.kubejs.util.UtilsJS;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.Asser;
+import zzzank.probejs.utils.Cast;
 import zzzank.probejs.utils.CollectUtils;
 import zzzank.probejs.utils.config.serde.ConfigImplSerde;
 
@@ -102,8 +102,8 @@ public class ConfigImpl {
         Asser.tNotNull(entry, "config entry to be merged");
         val old = all.get(entry.namespace, entry.name);
         if (old != null && old.getDefault().getClass().isInstance(entry.getDefault())) {
-            old.setNoSave(UtilsJS.cast(entry.get()));
-            return (ConfigEntry<T>) old;
+            old.setNoSave(Cast.to(entry.get()));
+            return Cast.to(old);
         } else {
             all.put(entry.namespace, entry.name, entry);
             return entry;

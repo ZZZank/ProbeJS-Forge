@@ -3,9 +3,9 @@ package zzzank.probejs.utils.config.serde;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import dev.latvian.kubejs.util.UtilsJS;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
+import zzzank.probejs.utils.Cast;
 import zzzank.probejs.utils.JsonUtils;
 import zzzank.probejs.utils.config.ConfigEntry;
 import zzzank.probejs.utils.config.ConfigImpl;
@@ -29,8 +29,8 @@ public class ConfigImplSerde {
         for (val entry : source.entries()) {
             val o = new JsonObject();
 
-            o.add(DEFAULT_VALUE_KEY, entry.serde.toJson(UtilsJS.cast(entry.getDefault())));
-            o.add(VALUE_KEY, entry.serde.toJson(UtilsJS.cast(entry.get())));
+            o.add(DEFAULT_VALUE_KEY, entry.serde.toJson(Cast.to(entry.getDefault())));
+            o.add(VALUE_KEY, entry.serde.toJson(Cast.to(entry.get())));
             switch (entry.comments.size()) {
                 case 0 -> {}
                 case 1 -> o.add(COMMENTS_KEY, new JsonPrimitive(entry.comments.get(0)));
