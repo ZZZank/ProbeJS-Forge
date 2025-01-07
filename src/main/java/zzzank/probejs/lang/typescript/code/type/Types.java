@@ -8,7 +8,6 @@ import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.type.js.*;
 import zzzank.probejs.lang.typescript.code.type.ts.*;
 import zzzank.probejs.lang.typescript.code.type.utility.*;
-import zzzank.probejs.lang.typescript.refer.ImportInfo;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
 
 import java.util.Arrays;
@@ -31,6 +30,7 @@ public interface Types {
     JSPrimitiveType THIS = primitive("this");
     JSPrimitiveType OBJECT = primitive("object");
     JSPrimitiveType NULL = primitive("null");
+    JSPrimitiveType UNDEFINED = primitive("undefined");
     JSTupleType EMPTY_ARRAY = Types.tuple().build();
     JSObjectType EMPTY_OBJECT = Types.object().build();
 

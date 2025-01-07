@@ -11,6 +11,8 @@ import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author ZZZank
@@ -141,10 +143,14 @@ public class ValueTypes {
     }
 
     public static JSPrimitiveType formatFunction(Object obj, TypeConverter converter, int limit) {
-        if (!(obj instanceof BaseFunction) || limitConsumed(limit)) {
+        if (!(obj instanceof BaseFunction fn) || limitConsumed(limit)) {
             return null;
         }
-        return Types.primitive("Function");
+        val args = IntStream.range(0, fn.getArity())
+            .mapToObj((i) -> String.format("arg%s: any, ", i))
+            .collect(Collectors.joining(""));
+//        return Types.primitive(String.format("(%s...args: any[]): any", args));
+        return Types.primitive(String.format("(%s): any", args));
     }
 
     private static int consumeLimit(int limit) {
