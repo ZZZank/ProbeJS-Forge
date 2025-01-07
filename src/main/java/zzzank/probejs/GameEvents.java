@@ -39,6 +39,8 @@ public class GameEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void playerJoined(ClientPlayerNetworkEvent.LoggedInEvent event) {
+        ProbeConfig.refresh();
+
         val player = event.getPlayer();
         if (player == null || !ProbeConfig.enabled.get()) {
             return;
