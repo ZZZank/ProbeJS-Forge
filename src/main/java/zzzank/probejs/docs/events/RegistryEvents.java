@@ -25,7 +25,7 @@ public class RegistryEvents implements ProbeJSPlugin {
 
         val groupNamespace = new Wrapped.Namespace("StartupEvents");
 
-        for (val info : RegistryInfos.ALL.values()) {
+        for (val info : RegistryInfos.values()) {
             val key = info.resKey;
             val registryPath = getRegistryClassPath(key.location().getNamespace(), key.location().getPath());
             val extraName = key.location().getNamespace().equals("minecraft")
@@ -107,7 +107,7 @@ public class RegistryEvents implements ProbeJSPlugin {
     public Set<Class<?>> provideJavaClass(ScriptDump scriptDump) {
         Set<Class<?>> classes = new HashSet<>();
 
-        for (val info : RegistryInfos.ALL.values()) {
+        for (val info : RegistryInfos.values()) {
             val forgeRegistry = info.forgeRaw;
             val vanillaRegistry = info.raw;
             classes.add(forgeRegistry.getRegistrySuperType());

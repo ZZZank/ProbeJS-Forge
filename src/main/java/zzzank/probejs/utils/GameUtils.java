@@ -1,21 +1,31 @@
 package zzzank.probejs.utils;
 
+import lombok.experimental.UtilityClass;
 import lombok.val;
 import me.shedaniel.architectury.platform.Mod;
 import me.shedaniel.architectury.platform.Platform;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Nullable;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.registry.RegistryInfos;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
+import java.util.*;
 
+@UtilityClass
 public class GameUtils {
 
-    public static long modHash() {
+    @Nullable
+    public RegistryAccess registryAccess() {
+        val server = ServerLifecycleHooks.getCurrentServer();
+        return server == null ? null : server.registryAccess();
+    }
+
+    public long modHash() {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             for (Mod mod : Platform.getMods()) {
@@ -27,7 +37,7 @@ public class GameUtils {
         }
     }
 
-    public static long registryHash() {
+    public long registryHash() {
         try {
             val digest = MessageDigest.getInstance("SHA-256");
             val server = ServerLifecycleHooks.getCurrentServer();
@@ -35,7 +45,7 @@ public class GameUtils {
                 return -1;
             }
 
-            RegistryInfos.ALL.values()
+            RegistryInfos.values()
                 .stream()
                 .flatMap(registryInfo -> registryInfo.names.stream())
                 .map(ResourceLocation::toString)
@@ -49,7 +59,7 @@ public class GameUtils {
         }
     }
 
-    public static void logThrowable(Throwable t, int maxStackStraceCount) {
+    public void logThrowable(Throwable t, int maxStackStraceCount) {
         val traces = t.getStackTrace();
         val limit = maxStackStraceCount < 0
             ? traces.length
@@ -62,7 +72,7 @@ public class GameUtils {
         ProbeJS.LOGGER.error(String.join("\n", lines));
     }
 
-    public static void logThrowable(Throwable t) {
+    public void logThrowable(Throwable t) {
         logThrowable(t, -1);
     }
 }

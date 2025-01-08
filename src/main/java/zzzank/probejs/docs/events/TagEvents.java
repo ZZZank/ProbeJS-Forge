@@ -40,7 +40,7 @@ public class TagEvents implements ProbeJSPlugin {
         }
 
         val events = new ArrayList<Code>();
-        for (val info : RegistryInfos.ALL.values()) {
+        for (val info : RegistryInfos.values()) {
             val forgeRegistry = info.forgeRaw;
             val tagFolder = forgeRegistry.getTagFolder();
             if (tagFolder == null) {
@@ -50,7 +50,7 @@ public class TagEvents implements ProbeJSPlugin {
         }
 
         val groupNamespace = new Wrapped.Namespace("ServerEvents");
-        for (val info : RegistryInfos.ALL.values()) {
+        for (val info : RegistryInfos.values()) {
             val key = info.resKey;
             val registry = info.raw;
             if (registry == null) {

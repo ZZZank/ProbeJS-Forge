@@ -2,14 +2,17 @@ package zzzank.probejs.lang.snippet;
 
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
+import lombok.val;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.snippet.parts.*;
+import zzzank.probejs.utils.CollectUtils;
+import zzzank.probejs.utils.GameUtils;
 import zzzank.probejs.utils.JsonUtils;
+import zzzank.probejs.utils.registry.RegistryInfo;
+import zzzank.probejs.utils.registry.RegistryInfos;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +61,7 @@ public class Snippet {
     }
 
     public Snippet tabStop(int enumeration, String defaultValue) {
-        var stop = new TabStop(defaultValue);
+        val stop = new TabStop(defaultValue);
         stop.enumeration = enumeration;
         getRecent().add(stop);
         return this;
@@ -70,7 +73,7 @@ public class Snippet {
     }
 
     public Snippet choices(int enumeration, Collection<String> choices) {
-        var choice = new Choice(choices);
+        val choice = new Choice(choices);
         choice.enumeration = enumeration;
         getRecent().add(choice);
         return this;
@@ -81,14 +84,13 @@ public class Snippet {
         return this;
     }
 
-    public <T> Snippet registry(ResourceKey<Registry<T>> registry) {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        if (server == null) return this;
-        RegistryAccess access = server.registryAccess();
-
-        var reg = access.registry(registry).orElse(null);
-        if (reg == null) return this;
-        return choices(reg.keySet().stream().map(ResourceLocation::toString).collect(Collectors.toSet()));
+    public <T> Snippet registry(ResourceKey<Registry<T>> key) {
+        val registry = RegistryInfos.ALL.get(key.location());
+        if (registry == null) {
+            ProbeJS.LOGGER.error("no registry info found for key {}, skipping", key.location());
+            return this;
+        }
+        return choices(CollectUtils.mapToList(registry.names, ResourceLocation::toString));
     }
 
     private List<SnippetPart> getRecent() {
@@ -96,7 +98,6 @@ public class Snippet {
     }
 
     public JsonObject compile() {
-
         // Reindex everything
         Set<Integer> indexes = new IntArraySet(256);
         List<Enumerable> toBeIndexed = new ArrayList<>(64);
@@ -104,8 +105,11 @@ public class Snippet {
         for (List<SnippetPart> parts : allParts) {
             for (SnippetPart part : parts) {
                 if (part instanceof Enumerable enumerable) {
-                    if (enumerable.enumeration == -1) toBeIndexed.add(enumerable);
-                    else indexes.add(enumerable.enumeration);
+                    if (enumerable.enumeration == -1) {
+                        toBeIndexed.add(enumerable);
+                    } else {
+                        indexes.add(enumerable.enumeration);
+                    }
                 }
             }
         }

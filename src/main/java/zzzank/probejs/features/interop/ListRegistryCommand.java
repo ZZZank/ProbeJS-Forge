@@ -27,7 +27,7 @@ public abstract class ListRegistryCommand extends Command {
             return new JsonArray();
         }
 
-        for (val info : RegistryInfos.ALL.values()) {
+        for (val info : RegistryInfos.values()) {
             val key = info.resKey;
             val registryName = key.location().getNamespace().equals("minecraft") ?
                 key.location().getPath() :
