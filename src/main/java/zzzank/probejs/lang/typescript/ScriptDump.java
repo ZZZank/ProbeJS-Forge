@@ -210,7 +210,8 @@ public class ScriptDump {
             BaseType thisType = Types.type(classPath);
 
             if (!classDecl.variableTypes.isEmpty()) {
-                val suffix = Types.join(", ", "<", ">", classDecl.variableTypes);
+                val suffix = Types.join(", ", "<", ">", classDecl.variableTypes)
+                    .line(output.declaration, BaseType.FormatType.RETURN);
                 symbol = symbol + suffix;
                 exportedSymbol = exportedSymbol + suffix;
                 thisType = Types.parameterized(thisType, classDecl.variableTypes);
