@@ -16,9 +16,11 @@ import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
 import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
+import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
 import zzzank.probejs.utils.NameUtils;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -41,6 +43,7 @@ public class AutoParamRename implements ClassTransformer {
         fn.accept(Primitives.BYTE);
         fn.accept(Primitives.DOUBLE);
         fn.accept(Primitives.CHAR_SEQUENCE);
+        fn.accept(Types.ANY);
         PRIMITIVES.put(Primitives.CHARACTER, "char");
         PRIMITIVES.put(Types.NUMBER, "num");
         PRIMITIVES.put(Types.BOOLEAN, "bl");
@@ -81,6 +84,8 @@ public class AutoParamRename implements ClassTransformer {
             return autoParamName(arr.component) + "s";
         } else if (type instanceof TSParamType param) {
             return autoParamName(param.baseType);
+        } else if (type instanceof TSVariableType vari) {
+            return vari.symbol.toLowerCase(Locale.ROOT);
         }
         return null;
     }
