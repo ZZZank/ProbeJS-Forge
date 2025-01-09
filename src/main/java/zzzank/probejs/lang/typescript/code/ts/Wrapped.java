@@ -1,5 +1,6 @@
 package zzzank.probejs.lang.typescript.code.ts;
 
+import lombok.val;
 import zzzank.probejs.lang.typescript.Declaration;
 import zzzank.probejs.lang.typescript.code.Code;
 import zzzank.probejs.lang.typescript.code.CommentableCode;
@@ -22,8 +23,8 @@ public abstract class Wrapped extends CommentableCode {
 
     @Override
     public List<String> formatRaw(Declaration declaration) {
-        List<String> lines = new ArrayList<>();
-        for (Code code : codes) {
+        val lines = new ArrayList<String>();
+        for (val code : codes) {
             lines.addAll(code.format(declaration));
         }
         return lines;
@@ -37,13 +38,13 @@ public abstract class Wrapped extends CommentableCode {
         this.codes.addAll(other.codes);
     }
 
-
     public static class Global extends Wrapped {
         @Override
         public List<String> formatRaw(Declaration declaration) {
-            List<String> lines = new ArrayList<>();
+            val formatted = super.formatRaw(declaration);
+            val lines = new ArrayList<String>(formatted.size() + 2);
             lines.add("declare global {");
-            lines.addAll(super.formatRaw(declaration));
+            lines.addAll(formatted);
             lines.add("}");
             return lines;
         }
@@ -58,9 +59,10 @@ public abstract class Wrapped extends CommentableCode {
 
         @Override
         public List<String> formatRaw(Declaration declaration) {
-            List<String> lines = new ArrayList<>();
+            val formatted = super.formatRaw(declaration);
+            val lines = new ArrayList<String>(formatted.size() + 2);
             lines.add(String.format("export namespace %s {",nameSpace));
-            lines.addAll(super.formatRaw(declaration));
+            lines.addAll(formatted);
             lines.add("}");
             return lines;
         }

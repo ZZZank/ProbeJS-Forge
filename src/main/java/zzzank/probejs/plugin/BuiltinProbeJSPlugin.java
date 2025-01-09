@@ -63,6 +63,9 @@ public class BuiltinProbeJSPlugin extends KubeJSPlugin implements ProbeJSPlugin 
 
     @Override
     public void registerClassTransformer(ClassTransformerRegistration registration) {
+        if (ProbeConfig.autoParamRename.get()) {
+            registration.register(new AutoParamRename());
+        }
         registration.register(
             new KubeJSDenied(registration.scriptDump.manager),
             new InjectAnnotation(),
@@ -70,9 +73,6 @@ public class BuiltinProbeJSPlugin extends KubeJSPlugin implements ProbeJSPlugin 
             new InjectBeans(),
             new InjectSpecialType()
         );
-        if (ProbeConfig.autoParamRename.get()) {
-            registration.register(new AutoParamRename());
-        }
     }
 
     @Override

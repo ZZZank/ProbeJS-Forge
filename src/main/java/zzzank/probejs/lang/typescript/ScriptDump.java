@@ -98,10 +98,6 @@ public class ScriptDump {
         this.scriptPath = scriptPath;
         this.transpiler = new Transpiler(this);
         this.accept = scriptPredicate;
-
-//        val pack = CollectUtils.anyIn(manager.packs.values());
-//        this.attachedContext = pack.context;
-//        this.attachedScope = pack.scope;
     }
 
     public void acceptClasses(Collection<Clazz> classes) {
@@ -141,7 +137,7 @@ public class ScriptDump {
     public void addGlobal(String identifier, Collection<String> excludedNames, Code... content) {
         val file = globals.computeIfAbsent(
             identifier,
-            k -> new TypeScriptFile(ClassPath.fromRaw(k))
+            (k) -> new TypeScriptFile(ClassPath.fromRaw(k))
         );
 
         for (val excluded : excludedNames) {
@@ -222,6 +218,7 @@ public class ScriptDump {
             thisType = Types.contextShield(thisType, BaseType.FormatType.RETURN);
 
             List<BaseType> allTypes = new ArrayList<>();
+            allTypes.add(thisType);
             for (val typeDecl : convertibles.get(classPath)) {
                 if (typeDecl.symbol != null) {
                     output.addCode(typeDecl);
@@ -230,8 +227,6 @@ public class ScriptDump {
                     allTypes.add(typeDecl.type);
                 }
             }
-
-            allTypes.add(thisType);
 
             val typeConvertible = new TypeDecl(exportedSymbol, Types.or(allTypes));
             typeConvertible.addComment("""
