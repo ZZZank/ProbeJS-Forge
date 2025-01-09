@@ -70,7 +70,7 @@ public class BuiltinProbeJSPlugin extends KubeJSPlugin implements ProbeJSPlugin 
             new InjectBeans(),
             new InjectSpecialType()
         );
-        if (ProbeConfig.autoRenameParam.get()) {
+        if (ProbeConfig.autoParamRename.get()) {
             registration.register(new AutoParamRename());
         }
     }

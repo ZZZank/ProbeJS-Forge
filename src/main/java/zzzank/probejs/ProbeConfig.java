@@ -110,7 +110,7 @@ public interface ProbeConfig {
             Registry objects whose id matches this pattern will always be dumped by ProbeJS Legacy""")
         .setSerde(new PatternSerde())
         .build();
-    ConfigEntry<Boolean> autoRenameParam = INSTANCE.define("Rename Parameter Automatically")
+    ConfigEntry<Boolean> autoParamRename = INSTANCE.define("Rename Parameter Automatically")
         .setDefault(true)
         .comment("""
             automatically rename `arg123`-like names into some more human readable names""")

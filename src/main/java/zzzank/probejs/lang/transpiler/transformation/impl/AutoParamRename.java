@@ -4,9 +4,12 @@ import lombok.val;
 import org.jetbrains.annotations.Nullable;
 import zzzank.probejs.docs.Primitives;
 import zzzank.probejs.lang.java.clazz.Clazz;
+import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
 import zzzank.probejs.lang.java.clazz.members.MethodInfo;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
+import zzzank.probejs.lang.typescript.code.member.ConstructorDecl;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
+import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
@@ -46,13 +49,24 @@ public class AutoParamRename implements ClassTransformer {
     @Override
     public void transformMethod(Clazz clazz, MethodInfo methodInfo, MethodDecl methodDecl) {
         for (val param : methodDecl.params) {
-            val match = ARG_N.matcher(param.name);
-            if (match.find()) {
-                val index = match.group(1);
-                val autoName = autoParamName(param.type);
-                if (autoName != null) {
-                    param.name = autoName + index;
-                }
+            autoRename(param);
+        }
+    }
+
+    @Override
+    public void transformConstructor(Clazz clazz, ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
+        for (val param : constructorDecl.params) {
+            autoRename(param);
+        }
+    }
+
+    public static void autoRename(ParamDecl param) {
+        val match = ARG_N.matcher(param.name);
+        if (match.find()) {
+            val index = match.group(1);
+            val autoName = autoParamName(param.type);
+            if (autoName != null) {
+                param.name = autoName + index;
             }
         }
     }
