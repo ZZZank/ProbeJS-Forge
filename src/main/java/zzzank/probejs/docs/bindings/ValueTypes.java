@@ -11,8 +11,6 @@ import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * @author ZZZank
@@ -76,10 +74,14 @@ public class ValueTypes {
     }
 
     public static BaseType convertOrDefault(Object obj, TypeConverter converter, int limit) {
-        val formattedValue = convert(obj, converter, limit);
-        return formattedValue != null ? formattedValue
-            : obj == null ? Types.NULL
-                : converter.convertType(obj.getClass());
+        if (obj == null) {
+            return Types.NULL;
+        }
+        val converted = convert(obj, converter, limit);
+        if (converted != null) {
+            return converted;
+        }
+        return converter.convertType(obj.getClass());
     }
 
     public static JSObjectType convertMap(Object obj, TypeConverter converter, int limit) {
@@ -142,15 +144,16 @@ public class ValueTypes {
         return builder.build();
     }
 
-    public static JSPrimitiveType formatFunction(Object obj, TypeConverter converter, int limit) {
+    public static BaseType formatFunction(Object obj, TypeConverter converter, int limit) {
         if (!(obj instanceof BaseFunction fn) || limitConsumed(limit)) {
             return null;
         }
-        val args = IntStream.range(0, fn.getArity())
-            .mapToObj((i) -> String.format("arg%s: any, ", i))
-            .collect(Collectors.joining(""));
-//        return Types.primitive(String.format("(%s...args: any[]): any", args));
-        return Types.primitive(String.format("(%s): any", args));
+        val builder = Types.lambda();
+        val arity = fn.getArity();
+        for (int i = 0; i < arity; i++) {
+            builder.param("arg" + i, Types.ANY);
+        }
+        return builder.build();
     }
 
     private static int consumeLimit(int limit) {
