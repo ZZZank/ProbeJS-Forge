@@ -84,6 +84,11 @@ public interface ProbeConfig {
         .comment("""
             resolve defined values in `global`""")
         .build();
+    ConfigEntry<Integer> globalResolvingDepth = INSTANCE.define("'global' Resolving Depth")
+        .setDefault(1)
+        .comment("""
+            how deep should ProbeJS Legacy dive into defined values in `global`""")
+        .build();
     ConfigEntry<BuiltinScanners> classScanner = INSTANCE.define("Class Scanner")
         .setDefault(BuiltinScanners.EVENTS)
         .comment("""

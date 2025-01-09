@@ -58,11 +58,11 @@ public class ValueTypes {
         val type = obj.getClass();
         val direct = FORMATTERS.get(type);
         if (direct != null) {
-            return direct.convert(obj, converter, limit);
+            return direct.convertOrDefault(obj, converter, limit);
         }
         for (val entry : FORMATTERS.entrySet()) {
             if (entry.getKey().isAssignableFrom(type)) {
-                return entry.getValue().convert(obj, converter, limit);
+                return entry.getValue().convertOrDefault(obj, converter, limit);
             }
         }
         return null;
@@ -163,6 +163,16 @@ public class ValueTypes {
 
     interface ValueTypeConverter {
         BaseType convert(Object obj, TypeConverter converter, int depth);
+
+        default BaseType convertOrDefault(Object object, TypeConverter converter, int depth) {
+            if (object == null) {
+                return Types.NULL;
+            } else if (limitConsumed(depth)) {
+                return converter.convertType(object.getClass());
+            }
+            val converted = this.convert(object, converter, depth);
+            return converted == null ? converter.convertType(object.getClass()) : converted;
+        }
 
         default BaseType convert(Object obj, TypeConverter converter) {
             return convert(obj, converter, -1);

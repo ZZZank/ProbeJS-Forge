@@ -3,9 +3,10 @@ package zzzank.probejs.docs.bindings;
 import dev.latvian.kubejs.BuiltinKubeJSPlugin;
 import dev.latvian.mods.rhino.Undefined;
 import lombok.val;
+import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.lang.transpiler.TypeConverter;
 import zzzank.probejs.lang.typescript.ScriptDump;
-import zzzank.probejs.lang.typescript.code.ts.Statements;
+import zzzank.probejs.lang.typescript.code.member.TypeDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
@@ -21,19 +22,15 @@ class ResolveGlobal {
     public static final JSPrimitiveType RESOLVED = Types.primitive("ProbeJS$$ResolvedGlobal");
 
     public static void addGlobals(ScriptDump scriptDump) {
-        val clazzDecl = Statements.clazz(RESOLVED.content);
-
-        for (val entry : BuiltinKubeJSPlugin.GLOBAL.entrySet()) {
-            val name = String.valueOf(entry.getKey());
-            val value = entry.getValue();
-            if (value == null) {
-                continue;
-            }
-            val type = scriptDump.transpiler.typeConverter.convertType(value.getClass());
-            clazzDecl.field(name, type);
-        }
-
-        scriptDump.addGlobal("resolved_global", clazzDecl.build());
+        val resolved = resolveType(
+            ProbeConfig.globalResolvingDepth.get(),
+            BuiltinKubeJSPlugin.GLOBAL,
+            scriptDump.transpiler.typeConverter
+        );
+        scriptDump.addGlobal(
+            "resolved_global",
+            new TypeDecl(RESOLVED.content, resolved.contextShield(BaseType.FormatType.RETURN))
+        );
     }
 
     public static BaseType resolveType(int depth, Object value, TypeConverter converter) {
