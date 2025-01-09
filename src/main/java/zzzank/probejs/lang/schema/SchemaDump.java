@@ -1,7 +1,6 @@
 package zzzank.probejs.lang.schema;
 
 import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonWriter;
 import lombok.val;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.plugin.ProbeJSPlugins;
@@ -21,18 +20,24 @@ public class SchemaDump {
 
     public void writeTo(Path path) throws IOException {
         for (val entry : schemas.entrySet()) {
-            String key = entry.getKey();
-            SchemaElement<?> content = entry.getValue();
+            val pathStr = entry.getKey();
+            val content = entry.getValue();
 
-            try (var writer = Files.newBufferedWriter(path.resolve(key + ".json"))) {
-                JsonWriter jsonWriter = ProbeJS.GSON_WRITER.newJsonWriter(writer);
+            try (val writer = Files.newBufferedWriter(path.resolve(pathStr + ".json"))) {
+                val jsonWriter = ProbeJS.GSON_WRITER.newJsonWriter(writer);
                 jsonWriter.setIndent("    ");
                 ProbeJS.GSON_WRITER.toJson(content.getSchema(), JsonObject.class, jsonWriter);
             }
         }
     }
 
-    public void newSchema(String name, SchemaElement<?> element) {
-        schemas.put(name, element);
+    public void newSchema(String path, SchemaElement<?> element) {
+        schemas.put(path, element);
+    }
+
+    public ObjectElement newObjectSchema(String path) {
+        val obj = ObjectElement.of();
+        schemas.put(path, obj);
+        return obj;
     }
 }

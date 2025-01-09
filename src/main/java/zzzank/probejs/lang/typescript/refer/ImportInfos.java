@@ -34,7 +34,7 @@ public class ImportInfos implements Iterable<ImportInfo> {
     }
 
     public static ImportInfos of(@NotNull ImportInfo... initial) {
-        return new ImportInfos(new HashMap<>()).addAll(Arrays.asList(initial));
+        return of(Arrays.asList(initial));
     }
 
     public static ImportInfos of(@NotNull Collection<ImportInfo> infos) {

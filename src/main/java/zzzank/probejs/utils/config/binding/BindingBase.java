@@ -6,6 +6,8 @@ import zzzank.probejs.utils.config.report.ConfigReport;
 import zzzank.probejs.utils.config.report.NoError;
 import zzzank.probejs.utils.config.report.WrappedException;
 
+import java.util.Objects;
+
 /**
  * @author ZZZank
  */
@@ -17,8 +19,8 @@ public abstract class BindingBase<T> implements ConfigBinding<T> {
     protected final String name;
 
     protected BindingBase(@NotNull T defaultValue, @NotNull String name) {
-        this.defaultValue = defaultValue;
-        this.name = name;
+        this.defaultValue = Objects.requireNonNull(defaultValue);
+        this.name = Objects.requireNonNull(name);
     }
 
     @Override

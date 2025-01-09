@@ -59,7 +59,7 @@ public final class ParamDecl {
     public static String formatParams(List<ParamDecl> params, Declaration declaration, BaseType.FormatType formatType) {
         val formatted = new ArrayList<String>(params.size());
         for (int i = 0; i < params.size(); i++) {
-            var param = params.get(i);
+            val param = params.get(i);
             formatted.add(param.format(i, declaration, formatType));
         }
         return formatted.stream().collect(Collectors.joining(", ", "(", ")"));

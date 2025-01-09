@@ -194,16 +194,15 @@ public interface Types {
 
     static CustomType custom(
         BiFunction<Declaration, BaseType.FormatType, String> formatter,
-        ImportInfo... imports
-    ) {
-        return custom(formatter, t -> ImportInfos.of(imports));
-    }
-
-    static CustomType custom(
-        BiFunction<Declaration, BaseType.FormatType, String> formatter,
         Function<BaseType.FormatType, ImportInfos> imports
     ) {
         return new CustomType(formatter, imports);
+    }
+
+    static CustomType custom(
+        BiFunction<Declaration, BaseType.FormatType, String> formatter
+    ) {
+        return custom(formatter, (t) -> ImportInfos.of());
     }
 
     static <T extends BaseType> ImportShield<T> importShield(T type, ImportInfos imports) {

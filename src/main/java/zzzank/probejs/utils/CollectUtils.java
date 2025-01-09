@@ -27,8 +27,6 @@ public interface CollectUtils {
     }
 
     static <I, O> List<O> mapToList(Collection<I> collection, Function<I, O> mapper) {
-        Objects.requireNonNull(collection);
-        Objects.requireNonNull(mapper);
         val l = new ArrayList<O>(collection.size());
         for (I i : collection) {
             l.add(mapper.apply(i));

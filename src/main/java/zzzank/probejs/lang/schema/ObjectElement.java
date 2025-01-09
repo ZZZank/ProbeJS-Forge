@@ -1,6 +1,7 @@
 package zzzank.probejs.lang.schema;
 
 import com.google.gson.JsonObject;
+import lombok.val;
 import zzzank.probejs.utils.JsonUtils;
 
 import java.util.*;
@@ -65,12 +66,12 @@ public class ObjectElement extends SchemaElement<ObjectElement> {
 
     @Override
     protected JsonObject toSchema() {
-        JsonObject object = new JsonObject();
+        val object = new JsonObject();
 
-        var properties = new JsonObject();
-        for (Map.Entry<String, SchemaElement<?>> entry : members.entrySet()) {
-            String key = entry.getKey();
-            SchemaElement<?> value = entry.getValue();
+        val properties = new JsonObject();
+        for (val entry : members.entrySet()) {
+            val key = entry.getKey();
+            val value = entry.getValue();
             properties.add(key, value.getSchema());
         }
         object.add("properties", properties);

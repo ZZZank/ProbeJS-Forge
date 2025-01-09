@@ -7,7 +7,6 @@ public class AnyElement extends SchemaElement<AnyElement> {
     public static final AnyElement INSTANCE = new AnyElement();
 
     private AnyElement() {
-
     }
 
     @Override

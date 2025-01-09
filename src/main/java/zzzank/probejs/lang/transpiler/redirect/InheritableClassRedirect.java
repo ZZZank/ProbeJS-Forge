@@ -14,7 +14,7 @@ import java.util.function.Function;
 /**
  * @author ZZZank
  */
-public final class InheritableClassRedirect implements TypeRedirect {
+public class InheritableClassRedirect implements TypeRedirect {
 
     private final Set<Class<?>> targets;
     private final Function<Class<?>, BaseType> mapper;

@@ -1,6 +1,7 @@
 package zzzank.probejs.lang.schema;
 
 import com.google.gson.JsonObject;
+import lombok.val;
 
 public class ArrayElement extends SchemaElement<ArrayElement> {
     private final SchemaElement<?> element;
@@ -16,7 +17,7 @@ public class ArrayElement extends SchemaElement<ArrayElement> {
 
     @Override
     protected JsonObject toSchema() {
-        JsonObject object = new JsonObject();
+        val object = new JsonObject();
         object.add("items", element.getSchema());
         return object;
     }
