@@ -62,6 +62,11 @@ public final class ClassPath implements Comparable<ClassPath> {
         return parts[parts.length - 1];
     }
 
+    public String getJavaName() {
+        val name = getName();
+        return name.startsWith("$") ? name.substring(1) : name;
+    }
+
     public String getConcatenated(final String sep) {
         return String.join(sep, parts);
     }

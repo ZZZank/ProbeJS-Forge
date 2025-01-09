@@ -4,6 +4,7 @@ import dev.latvian.kubejs.KubeJSPlugin;
 import dev.latvian.kubejs.script.BindingsEvent;
 import dev.latvian.kubejs.script.ScriptType;
 import dev.latvian.kubejs.util.ClassFilter;
+import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.events.*;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.snippet.SnippetDump;
@@ -69,6 +70,9 @@ public class BuiltinProbeJSPlugin extends KubeJSPlugin implements ProbeJSPlugin 
             new InjectBeans(),
             new InjectSpecialType()
         );
+        if (ProbeConfig.autoRenameParam.get()) {
+            registration.register(new AutoParamRename());
+        }
     }
 
     @Override

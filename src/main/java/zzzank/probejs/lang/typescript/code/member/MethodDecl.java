@@ -25,7 +25,6 @@ public class MethodDecl extends CommentableCode {
     public BaseType returnType;
     public String content = null;
 
-
     public MethodDecl(String name, List<TSVariableType> variableTypes, List<ParamDecl> params, BaseType returnType) {
         this.name = name;
         this.variableTypes = new ArrayList<>(variableTypes);
