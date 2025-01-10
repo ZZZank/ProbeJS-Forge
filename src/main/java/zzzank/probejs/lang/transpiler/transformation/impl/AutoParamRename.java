@@ -2,27 +2,21 @@ package zzzank.probejs.lang.transpiler.transformation.impl;
 
 import lombok.val;
 import org.jetbrains.annotations.Nullable;
-import zzzank.probejs.docs.Primitives;
 import zzzank.probejs.lang.java.clazz.Clazz;
 import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
 import zzzank.probejs.lang.java.clazz.members.MethodInfo;
+import zzzank.probejs.lang.java.type.TypeDescriptor;
+import zzzank.probejs.lang.java.type.impl.ArrayType;
+import zzzank.probejs.lang.java.type.impl.ClassType;
+import zzzank.probejs.lang.java.type.impl.ParamType;
+import zzzank.probejs.lang.java.type.impl.VariableType;
 import zzzank.probejs.lang.transpiler.transformation.ClassTransformer;
 import zzzank.probejs.lang.typescript.code.member.ConstructorDecl;
 import zzzank.probejs.lang.typescript.code.member.MethodDecl;
 import zzzank.probejs.lang.typescript.code.member.ParamDecl;
-import zzzank.probejs.lang.typescript.code.type.BaseType;
-import zzzank.probejs.lang.typescript.code.type.Types;
-import zzzank.probejs.lang.typescript.code.type.js.JSPrimitiveType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSArrayType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSClassType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSParamType;
-import zzzank.probejs.lang.typescript.code.type.ts.TSVariableType;
 import zzzank.probejs.utils.NameUtils;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
@@ -31,61 +25,46 @@ import java.util.regex.Pattern;
 public class AutoParamRename implements ClassTransformer {
 
     public static final Pattern ARG_N = Pattern.compile("^arg(\\d+)$");
-    private static final Map<JSPrimitiveType, String> PRIMITIVES;
-
-    static {
-        PRIMITIVES = new HashMap<>();
-        val fn = (Consumer<JSPrimitiveType>) t -> PRIMITIVES.put(t, t.content);
-        fn.accept(Primitives.FLOAT);
-        fn.accept(Primitives.LONG);
-        fn.accept(Primitives.INTEGER);
-        fn.accept(Primitives.SHORT);
-        fn.accept(Primitives.BYTE);
-        fn.accept(Primitives.DOUBLE);
-        fn.accept(Primitives.CHAR_SEQUENCE);
-        fn.accept(Types.ANY);
-        PRIMITIVES.put(Primitives.CHARACTER, "char");
-        PRIMITIVES.put(Types.NUMBER, "num");
-        PRIMITIVES.put(Types.BOOLEAN, "bl");
-    }
 
     @Override
     public void transformMethod(Clazz clazz, MethodInfo methodInfo, MethodDecl methodDecl) {
-        for (val param : methodDecl.params) {
-            autoRename(param);
+        val size = Math.min(methodInfo.params.size(), methodDecl.params.size());
+        for (int i = 0; i < size; i++) {
+            val typeDesc = methodInfo.params.get(i).type;
+            val param = methodDecl.params.get(i);
+            autoRename(param, typeDesc, i);
         }
     }
 
     @Override
     public void transformConstructor(Clazz clazz, ConstructorInfo constructorInfo, ConstructorDecl constructorDecl) {
-        for (val param : constructorDecl.params) {
-            autoRename(param);
+        val size = Math.min(constructorInfo.params.size(), constructorDecl.params.size());
+        for (int i = 0; i < size; i++) {
+            val typeDesc = constructorInfo.params.get(i).type;
+            val param = constructorDecl.params.get(i);
+            autoRename(param, typeDesc, i);
         }
     }
 
-    public static void autoRename(ParamDecl param) {
-        val match = ARG_N.matcher(param.name);
-        if (match.find()) {
-            val index = match.group(1);
-            val autoName = autoParamName(param.type);
+    public static void autoRename(ParamDecl param, TypeDescriptor typeDesc, int index) {
+        if (ARG_N.matcher(param.name).matches()) {
+            val autoName = autoParamName(typeDesc, index);
             if (autoName != null) {
-                param.name = autoName + index;
+                param.name = autoName;
             }
         }
     }
 
     @Nullable
-    public static String autoParamName(BaseType type) {
-        if (type instanceof JSPrimitiveType primitive) {
-            return PRIMITIVES.get(primitive);
-        } else if (type instanceof TSClassType c) {
-            return NameUtils.firstLower(c.classPath.getJavaName());
-        } else if (type instanceof TSArrayType arr) {
-            return autoParamName(arr.component) + "s";
-        } else if (type instanceof TSParamType param) {
-            return autoParamName(param.baseType);
-        } else if (type instanceof TSVariableType vari) {
-            return vari.symbol.toLowerCase(Locale.ROOT);
+    public static String autoParamName(TypeDescriptor type, int index) {
+        if (type instanceof ClassType c) {
+            return NameUtils.firstLower(c.clazz.getSimpleName()) + index;
+        } else if (type instanceof ArrayType arr) {
+            return autoParamName(arr.component, index) + 's';
+        } else if (type instanceof ParamType param) {
+            return autoParamName(param.base, index);
+        } else if (type instanceof VariableType vari) {
+            return vari.symbol.toLowerCase(Locale.ROOT) + index;
         }
         return null;
     }
