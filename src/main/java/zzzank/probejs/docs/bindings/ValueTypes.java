@@ -148,7 +148,7 @@ public class ValueTypes {
         if (!(obj instanceof BaseFunction fn) || limitConsumed(limit)) {
             return null;
         }
-        val builder = Types.lambda();
+        val builder = Types.lambda().returnType(Types.ANY);
         val arity = fn.getArity();
         for (int i = 0; i < arity; i++) {
             builder.param("arg" + i, Types.ANY);
