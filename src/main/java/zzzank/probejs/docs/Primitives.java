@@ -73,15 +73,15 @@ public class Primitives implements ProbeJSPlugin {
         scriptDump.addGlobal("primitives",
             //for number types, we can safely mark them as a primitive type instead of an interface
             //because the classes that represent them are `final`, so there's no need of taking inheritance into account
-            new TypeDecl("long", numberBoth),
-            new TypeDecl("integer", numberBoth),
-            new TypeDecl("short", numberBoth),
-            new TypeDecl("byte", numberBoth),
-            new TypeDecl("double", numberBoth),
-            new TypeDecl("float", numberBoth),
+            new TypeDecl(LONG.content, numberBoth),
+            new TypeDecl(INTEGER.content, numberBoth),
+            new TypeDecl(SHORT.content, numberBoth),
+            new TypeDecl(BYTE.content, numberBoth),
+            new TypeDecl(DOUBLE.content, numberBoth),
+            new TypeDecl(FLOAT.content, numberBoth),
             //for CharSequence, we should NOT mark it as a primitive type, because of inheritance
-            new JavaPrimitive("character", "String"),
-            new JavaPrimitive("charseq", "String")
+            new JavaPrimitive(CHARACTER.content, "String"),
+            new JavaPrimitive(CHAR_SEQUENCE.content, "String")
         );
     }
 

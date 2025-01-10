@@ -17,7 +17,6 @@ public class RegistryInfo implements Comparable<RegistryInfo> {
     public final Registry<?> raw;
     public final ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRaw;
     public final ResourceKey<? extends Registry<?>> resKey;
-    public final ResourceLocation id;
     public final Set<ResourceLocation> names;
     @Nullable
     public final StaticTagHelper<?> tagHelper;
@@ -25,24 +24,26 @@ public class RegistryInfo implements Comparable<RegistryInfo> {
     public RegistryInfo(ForgeRegistry<? extends IForgeRegistryEntry<?>> forgeRegistry) {
         this.forgeRaw = forgeRegistry;
         this.resKey = forgeRaw.getRegistryKey();
-        this.id = resKey.location();
         this.names = forgeRaw.getKeys();
-        this.tagHelper = StaticTags.get(this.id);
+        this.tagHelper = StaticTags.get(id());
 
-        this.raw = Registry.REGISTRY.get(id);
+        this.raw = Registry.REGISTRY.get(id());
     }
 
     public RegistryInfo(Registry<?> registry) {
         this.raw = registry;
         this.forgeRaw = null;
         this.resKey = raw.key();
-        this.id = resKey.location();
         this.names = raw.keySet();
-        this.tagHelper = StaticTags.get(this.id);
+        this.tagHelper = StaticTags.get(id());
     }
 
     @Override
     public int compareTo(@NotNull RegistryInfo o) {
         return resKey.compareTo(o.resKey);
+    }
+
+    public ResourceLocation id() {
+        return resKey.location();
     }
 }

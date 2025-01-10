@@ -61,10 +61,6 @@ public final class EventJSInfo implements Comparable<EventJSInfo> {
         );
     }
 
-    public boolean hasSub() {
-        return sub.get() != null;
-    }
-
     public Map.Entry<String, JsonObject> toJson() {
         val m = CollectUtils.ofMap(
             "class", clazzRaw.getName(),
