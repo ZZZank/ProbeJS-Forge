@@ -16,9 +16,10 @@ public class RemapperBridge {
     private ClazzNamesRemapper INSTANCE;
 
     static {
-        INSTANCE = new JavaDefault();
         if (RhizoState.REMAPPER) {
             INSTANCE = new RhizoClazzRemapper();
+        } else {
+            INSTANCE = new RhinoDefault();
         }
     }
 
