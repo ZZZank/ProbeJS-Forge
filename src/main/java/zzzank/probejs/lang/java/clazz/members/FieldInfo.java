@@ -1,6 +1,6 @@
 package zzzank.probejs.lang.java.clazz.members;
 
-import zzzank.probejs.features.rhizo.RemapperBridge;
+import zzzank.probejs.lang.java.remap.RemapperBridge;
 import zzzank.probejs.lang.java.base.AnnotationHolder;
 import zzzank.probejs.lang.java.type.TypeAdapter;
 import zzzank.probejs.lang.java.type.TypeDescriptor;

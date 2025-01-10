@@ -2,7 +2,7 @@ package zzzank.probejs.lang.java;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
-import zzzank.probejs.features.rhizo.RemapperBridge;
+import zzzank.probejs.lang.java.remap.RemapperBridge;
 import zzzank.probejs.lang.java.clazz.MemberCollector;
 import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
 import zzzank.probejs.lang.java.clazz.members.FieldInfo;

@@ -7,7 +7,7 @@ import lombok.ToString;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import zzzank.probejs.features.rhizo.RemapperBridge;
+import zzzank.probejs.lang.java.remap.RemapperBridge;
 import zzzank.probejs.lang.java.ClassRegistry;
 import zzzank.probejs.utils.CollectUtils;
 
