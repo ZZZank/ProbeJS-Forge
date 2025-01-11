@@ -2,7 +2,6 @@ package zzzank.probejs.utils.config;
 
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
-import zzzank.probejs.ProbeJS;
 import zzzank.probejs.utils.Asser;
 import zzzank.probejs.utils.Cast;
 import zzzank.probejs.utils.config.binding.ConfigBinding;
@@ -10,8 +9,7 @@ import zzzank.probejs.utils.config.binding.DefaultBinding;
 import zzzank.probejs.utils.config.binding.RangedBinding;
 import zzzank.probejs.utils.config.binding.ReadOnlyBinding;
 import zzzank.probejs.utils.config.serde.ConfigSerde;
-import zzzank.probejs.utils.config.serde.DefaultSerde;
-import zzzank.probejs.utils.config.serde.EnumSerde;
+import zzzank.probejs.utils.config.serde.ConfigSerdes;
 
 import java.util.*;
 
@@ -100,11 +98,7 @@ public class ConfigEntryBuilder<T> {
             comments = Collections.emptyList();
         }
         if (serde == null) {
-            if (Enum.class.isAssignableFrom(expectedType)) {
-                serde = new EnumSerde(ProbeJS.GSON, expectedType);
-            } else {
-                serde = new DefaultSerde<>(ProbeJS.GSON, expectedType);
-            }
+            serde = ConfigSerdes.get(binding.getDefault());
         }
         return this.root.register(
             new ConfigEntry<>(this.root, namespace, name, serde, binding, comments)

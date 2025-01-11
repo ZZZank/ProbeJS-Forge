@@ -108,7 +108,6 @@ public interface ProbeConfig {
         .comment("""
             a string regex used for filtering registry objects.
             Registry objects whose id matches this pattern will always be dumped by ProbeJS Legacy""")
-        .setSerde(new PatternSerde())
         .build();
     ConfigEntry<Boolean> autoParamRename = INSTANCE.define("Rename Parameter Automatically")
         .setDefault(true)
