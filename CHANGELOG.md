@@ -1,3 +1,32 @@
+# ProbeJS Legacy 4.4.2 -> 4.5.0
+
+Auto Param Renaming
+
+- Better Param Naming
+    - param name that conflicts with TypeScript will now be renamed in a better way
+    - param names in method/constructor, if in `arg123` format, will be renamed to a new name generated from its type
+    - example: `"mayUseItemAt"(arg0: $BlockPos$$Type, arg1: $Direction$$Type, arg2: $ItemStack$$Type): boolean` will be renamed to
+      `"mayUseItemAt"(blockPos0: $BlockPos$$Type, direction1: $Direction$$Type, itemStack2: $ItemStack$$Type): boolean`
+- method/fields in declaration files are now naturally sorted
+- remove 'ignore Context as first arg' since rhino does not have it
+- new JS side event: AddGlobalEventJS, allowing you to add global type declarations
+- fixed function in binding being recognized as `$ArrowFunction`
+- function in binding can now display its param count
+- changed how brackets are added to types for simplicity
+- added brackets to JSLambdaType to prevent TS syntax error
+- some helpers in JS event provided by ProbeJS Legacy
+- support enum wrapper of newest Rhizo (3.5.0)
+- fixed static methods present in interface (where it shouldn't be) and not present in static class variant (where it should be)
+- more debug message when error happens during typing generation
+- fix RecipeEventJS#custom() reporting error when `checkJs` is on
+- removed (some or all) invalid type assigning
+- fixed trying to read a non-exist config file on first run
+- skip `namespace` in config file if possible
+- get rid of the extra space in some methods and fields
+- config will be refreshed on joining world
+
+---
+
 # ProbeJS Legacy 4.4.1 -> 4.4.2
 
 registry objects filter
