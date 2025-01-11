@@ -13,6 +13,7 @@ public interface ConfigBinding<T> {
     @NotNull
     T getDefault();
 
+    @NotNull
     T get();
 
     @NotNull

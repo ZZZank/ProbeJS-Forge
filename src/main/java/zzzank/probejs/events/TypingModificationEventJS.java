@@ -21,7 +21,7 @@ public class TypingModificationEventJS extends ScriptEventJS {
         val path = ClassPath.fromJava(clazz);
         val ts = files.get(path);
         if (ts == null) {
-            scriptDump.scriptType.console.errorf("TS file with path '%s' not found, skipping", path);
+            getScriptType().console.errorf("TS file with path '%s' not found, skipping", path);
             return;
         }
         modifier.accept(ts);

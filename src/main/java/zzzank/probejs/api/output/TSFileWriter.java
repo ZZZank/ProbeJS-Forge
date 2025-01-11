@@ -27,7 +27,7 @@ public interface TSFileWriter {
 
     String TS_SUFFIX = ".ts";
 
-    String D_TS_SUFFIX = ".d" + TS_SUFFIX;
+    String D_TS_SUFFIX = ".d.ts";
 
     String INDEX_FILE_NAME = "index";
 }

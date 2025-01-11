@@ -15,7 +15,7 @@ public class DefaultBinding<T> extends BindingBase<T> {
     }
 
     @Override
-    public T get() {
+    public @NotNull T get() {
         return value;
     }
 

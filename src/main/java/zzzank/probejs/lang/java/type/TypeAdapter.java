@@ -27,7 +27,7 @@ public class TypeAdapter {
         }
 
         if (type.getType() instanceof Class<?> clazz) {
-            TypeVariable<?>[] interfaces = clazz.getTypeParameters();
+            final var interfaces = clazz.getTypeParameters();
             if (recursive && interfaces.length != 0) {
                 return new ParamType(
                     type.getAnnotations(),

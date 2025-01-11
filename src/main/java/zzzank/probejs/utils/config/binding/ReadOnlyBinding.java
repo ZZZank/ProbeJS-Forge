@@ -12,7 +12,7 @@ public class ReadOnlyBinding<T> extends BindingBase<T> {
     }
 
     @Override
-    public T get() {
+    public @NotNull T get() {
         return defaultValue;
     }
 

@@ -7,6 +7,7 @@ import zzzank.probejs.lang.typescript.code.member.ParamDecl;
 import zzzank.probejs.lang.typescript.code.type.BaseType;
 import zzzank.probejs.lang.typescript.code.type.Types;
 import zzzank.probejs.lang.typescript.refer.ImportInfos;
+import zzzank.probejs.utils.Cast;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -57,14 +58,17 @@ public class JSLambdaType extends BaseType {
         return new MethodDecl(methodName, Collections.emptyList(), params, returnType);
     }
 
-    @SuppressWarnings("unchecked")
     public static class BuilderBase<SELF extends BuilderBase<SELF>> {
         public final List<ParamDecl> params = new ArrayList<>();
         public BaseType returnType = Types.VOID;
 
+        protected SELF self() {
+            return Cast.to(this);
+        }
+
         public SELF returnType(BaseType type) {
             this.returnType = type;
-            return (SELF) this;
+            return self();
         }
 
         public SELF param(String symbol, BaseType type) {
@@ -77,7 +81,7 @@ public class JSLambdaType extends BaseType {
 
         public SELF param(String symbol, BaseType type, boolean isOptional, boolean isVarArg) {
             params.add(new ParamDecl(symbol, type, isVarArg, isOptional));
-            return (SELF) this;
+            return self();
         }
 
         public JSLambdaType build() {

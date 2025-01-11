@@ -1,9 +1,8 @@
-package zzzank.probejs.lang.java;
+package zzzank.probejs.lang.java.clazz;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.val;
 import zzzank.probejs.lang.java.remap.RemapperBridge;
-import zzzank.probejs.lang.java.clazz.MemberCollector;
 import zzzank.probejs.lang.java.clazz.members.ConstructorInfo;
 import zzzank.probejs.lang.java.clazz.members.FieldInfo;
 import zzzank.probejs.lang.java.clazz.members.MethodInfo;
@@ -18,7 +17,7 @@ import java.util.stream.Stream;
  */
 public class ClazzMemberCollector implements MemberCollector {
 
-    private Set<String> names = new HashSet<>();
+    private Set<String> names;
     private Class<?> clazz;
 
     @Override

@@ -35,7 +35,7 @@ public class Snippets implements ProbeJSPlugin {
 
         dump.snippet("itemstack")
             .prefix("#itemstack")
-            .description("Creates a `nx item string.")
+            .description("Creates a `nx item` string.")
             .literal("\"")
             .tabStop(1, "1")
             .literal("x ")

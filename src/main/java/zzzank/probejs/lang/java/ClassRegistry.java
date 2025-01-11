@@ -6,6 +6,7 @@ import zzzank.probejs.ProbeConfig;
 import zzzank.probejs.ProbeJS;
 import zzzank.probejs.lang.java.clazz.ClassPath;
 import zzzank.probejs.lang.java.clazz.Clazz;
+import zzzank.probejs.lang.java.clazz.ClazzMemberCollector;
 import zzzank.probejs.lang.java.clazz.MemberCollector;
 import zzzank.probejs.utils.ReflectUtils;
 
@@ -17,10 +18,14 @@ import java.util.*;
 
 @HideFromJS
 public class ClassRegistry {
-    public static final ClassRegistry REGISTRY = new ClassRegistry();
+    public static final ClassRegistry REGISTRY = new ClassRegistry(new ClazzMemberCollector());
 
     public final Map<ClassPath, Clazz> foundClasses = new HashMap<>(256);
-    public final MemberCollector collector = new ClazzMemberCollector();
+    public final MemberCollector collector;
+
+    public ClassRegistry(MemberCollector memberCollector) {
+        collector = memberCollector;
+    }
 
     public void fromClazz(Collection<Clazz> classes) {
         for (val c : classes) {

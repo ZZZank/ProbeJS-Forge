@@ -35,6 +35,10 @@ public class RemapperBridge {
         set(new JavaDefault());
     }
 
+    public void resetRhino() {
+        set(new RhinoDefault());
+    }
+
     public String remapClass(Class<?> from) {
         return get().remapClass(from);
     }
